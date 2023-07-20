@@ -4,63 +4,67 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/danielcuque/olc2_proyecto1/chore/parser"
+	"github.com/danielcuque/olc2_proyecto1/chore/parsing"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/antlr4-go/antlr/v4"
 )
 
-type calcListener struct {
-	*parser.BaseCalcListener
-	stack []int
+type Visitor struct {
+	parsing.BaseCalcVisitor
 }
 
-func (l *calcListener) push(i int) {
-	l.stack = append(l.stack, i)
-}
-
-func (l *calcListener) pop() int {
-	if len(l.stack) < 1 {
-		panic("empty stack")
+func (v *Visitor) Visit(tree antlr.ParseTree) float64 {
+	switch val := tree.(type) {
+	case *parsing.OpContext:
+		return v.VisitOp(val)
+	case *parsing.DigitContext:
+		return v.VisitDigit(val)
+	case *parsing.ParenContext:
+		return v.VisitParen(val)
+	default:
+		panic("Unknown context")
 	}
-	result := l.stack[len(l.stack)-1]
-	l.stack = l.stack[:len(l.stack)-1]
-	return result
 }
 
-func (l *calcListener) ExitSum(c *parser.SumContext) {
-	right, left := l.pop(), l.pop()
-	l.push(left + right)
-}
-
-func (l *calcListener) ExitMul(c *parser.MulContext) {
-	right, left := l.pop(), l.pop()
-	l.push(left * right)
-}
-
-func (l *calcListener) ExitDigit(c *parser.DigitContext) {
-	i, err := strconv.Atoi(c.GetText())
-	if err != nil {
-		panic(err.Error())
+func (v *Visitor) VisitOp(ctx *parsing.OpContext) float64 {
+	l := v.Visit(ctx.GetLeft())
+	r := v.Visit(ctx.GetRight())
+	op := ctx.GetOp().GetText()
+	fmt.Println("op", op)
+	switch op {
+	case "+":
+		return l + r
+	case "-":
+		return l - r
+	case "*":
+		return l * r
+	case "/":
+		return l / r
 	}
-	l.push(i)
+	return 0
+}
+
+func (v *Visitor) VisitDigit(ctx *parsing.DigitContext) float64 {
+	fmt.Println("digit", ctx.GetText())
+	i1, _ := strconv.ParseFloat(ctx.GetText(), 64)
+	return i1
+}
+
+func (v *Visitor) VisitParen(ctx *parsing.ParenContext) float64 {
+	fmt.Println("parent", ctx.GetText())
+	tar := v.Visit(ctx.Expr())
+	return tar
 }
 
 func main() {
-	fmt.Println("Parser:")
-
-	// Setup the input
-	is := antlr.NewInputStream("3*5+4")
-
-	// Create the Lexer
-	lexer := parser.NewCalcLexer(is)
-	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
-
-	// Create the Parser
-	p := parser.NewCalcParser(stream)
-
-	// Finally parse the expression (by walking the tree)
-	var listener calcListener
-	antlr.ParseTreeWalkerDefault.Walk(&listener, p.L())
-
-	fmt.Println(listener.pop())
+	expression := "3*(5+4)"
+	input := antlr.NewInputStream(expression)
+	lexer := parsing.NewCalcLexer(input)
+	stream := antlr.NewCommonTokenStream(lexer, 0)
+	p := parsing.NewCalcParser(stream)
+	p.BuildParseTrees = true
+	tree := p.Expr()
+	var visitor = Visitor{}
+	var result = visitor.Visit(tree)
+	fmt.Println(expression, "=", result)
 }
