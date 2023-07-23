@@ -1,4 +1,4 @@
-// Generated from /Users/daniel/Desktop/USAC SEGUNDO SEMESTRE 2023/COMPILADORES 2 - 781/LABORATORIO/PROYECTOS/OLC2_202112145/chore/antlr4/SwiftLexer.g4 by ANTLR 4.9.2
+// Generated from /Users/daniel/Desktop/USAC SEGUNDO SEMESTRE 2023/COMPILADORES 2 - 781/LABORATORIO/PROYECTOS/OLC2_202112145/grammar/SwiftLexer.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
