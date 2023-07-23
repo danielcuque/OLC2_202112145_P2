@@ -1,0 +1,9 @@
+#!/bin/zsh
+CLASSPATH=.:~/ANTLR-4.13.0/antlr-4.13.0-complete.jar
+alias antlr4='java -Xmx500M -cp "~/ANTLR-4.13.0/antlr-4.13.0-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+alias grun='java -Xmx500M -cp "~/ANTLR-4.13.0/antlr-4.13.0-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
+
+cd grammar
+
+# antlr4 -Dlanguage=Go -o ../chore/parser/ Swift.g4 SwiftLexer.g4
+antlr4 -Dlanguage=Go -o ../chore/parser/ SwiftLexer.g4
