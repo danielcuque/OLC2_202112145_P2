@@ -24,6 +24,7 @@ Kw_BREAK: 'break';
 Kw_CONTINUE: 'continue';
 Kw_RETURN: 'return';
 Kw_DO: 'do';
+Kw_IN: 'in';
 
 // Types
 Kw_INT: 'Int';
@@ -44,12 +45,13 @@ ID: [a-zA-Z_][a-zA-Z0-9_]*;
 // Operators
 Op_ARROW: '->';
 
-// Arithmetic operators
-Op_MUL: '*';
-Op_DIV: '/';
-Op_PLUS: '+';
-Op_MINUS: '-';
-Op_MOD: '%';
+// Comparasion operators
+Op_EQ: '==';
+Op_NEQ: '!=';
+Op_LT: '<';
+Op_GT: '>';
+Op_LE: '<=';
+Op_GE: '>=';
 
 // Assignment operators
 Op_ASSIGN: '=';
@@ -58,13 +60,12 @@ Op_DIV_ASSIGN: '/=';
 Op_PLUS_ASSIGN: '+=';
 Op_MINUS_ASSIGN: '-=';
 
-// Comparasion operators
-Op_EQ: '==';
-Op_NEQ: '!=';
-Op_LT: '<';
-Op_GT: '>';
-Op_LE: '<=';
-Op_GE: '>=';
+// Arithmetic operators
+Op_MUL: '*';
+Op_DIV: '/';
+Op_PLUS: '+';
+Op_MINUS: '-';
+Op_MOD: '%';
 
 // Logical operators
 Op_AND: '&&';

@@ -249,6 +249,153 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerINT,
 			},
 		},
+		{
+			input: `func greet(person: String, alreadyGreeted: Bool) -> String {
+				if alreadyGreeted {
+					return greetAgain(person: person)
+				} else {
+					return greet(person: person)
+				}
+			}
+			print(greet(person: "Tim", alreadyGreeted: true))`,
+			expectedTokens: []int{
+				parser.SwiftLexerKw_FUNC,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerKw_STRING,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerKw_BOOL,
+				parser.SwiftLexerRPAREN,
+				parser.SwiftLexerOp_ARROW,
+				parser.SwiftLexerKw_STRING,
+				parser.SwiftLexerLBRACE,
+
+				parser.SwiftLexerKw_IF,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLBRACE,
+
+				parser.SwiftLexerKw_RETURN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerID,
+				parser.SwiftLexerRPAREN,
+
+				parser.SwiftLexerRBRACE,
+				parser.SwiftLexerKw_ELSE,
+				parser.SwiftLexerLBRACE,
+
+				parser.SwiftLexerKw_RETURN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerID,
+				parser.SwiftLexerRPAREN,
+
+				parser.SwiftLexerRBRACE,
+
+				parser.SwiftLexerRBRACE,
+
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerSTRING,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerBOOL,
+				parser.SwiftLexerRPAREN,
+				parser.SwiftLexerRPAREN,
+			},
+		},
+		{
+			input: `
+			func arithmeticMean(numbers: Double) -> Double {
+				var total: Double = 0
+				for number in numbers {
+					total += number
+				}
+				return total / Double(numbers.count)
+			}
+			arithmeticMean(1, 2, 3, 4, 5)
+			// returns 3.0, which is the arithmetic mean of these five numbers
+			arithmeticMean(3, 8.25, 18.75)
+			`,
+			expectedTokens: []int{
+				parser.SwiftLexerKw_FUNC,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerRPAREN,
+				parser.SwiftLexerOp_ARROW,
+				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerLBRACE,
+
+				parser.SwiftLexerKw_VAR,
+				parser.SwiftLexerID,
+				parser.SwiftLexerCOLON,
+				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerOp_ASSIGN,
+				parser.SwiftLexerINT,
+
+				parser.SwiftLexerKw_FOR,
+				parser.SwiftLexerID,
+				parser.SwiftLexerKw_IN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerLBRACE,
+
+				parser.SwiftLexerID,
+				parser.SwiftLexerOp_PLUS_ASSIGN,
+				parser.SwiftLexerID,
+
+				parser.SwiftLexerRBRACE,
+
+				parser.SwiftLexerKw_RETURN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerOp_DIV,
+				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerID,
+				parser.SwiftLexerDOT,
+				parser.SwiftLexerID,
+				parser.SwiftLexerRPAREN,
+
+				parser.SwiftLexerRBRACE,
+
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerINT,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerINT,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerINT,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerINT,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerINT,
+				parser.SwiftLexerRPAREN,
+
+				parser.SwiftLexerID,
+				parser.SwiftLexerLPAREN,
+				parser.SwiftLexerINT,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerDOUBLE,
+				parser.SwiftLexerCOMMA,
+				parser.SwiftLexerDOUBLE,
+				parser.SwiftLexerRPAREN,
+			},
+		},
 	}
 
 	TraverseCases(t, testCases)
@@ -270,7 +417,7 @@ func TraverseCases(t *testing.T, testCases []testCases) {
 				break
 			}
 			if token.GetTokenType() != expected {
-				t.Errorf("Esperado token %s pero se obtuvo %s", tokenNames[expected], tokenNames[token.GetTokenType()])
+				t.Errorf("Esperado token %s pero se obtuvo %s en la línea %d, columna %d", tokenNames[expected], tokenNames[token.GetTokenType()], token.GetLine(), token.GetColumn())
 			}
 			stream.Consume()
 		}
