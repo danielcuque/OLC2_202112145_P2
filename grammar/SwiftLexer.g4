@@ -10,6 +10,7 @@ BLOCK_COMMENT: '/*' .*? '*/' -> skip;
 Kw_LET: 'let';
 Kw_VAR: 'var';
 Kw_FUNC: 'func';
+Kw_STRUCT: 'struct';
 
 // Keywords used in control flow
 Kw_IF: 'if';
@@ -41,23 +42,34 @@ CHAR: '\'' (~['\\\r\n] | '\\' [\\\r\n])* '\'';
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 
 // Operators
-Op_PLUS: '+';
-Op_MINUS: '-';
+Op_ARROW: '->';
+
+// Arithmetic operators
 Op_MUL: '*';
 Op_DIV: '/';
+Op_PLUS: '+';
+Op_MINUS: '-';
 Op_MOD: '%';
+
+// Assignment operators
 Op_ASSIGN: '=';
+Op_MUL_ASSIGN: '*=';
+Op_DIV_ASSIGN: '/=';
+Op_PLUS_ASSIGN: '+=';
+Op_MINUS_ASSIGN: '-=';
+
+// Comparasion operators
 Op_EQ: '==';
 Op_NEQ: '!=';
 Op_LT: '<';
 Op_GT: '>';
 Op_LE: '<=';
 Op_GE: '>=';
+
+// Logical operators
 Op_AND: '&&';
 Op_OR: '||';
 Op_NOT: '!';
-Op_INC: '++';
-Op_DEC: '--';
 
 // Delimiters
 LPAREN: '(';
@@ -66,6 +78,8 @@ LBRACE: '{';
 RBRACE: '}';
 LBRACKET: '[';
 RBRACKET: ']';
+
+// Punctuation
 COMMA: ',';
 SEMICOLON: ';';
 COLON: ':';
