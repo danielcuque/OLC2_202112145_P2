@@ -3,6 +3,8 @@ lexer grammar SwiftLexer;
 // Skip comments
 
 WHITESPACE: [ \\\r\n\t]+ -> skip;
+COMMENT: '//' ~[\r\n]* -> skip;
+BLOCK_COMMENT: '/*' .*? '*/' -> skip;
 
 // Keywords used in declarations
 Kw_LET: 'let';
@@ -24,21 +26,19 @@ Kw_DO: 'do';
 
 // Types
 Kw_INT: 'Int';
-Kw_FLOAT: 'Float';
 Kw_DOUBLE: 'Double';
 Kw_BOOL: 'Bool';
 Kw_STRING: 'String';
 
-// Identifiers
-ID: [a-zA-Z_][a-zA-Z0-9_]*;
-
 // Literals
 INT: [0-9]+;
-FLOAT: [0-9]* '.' [0-9]+;
 DOUBLE: [0-9]* '.' [0-9]+;
 BOOL: 'true' | 'false';
 STRING: '"' (~["\\\r\n] | '\\' [\\\r\n])* '"';
 CHAR: '\'' (~['\\\r\n] | '\\' [\\\r\n])* '\'';
+
+// Identifiers
+ID: [a-zA-Z_][a-zA-Z0-9_]*;
 
 // Operators
 Op_PLUS: '+';
