@@ -1,18 +1,14 @@
 grammar Swift;
 
-// Tokens
-MUL: '*';
-ADD: '+';
-LB: '(';
-RB: ')';
-DIGIT: [0-9]+;
-WS: [ \r\n\t]+ -> skip;
+// Rules for the Swift language
+options {
+	tokenVocab = SwiftLexer;
+}
 
-// Rules
-l: e EOF;
+program: expr EOF;
 
-e: e '+' t # Sum | t # PassT;
-
-t: t '*' f # Mul | f # PassF;
-
-f: '(' e ')' # PassE | DIGIT # Digit;
+expr:
+	left = expr op = (Op_MUL | Op_DIV) right = expr			# Op
+	| left = expr op = (Op_PLUS | Op_MINUS) right = expr	# Op
+	| digit = INT											# Digit
+	| LPAREN expr RPAREN									# Paren;

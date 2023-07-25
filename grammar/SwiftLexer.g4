@@ -79,6 +79,7 @@ LBRACE: '{';
 RBRACE: '}';
 LBRACKET: '[';
 RBRACKET: ']';
+BACKSLASH: '\\';
 
 // Punctuation
 COMMA: ',';
