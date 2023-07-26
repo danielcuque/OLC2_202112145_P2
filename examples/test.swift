@@ -1,6 +1,3 @@
-var num = 10 
-
-var siteName:String
-siteName = "programiz.com"
-
-var id: Int
+1+2
+2+3
+4+5
