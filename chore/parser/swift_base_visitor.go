@@ -20,26 +20,42 @@ func (v *BaseSwiftVisitor) VisitStatement(ctx *StatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitDeclaration(ctx *DeclarationContext) interface{} {
+func (v *BaseSwiftVisitor) VisitAssignment(ctx *AssignmentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitData_type(ctx *Data_typeContext) interface{} {
+func (v *BaseSwiftVisitor) VisitIfstmt(ctx *IfstmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitOp(ctx *OpContext) interface{} {
+func (v *BaseSwiftVisitor) VisitWhilestmt(ctx *WhilestmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitDigit(ctx *DigitContext) interface{} {
+func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitId(ctx *IdContext) interface{} {
+func (v *BaseSwiftVisitor) VisitIdExpr(ctx *IdExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitParen(ctx *ParenContext) interface{} {
+func (v *BaseSwiftVisitor) VisitParExpr(ctx *ParExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitStrExpr(ctx *StrExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitNotExpr(ctx *NotExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitIntExpr(ctx *IntExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitOpExpr(ctx *OpExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

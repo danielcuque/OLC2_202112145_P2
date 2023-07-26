@@ -17,21 +17,33 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#statement.
 	VisitStatement(ctx *StatementContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#declaration.
-	VisitDeclaration(ctx *DeclarationContext) interface{}
+	// Visit a parse tree produced by SwiftParser#assignment.
+	VisitAssignment(ctx *AssignmentContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#data_type.
-	VisitData_type(ctx *Data_typeContext) interface{}
+	// Visit a parse tree produced by SwiftParser#ifstmt.
+	VisitIfstmt(ctx *IfstmtContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#Op.
-	VisitOp(ctx *OpContext) interface{}
+	// Visit a parse tree produced by SwiftParser#whilestmt.
+	VisitWhilestmt(ctx *WhilestmtContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#Digit.
-	VisitDigit(ctx *DigitContext) interface{}
+	// Visit a parse tree produced by SwiftParser#BoolExpr.
+	VisitBoolExpr(ctx *BoolExprContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#Id.
-	VisitId(ctx *IdContext) interface{}
+	// Visit a parse tree produced by SwiftParser#IdExpr.
+	VisitIdExpr(ctx *IdExprContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#Paren.
-	VisitParen(ctx *ParenContext) interface{}
+	// Visit a parse tree produced by SwiftParser#ParExpr.
+	VisitParExpr(ctx *ParExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#StrExpr.
+	VisitStrExpr(ctx *StrExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#NotExpr.
+	VisitNotExpr(ctx *NotExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#IntExpr.
+	VisitIntExpr(ctx *IntExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#OpExpr.
+	VisitOpExpr(ctx *OpExprContext) interface{}
 }

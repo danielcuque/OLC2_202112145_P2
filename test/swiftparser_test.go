@@ -1,26 +1,24 @@
 package test
 
 import (
-	"OLC2/chore/parser"
 	"testing"
+
+	I "OLC2/chore/interfaces"
+	"OLC2/chore/parser"
 
 	"github.com/antlr4-go/antlr/v4"
 )
 
-type Visitor struct {
-	parser.BaseSwiftVisitor
-}
-
 type testCasesParser struct {
 	input    string
-	expected string
+	expected interface{}
 }
 
 func TestParserArithmeticOperators(t *testing.T) {
 	testCases := []testCasesParser{
 		{
 			input:    "(1+2)*3+(3+2)",
-			expected: "14",
+			expected: 14,
 		},
 	}
 
@@ -32,17 +30,17 @@ func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 		input := testCase.input
 		expected := testCase.expected
 
-		inputStream := antlr.NewInputStream(input)
-		lexer := parser.NewSwiftLexer(inputStream)
-		tokens := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
-		p := parser.NewSwiftParser(tokens)
+		lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
+		stream := antlr.NewCommonTokenStream(lexer, 0)
+		p := parser.NewSwiftParser(stream)
 
+		p.BuildParseTrees = true
 		tree := p.Expr()
-		visitor := Visitor{}
-		result := visitor.Visit(tree)
+		eval := I.Visitor{}
+		result := eval.Visit(tree)
 
 		if result != expected {
-			t.Errorf("Expected %s, got %s", expected, result)
+			t.Errorf("Expected %f, got %f", expected, result)
 		}
 	}
 }
