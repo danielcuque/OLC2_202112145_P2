@@ -108,6 +108,7 @@ expr:
 	| left = expr op = (Op_GE | Op_GT) right = expr			# OpExpr
 	| left = expr op = (Op_LE | Op_LT) right = expr			# OpExpr
 	| left = expr op = (Op_EQ | Op_NEQ) right = expr		# OpExpr
+	| left = expr op = Op_MOD right = expr					# OpExpr
 	| left = expr Op_AND right = expr						# OpExpr
 	| left = expr Op_OR right = expr						# OpExpr
 	| LPAREN expr RPAREN									# ParExpr

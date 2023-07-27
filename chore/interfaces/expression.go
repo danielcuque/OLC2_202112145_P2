@@ -8,15 +8,6 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 )
 
-type Value struct {
-	value interface{}
-}
-
-type Visitor struct {
-	parser.SwiftVisitor
-	Memory map[string]Value
-}
-
 func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 	switch val := tree.(type) {
 	case *parser.ProgramContext:
@@ -55,7 +46,7 @@ func (v *Visitor) VisitBlock(ctx *parser.BlockContext) Value {
 	for i := 0; ctx.Statement(i) != nil; i++ {
 		v.Visit(ctx.Statement(i))
 	}
-	return Value{value: true}
+	return Value{ParseValue: true}
 }
 
 func (v *Visitor) VisitStmt(ctx *parser.StatementContext) Value {
@@ -68,41 +59,41 @@ func (v *Visitor) VisitStmt(ctx *parser.StatementContext) Value {
 	if ctx.Whilestmt() != nil {
 		return v.Visit(ctx.Whilestmt())
 	}
-	return Value{value: true}
+	return Value{ParseValue: true}
 }
 
 func (v *Visitor) VisitAssignstmt(ctx *parser.AssignmentContext) Value {
 	id := ctx.ID().GetText()
 	value := v.Visit(ctx.Expr())
 	v.Memory[id] = value
-	return Value{value: true}
+	return Value{ParseValue: true}
 }
 
 func (v *Visitor) VisitIfstmt(ctx *parser.IfstmtContext) Value {
-	value, ok := v.Visit(ctx.Expr()).value.(bool)
+	value, ok := v.Visit(ctx.Expr()).ParseValue.(bool)
 	if ok && value {
 		return v.Visit(ctx.Block())
 	}
-	return Value{value: false}
+	return Value{ParseValue: false}
 }
 
 func (v *Visitor) VisitWhilestmt(ctx *parser.WhilestmtContext) Value {
-	value, ok := v.Visit(ctx.Expr()).value.(bool)
+	value, ok := v.Visit(ctx.Expr()).ParseValue.(bool)
 	for ok && value {
 		v.Visit(ctx.Block())
-		value, ok = v.Visit(ctx.Expr()).value.(bool)
+		value, ok = v.Visit(ctx.Expr()).ParseValue.(bool)
 	}
-	return Value{value: true}
+	return Value{ParseValue: true}
 }
 
 func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) Value {
 	i, _ := strconv.ParseInt(ctx.GetText(), 10, 64)
-	return Value{value: i}
+	return Value{ParseValue: i}
 }
 
 func (v *Visitor) VisitStrExpr(ctx *parser.StrExprContext) Value {
 	value := strings.Trim(ctx.GetText(), "\"")
-	return Value{value: value}
+	return Value{ParseValue: value}
 }
 
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) Value {
@@ -117,28 +108,30 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) Value {
 
 func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) Value {
 	value, _ := strconv.ParseBool(ctx.GetText())
-	return Value{value: value}
+	return Value{ParseValue: value}
 }
 
 func (v *Visitor) VisitOpExpr(ctx *parser.OpExprContext) Value {
-	l := v.Visit(ctx.GetLeft()).value.(int64)
-	r := v.Visit(ctx.GetRight()).value.(int64)
+	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
+	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
 	op := ctx.GetOp().GetText()
 	switch op {
 	case "+":
-		return Value{value: l + r}
+		return Value{ParseValue: l + r}
 	case "-":
-		return Value{value: l - r}
+		return Value{ParseValue: l - r}
 	case "*":
-		return Value{value: l * r}
+		return Value{ParseValue: l * r}
 	case "/":
-		return Value{value: l / r}
+		return Value{ParseValue: l / r}
+	case "%":
+		return Value{ParseValue: l % r}
 	case "<":
 		if l < r {
-			return Value{value: true}
+			return Value{ParseValue: true}
 		} else {
-			return Value{value: false}
+			return Value{ParseValue: false}
 		}
 	}
-	return Value{value: false}
+	return Value{ParseValue: false}
 }

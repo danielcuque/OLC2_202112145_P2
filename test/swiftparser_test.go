@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	I "OLC2/chore/interfaces"
@@ -11,14 +12,27 @@ import (
 
 type testCasesParser struct {
 	input    string
-	expected interface{}
+	expected map[string]I.Value
 }
 
 func TestParserArithmeticOperators(t *testing.T) {
 	testCases := []testCasesParser{
 		{
-			input:    "(1+2)*3+(3+2)",
-			expected: 14,
+			input: `a = 5 + 5
+					b = 5 - 5
+					c = 5 * 5
+					d = 5 / 5
+					e = 5 % 5
+					f = e + 5
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 10},
+				"b": {ParseValue: 0},
+				"c": {ParseValue: 25},
+				"d": {ParseValue: 1},
+				"e": {ParseValue: 0},
+				"f": {ParseValue: 5},
+			},
 		},
 	}
 
@@ -35,12 +49,15 @@ func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 		p := parser.NewSwiftParser(stream)
 
 		p.BuildParseTrees = true
-		tree := p.Expr()
-		eval := I.Visitor{}
-		result := eval.Visit(tree)
+		tree := p.Program()
+		eval := I.Visitor{Memory: make(map[string]I.Value)}
+		eval.Visit(tree)
 
-		if result != expected {
-			t.Errorf("Expected %f, got %f", expected, result)
+		got := eval.Memory
+
+		if fmt.Sprint(got) != fmt.Sprint(expected) {
+			t.Errorf("Expected %v, got %v", expected, got)
 		}
+
 	}
 }

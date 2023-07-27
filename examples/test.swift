@@ -1,7 +1,6 @@
 a = true
 b = 0
-if (a) {
-	}
-	while (b < 5) {
-		b = b + 2
-	}
+
+while (b < 10) {
+	b = b + 1
+}
