@@ -5,9 +5,6 @@ import (
 	"testing"
 
 	I "OLC2/chore/interfaces"
-	"OLC2/chore/parser"
-
-	"github.com/antlr4-go/antlr/v4"
 )
 
 type testCasesParser struct {
@@ -89,19 +86,9 @@ func TestParserLogicalOperators(t *testing.T) {
 
 func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 	for _, testCase := range testCases {
-		input := testCase.input
 		expected := testCase.expected
 
-		lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
-		stream := antlr.NewCommonTokenStream(lexer, 0)
-		p := parser.NewSwiftParser(stream)
-
-		p.BuildParseTrees = true
-		tree := p.Program()
-		eval := I.Visitor{Memory: make(map[string]I.Value)}
-		eval.Visit(tree)
-
-		got := eval.Memory
+		got := I.NewEvaluator(testCase.input)
 
 		if fmt.Sprint(got) != fmt.Sprint(expected) {
 			t.Errorf("Expected %v, got %v", expected, got)

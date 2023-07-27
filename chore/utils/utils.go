@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -14,4 +16,15 @@ func ParseNumber(str string) interface{} {
 		i, _ := strconv.ParseInt(str, 10, 64)
 		return i
 	}
+}
+
+func ReadFile(filename string) string {
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	content, err := ioutil.ReadAll(file)
+	return string(content)
 }
