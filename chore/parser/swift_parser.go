@@ -38,8 +38,8 @@ func swiftParserInit() {
 		"'return'", "'do'", "'repeat'", "'in'", "'Int'", "'Double'", "'Bool'",
 		"'String'", "'nil'", "", "", "", "", "", "", "'->'", "'=='", "'!='",
 		"'<'", "'>'", "'<='", "'>='", "'='", "'*='", "'/='", "'+='", "'-='",
-		"'*'", "'/'", "'+'", "'-'", "'%'", "'&&'", "'||'", "'!'", "'('", "')'",
-		"'{'", "'}'", "'['", "']'", "'\\'", "','", "';'", "':'", "'.'",
+		"'%='", "'*'", "'/'", "'+'", "'-'", "'%'", "'&&'", "'||'", "'!'", "'('",
+		"')'", "'{'", "'}'", "'['", "']'", "'\\'", "','", "';'", "':'", "'.'",
 	}
 	staticData.SymbolicNames = []string{
 		"", "WHITESPACE", "COMMENT", "BLOCK_COMMENT", "Kw_LET", "Kw_VAR", "Kw_FUNC",
@@ -49,9 +49,10 @@ func swiftParserInit() {
 		"Kw_NIL", "INT", "DOUBLE", "BOOL", "STRING", "CHAR", "ID", "Op_ARROW",
 		"Op_EQ", "Op_NEQ", "Op_LT", "Op_GT", "Op_LE", "Op_GE", "Op_ASSIGN",
 		"Op_MUL_ASSIGN", "Op_DIV_ASSIGN", "Op_PLUS_ASSIGN", "Op_MINUS_ASSIGN",
-		"Op_MUL", "Op_DIV", "Op_PLUS", "Op_MINUS", "Op_MOD", "Op_AND", "Op_OR",
-		"Op_NOT", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET",
-		"BACKSLASH", "COMMA", "SEMICOLON", "COLON", "DOT",
+		"Op_MOD_ASSIGN", "Op_MUL", "Op_DIV", "Op_PLUS", "Op_MINUS", "Op_MOD",
+		"Op_AND", "Op_OR", "Op_NOT", "LPAREN", "RPAREN", "LBRACE", "RBRACE",
+		"LBRACKET", "RBRACKET", "BACKSLASH", "COMMA", "SEMICOLON", "COLON",
+		"DOT",
 	}
 	staticData.RuleNames = []string{
 		"program", "block", "statement", "assignment", "ifstmt", "whilestmt",
@@ -59,7 +60,7 @@ func swiftParserInit() {
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 62, 91, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 63, 91, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 1, 0, 1, 0, 1, 0, 1, 1, 5, 1, 19, 8, 1, 10,
 		1, 12, 1, 22, 9, 1, 1, 2, 1, 2, 1, 2, 3, 2, 27, 8, 2, 1, 3, 1, 3, 1, 3,
 		1, 3, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 5, 1, 5, 1, 5,
@@ -67,8 +68,8 @@ func swiftParserInit() {
 		1, 6, 1, 6, 1, 6, 1, 6, 3, 6, 60, 8, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1,
 		6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1,
 		6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 5, 6, 86, 8, 6, 10, 6, 12, 6, 89,
-		9, 6, 1, 6, 0, 1, 12, 7, 0, 2, 4, 6, 8, 10, 12, 0, 5, 1, 0, 44, 45, 1,
-		0, 46, 47, 2, 0, 36, 36, 38, 38, 2, 0, 35, 35, 37, 37, 1, 0, 33, 34, 99,
+		9, 6, 1, 6, 0, 1, 12, 7, 0, 2, 4, 6, 8, 10, 12, 0, 5, 1, 0, 45, 46, 1,
+		0, 47, 48, 2, 0, 36, 36, 38, 38, 2, 0, 35, 35, 37, 37, 1, 0, 33, 34, 99,
 		0, 14, 1, 0, 0, 0, 2, 20, 1, 0, 0, 0, 4, 26, 1, 0, 0, 0, 6, 28, 1, 0, 0,
 		0, 8, 32, 1, 0, 0, 0, 10, 40, 1, 0, 0, 0, 12, 59, 1, 0, 0, 0, 14, 15, 3,
 		2, 1, 0, 15, 16, 5, 0, 0, 1, 16, 1, 1, 0, 0, 0, 17, 19, 3, 4, 2, 0, 18,
@@ -77,12 +78,12 @@ func swiftParserInit() {
 		8, 4, 0, 25, 27, 3, 10, 5, 0, 26, 23, 1, 0, 0, 0, 26, 24, 1, 0, 0, 0, 26,
 		25, 1, 0, 0, 0, 27, 5, 1, 0, 0, 0, 28, 29, 5, 31, 0, 0, 29, 30, 5, 39,
 		0, 0, 30, 31, 3, 12, 6, 0, 31, 7, 1, 0, 0, 0, 32, 33, 5, 8, 0, 0, 33, 34,
-		5, 52, 0, 0, 34, 35, 3, 12, 6, 0, 35, 36, 5, 53, 0, 0, 36, 37, 5, 54, 0,
-		0, 37, 38, 3, 2, 1, 0, 38, 39, 5, 55, 0, 0, 39, 9, 1, 0, 0, 0, 40, 41,
-		5, 14, 0, 0, 41, 42, 5, 52, 0, 0, 42, 43, 3, 12, 6, 0, 43, 44, 5, 53, 0,
-		0, 44, 45, 5, 54, 0, 0, 45, 46, 3, 2, 1, 0, 46, 47, 5, 55, 0, 0, 47, 11,
-		1, 0, 0, 0, 48, 49, 6, 6, -1, 0, 49, 50, 5, 51, 0, 0, 50, 60, 3, 12, 6,
-		14, 51, 52, 5, 52, 0, 0, 52, 53, 3, 12, 6, 0, 53, 54, 5, 53, 0, 0, 54,
+		5, 53, 0, 0, 34, 35, 3, 12, 6, 0, 35, 36, 5, 54, 0, 0, 36, 37, 5, 55, 0,
+		0, 37, 38, 3, 2, 1, 0, 38, 39, 5, 56, 0, 0, 39, 9, 1, 0, 0, 0, 40, 41,
+		5, 14, 0, 0, 41, 42, 5, 53, 0, 0, 42, 43, 3, 12, 6, 0, 43, 44, 5, 54, 0,
+		0, 44, 45, 5, 55, 0, 0, 45, 46, 3, 2, 1, 0, 46, 47, 5, 56, 0, 0, 47, 11,
+		1, 0, 0, 0, 48, 49, 6, 6, -1, 0, 49, 50, 5, 52, 0, 0, 50, 60, 3, 12, 6,
+		14, 51, 52, 5, 53, 0, 0, 52, 53, 3, 12, 6, 0, 53, 54, 5, 54, 0, 0, 54,
 		60, 1, 0, 0, 0, 55, 60, 5, 26, 0, 0, 56, 60, 5, 31, 0, 0, 57, 60, 5, 29,
 		0, 0, 58, 60, 5, 28, 0, 0, 59, 48, 1, 0, 0, 0, 59, 51, 1, 0, 0, 0, 59,
 		55, 1, 0, 0, 0, 59, 56, 1, 0, 0, 0, 59, 57, 1, 0, 0, 0, 59, 58, 1, 0, 0,
@@ -91,8 +92,8 @@ func swiftParserInit() {
 		6, 13, 67, 68, 10, 11, 0, 0, 68, 69, 7, 2, 0, 0, 69, 86, 3, 12, 6, 12,
 		70, 71, 10, 10, 0, 0, 71, 72, 7, 3, 0, 0, 72, 86, 3, 12, 6, 11, 73, 74,
 		10, 9, 0, 0, 74, 75, 7, 4, 0, 0, 75, 86, 3, 12, 6, 10, 76, 77, 10, 8, 0,
-		0, 77, 78, 5, 48, 0, 0, 78, 86, 3, 12, 6, 9, 79, 80, 10, 7, 0, 0, 80, 81,
-		5, 49, 0, 0, 81, 86, 3, 12, 6, 8, 82, 83, 10, 6, 0, 0, 83, 84, 5, 50, 0,
+		0, 77, 78, 5, 49, 0, 0, 78, 86, 3, 12, 6, 9, 79, 80, 10, 7, 0, 0, 80, 81,
+		5, 50, 0, 0, 81, 86, 3, 12, 6, 8, 82, 83, 10, 6, 0, 0, 83, 84, 5, 51, 0,
 		0, 84, 86, 3, 12, 6, 7, 85, 61, 1, 0, 0, 0, 85, 64, 1, 0, 0, 0, 85, 67,
 		1, 0, 0, 0, 85, 70, 1, 0, 0, 0, 85, 73, 1, 0, 0, 0, 85, 76, 1, 0, 0, 0,
 		85, 79, 1, 0, 0, 0, 85, 82, 1, 0, 0, 0, 86, 89, 1, 0, 0, 0, 87, 85, 1,
@@ -179,25 +180,26 @@ const (
 	SwiftParserOp_DIV_ASSIGN   = 41
 	SwiftParserOp_PLUS_ASSIGN  = 42
 	SwiftParserOp_MINUS_ASSIGN = 43
-	SwiftParserOp_MUL          = 44
-	SwiftParserOp_DIV          = 45
-	SwiftParserOp_PLUS         = 46
-	SwiftParserOp_MINUS        = 47
-	SwiftParserOp_MOD          = 48
-	SwiftParserOp_AND          = 49
-	SwiftParserOp_OR           = 50
-	SwiftParserOp_NOT          = 51
-	SwiftParserLPAREN          = 52
-	SwiftParserRPAREN          = 53
-	SwiftParserLBRACE          = 54
-	SwiftParserRBRACE          = 55
-	SwiftParserLBRACKET        = 56
-	SwiftParserRBRACKET        = 57
-	SwiftParserBACKSLASH       = 58
-	SwiftParserCOMMA           = 59
-	SwiftParserSEMICOLON       = 60
-	SwiftParserCOLON           = 61
-	SwiftParserDOT             = 62
+	SwiftParserOp_MOD_ASSIGN   = 44
+	SwiftParserOp_MUL          = 45
+	SwiftParserOp_DIV          = 46
+	SwiftParserOp_PLUS         = 47
+	SwiftParserOp_MINUS        = 48
+	SwiftParserOp_MOD          = 49
+	SwiftParserOp_AND          = 50
+	SwiftParserOp_OR           = 51
+	SwiftParserOp_NOT          = 52
+	SwiftParserLPAREN          = 53
+	SwiftParserRPAREN          = 54
+	SwiftParserLBRACE          = 55
+	SwiftParserRBRACE          = 56
+	SwiftParserLBRACKET        = 57
+	SwiftParserRBRACKET        = 58
+	SwiftParserBACKSLASH       = 59
+	SwiftParserCOMMA           = 60
+	SwiftParserSEMICOLON       = 61
+	SwiftParserCOLON           = 62
+	SwiftParserDOT             = 63
 )
 
 // SwiftParser rules.

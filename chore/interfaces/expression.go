@@ -1,41 +1,55 @@
 package interfaces
 
 import (
-	"OLC2/chore/parser"
+	"reflect"
 	"strconv"
 	"strings"
+
+	"OLC2/chore/parser"
 
 	"github.com/antlr4-go/antlr/v4"
 )
 
 func (v *Visitor) Visit(tree antlr.ParseTree) Value {
-	switch val := tree.(type) {
-	case *parser.ProgramContext:
-		return v.VisitProg(val)
-	case *parser.BlockContext:
-		return v.VisitBlock(val)
-	case *parser.StatementContext:
-		return v.VisitStmt(val)
-	case *parser.AssignmentContext:
-		return v.VisitAssignstmt(val)
-	case *parser.IfstmtContext:
-		return v.VisitIfstmt(val)
-	case *parser.WhilestmtContext:
-		return v.VisitWhilestmt(val)
-	case *parser.OpExprContext:
-		return v.VisitOpExpr(val)
-	case *parser.IntExprContext:
-		return v.VisitIntExpr(val)
-	case *parser.IdExprContext:
-		return v.VisitIdExpr(val)
-	case *parser.StrExprContext:
-		return v.VisitStrExpr(val)
-	case *parser.BoolExprContext:
-		return v.VisitBoolExpr(val)
-	default:
-		panic("Unknown context " + val.GetText())
+
+	visitFuncs := map[reflect.Type]func(ctx antlr.ParseTree) Value{
+		reflect.TypeOf((*parser.ProgramContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitProg(ctx.(*parser.ProgramContext))
+		},
+		reflect.TypeOf((*parser.BlockContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitBlock(ctx.(*parser.BlockContext))
+		},
+		reflect.TypeOf((*parser.StatementContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitStmt(ctx.(*parser.StatementContext))
+		},
+		reflect.TypeOf((*parser.AssignmentContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitAssignstmt(ctx.(*parser.AssignmentContext))
+		},
+		reflect.TypeOf((*parser.IfstmtContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitIfstmt(ctx.(*parser.IfstmtContext))
+		},
+		reflect.TypeOf((*parser.WhilestmtContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitWhilestmt(ctx.(*parser.WhilestmtContext))
+		},
+		reflect.TypeOf((*parser.OpExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitOpExpr(ctx.(*parser.OpExprContext))
+		},
+		reflect.TypeOf((*parser.IntExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitIntExpr(ctx.(*parser.IntExprContext))
+		},
+		reflect.TypeOf((*parser.IdExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitIdExpr(ctx.(*parser.IdExprContext))
+		},
 	}
 
+	ctxType := reflect.TypeOf(tree)
+
+	if fn, ok := visitFuncs[ctxType]; ok {
+		return fn(tree)
+	}
+
+	// If the type is not found in the map we panic
+	panic("Unknown context " + ctxType.String())
 }
 
 func (v *Visitor) VisitProg(ctx *parser.ProgramContext) Value {
@@ -128,6 +142,54 @@ func (v *Visitor) VisitOpExpr(ctx *parser.OpExprContext) Value {
 		return Value{ParseValue: l % r}
 	case "<":
 		if l < r {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case ">":
+		if l > r {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case "<=":
+		if l <= r {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case ">=":
+		if l >= r {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case "==":
+		if l == r {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case "!=":
+		if l != r {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case "&&":
+		if l != 0 && r != 0 {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case "||":
+		if l != 0 || r != 0 {
+			return Value{ParseValue: true}
+		} else {
+			return Value{ParseValue: false}
+		}
+	case "!":
+		if r == 0 {
 			return Value{ParseValue: true}
 		} else {
 			return Value{ParseValue: false}

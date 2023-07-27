@@ -61,6 +61,7 @@ Op_MUL_ASSIGN: '*=';
 Op_DIV_ASSIGN: '/=';
 Op_PLUS_ASSIGN: '+=';
 Op_MINUS_ASSIGN: '-=';
+Op_MOD_ASSIGN: '%=';
 
 // Arithmetic operators
 Op_MUL: '*';

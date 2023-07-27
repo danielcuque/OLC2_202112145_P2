@@ -39,6 +39,30 @@ func TestParserArithmeticOperators(t *testing.T) {
 	TraverseParserCases(t, testCases)
 }
 
+func TestParserRelationalOperators(t *testing.T) {
+	testCases := []testCasesParser{
+		{
+			input: `a = 5 > 5
+					b = 5 < 5
+					c = 5 >= 5
+					d = 5 <= 5
+					e = 5 == 5
+					f = 5 != 5
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: false},
+				"b": {ParseValue: false},
+				"c": {ParseValue: true},
+				"d": {ParseValue: true},
+				"e": {ParseValue: true},
+				"f": {ParseValue: false},
+			},
+		},
+	}
+
+	TraverseParserCases(t, testCases)
+}
+
 func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 	for _, testCase := range testCases {
 		input := testCase.input
