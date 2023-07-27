@@ -3,6 +3,7 @@ package main
 import (
 	I "OLC2/chore/interfaces"
 	"OLC2/chore/parser"
+	"fmt"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -20,5 +21,7 @@ func main() {
 		Memory: make(map[string]I.Value),
 	}
 	eval.Visit(tree)
+
+	fmt.Println(eval.Memory)
 
 }

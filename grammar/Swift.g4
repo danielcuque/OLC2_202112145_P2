@@ -90,13 +90,18 @@ SEMICOLON: ';';
 COLON: ':';
 DOT: '.';
 
+data_type: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
+
 program: block EOF;
 
 block: (statement)*;
 
-statement: assignment | ifstmt | whilestmt;
+statement: assignment | declaration | ifstmt | whilestmt;
 
 assignment: ID Op_ASSIGN expr;
+
+declaration: (Kw_VAR | Kw_LET) ID (COLON data_type)?
+	| (Kw_VAR | Kw_LET) ID Op_ASSIGN expr;
 
 ifstmt: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 

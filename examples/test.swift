@@ -1,3 +1,4 @@
+let a: Bool
 a = true
 b = 0
 

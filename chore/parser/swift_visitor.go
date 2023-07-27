@@ -8,6 +8,9 @@ import "github.com/antlr4-go/antlr/v4"
 type SwiftVisitor interface {
 	antlr.ParseTreeVisitor
 
+	// Visit a parse tree produced by SwiftParser#data_type.
+	VisitData_type(ctx *Data_typeContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#program.
 	VisitProgram(ctx *ProgramContext) interface{}
 
@@ -19,6 +22,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#assignment.
 	VisitAssignment(ctx *AssignmentContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#declaration.
+	VisitDeclaration(ctx *DeclarationContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ifstmt.
 	VisitIfstmt(ctx *IfstmtContext) interface{}
