@@ -17,9 +17,7 @@ func main() {
 
 	p.BuildParseTrees = true
 	tree := p.Program()
-	eval := I.Visitor{
-		Memory: make(map[string]I.Value),
-	}
+	eval := I.NewVisitor()
 	eval.Visit(tree)
 
 	fmt.Println(eval.Memory)
