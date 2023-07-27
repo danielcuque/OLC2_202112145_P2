@@ -32,11 +32,17 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#whilestmt.
 	VisitWhilestmt(ctx *WhilestmtContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#DoubleExpr.
+	VisitDoubleExpr(ctx *DoubleExprContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#IdExpr.
 	VisitIdExpr(ctx *IdExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ArithmeticExpr.
+	VisitArithmeticExpr(ctx *ArithmeticExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ParExpr.
 	VisitParExpr(ctx *ParExprContext) interface{}
@@ -44,12 +50,18 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#StrExpr.
 	VisitStrExpr(ctx *StrExprContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#ComparasionExpr.
+	VisitComparasionExpr(ctx *ComparasionExprContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#NotExpr.
 	VisitNotExpr(ctx *NotExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#IntExpr.
 	VisitIntExpr(ctx *IntExprContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#OpExpr.
-	VisitOpExpr(ctx *OpExprContext) interface{}
+	// Visit a parse tree produced by SwiftParser#UnaryExpr.
+	VisitUnaryExpr(ctx *UnaryExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#LogicalExpr.
+	VisitLogicalExpr(ctx *LogicalExprContext) interface{}
 }

@@ -63,6 +63,30 @@ func TestParserRelationalOperators(t *testing.T) {
 	TraverseParserCases(t, testCases)
 }
 
+func TestParserLogicalOperators(t *testing.T) {
+	testCases := []testCasesParser{
+		{
+			input: `a = true && true
+					b = true && false
+					c = true || false
+					d = false || false
+					e = !true
+					f = !false
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: true},
+				"b": {ParseValue: false},
+				"c": {ParseValue: true},
+				"d": {ParseValue: false},
+				"e": {ParseValue: false},
+				"f": {ParseValue: true},
+			},
+		},
+	}
+
+	TraverseParserCases(t, testCases)
+}
+
 func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 	for _, testCase := range testCases {
 		input := testCase.input

@@ -7,22 +7,14 @@ import (
 	"OLC2/chore/parser"
 )
 
-func (v *Visitor) VisitStmt(ctx *parser.StatementContext) Value {
-	if ctx.Assignment() != nil {
-		return v.Visit(ctx.Assignment())
-	}
-	if ctx.Ifstmt() != nil {
-		return v.Visit(ctx.Ifstmt())
-	}
-	if ctx.Whilestmt() != nil {
-		return v.Visit(ctx.Whilestmt())
-	}
-	return Value{ParseValue: true}
-}
-
 func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) Value {
 	i, _ := strconv.ParseInt(ctx.GetText(), 10, 64)
 	return Value{ParseValue: i}
+}
+
+func (v *Visitor) VisitDoubleExpr(ctx *parser.DoubleExprContext) Value {
+	f, _ := strconv.ParseFloat(ctx.GetText(), 64)
+	return Value{ParseValue: f}
 }
 
 func (v *Visitor) VisitStrExpr(ctx *parser.StrExprContext) Value {
@@ -45,75 +37,67 @@ func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) Value {
 	return Value{ParseValue: value}
 }
 
-func (v *Visitor) VisitOpExpr(ctx *parser.OpExprContext) Value {
+func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
 	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
 	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
 	op := ctx.GetOp().GetText()
-	switch op {
-	case "+":
-		return Value{ParseValue: l + r}
-	case "-":
-		return Value{ParseValue: l - r}
-	case "*":
-		return Value{ParseValue: l * r}
-	case "/":
-		return Value{ParseValue: l / r}
-	case "%":
-		return Value{ParseValue: l % r}
-	case "<":
-		if l < r {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case ">":
-		if l > r {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case "<=":
-		if l <= r {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case ">=":
-		if l >= r {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case "==":
-		if l == r {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case "!=":
-		if l != r {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case "&&":
-		if l != 0 && r != 0 {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case "||":
-		if l != 0 || r != 0 {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
-	case "!":
-		if r == 0 {
-			return Value{ParseValue: true}
-		} else {
-			return Value{ParseValue: false}
-		}
+
+	operators := map[string]func(int64, int64) int64{
+		"+": func(a, b int64) int64 { return a + b },
+		"-": func(a, b int64) int64 { return a - b },
+		"*": func(a, b int64) int64 { return a * b },
+		"/": func(a, b int64) int64 { return a / b },
+		"%": func(a, b int64) int64 { return a % b },
 	}
+
+	if f, ok := operators[op]; ok {
+		return Value{ParseValue: f(l, r)}
+	}
+
 	return Value{ParseValue: false}
+}
+
+func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value {
+	// Parse left and right
+	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
+	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
+	op := ctx.GetOp().GetText()
+
+	operators := map[string]func(int64, int64) bool{
+		"<":  func(a, b int64) bool { return a < b },
+		">":  func(a, b int64) bool { return a > b },
+		"<=": func(a, b int64) bool { return a <= b },
+		">=": func(a, b int64) bool { return a >= b },
+		"==": func(a, b int64) bool { return a == b },
+		"!=": func(a, b int64) bool { return a != b },
+	}
+
+	if f, ok := operators[op]; ok {
+		return Value{ParseValue: f(l, r)}
+	}
+
+	return Value{ParseValue: false}
+}
+
+func (v *Visitor) VisitLogicalExp(ctx *parser.LogicalExprContext) Value {
+	l := v.Visit(ctx.GetLeft()).ParseValue.(bool)
+	r := v.Visit(ctx.GetRight()).ParseValue.(bool)
+	op := ctx.GetOp().GetText()
+
+	operators := map[string]func(bool, bool) bool{
+		"&&": func(a, b bool) bool { return a && b },
+		"||": func(a, b bool) bool { return a || b },
+	}
+
+	if f, ok := operators[op]; ok {
+		return Value{ParseValue: f(l, r)}
+	}
+
+	return Value{ParseValue: false}
+}
+
+// Not operator
+func (v *Visitor) VisitNotExp(ctx *parser.NotExprContext) Value {
+	value := v.Visit(ctx.GetRight()).ParseValue.(bool)
+	return Value{ParseValue: !value}
 }

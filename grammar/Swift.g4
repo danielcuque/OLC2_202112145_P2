@@ -108,17 +108,18 @@ ifstmt: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 whilestmt: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
 expr:
-	Op_NOT right = expr										# NotExpr
-	| left = expr op = (Op_MUL | Op_DIV) right = expr		# OpExpr
-	| left = expr op = (Op_PLUS | Op_MINUS) right = expr	# OpExpr
-	| left = expr op = (Op_GE | Op_GT) right = expr			# OpExpr
-	| left = expr op = (Op_LE | Op_LT) right = expr			# OpExpr
-	| left = expr op = (Op_EQ | Op_NEQ) right = expr		# OpExpr
-	| left = expr op = Op_MOD right = expr					# OpExpr
-	| left = expr Op_AND right = expr						# OpExpr
-	| left = expr Op_OR right = expr						# OpExpr
+	left = expr op = (Op_MUL | Op_DIV) right = expr			# ArithmeticExpr
+	| left = expr op = (Op_PLUS | Op_MINUS) right = expr	# ArithmeticExpr
+	| left = expr op = Op_MOD right = expr					# ArithmeticExpr
+	| left = expr op = (Op_GE | Op_GT) right = expr			# ComparasionExpr
+	| left = expr op = (Op_LE | Op_LT) right = expr			# ComparasionExpr
+	| left = expr op = (Op_EQ | Op_NEQ) right = expr		# ComparasionExpr
+	| left = expr op = (Op_AND | Op_OR) right = expr		# LogicalExpr
+	| Op_NOT right = expr									# NotExpr
+	| Op_MINUS expr											# UnaryExpr
 	| LPAREN expr RPAREN									# ParExpr
 	| INT													# IntExpr
 	| ID													# IdExpr
+	| DOUBLE												# DoubleExpr
 	| STRING												# StrExpr
 	| BOOL													# BoolExpr;
