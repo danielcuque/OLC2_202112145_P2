@@ -10,6 +10,7 @@ import (
 type testCasesParser struct {
 	input    string
 	expected map[string]I.Value
+	desc     string
 }
 
 func TestParserArithmeticOperators(t *testing.T) {
@@ -30,6 +31,74 @@ func TestParserArithmeticOperators(t *testing.T) {
 				"e": {ParseValue: 0},
 				"f": {ParseValue: 5},
 			},
+			desc: "Test arithmetic operators",
+		},
+		{
+			// Test precedence
+			input: `a = 5 + 5 * 5
+					b = 5 * 5 + 5
+					c = 5 * 5 / 5
+					d = 5 / 5 * 5
+					e = 5 + 5 / 5
+					f = 5 / 5 + 5
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 30},
+				"b": {ParseValue: 30},
+				"c": {ParseValue: 5},
+				"d": {ParseValue: 5},
+				"e": {ParseValue: 6},
+				"f": {ParseValue: 6},
+			},
+			desc: "Test arithmetic operators precedence",
+		},
+		{
+			// Test precedence with parenthesis
+			input: `a = (5 + 5) * 5
+					b = 5 * (5 + 5)
+					c = (5 * 5) / 5
+					d = 5 / (5 * 5)
+					e = (5 + 5) / 5
+					f = 5 / (5 + 5)
+					g = (a * b) / (c + d)
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 50},
+				"b": {ParseValue: 50},
+				"c": {ParseValue: 5},
+				"d": {ParseValue: 0},
+				"e": {ParseValue: 2},
+				"f": {ParseValue: 0},
+				"g": {ParseValue: 500},
+			},
+			desc: "Test arithmetic operators precedence with parenthesis",
+		},
+		{
+			// Test with unary operators
+			input: `a = -5 + 5
+					b = 5 + -5
+					c = -5 - 5
+					d = 5 - (-5)
+					e = -5 * 5
+					f = 5 * -5
+					g = -5 / 5
+					h = 5 / -5
+					i = -5 % 5
+					j = 5 % -5
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 0},
+				"b": {ParseValue: 0},
+				"c": {ParseValue: -10},
+				"d": {ParseValue: 10},
+				"e": {ParseValue: -25},
+				"f": {ParseValue: -25},
+				"g": {ParseValue: -1},
+				"h": {ParseValue: -1},
+				"i": {ParseValue: 0},
+				"j": {ParseValue: 0},
+			},
+			desc: "Test arithmetic operators with unary operators",
 		},
 	}
 
@@ -54,6 +123,7 @@ func TestParserRelationalOperators(t *testing.T) {
 				"e": {ParseValue: true},
 				"f": {ParseValue: false},
 			},
+			desc: "Test relational operators",
 		},
 	}
 
@@ -78,6 +148,7 @@ func TestParserLogicalOperators(t *testing.T) {
 				"e": {ParseValue: false},
 				"f": {ParseValue: true},
 			},
+			desc: "Test logical operators",
 		},
 	}
 
@@ -91,7 +162,7 @@ func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 		got := I.NewEvaluator(testCase.input)
 
 		if fmt.Sprint(got) != fmt.Sprint(expected) {
-			t.Errorf("Expected %v, got %v", expected, got)
+			t.Errorf("\nExpected: %v\nGot: %v \nAt: %s", expected, got, testCase.desc)
 		}
 
 	}

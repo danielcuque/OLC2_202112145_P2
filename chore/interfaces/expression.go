@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -37,27 +38,112 @@ func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) Value {
 	return Value{ParseValue: value}
 }
 
-func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
-	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
-	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
-	op := ctx.GetOp().GetText()
+func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) Value {
+	return v.Visit(ctx.Expr())
+}
 
-	operators := map[string]func(int64, int64) int64{
-		"+": func(a, b int64) int64 { return a + b },
-		"-": func(a, b int64) int64 { return a - b },
-		"*": func(a, b int64) int64 { return a * b },
-		"/": func(a, b int64) int64 { return a / b },
-		"%": func(a, b int64) int64 { return a % b },
+func (v *Visitor) VisitUnaryMinusExp(ctx *parser.UnaryExprContext) Value {
+	value := v.Visit(ctx.Expr()).ParseValue
+	if reflect.TypeOf(value).String() == reflect.TypeOf(int64(1)).String() {
+		return Value{ParseValue: -value.(int64)}
 	}
+	if reflect.TypeOf(value).String() == reflect.TypeOf(float64(1)).String() {
+		return Value{ParseValue: -value.(float64)}
+	}
+	panic("Unknown type")
+}
 
-	if f, ok := operators[op]; ok {
-		return Value{ParseValue: f(l, r)}
+func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
+	l := v.Visit(ctx.GetLeft()).ParseValue
+	r := v.Visit(ctx.GetRight()).ParseValue
+	op := ctx.GetOp().GetText()
+	return v.arithmeticOp(l, r, op)
+}
+
+func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
+	leftT := reflect.TypeOf(l).String()
+	rightT := reflect.TypeOf(r).String()
+
+	intT := reflect.TypeOf(int64(1)).String()
+	floatT := reflect.TypeOf(float64(1)).String()
+	stringT := reflect.TypeOf("").String()
+
+	switch op {
+	case "+":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) + r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) + r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) + float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) + r.(float64)}
+		}
+		if leftT == stringT && rightT == stringT {
+			return Value{ParseValue: l.(string) + r.(string)}
+		}
+	case "-":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) - r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) - r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) - float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) - r.(float64)}
+		}
+	case "*":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) * r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) * r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) * float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) * r.(float64)}
+		}
+	case "/":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) / r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) / r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) / float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) / r.(float64)}
+		}
+	case "%":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) % r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: int64(l.(float64)) % int64(r.(float64))}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: int64(l.(float64)) % r.(int64)}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: l.(int64) % int64(r.(float64))}
+		}
 	}
 
 	return Value{ParseValue: false}
 }
 
 func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value {
+
 	// Parse left and right
 	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
 	r := v.Visit(ctx.GetRight()).ParseValue.(int64)

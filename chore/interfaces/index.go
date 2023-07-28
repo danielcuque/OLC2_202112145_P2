@@ -42,14 +42,23 @@ func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 		reflect.TypeOf((*parser.ComparasionExprContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitComparasionExp(ctx.(*parser.ComparasionExprContext))
 		},
+		reflect.TypeOf((*parser.ParExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitParExpr(ctx.(*parser.ParExprContext))
+		},
 
 		reflect.TypeOf((*parser.NotExprContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitNotExp(ctx.(*parser.NotExprContext))
+		},
+		reflect.TypeOf((*parser.UnaryExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitUnaryMinusExp(ctx.(*parser.UnaryExprContext))
 		},
 
 		// Types
 		reflect.TypeOf((*parser.IntExprContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitIntExpr(ctx.(*parser.IntExprContext))
+		},
+		reflect.TypeOf((*parser.DoubleExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitDoubleExpr(ctx.(*parser.DoubleExprContext))
 		},
 		reflect.TypeOf((*parser.IdExprContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitIdExpr(ctx.(*parser.IdExprContext))

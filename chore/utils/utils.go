@@ -1,21 +1,25 @@
 package utils
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 	"strconv"
 	"strings"
 )
 
-// Parse strings to numbers (int or float)
+// Parse strings to numbers (int or float) if possible
 func ParseNumber(str string) interface{} {
 	if strings.Contains(str, ".") {
-		f, _ := strconv.ParseFloat(str, 64)
-		return f
+		if f, err := strconv.ParseFloat(str, 64); err == nil {
+			return f
+		}
 	} else {
-		i, _ := strconv.ParseInt(str, 10, 64)
-		return i
+		if i, err := strconv.ParseInt(str, 10, 64); err == nil {
+			return i
+		}
 	}
+
+	return str
 }
 
 func ReadFile(filename string) string {
@@ -25,6 +29,6 @@ func ReadFile(filename string) string {
 	}
 	defer file.Close()
 
-	content, err := ioutil.ReadAll(file)
+	content, _ := io.ReadAll(file)
 	return string(content)
 }
