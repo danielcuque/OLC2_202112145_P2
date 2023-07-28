@@ -207,6 +207,77 @@ func TestParserLogicalOperators(t *testing.T) {
 			},
 			desc: "Test logical operators",
 		},
+		{
+			// Test precedence
+			input: `a = true && true || false
+					b = true && false || false
+					c = true || false && false
+					d = false || false && false
+					e = !true && false
+					f = !false || true
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: true},
+				"b": {ParseValue: false},
+				"c": {ParseValue: true},
+				"d": {ParseValue: false},
+				"e": {ParseValue: false},
+				"f": {ParseValue: true},
+			},
+			desc: "Test logical operators precedence",
+		},
+		{
+			// Test precedence with parenthesis
+			input: `a = true && (true || false)
+					b = true && (false || false)
+					c = (true || false) && false
+					d = (false || false) && false
+					e = !(true && false)
+					f = !(false || true)
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: true},
+				"b": {ParseValue: false},
+				"c": {ParseValue: false},
+				"d": {ParseValue: false},
+				"e": {ParseValue: true},
+				"f": {ParseValue: false},
+			},
+			desc: "Test logical operators precedence with parenthesis",
+		},
+		{
+			// Test for ternary operator
+			input: `a = true ? 1 : 0
+					b = false ? 1 : 0
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 1},
+				"b": {ParseValue: 0},
+			},
+			desc: "Test ternary operator",
+		},
+		{
+			// Test for ternary operator precedence
+			input: `a = true ? 1 + 1 : 0
+					b = false ? 1 + 1 : 0
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 2},
+				"b": {ParseValue: 0},
+			},
+			desc: "Test ternary operator precedence",
+		},
+		{
+			// Test for ternary operator precedence with parenthesis
+			input: `a = (true && true) ? 1 + 1 : 0
+					b = (false || false) ? 1 + 1 : 0
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 2},
+				"b": {ParseValue: 0},
+			},
+			desc: "Test ternary operator precedence with parenthesis",
+		},
 	}
 
 	TraverseParserCases(t, testCases)

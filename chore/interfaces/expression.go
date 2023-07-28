@@ -242,6 +242,17 @@ func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value 
 	}
 
 	return Value{ParseValue: false}
+}
+
+// Logical operators
+
+func (v *Visitor) VisitTernaryExpr(ctx *parser.TernaryExprContext) Value {
+	cond := v.Visit(ctx.GetCondition()).ParseValue.(bool)
+	if cond {
+		return v.Visit(ctx.GetCTrue())
+	} else {
+		return v.Visit(ctx.GetCFalse())
+	}
 
 }
 
@@ -249,6 +260,8 @@ func (v *Visitor) VisitLogicalExp(ctx *parser.LogicalExprContext) Value {
 	l := v.Visit(ctx.GetLeft()).ParseValue.(bool)
 	r := v.Visit(ctx.GetRight()).ParseValue.(bool)
 	op := ctx.GetOp().GetText()
+
+	// Terinary operator is a special case
 
 	operators := map[string]func(bool, bool) bool{
 		"&&": func(a, b bool) bool { return a && b },

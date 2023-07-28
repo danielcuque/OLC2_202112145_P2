@@ -52,6 +52,9 @@ func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 		reflect.TypeOf((*parser.UnaryExprContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitUnaryMinusExp(ctx.(*parser.UnaryExprContext))
 		},
+		reflect.TypeOf((*parser.TernaryExprContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitTernaryExpr(ctx.(*parser.TernaryExprContext))
+		},
 
 		// Types
 		reflect.TypeOf((*parser.IntExprContext)(nil)): func(ctx antlr.ParseTree) Value {

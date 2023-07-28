@@ -74,6 +74,7 @@ Op_MOD: '%';
 Op_AND: '&&';
 Op_OR: '||';
 Op_NOT: '!';
+Op_TERNARY: '?';
 
 // Delimiters
 LPAREN: '(';
@@ -108,19 +109,20 @@ ifstmt: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 whilestmt: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
 expr:
-	Op_MINUS expr											# UnaryExpr
-	| left = expr op = (Op_MUL | Op_DIV) right = expr		# ArithmeticExpr
-	| left = expr op = (Op_PLUS | Op_MINUS) right = expr	# ArithmeticExpr
-	| left = expr op = Op_MOD right = expr					# ArithmeticExpr
-	| left = expr op = (Op_GE | Op_GT) right = expr			# ComparasionExpr
-	| left = expr op = (Op_LE | Op_LT) right = expr			# ComparasionExpr
-	| left = expr op = (Op_EQ | Op_NEQ) right = expr		# ComparasionExpr
-	| Op_NOT right = expr									# NotExpr
-	| left = expr op = Op_AND right = expr					# LogicalExpr
-	| left = expr op = Op_OR right = expr					# LogicalExpr
-	| LPAREN expr RPAREN									# ParExpr
-	| INT													# IntExpr
-	| ID													# IdExpr
-	| DOUBLE												# DoubleExpr
-	| STRING												# StrExpr
-	| BOOL													# BoolExpr;
+	Op_MINUS expr													# UnaryExpr
+	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
+	| left = expr op = (Op_PLUS | Op_MINUS) right = expr			# ArithmeticExpr
+	| left = expr op = Op_MOD right = expr							# ArithmeticExpr
+	| left = expr op = (Op_GE | Op_GT) right = expr					# ComparasionExpr
+	| left = expr op = (Op_LE | Op_LT) right = expr					# ComparasionExpr
+	| left = expr op = (Op_EQ | Op_NEQ) right = expr				# ComparasionExpr
+	| Op_NOT right = expr											# NotExpr
+	| condition = expr Op_TERNARY cTrue = expr COLON cFalse = expr	# TernaryExpr
+	| left = expr op = Op_AND right = expr							# LogicalExpr
+	| left = expr op = Op_OR right = expr							# LogicalExpr
+	| LPAREN expr RPAREN											# ParExpr
+	| INT															# IntExpr
+	| ID															# IdExpr
+	| DOUBLE														# DoubleExpr
+	| STRING														# StrExpr
+	| BOOL															# BoolExpr;

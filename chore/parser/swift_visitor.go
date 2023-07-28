@@ -64,4 +64,7 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#LogicalExpr.
 	VisitLogicalExpr(ctx *LogicalExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#TernaryExpr.
+	VisitTernaryExpr(ctx *TernaryExprContext) interface{}
 }
