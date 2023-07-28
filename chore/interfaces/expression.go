@@ -8,6 +8,10 @@ import (
 	"OLC2/chore/parser"
 )
 
+var intT = reflect.TypeOf(int64(1)).String()
+var floatT = reflect.TypeOf(float64(1)).String()
+var stringT = reflect.TypeOf("").String()
+
 func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) Value {
 	i, _ := strconv.ParseInt(ctx.GetText(), 10, 64)
 	return Value{ParseValue: i}
@@ -63,10 +67,6 @@ func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
 func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 	leftT := reflect.TypeOf(l).String()
 	rightT := reflect.TypeOf(r).String()
-
-	intT := reflect.TypeOf(int64(1)).String()
-	floatT := reflect.TypeOf(float64(1)).String()
-	stringT := reflect.TypeOf("").String()
 
 	switch op {
 	case "+":
@@ -145,24 +145,104 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value {
 
 	// Parse left and right
-	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
-	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
+	l := v.Visit(ctx.GetLeft()).ParseValue
+	r := v.Visit(ctx.GetRight()).ParseValue
 	op := ctx.GetOp().GetText()
 
-	operators := map[string]func(int64, int64) bool{
-		"<":  func(a, b int64) bool { return a < b },
-		">":  func(a, b int64) bool { return a > b },
-		"<=": func(a, b int64) bool { return a <= b },
-		">=": func(a, b int64) bool { return a >= b },
-		"==": func(a, b int64) bool { return a == b },
-		"!=": func(a, b int64) bool { return a != b },
-	}
+	// Get types
+	leftT := reflect.TypeOf(l).String()
+	rightT := reflect.TypeOf(r).String()
 
-	if f, ok := operators[op]; ok {
-		return Value{ParseValue: f(l, r)}
+	// Compare
+	switch op {
+	case "==":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) == r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) == r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) == float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) == r.(float64)}
+		}
+		if leftT == stringT && rightT == stringT {
+			return Value{ParseValue: l.(string) == r.(string)}
+		}
+	case "!=":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) != r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) != r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) != float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) != r.(float64)}
+		}
+		if leftT == stringT && rightT == stringT {
+			return Value{ParseValue: l.(string) != r.(string)}
+		}
+	case ">":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) > r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) > r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) > float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) > r.(float64)}
+		}
+	case "<":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) < r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) < r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) < float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) < r.(float64)}
+		}
+	case ">=":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) >= r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) >= r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) >= float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) >= r.(float64)}
+		}
+	case "<=":
+		if leftT == intT && rightT == intT {
+			return Value{ParseValue: l.(int64) <= r.(int64)}
+		}
+		if leftT == floatT && rightT == floatT {
+			return Value{ParseValue: l.(float64) <= r.(float64)}
+		}
+		if leftT == floatT && rightT == intT {
+			return Value{ParseValue: l.(float64) <= float64(r.(int64))}
+		}
+		if leftT == intT && rightT == floatT {
+			return Value{ParseValue: float64(l.(int64)) <= r.(float64)}
+		}
 	}
 
 	return Value{ParseValue: false}
+
 }
 
 func (v *Visitor) VisitLogicalExp(ctx *parser.LogicalExprContext) Value {

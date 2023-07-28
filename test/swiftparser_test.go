@@ -125,6 +125,63 @@ func TestParserRelationalOperators(t *testing.T) {
 			},
 			desc: "Test relational operators",
 		},
+		{
+			// Test precedence
+			input: `a = 5 > 5 + 5
+					b = 5 < 5 + 5
+					c = 5 >= 5 + 5
+					d = 5 <= 5 + 5
+					e = 5 == 5 + 5
+					f = 5 != 5 + 5
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: false},
+				"b": {ParseValue: true},
+				"c": {ParseValue: false},
+				"d": {ParseValue: true},
+				"e": {ParseValue: false},
+				"f": {ParseValue: true},
+			},
+			desc: "Test relational operators precedence",
+		},
+		{
+			// Test precedence with parenthesis
+			input: `a = 5 > (5 + 5)
+					b = 5 < (5 + 5)
+					c = 5 >= (5 + 5)
+					d = 5 <= (5 + 5)
+					e = 5 == (5 + 5)
+					f = 5 != (5 + 5)
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: false},
+				"b": {ParseValue: true},
+				"c": {ParseValue: false},
+				"d": {ParseValue: true},
+				"e": {ParseValue: false},
+				"f": {ParseValue: true},
+			},
+			desc: "Test relational operators precedence with parenthesis",
+		},
+		{
+			// Test with decimal numbers
+			input: `a = 5.5 > 5.5
+					b = 5.5 < 5.5
+					c = 5.5 >= 5.5
+					d = 5.5 <= 5.5
+					e = 5.5 == 5.5
+					f = 5.5 != 5.5
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: false},
+				"b": {ParseValue: false},
+				"c": {ParseValue: true},
+				"d": {ParseValue: true},
+				"e": {ParseValue: true},
+				"f": {ParseValue: false},
+			},
+			desc: "Test relational operators with decimal numbers",
+		},
 	}
 
 	TraverseParserCases(t, testCases)
