@@ -19,11 +19,11 @@ func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 		reflect.TypeOf((*parser.StatementContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitStmt(ctx.(*parser.StatementContext))
 		},
-		reflect.TypeOf((*parser.AssignmentContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitAssignstmt(ctx.(*parser.AssignmentContext))
+		reflect.TypeOf((*parser.Variable_assignmentContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitVariableAssign(ctx.(*parser.Variable_assignmentContext))
 		},
-		reflect.TypeOf((*parser.DeclarationContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitDecl(ctx.(*parser.DeclarationContext))
+		reflect.TypeOf((*parser.Variable_declarationContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitVarDeclaration(ctx.(*parser.Variable_declarationContext))
 		},
 		reflect.TypeOf((*parser.IfstmtContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitIfstmt(ctx.(*parser.IfstmtContext))

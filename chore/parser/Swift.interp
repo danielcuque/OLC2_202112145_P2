@@ -137,8 +137,8 @@ data_type
 program
 block
 statement
-assignment
-declaration
+variable_assignment
+variable_declaration
 ifstmt
 whilestmt
 expr

@@ -56,8 +56,8 @@ func swiftParserInit() {
 		"COLON", "DOT",
 	}
 	staticData.RuleNames = []string{
-		"data_type", "program", "block", "statement", "assignment", "declaration",
-		"ifstmt", "whilestmt", "expr",
+		"data_type", "program", "block", "statement", "variable_assignment",
+		"variable_declaration", "ifstmt", "whilestmt", "expr",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
@@ -219,15 +219,15 @@ const (
 
 // SwiftParser rules.
 const (
-	SwiftParserRULE_data_type   = 0
-	SwiftParserRULE_program     = 1
-	SwiftParserRULE_block       = 2
-	SwiftParserRULE_statement   = 3
-	SwiftParserRULE_assignment  = 4
-	SwiftParserRULE_declaration = 5
-	SwiftParserRULE_ifstmt      = 6
-	SwiftParserRULE_whilestmt   = 7
-	SwiftParserRULE_expr        = 8
+	SwiftParserRULE_data_type            = 0
+	SwiftParserRULE_program              = 1
+	SwiftParserRULE_block                = 2
+	SwiftParserRULE_statement            = 3
+	SwiftParserRULE_variable_assignment  = 4
+	SwiftParserRULE_variable_declaration = 5
+	SwiftParserRULE_ifstmt               = 6
+	SwiftParserRULE_whilestmt            = 7
+	SwiftParserRULE_expr                 = 8
 )
 
 // IData_typeContext is an interface to support dynamic dispatch.
@@ -618,8 +618,8 @@ type IStatementContext interface {
 	GetParser() antlr.Parser
 
 	// Getter signatures
-	Assignment() IAssignmentContext
-	Declaration() IDeclarationContext
+	Variable_assignment() IVariable_assignmentContext
+	Variable_declaration() IVariable_declarationContext
 	Ifstmt() IIfstmtContext
 	Whilestmt() IWhilestmtContext
 
@@ -659,10 +659,10 @@ func NewStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *StatementContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *StatementContext) Assignment() IAssignmentContext {
+func (s *StatementContext) Variable_assignment() IVariable_assignmentContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IAssignmentContext); ok {
+		if _, ok := ctx.(IVariable_assignmentContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -672,13 +672,13 @@ func (s *StatementContext) Assignment() IAssignmentContext {
 		return nil
 	}
 
-	return t.(IAssignmentContext)
+	return t.(IVariable_assignmentContext)
 }
 
-func (s *StatementContext) Declaration() IDeclarationContext {
+func (s *StatementContext) Variable_declaration() IVariable_declarationContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IDeclarationContext); ok {
+		if _, ok := ctx.(IVariable_declarationContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -688,7 +688,7 @@ func (s *StatementContext) Declaration() IDeclarationContext {
 		return nil
 	}
 
-	return t.(IDeclarationContext)
+	return t.(IVariable_declarationContext)
 }
 
 func (s *StatementContext) Ifstmt() IIfstmtContext {
@@ -755,14 +755,14 @@ func (p *SwiftParser) Statement() (localctx IStatementContext) {
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(29)
-			p.Assignment()
+			p.Variable_assignment()
 		}
 
 	case SwiftParserKw_LET, SwiftParserKw_VAR:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(30)
-			p.Declaration()
+			p.Variable_declaration()
 		}
 
 	case SwiftParserKw_IF:
@@ -797,8 +797,8 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// IAssignmentContext is an interface to support dynamic dispatch.
-type IAssignmentContext interface {
+// IVariable_assignmentContext is an interface to support dynamic dispatch.
+type IVariable_assignmentContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
@@ -809,51 +809,51 @@ type IAssignmentContext interface {
 	Op_ASSIGN() antlr.TerminalNode
 	Expr() IExprContext
 
-	// IsAssignmentContext differentiates from other interfaces.
-	IsAssignmentContext()
+	// IsVariable_assignmentContext differentiates from other interfaces.
+	IsVariable_assignmentContext()
 }
 
-type AssignmentContext struct {
+type Variable_assignmentContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyAssignmentContext() *AssignmentContext {
-	var p = new(AssignmentContext)
+func NewEmptyVariable_assignmentContext() *Variable_assignmentContext {
+	var p = new(Variable_assignmentContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = SwiftParserRULE_assignment
+	p.RuleIndex = SwiftParserRULE_variable_assignment
 	return p
 }
 
-func InitEmptyAssignmentContext(p *AssignmentContext) {
+func InitEmptyVariable_assignmentContext(p *Variable_assignmentContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = SwiftParserRULE_assignment
+	p.RuleIndex = SwiftParserRULE_variable_assignment
 }
 
-func (*AssignmentContext) IsAssignmentContext() {}
+func (*Variable_assignmentContext) IsVariable_assignmentContext() {}
 
-func NewAssignmentContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *AssignmentContext {
-	var p = new(AssignmentContext)
+func NewVariable_assignmentContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Variable_assignmentContext {
+	var p = new(Variable_assignmentContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = SwiftParserRULE_assignment
+	p.RuleIndex = SwiftParserRULE_variable_assignment
 
 	return p
 }
 
-func (s *AssignmentContext) GetParser() antlr.Parser { return s.parser }
+func (s *Variable_assignmentContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *AssignmentContext) ID() antlr.TerminalNode {
+func (s *Variable_assignmentContext) ID() antlr.TerminalNode {
 	return s.GetToken(SwiftParserID, 0)
 }
 
-func (s *AssignmentContext) Op_ASSIGN() antlr.TerminalNode {
+func (s *Variable_assignmentContext) Op_ASSIGN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserOp_ASSIGN, 0)
 }
 
-func (s *AssignmentContext) Expr() IExprContext {
+func (s *Variable_assignmentContext) Expr() IExprContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IExprContext); ok {
@@ -869,27 +869,27 @@ func (s *AssignmentContext) Expr() IExprContext {
 	return t.(IExprContext)
 }
 
-func (s *AssignmentContext) GetRuleContext() antlr.RuleContext {
+func (s *Variable_assignmentContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *AssignmentContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *Variable_assignmentContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *AssignmentContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *Variable_assignmentContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case SwiftVisitor:
-		return t.VisitAssignment(s)
+		return t.VisitVariable_assignment(s)
 
 	default:
 		return t.VisitChildren(s)
 	}
 }
 
-func (p *SwiftParser) Assignment() (localctx IAssignmentContext) {
-	localctx = NewAssignmentContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 8, SwiftParserRULE_assignment)
+func (p *SwiftParser) Variable_assignment() (localctx IVariable_assignmentContext) {
+	localctx = NewVariable_assignmentContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 8, SwiftParserRULE_variable_assignment)
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(35)
@@ -925,8 +925,8 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// IDeclarationContext is an interface to support dynamic dispatch.
-type IDeclarationContext interface {
+// IVariable_declarationContext is an interface to support dynamic dispatch.
+type IVariable_declarationContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
@@ -941,59 +941,59 @@ type IDeclarationContext interface {
 	Op_ASSIGN() antlr.TerminalNode
 	Expr() IExprContext
 
-	// IsDeclarationContext differentiates from other interfaces.
-	IsDeclarationContext()
+	// IsVariable_declarationContext differentiates from other interfaces.
+	IsVariable_declarationContext()
 }
 
-type DeclarationContext struct {
+type Variable_declarationContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyDeclarationContext() *DeclarationContext {
-	var p = new(DeclarationContext)
+func NewEmptyVariable_declarationContext() *Variable_declarationContext {
+	var p = new(Variable_declarationContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = SwiftParserRULE_declaration
+	p.RuleIndex = SwiftParserRULE_variable_declaration
 	return p
 }
 
-func InitEmptyDeclarationContext(p *DeclarationContext) {
+func InitEmptyVariable_declarationContext(p *Variable_declarationContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = SwiftParserRULE_declaration
+	p.RuleIndex = SwiftParserRULE_variable_declaration
 }
 
-func (*DeclarationContext) IsDeclarationContext() {}
+func (*Variable_declarationContext) IsVariable_declarationContext() {}
 
-func NewDeclarationContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *DeclarationContext {
-	var p = new(DeclarationContext)
+func NewVariable_declarationContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Variable_declarationContext {
+	var p = new(Variable_declarationContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = SwiftParserRULE_declaration
+	p.RuleIndex = SwiftParserRULE_variable_declaration
 
 	return p
 }
 
-func (s *DeclarationContext) GetParser() antlr.Parser { return s.parser }
+func (s *Variable_declarationContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *DeclarationContext) ID() antlr.TerminalNode {
+func (s *Variable_declarationContext) ID() antlr.TerminalNode {
 	return s.GetToken(SwiftParserID, 0)
 }
 
-func (s *DeclarationContext) Kw_VAR() antlr.TerminalNode {
+func (s *Variable_declarationContext) Kw_VAR() antlr.TerminalNode {
 	return s.GetToken(SwiftParserKw_VAR, 0)
 }
 
-func (s *DeclarationContext) Kw_LET() antlr.TerminalNode {
+func (s *Variable_declarationContext) Kw_LET() antlr.TerminalNode {
 	return s.GetToken(SwiftParserKw_LET, 0)
 }
 
-func (s *DeclarationContext) COLON() antlr.TerminalNode {
+func (s *Variable_declarationContext) COLON() antlr.TerminalNode {
 	return s.GetToken(SwiftParserCOLON, 0)
 }
 
-func (s *DeclarationContext) Data_type() IData_typeContext {
+func (s *Variable_declarationContext) Data_type() IData_typeContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IData_typeContext); ok {
@@ -1009,11 +1009,11 @@ func (s *DeclarationContext) Data_type() IData_typeContext {
 	return t.(IData_typeContext)
 }
 
-func (s *DeclarationContext) Op_ASSIGN() antlr.TerminalNode {
+func (s *Variable_declarationContext) Op_ASSIGN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserOp_ASSIGN, 0)
 }
 
-func (s *DeclarationContext) Expr() IExprContext {
+func (s *Variable_declarationContext) Expr() IExprContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IExprContext); ok {
@@ -1029,27 +1029,27 @@ func (s *DeclarationContext) Expr() IExprContext {
 	return t.(IExprContext)
 }
 
-func (s *DeclarationContext) GetRuleContext() antlr.RuleContext {
+func (s *Variable_declarationContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *DeclarationContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *Variable_declarationContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *DeclarationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *Variable_declarationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case SwiftVisitor:
-		return t.VisitDeclaration(s)
+		return t.VisitVariable_declaration(s)
 
 	default:
 		return t.VisitChildren(s)
 	}
 }
 
-func (p *SwiftParser) Declaration() (localctx IDeclarationContext) {
-	localctx = NewDeclarationContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 10, SwiftParserRULE_declaration)
+func (p *SwiftParser) Variable_declaration() (localctx IVariable_declarationContext) {
+	localctx = NewVariable_declarationContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 10, SwiftParserRULE_variable_declaration)
 	var _la int
 
 	p.SetState(49)

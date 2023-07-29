@@ -20,11 +20,11 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#statement.
 	VisitStatement(ctx *StatementContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#assignment.
-	VisitAssignment(ctx *AssignmentContext) interface{}
+	// Visit a parse tree produced by SwiftParser#variable_assignment.
+	VisitVariable_assignment(ctx *Variable_assignmentContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#declaration.
-	VisitDeclaration(ctx *DeclarationContext) interface{}
+	// Visit a parse tree produced by SwiftParser#variable_declaration.
+	VisitVariable_declaration(ctx *Variable_declarationContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ifstmt.
 	VisitIfstmt(ctx *IfstmtContext) interface{}

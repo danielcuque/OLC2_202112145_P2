@@ -33,7 +33,7 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) Value {
 	if ok {
 		return value
 	} else {
-		panic("no such variable: " + id)
+		return Value{ParseValue: nil}
 	}
 }
 

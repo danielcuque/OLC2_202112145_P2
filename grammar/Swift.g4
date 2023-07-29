@@ -97,11 +97,15 @@ program: block EOF;
 
 block: (statement)*;
 
-statement: assignment | declaration | ifstmt | whilestmt;
+statement:
+	variable_assignment
+	| variable_declaration
+	| ifstmt
+	| whilestmt;
 
-assignment: ID Op_ASSIGN expr;
+variable_assignment: ID Op_ASSIGN expr;
 
-declaration: (Kw_VAR | Kw_LET) ID (COLON data_type)?
+variable_declaration: (Kw_VAR | Kw_LET) ID (COLON data_type)?
 	| (Kw_VAR | Kw_LET) ID Op_ASSIGN expr;
 
 ifstmt: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;

@@ -24,11 +24,11 @@ func (v *BaseSwiftVisitor) VisitStatement(ctx *StatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitAssignment(ctx *AssignmentContext) interface{} {
+func (v *BaseSwiftVisitor) VisitVariable_assignment(ctx *Variable_assignmentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitDeclaration(ctx *DeclarationContext) interface{} {
+func (v *BaseSwiftVisitor) VisitVariable_declaration(ctx *Variable_declarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
