@@ -3,14 +3,17 @@ package interfaces
 import "OLC2/chore/parser"
 
 func (v *Visitor) VisitStmt(ctx *parser.StatementContext) Value {
-	if ctx.Variable_assignment() != nil {
-		return v.Visit(ctx.Variable_assignment())
+	if ctx.VariableAssignment() != nil {
+		return v.Visit(ctx.VariableAssignment())
 	}
-	if ctx.Ifstmt() != nil {
-		return v.Visit(ctx.Ifstmt())
+	if ctx.IfStatement() != nil {
+		return v.Visit(ctx.IfStatement())
 	}
-	if ctx.Whilestmt() != nil {
-		return v.Visit(ctx.Whilestmt())
+	if ctx.WhiteStatement() != nil {
+		return v.Visit(ctx.WhiteStatement())
+	}
+	if ctx.VariableDeclaration() != nil {
+		return v.Visit(ctx.VariableDeclaration())
 	}
 	return Value{ParseValue: true}
 }

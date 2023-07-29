@@ -396,6 +396,17 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerRPAREN,
 			},
 		},
+		{
+			input: `
+			let a = true
+			`,
+			expectedTokens: []int{
+				parser.SwiftLexerKw_LET,
+				parser.SwiftLexerID,
+				parser.SwiftLexerOp_ASSIGN,
+				parser.SwiftLexerBOOL,
+			},
+		},
 	}
 
 	TraverseCases(t, testCases)

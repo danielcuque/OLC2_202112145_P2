@@ -8,10 +8,6 @@ type BaseSwiftVisitor struct {
 	*antlr.BaseParseTreeVisitor
 }
 
-func (v *BaseSwiftVisitor) VisitData_type(ctx *Data_typeContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseSwiftVisitor) VisitProgram(ctx *ProgramContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -24,19 +20,19 @@ func (v *BaseSwiftVisitor) VisitStatement(ctx *StatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitVariable_assignment(ctx *Variable_assignmentContext) interface{} {
+func (v *BaseSwiftVisitor) VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitVariable_declaration(ctx *Variable_declarationContext) interface{} {
+func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitIfstmt(ctx *IfstmtContext) interface{} {
+func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitWhilestmt(ctx *WhilestmtContext) interface{} {
+func (v *BaseSwiftVisitor) VisitWhiteStatement(ctx *WhiteStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

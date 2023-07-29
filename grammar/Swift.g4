@@ -91,26 +91,23 @@ SEMICOLON: ';';
 COLON: ':';
 DOT: '.';
 
-data_type: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
-
 program: block EOF;
 
 block: (statement)*;
 
 statement:
-	variable_assignment
-	| variable_declaration
-	| ifstmt
-	| whilestmt;
+	variableAssignment
+	| variableDeclaration
+	| ifStatement
+	| whiteStatement;
 
-variable_assignment: ID Op_ASSIGN expr;
+variableDeclaration: Kw_LET ID Op_ASSIGN expr;
 
-variable_declaration: (Kw_VAR | Kw_LET) ID (COLON data_type)?
-	| (Kw_VAR | Kw_LET) ID Op_ASSIGN expr;
+variableAssignment: ID Op_ASSIGN expr;
 
-ifstmt: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
+ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 
-whilestmt: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
+whiteStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
 expr:
 	Op_MINUS expr													# UnaryExpr

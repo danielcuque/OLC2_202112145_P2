@@ -19,17 +19,17 @@ func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 		reflect.TypeOf((*parser.StatementContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitStmt(ctx.(*parser.StatementContext))
 		},
-		reflect.TypeOf((*parser.Variable_assignmentContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitVariableAssign(ctx.(*parser.Variable_assignmentContext))
+		reflect.TypeOf((*parser.VariableAssignmentContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitVariableAssign(ctx.(*parser.VariableAssignmentContext))
 		},
-		reflect.TypeOf((*parser.Variable_declarationContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitVarDeclaration(ctx.(*parser.Variable_declarationContext))
+		reflect.TypeOf((*parser.VariableDeclarationContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitVariableDeclaration(ctx.(*parser.VariableDeclarationContext))
 		},
-		reflect.TypeOf((*parser.IfstmtContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitIfstmt(ctx.(*parser.IfstmtContext))
+		reflect.TypeOf((*parser.IfStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitIfstmt(ctx.(*parser.IfStatementContext))
 		},
-		reflect.TypeOf((*parser.WhilestmtContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitWhilestmt(ctx.(*parser.WhilestmtContext))
+		reflect.TypeOf((*parser.WhiteStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitWhilestmt(ctx.(*parser.WhiteStatementContext))
 		},
 
 		// Expressions
@@ -75,6 +75,8 @@ func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 	}
 
 	ctxType := reflect.TypeOf(tree)
+
+	// fmt.Println(ctxType)
 
 	if fn, ok := visitFuncs[ctxType]; ok {
 		return fn(tree)
