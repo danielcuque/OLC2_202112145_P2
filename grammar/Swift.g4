@@ -99,15 +99,22 @@ statement:
 	variableAssignment
 	| variableDeclaration
 	| ifStatement
-	| whiteStatement;
+	| whiteStatement
+	| forStatement;
 
-variableDeclaration: Kw_LET ID Op_ASSIGN expr;
+variableType: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
+
+variableCase: (Kw_LET | Kw_VAR);
+
+variableDeclaration: variableCase ID Op_ASSIGN expr;
 
 variableAssignment: ID Op_ASSIGN expr;
 
 ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 
 whiteStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
+
+forStatement: Kw_FOR LPAREN expr RPAREN LBRACE block RBRACE;
 
 expr:
 	Op_MINUS expr													# UnaryExpr

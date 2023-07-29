@@ -280,3 +280,8 @@ func (v *Visitor) VisitNotExp(ctx *parser.NotExprContext) Value {
 	value := v.Visit(ctx.GetRight()).ParseValue.(bool)
 	return Value{ParseValue: !value}
 }
+
+func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) Value {
+	// Get the for loop variables
+	return Value{ParseValue: false}
+}

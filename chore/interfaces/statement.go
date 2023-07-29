@@ -15,5 +15,8 @@ func (v *Visitor) VisitStmt(ctx *parser.StatementContext) Value {
 	if ctx.VariableDeclaration() != nil {
 		return v.Visit(ctx.VariableDeclaration())
 	}
+	if ctx.ForStatement() != nil {
+		return v.Visit(ctx.ForStatement())
+	}
 	return Value{ParseValue: true}
 }

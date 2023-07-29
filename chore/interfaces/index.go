@@ -31,6 +31,9 @@ func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 		reflect.TypeOf((*parser.WhiteStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
 			return v.VisitWhilestmt(ctx.(*parser.WhiteStatementContext))
 		},
+		reflect.TypeOf((*parser.ForStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
+			return v.VisitForStatement(ctx.(*parser.ForStatementContext))
+		},
 
 		// Expressions
 		reflect.TypeOf((*parser.ArithmeticExprContext)(nil)): func(ctx antlr.ParseTree) Value {

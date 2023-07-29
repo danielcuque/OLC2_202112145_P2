@@ -20,6 +20,14 @@ func (v *BaseSwiftVisitor) VisitStatement(ctx *StatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitVariableType(ctx *VariableTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVariableCase(ctx *VariableCaseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -33,6 +41,10 @@ func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{}
 }
 
 func (v *BaseSwiftVisitor) VisitWhiteStatement(ctx *WhiteStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -17,6 +17,12 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#statement.
 	VisitStatement(ctx *StatementContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#variableType.
+	VisitVariableType(ctx *VariableTypeContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#variableCase.
+	VisitVariableCase(ctx *VariableCaseContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#variableDeclaration.
 	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
 
@@ -28,6 +34,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#whiteStatement.
 	VisitWhiteStatement(ctx *WhiteStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#forStatement.
+	VisitForStatement(ctx *ForStatementContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#DoubleExpr.
 	VisitDoubleExpr(ctx *DoubleExprContext) interface{}

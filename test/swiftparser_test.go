@@ -283,6 +283,25 @@ func TestParserLogicalOperators(t *testing.T) {
 	TraverseParserCases(t, testCases)
 }
 
+func TestParserVariableDeclaration(t *testing.T) {
+	testCases := []testCasesParser{
+		{
+			input: `let a = 5
+					let b = 10
+					let c = 15
+			`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 5},
+				"b": {ParseValue: 10},
+				"c": {ParseValue: 15},
+			},
+			desc: "Test variable declaration",
+		},
+	}
+
+	TraverseParserCases(t, testCases)
+}
+
 func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 	for _, testCase := range testCases {
 		expected := testCase.expected
