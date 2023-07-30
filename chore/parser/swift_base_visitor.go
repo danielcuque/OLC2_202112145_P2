@@ -48,15 +48,23 @@ func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitDoubleExpr(ctx *DoubleExprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BaseSwiftVisitor) VisitIdExpr(ctx *IdExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitRangeExpr(ctx *RangeExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitDoubleExpr(ctx *DoubleExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -81,10 +89,6 @@ func (v *BaseSwiftVisitor) VisitNotExpr(ctx *NotExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitIntExpr(ctx *IntExprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

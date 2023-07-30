@@ -281,7 +281,22 @@ func (v *Visitor) VisitNotExp(ctx *parser.NotExprContext) Value {
 	return Value{ParseValue: !value}
 }
 
-func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) Value {
-	// Get the for loop variables
-	return Value{ParseValue: false}
+// Range operator
+
+func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) Value {
+	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
+	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
+
+	if l > r {
+		v.NewError("Left value is greater than right value")
+		return Value{}
+	}
+
+	newVal := make([]int64, r-l+1)
+
+	for i := l; i <= r; i++ {
+		newVal[i-l] = i
+	}
+
+	return Value{ParseValue: newVal}
 }

@@ -297,6 +297,46 @@ func TestParserVariableDeclaration(t *testing.T) {
 			},
 			desc: "Test variable declaration",
 		},
+		{
+			input: `let a = 5; let b = 10; let c = 15`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 5},
+				"b": {ParseValue: 10},
+				"c": {ParseValue: 15},
+			},
+			desc: "Test variable declaration with semicolon",
+		},
+	}
+
+	TraverseParserCases(t, testCases)
+}
+
+func TestParserRangeExpression(t *testing.T) {
+	testCases := []testCasesParser{
+		{
+			input: `let a = 1...5
+					let b = 4...5
+					let c = 6...10
+					`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: []int{1, 2, 3, 4, 5}},
+				"b": {ParseValue: []int{4, 5}},
+				"c": {ParseValue: []int{6, 7, 8, 9, 10}},
+			},
+			desc: "Test range expression",
+		},
+		{
+			input: `let a = 12
+					let b = 14
+					let c = a...b
+					`,
+			expected: map[string]I.Value{
+				"a": {ParseValue: 12},
+				"b": {ParseValue: 14},
+				"c": {ParseValue: []int{12, 13, 14}},
+			},
+			desc: "Test range expression",
+		},
 	}
 
 	TraverseParserCases(t, testCases)

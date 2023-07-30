@@ -34,6 +34,9 @@ Kw_BOOL: 'Bool';
 Kw_STRING: 'String';
 Kw_NIL: 'nil';
 
+// Range expressions
+Kw_RANGE: '...';
+
 // Literals
 INT: [0-9]+;
 DOUBLE: [0-9]* '.' [0-9]+;
@@ -106,7 +109,8 @@ variableType: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
 
 variableCase: (Kw_LET | Kw_VAR);
 
-variableDeclaration: variableCase ID Op_ASSIGN expr;
+variableDeclaration:
+	variableCase ID Op_ASSIGN expr (SEMICOLON)?;
 
 variableAssignment: ID Op_ASSIGN expr;
 
@@ -114,7 +118,7 @@ ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 
 whiteStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
-forStatement: Kw_FOR LPAREN expr RPAREN LBRACE block RBRACE;
+forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
 
 expr:
 	Op_MINUS expr													# UnaryExpr
@@ -128,6 +132,7 @@ expr:
 	| condition = expr Op_TERNARY cTrue = expr COLON cFalse = expr	# TernaryExpr
 	| left = expr op = Op_AND right = expr							# LogicalExpr
 	| left = expr op = Op_OR right = expr							# LogicalExpr
+	| left = expr Kw_RANGE right = expr								# RangeExpr
 	| LPAREN expr RPAREN											# ParExpr
 	| INT															# IntExpr
 	| ID															# IdExpr

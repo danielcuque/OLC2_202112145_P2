@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	"fmt"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -34,4 +35,8 @@ func NewEvaluator(input string) map[string]Value {
 	eval.Visit(tree)
 
 	return eval.Memory
+}
+
+func (v *Visitor) NewError(msg string) {
+	v.Error = append(v.Error, fmt.Errorf(msg))
 }
