@@ -1,15 +1,12 @@
 package interfaces
 
 import (
-	"OLC2/chore/parser"
 	"fmt"
+
+	"OLC2/chore/parser"
 
 	"github.com/antlr4-go/antlr/v4"
 )
-
-type Value struct {
-	ParseValue interface{}
-}
 
 type Visitor struct {
 	parser.SwiftVisitor
