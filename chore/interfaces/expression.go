@@ -85,6 +85,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 		if leftT == stringT && rightT == stringT {
 			return Value{ParseValue: l.(string) + r.(string)}
 		}
+		v.NewError("Error: No se puede sumar " + leftT + " con " + rightT)
 	case "-":
 		if leftT == intT && rightT == intT {
 			return Value{ParseValue: l.(int64) - r.(int64)}
@@ -98,6 +99,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 		if leftT == intT && rightT == floatT {
 			return Value{ParseValue: float64(l.(int64)) - r.(float64)}
 		}
+		v.NewError("Error: No se puede restar " + leftT + " con " + rightT)
 	case "*":
 		if leftT == intT && rightT == intT {
 			return Value{ParseValue: l.(int64) * r.(int64)}
@@ -111,6 +113,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 		if leftT == intT && rightT == floatT {
 			return Value{ParseValue: float64(l.(int64)) * r.(float64)}
 		}
+		v.NewError("Error: No se puede multiplicar " + leftT + " con " + rightT)
 	case "/":
 		if leftT == intT && rightT == intT {
 			return Value{ParseValue: l.(int64) / r.(int64)}
@@ -124,6 +127,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 		if leftT == intT && rightT == floatT {
 			return Value{ParseValue: float64(l.(int64)) / r.(float64)}
 		}
+		v.NewError("Error: No se puede dividir " + leftT + " con " + rightT)
 	case "%":
 		if leftT == intT && rightT == intT {
 			return Value{ParseValue: l.(int64) % r.(int64)}
@@ -137,9 +141,10 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 		if leftT == intT && rightT == floatT {
 			return Value{ParseValue: l.(int64) % int64(r.(float64))}
 		}
+		v.NewError("Error: No se puede modular " + leftT + " con " + rightT)
 	}
 
-	return Value{ParseValue: false}
+	return Value{ParseValue: nil}
 }
 
 func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value {
