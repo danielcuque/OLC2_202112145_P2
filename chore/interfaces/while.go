@@ -2,7 +2,7 @@ package interfaces
 
 import "OLC2/chore/parser"
 
-func (v *Visitor) VisitWhilestmt(ctx *parser.WhiteStatementContext) Value {
+func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) Value {
 	value, ok := v.Visit(ctx.Expr()).ParseValue.(bool)
 	for ok && value {
 		v.Visit(ctx.Block())

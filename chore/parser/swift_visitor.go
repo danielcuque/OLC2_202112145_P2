@@ -32,8 +32,8 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#ifStatement.
 	VisitIfStatement(ctx *IfStatementContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#whiteStatement.
-	VisitWhiteStatement(ctx *WhiteStatementContext) interface{}
+	// Visit a parse tree produced by SwiftParser#whileStatement.
+	VisitWhileStatement(ctx *WhileStatementContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#forStatement.
 	VisitForStatement(ctx *ForStatementContext) interface{}

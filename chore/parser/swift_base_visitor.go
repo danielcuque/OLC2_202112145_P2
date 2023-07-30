@@ -40,7 +40,7 @@ func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{}
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitWhiteStatement(ctx *WhiteStatementContext) interface{} {
+func (v *BaseSwiftVisitor) VisitWhileStatement(ctx *WhileStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

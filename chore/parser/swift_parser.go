@@ -57,7 +57,7 @@ func swiftParserInit() {
 	}
 	staticData.RuleNames = []string{
 		"program", "block", "statement", "variableType", "variableCase", "variableDeclaration",
-		"variableAssignment", "ifStatement", "whiteStatement", "forStatement",
+		"variableAssignment", "ifStatement", "whileStatement", "forStatement",
 		"expr",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
@@ -235,7 +235,7 @@ const (
 	SwiftParserRULE_variableDeclaration = 5
 	SwiftParserRULE_variableAssignment  = 6
 	SwiftParserRULE_ifStatement         = 7
-	SwiftParserRULE_whiteStatement      = 8
+	SwiftParserRULE_whileStatement      = 8
 	SwiftParserRULE_forStatement        = 9
 	SwiftParserRULE_expr                = 10
 )
@@ -512,7 +512,7 @@ type IStatementContext interface {
 	VariableAssignment() IVariableAssignmentContext
 	VariableDeclaration() IVariableDeclarationContext
 	IfStatement() IIfStatementContext
-	WhiteStatement() IWhiteStatementContext
+	WhileStatement() IWhileStatementContext
 	ForStatement() IForStatementContext
 
 	// IsStatementContext differentiates from other interfaces.
@@ -599,10 +599,10 @@ func (s *StatementContext) IfStatement() IIfStatementContext {
 	return t.(IIfStatementContext)
 }
 
-func (s *StatementContext) WhiteStatement() IWhiteStatementContext {
+func (s *StatementContext) WhileStatement() IWhileStatementContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IWhiteStatementContext); ok {
+		if _, ok := ctx.(IWhileStatementContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -612,7 +612,7 @@ func (s *StatementContext) WhiteStatement() IWhiteStatementContext {
 		return nil
 	}
 
-	return t.(IWhiteStatementContext)
+	return t.(IWhileStatementContext)
 }
 
 func (s *StatementContext) ForStatement() IForStatementContext {
@@ -684,7 +684,7 @@ func (p *SwiftParser) Statement() (localctx IStatementContext) {
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(34)
-			p.WhiteStatement()
+			p.WhileStatement()
 		}
 
 	case SwiftParserKw_FOR:
@@ -1425,8 +1425,8 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// IWhiteStatementContext is an interface to support dynamic dispatch.
-type IWhiteStatementContext interface {
+// IWhileStatementContext is an interface to support dynamic dispatch.
+type IWhileStatementContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
@@ -1441,51 +1441,51 @@ type IWhiteStatementContext interface {
 	Block() IBlockContext
 	RBRACE() antlr.TerminalNode
 
-	// IsWhiteStatementContext differentiates from other interfaces.
-	IsWhiteStatementContext()
+	// IsWhileStatementContext differentiates from other interfaces.
+	IsWhileStatementContext()
 }
 
-type WhiteStatementContext struct {
+type WhileStatementContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyWhiteStatementContext() *WhiteStatementContext {
-	var p = new(WhiteStatementContext)
+func NewEmptyWhileStatementContext() *WhileStatementContext {
+	var p = new(WhileStatementContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = SwiftParserRULE_whiteStatement
+	p.RuleIndex = SwiftParserRULE_whileStatement
 	return p
 }
 
-func InitEmptyWhiteStatementContext(p *WhiteStatementContext) {
+func InitEmptyWhileStatementContext(p *WhileStatementContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = SwiftParserRULE_whiteStatement
+	p.RuleIndex = SwiftParserRULE_whileStatement
 }
 
-func (*WhiteStatementContext) IsWhiteStatementContext() {}
+func (*WhileStatementContext) IsWhileStatementContext() {}
 
-func NewWhiteStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *WhiteStatementContext {
-	var p = new(WhiteStatementContext)
+func NewWhileStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *WhileStatementContext {
+	var p = new(WhileStatementContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = SwiftParserRULE_whiteStatement
+	p.RuleIndex = SwiftParserRULE_whileStatement
 
 	return p
 }
 
-func (s *WhiteStatementContext) GetParser() antlr.Parser { return s.parser }
+func (s *WhileStatementContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *WhiteStatementContext) Kw_WHILE() antlr.TerminalNode {
+func (s *WhileStatementContext) Kw_WHILE() antlr.TerminalNode {
 	return s.GetToken(SwiftParserKw_WHILE, 0)
 }
 
-func (s *WhiteStatementContext) LPAREN() antlr.TerminalNode {
+func (s *WhileStatementContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserLPAREN, 0)
 }
 
-func (s *WhiteStatementContext) Expr() IExprContext {
+func (s *WhileStatementContext) Expr() IExprContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IExprContext); ok {
@@ -1501,15 +1501,15 @@ func (s *WhiteStatementContext) Expr() IExprContext {
 	return t.(IExprContext)
 }
 
-func (s *WhiteStatementContext) RPAREN() antlr.TerminalNode {
+func (s *WhileStatementContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserRPAREN, 0)
 }
 
-func (s *WhiteStatementContext) LBRACE() antlr.TerminalNode {
+func (s *WhileStatementContext) LBRACE() antlr.TerminalNode {
 	return s.GetToken(SwiftParserLBRACE, 0)
 }
 
-func (s *WhiteStatementContext) Block() IBlockContext {
+func (s *WhileStatementContext) Block() IBlockContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IBlockContext); ok {
@@ -1525,31 +1525,31 @@ func (s *WhiteStatementContext) Block() IBlockContext {
 	return t.(IBlockContext)
 }
 
-func (s *WhiteStatementContext) RBRACE() antlr.TerminalNode {
+func (s *WhileStatementContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(SwiftParserRBRACE, 0)
 }
 
-func (s *WhiteStatementContext) GetRuleContext() antlr.RuleContext {
+func (s *WhileStatementContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *WhiteStatementContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *WhileStatementContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *WhiteStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *WhileStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case SwiftVisitor:
-		return t.VisitWhiteStatement(s)
+		return t.VisitWhileStatement(s)
 
 	default:
 		return t.VisitChildren(s)
 	}
 }
 
-func (p *SwiftParser) WhiteStatement() (localctx IWhiteStatementContext) {
-	localctx = NewWhiteStatementContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, SwiftParserRULE_whiteStatement)
+func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
+	localctx = NewWhileStatementContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 16, SwiftParserRULE_whileStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(61)

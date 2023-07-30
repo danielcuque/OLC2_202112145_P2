@@ -102,7 +102,7 @@ statement:
 	variableAssignment
 	| variableDeclaration
 	| ifStatement
-	| whiteStatement
+	| whileStatement
 	| forStatement;
 
 variableType: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
@@ -116,7 +116,7 @@ variableAssignment: ID Op_ASSIGN expr;
 
 ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 
-whiteStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
+whileStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
 forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
 

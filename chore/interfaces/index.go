@@ -9,87 +9,56 @@ import (
 
 func (v *Visitor) Visit(tree antlr.ParseTree) Value {
 
-	visitFuncs := map[reflect.Type]func(ctx antlr.ParseTree) Value{
-		reflect.TypeOf((*parser.ProgramContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitProg(ctx.(*parser.ProgramContext))
-		},
-		reflect.TypeOf((*parser.BlockContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitBlock(ctx.(*parser.BlockContext))
-		},
-		reflect.TypeOf((*parser.StatementContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitStmt(ctx.(*parser.StatementContext))
-		},
-		reflect.TypeOf((*parser.VariableAssignmentContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitVariableAssign(ctx.(*parser.VariableAssignmentContext))
-		},
-		reflect.TypeOf((*parser.VariableDeclarationContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitVariableDeclaration(ctx.(*parser.VariableDeclarationContext))
-		},
-		reflect.TypeOf((*parser.IfStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitIfstmt(ctx.(*parser.IfStatementContext))
-		},
-		reflect.TypeOf((*parser.WhiteStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitWhilestmt(ctx.(*parser.WhiteStatementContext))
-		},
-		reflect.TypeOf((*parser.ForStatementContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitForStatement(ctx.(*parser.ForStatementContext))
-		},
+	switch val := tree.(type) {
+	case *parser.ProgramContext:
+		return v.VisitProg(val)
+	case *parser.BlockContext:
+		return v.VisitBlock(val)
+	case *parser.StatementContext:
+		return v.VisitStatement(val)
+	case *parser.VariableDeclarationContext:
+		return v.VisitVariableDeclaration(val)
+	case *parser.VariableAssignmentContext:
+		return v.VisitVariableAssignment(val)
+	case *parser.IfStatementContext:
+		return v.VisitIfStatement(val)
+	case *parser.WhileStatementContext:
+		return v.VisitWhileStatement(val)
+	case *parser.ForStatementContext:
+		return v.VisitForStatement(val)
 
-		// Expressions
-		reflect.TypeOf((*parser.ArithmeticExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitArithmeticExp(ctx.(*parser.ArithmeticExprContext))
-		},
-		reflect.TypeOf((*parser.LogicalExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitLogicalExp(ctx.(*parser.LogicalExprContext))
-		},
-		reflect.TypeOf((*parser.ComparasionExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitComparasionExp(ctx.(*parser.ComparasionExprContext))
-		},
-		reflect.TypeOf((*parser.ParExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitParExpr(ctx.(*parser.ParExprContext))
-		},
+	// Expressions
+	case *parser.ArithmeticExprContext:
+		return v.VisitArithmeticExp(val)
+	case *parser.LogicalExprContext:
+		return v.VisitLogicalExp(val)
+	case *parser.ComparasionExprContext:
+		return v.VisitComparasionExp(val)
+	case *parser.ParExprContext:
+		return v.VisitParExpr(val)
+	case *parser.NotExprContext:
+		return v.VisitNotExp(val)
+	case *parser.UnaryExprContext:
+		return v.VisitUnaryMinusExp(val)
+	case *parser.TernaryExprContext:
+		return v.VisitTernaryExpr(val)
+	case *parser.RangeExprContext:
+		return v.VisitRangeExpr(val)
 
-		reflect.TypeOf((*parser.NotExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitNotExp(ctx.(*parser.NotExprContext))
-		},
-		reflect.TypeOf((*parser.UnaryExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitUnaryMinusExp(ctx.(*parser.UnaryExprContext))
-		},
-		reflect.TypeOf((*parser.TernaryExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitTernaryExpr(ctx.(*parser.TernaryExprContext))
-		},
-		reflect.TypeOf((*parser.RangeExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitRangeExpr(ctx.(*parser.RangeExprContext))
-		},
-
-		// Types
-		reflect.TypeOf((*parser.IntExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitIntExpr(ctx.(*parser.IntExprContext))
-		},
-		reflect.TypeOf((*parser.DoubleExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitDoubleExpr(ctx.(*parser.DoubleExprContext))
-		},
-		reflect.TypeOf((*parser.IdExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitIdExpr(ctx.(*parser.IdExprContext))
-		},
-		reflect.TypeOf((*parser.StrExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitStrExpr(ctx.(*parser.StrExprContext))
-		},
-		reflect.TypeOf((*parser.BoolExprContext)(nil)): func(ctx antlr.ParseTree) Value {
-			return v.VisitBoolExpr(ctx.(*parser.BoolExprContext))
-		},
+	// Types
+	case *parser.IntExprContext:
+		return v.VisitIntExpr(val)
+	case *parser.DoubleExprContext:
+		return v.VisitDoubleExpr(val)
+	case *parser.StrExprContext:
+		return v.VisitStrExpr(val)
+	case *parser.IdExprContext:
+		return v.VisitIdExpr(val)
+	case *parser.BoolExprContext:
+		return v.VisitBoolExpr(val)
 	}
 
-	ctxType := reflect.TypeOf(tree)
-
-	// fmt.Println(ctxType)
-
-	if fn, ok := visitFuncs[ctxType]; ok {
-		return fn(tree)
-	}
-
-	// If the type is not found in the map we panic
-	panic("Unknown context " + ctxType.String())
+	panic("Unknown type" + reflect.TypeOf(tree).String())
 }
 
 func (v *Visitor) VisitProg(ctx *parser.ProgramContext) Value {
