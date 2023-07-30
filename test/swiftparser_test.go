@@ -7,9 +7,14 @@ import (
 	I "OLC2/chore/interfaces"
 )
 
+type expectedValue struct {
+	values map[string]I.Value
+	errors []error
+}
+
 type testCasesParser struct {
 	input    string
-	expected map[string]I.Value
+	expected expectedValue
 	desc     string
 }
 
@@ -23,13 +28,16 @@ func TestParserArithmeticOperators(t *testing.T) {
 					e = 5 % 5
 					f = e + 5
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 10},
-				"b": {ParseValue: 0},
-				"c": {ParseValue: 25},
-				"d": {ParseValue: 1},
-				"e": {ParseValue: 0},
-				"f": {ParseValue: 5},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 10},
+					"b": {ParseValue: 0},
+					"c": {ParseValue: 25},
+					"d": {ParseValue: 1},
+					"e": {ParseValue: 0},
+					"f": {ParseValue: 5},
+				},
+				[]error{},
 			},
 			desc: "Test arithmetic operators",
 		},
@@ -42,13 +50,16 @@ func TestParserArithmeticOperators(t *testing.T) {
 					e = 5 + 5 / 5
 					f = 5 / 5 + 5
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 30},
-				"b": {ParseValue: 30},
-				"c": {ParseValue: 5},
-				"d": {ParseValue: 5},
-				"e": {ParseValue: 6},
-				"f": {ParseValue: 6},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 30},
+					"b": {ParseValue: 30},
+					"c": {ParseValue: 5},
+					"d": {ParseValue: 5},
+					"e": {ParseValue: 6},
+					"f": {ParseValue: 6},
+				},
+				[]error{},
 			},
 			desc: "Test arithmetic operators precedence",
 		},
@@ -62,14 +73,17 @@ func TestParserArithmeticOperators(t *testing.T) {
 					f = 5 / (5 + 5)
 					g = (a * b) / (c + d)
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 50},
-				"b": {ParseValue: 50},
-				"c": {ParseValue: 5},
-				"d": {ParseValue: 0},
-				"e": {ParseValue: 2},
-				"f": {ParseValue: 0},
-				"g": {ParseValue: 500},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 50},
+					"b": {ParseValue: 50},
+					"c": {ParseValue: 5},
+					"d": {ParseValue: 0},
+					"e": {ParseValue: 2},
+					"f": {ParseValue: 0},
+					"g": {ParseValue: 500},
+				},
+				[]error{},
 			},
 			desc: "Test arithmetic operators precedence with parenthesis",
 		},
@@ -86,17 +100,20 @@ func TestParserArithmeticOperators(t *testing.T) {
 					i = -5 % 5
 					j = 5 % -5
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 0},
-				"b": {ParseValue: 0},
-				"c": {ParseValue: -10},
-				"d": {ParseValue: 10},
-				"e": {ParseValue: -25},
-				"f": {ParseValue: -25},
-				"g": {ParseValue: -1},
-				"h": {ParseValue: -1},
-				"i": {ParseValue: 0},
-				"j": {ParseValue: 0},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 0},
+					"b": {ParseValue: 0},
+					"c": {ParseValue: -10},
+					"d": {ParseValue: 10},
+					"e": {ParseValue: -25},
+					"f": {ParseValue: -25},
+					"g": {ParseValue: -1},
+					"h": {ParseValue: -1},
+					"i": {ParseValue: 0},
+					"j": {ParseValue: 0},
+				},
+				[]error{},
 			},
 			desc: "Test arithmetic operators with unary operators",
 		},
@@ -115,13 +132,16 @@ func TestParserRelationalOperators(t *testing.T) {
 					e = 5 == 5
 					f = 5 != 5
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: false},
-				"b": {ParseValue: false},
-				"c": {ParseValue: true},
-				"d": {ParseValue: true},
-				"e": {ParseValue: true},
-				"f": {ParseValue: false},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: false},
+					"b": {ParseValue: false},
+					"c": {ParseValue: true},
+					"d": {ParseValue: true},
+					"e": {ParseValue: true},
+					"f": {ParseValue: false},
+				},
+				[]error{},
 			},
 			desc: "Test relational operators",
 		},
@@ -134,13 +154,16 @@ func TestParserRelationalOperators(t *testing.T) {
 					e = 5 == 5 + 5
 					f = 5 != 5 + 5
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: false},
-				"b": {ParseValue: true},
-				"c": {ParseValue: false},
-				"d": {ParseValue: true},
-				"e": {ParseValue: false},
-				"f": {ParseValue: true},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: false},
+					"b": {ParseValue: true},
+					"c": {ParseValue: false},
+					"d": {ParseValue: true},
+					"e": {ParseValue: false},
+					"f": {ParseValue: true},
+				},
+				[]error{},
 			},
 			desc: "Test relational operators precedence",
 		},
@@ -153,13 +176,16 @@ func TestParserRelationalOperators(t *testing.T) {
 					e = 5 == (5 + 5)
 					f = 5 != (5 + 5)
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: false},
-				"b": {ParseValue: true},
-				"c": {ParseValue: false},
-				"d": {ParseValue: true},
-				"e": {ParseValue: false},
-				"f": {ParseValue: true},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: false},
+					"b": {ParseValue: true},
+					"c": {ParseValue: false},
+					"d": {ParseValue: true},
+					"e": {ParseValue: false},
+					"f": {ParseValue: true},
+				},
+				[]error{},
 			},
 			desc: "Test relational operators precedence with parenthesis",
 		},
@@ -172,13 +198,16 @@ func TestParserRelationalOperators(t *testing.T) {
 					e = 5.5 == 5.5
 					f = 5.5 != 5.5
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: false},
-				"b": {ParseValue: false},
-				"c": {ParseValue: true},
-				"d": {ParseValue: true},
-				"e": {ParseValue: true},
-				"f": {ParseValue: false},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: false},
+					"b": {ParseValue: false},
+					"c": {ParseValue: true},
+					"d": {ParseValue: true},
+					"e": {ParseValue: true},
+					"f": {ParseValue: false},
+				},
+				[]error{},
 			},
 			desc: "Test relational operators with decimal numbers",
 		},
@@ -197,13 +226,16 @@ func TestParserLogicalOperators(t *testing.T) {
 					e = !true
 					f = !false
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: true},
-				"b": {ParseValue: false},
-				"c": {ParseValue: true},
-				"d": {ParseValue: false},
-				"e": {ParseValue: false},
-				"f": {ParseValue: true},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: true},
+					"b": {ParseValue: false},
+					"c": {ParseValue: true},
+					"d": {ParseValue: false},
+					"e": {ParseValue: false},
+					"f": {ParseValue: true},
+				},
+				[]error{},
 			},
 			desc: "Test logical operators",
 		},
@@ -216,13 +248,16 @@ func TestParserLogicalOperators(t *testing.T) {
 					e = !true && false
 					f = !false || true
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: true},
-				"b": {ParseValue: false},
-				"c": {ParseValue: true},
-				"d": {ParseValue: false},
-				"e": {ParseValue: false},
-				"f": {ParseValue: true},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: true},
+					"b": {ParseValue: false},
+					"c": {ParseValue: true},
+					"d": {ParseValue: false},
+					"e": {ParseValue: false},
+					"f": {ParseValue: true},
+				},
+				[]error{},
 			},
 			desc: "Test logical operators precedence",
 		},
@@ -235,13 +270,16 @@ func TestParserLogicalOperators(t *testing.T) {
 					e = !(true && false)
 					f = !(false || true)
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: true},
-				"b": {ParseValue: false},
-				"c": {ParseValue: false},
-				"d": {ParseValue: false},
-				"e": {ParseValue: true},
-				"f": {ParseValue: false},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: true},
+					"b": {ParseValue: false},
+					"c": {ParseValue: false},
+					"d": {ParseValue: false},
+					"e": {ParseValue: true},
+					"f": {ParseValue: false},
+				},
+				[]error{},
 			},
 			desc: "Test logical operators precedence with parenthesis",
 		},
@@ -250,9 +288,12 @@ func TestParserLogicalOperators(t *testing.T) {
 			input: `a = true ? 1 : 0
 					b = false ? 1 : 0
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 1},
-				"b": {ParseValue: 0},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 1},
+					"b": {ParseValue: 0},
+				},
+				[]error{},
 			},
 			desc: "Test ternary operator",
 		},
@@ -261,9 +302,12 @@ func TestParserLogicalOperators(t *testing.T) {
 			input: `a = true ? 1 + 1 : 0
 					b = false ? 1 + 1 : 0
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 2},
-				"b": {ParseValue: 0},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 2},
+					"b": {ParseValue: 0},
+				},
+				[]error{},
 			},
 			desc: "Test ternary operator precedence",
 		},
@@ -272,9 +316,12 @@ func TestParserLogicalOperators(t *testing.T) {
 			input: `a = (true && true) ? 1 + 1 : 0
 					b = (false || false) ? 1 + 1 : 0
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 2},
-				"b": {ParseValue: 0},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 2},
+					"b": {ParseValue: 0},
+				},
+				[]error{},
 			},
 			desc: "Test ternary operator precedence with parenthesis",
 		},
@@ -290,19 +337,25 @@ func TestParserVariableDeclaration(t *testing.T) {
 					let b = 10
 					let c = 15
 			`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 5},
-				"b": {ParseValue: 10},
-				"c": {ParseValue: 15},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 5},
+					"b": {ParseValue: 10},
+					"c": {ParseValue: 15},
+				},
+				[]error{},
 			},
 			desc: "Test variable declaration",
 		},
 		{
 			input: `let a = 5; let b = 10; let c = 15`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 5},
-				"b": {ParseValue: 10},
-				"c": {ParseValue: 15},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 5},
+					"b": {ParseValue: 10},
+					"c": {ParseValue: 15},
+				},
+				[]error{},
 			},
 			desc: "Test variable declaration with semicolon",
 		},
@@ -318,10 +371,13 @@ func TestParserRangeExpression(t *testing.T) {
 					let b = 4...5
 					let c = 6...10
 					`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: []int{1, 2, 3, 4, 5}},
-				"b": {ParseValue: []int{4, 5}},
-				"c": {ParseValue: []int{6, 7, 8, 9, 10}},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: []int{1, 2, 3, 4, 5}},
+					"b": {ParseValue: []int{4, 5}},
+					"c": {ParseValue: []int{6, 7, 8, 9, 10}},
+				},
+				[]error{},
 			},
 			desc: "Test range expression",
 		},
@@ -330,12 +386,32 @@ func TestParserRangeExpression(t *testing.T) {
 					let b = 14
 					let c = a...b
 					`,
-			expected: map[string]I.Value{
-				"a": {ParseValue: 12},
-				"b": {ParseValue: 14},
-				"c": {ParseValue: []int{12, 13, 14}},
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: 12},
+					"b": {ParseValue: 14},
+					"c": {ParseValue: []int{12, 13, 14}},
+				},
+				[]error{},
 			},
 			desc: "Test range expression",
+		},
+		{
+			input: `let a = false
+					let b = 14
+					let c = a...b
+					`,
+			expected: expectedValue{
+				map[string]I.Value{
+					"a": {ParseValue: false},
+					"b": {ParseValue: 14},
+					"c": {ParseValue: nil},
+				},
+				[]error{
+					fmt.Errorf("Left and right values must be integers"),
+				},
+			},
+			desc: "Test range expression with error value",
 		},
 	}
 
@@ -348,7 +424,7 @@ func TraverseParserCases(t *testing.T, testCases []testCasesParser) {
 
 		got := I.NewEvaluator(testCase.input)
 
-		if fmt.Sprint(got) != fmt.Sprint(expected) {
+		if fmt.Sprint(got.Memory) != fmt.Sprint(expected.values) || fmt.Sprint(got.Errors) != fmt.Sprint(expected.errors) {
 			t.Errorf("\nExpected: %v\nGot: %v \nAt: %s", expected, got, testCase.desc)
 		}
 

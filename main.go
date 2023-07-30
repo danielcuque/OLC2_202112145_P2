@@ -12,6 +12,7 @@ func main() {
 
 	result := I.NewEvaluator(content)
 
-	fmt.Println(result)
+	fmt.Println(result.Memory)
+	fmt.Println(result.Errors)
 
 }

@@ -284,8 +284,14 @@ func (v *Visitor) VisitNotExp(ctx *parser.NotExprContext) Value {
 // Range operator
 
 func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) Value {
-	l := v.Visit(ctx.GetLeft()).ParseValue.(int64)
-	r := v.Visit(ctx.GetRight()).ParseValue.(int64)
+	// Catch if the left and right are not integers
+	l, okL := v.Visit(ctx.GetLeft()).ParseValue.(int64)
+	r, okR := v.Visit(ctx.GetRight()).ParseValue.(int64)
+
+	if !okL || !okR {
+		v.NewError("Left and right values must be integers")
+		return Value{}
+	}
 
 	if l > r {
 		v.NewError("Left value is greater than right value")

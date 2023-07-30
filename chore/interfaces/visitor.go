@@ -14,17 +14,17 @@ type Value struct {
 type Visitor struct {
 	parser.SwiftVisitor
 	Memory map[string]Value
-	Error  []error
+	Errors []error
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
 		Memory: make(map[string]Value),
-		Error:  make([]error, 0),
+		Errors: make([]error, 0),
 	}
 }
 
-func NewEvaluator(input string) map[string]Value {
+func NewEvaluator(input string) *Visitor {
 	lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSwiftParser(stream)
@@ -34,9 +34,9 @@ func NewEvaluator(input string) map[string]Value {
 	eval := NewVisitor()
 	eval.Visit(tree)
 
-	return eval.Memory
+	return eval
 }
 
 func (v *Visitor) NewError(msg string) {
-	v.Error = append(v.Error, fmt.Errorf(msg))
+	v.Errors = append(v.Errors, fmt.Errorf(msg))
 }
