@@ -65,6 +65,9 @@ func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
 }
 
 func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
+	if l == nil || r == nil {
+		return Value{ParseValue: nil}
+	}
 	leftT := reflect.TypeOf(l).String()
 	rightT := reflect.TypeOf(r).String()
 

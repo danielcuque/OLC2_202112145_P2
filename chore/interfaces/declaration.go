@@ -10,10 +10,9 @@ func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContex
 	value := v.Visit(ctx.Expr())
 	isIdExist, ok := v.Memory[id]
 
-	fmt.Println("Variable declaration", id, value)
-
 	if ok && isIdExist.ParseValue != nil {
-		panic("Variable already exist")
+		v.NewError(fmt.Sprintf("Variable %s already exist", id))
+		return Value{ParseValue: nil}
 	}
 
 	v.Memory[id] = value
