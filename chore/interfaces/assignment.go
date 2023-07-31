@@ -3,16 +3,19 @@ package interfaces
 import (
 	"OLC2/chore/parser"
 	"fmt"
+	"reflect"
 )
 
 func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) Value {
 	id := ctx.ID().GetText()
 	value := v.Visit(ctx.Expr())
 
+	fmt.Println("VariableAssignment", id, value.Type, reflect.TypeOf(value.ParseValue).String())
+
 	// Check if the variable exists
 	_, ok := v.Memory[id]
 	if !ok {
-		v.NewError(fmt.Sprintf("Variable %s doesn't exist", id))
+		v.NewError(fmt.Sprintf("La variable %s no existe", id))
 		fmt.Println("Variable doesn't exist", id)
 		return Value{ParseValue: nil}
 	}
@@ -26,7 +29,7 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 
 	// Check if the types are the same
 	if v.Memory[id].Type != value.Type {
-		v.NewError(fmt.Sprintf("Variable %s is not the same type", id))
+		v.NewError(fmt.Sprintf("La variable %s, es de tipo %s y se le quiere asignar un valor de tipo %s", id, v.Memory[id].Type, value.Type))
 		fmt.Println("Variable is not the same type", id)
 		return Value{ParseValue: nil}
 	}

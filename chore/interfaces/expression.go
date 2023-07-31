@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"OLC2/chore/parser"
+	U "OLC2/chore/utils"
 )
 
-var intT = reflect.TypeOf(int64(1)).String()
-var floatT = reflect.TypeOf(float64(1)).String()
-var stringT = reflect.TypeOf("").String()
+var intT = U.GetType(int64(1))
+var floatT = U.GetType(float64(1))
+var stringT = U.GetType("")
 
 func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) Value {
 	i, _ := strconv.ParseInt(ctx.GetText(), 10, 64)
@@ -48,13 +49,15 @@ func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) Value {
 
 func (v *Visitor) VisitUnaryMinusExp(ctx *parser.UnaryExprContext) Value {
 	value := v.Visit(ctx.Expr()).ParseValue
-	if reflect.TypeOf(value).String() == reflect.TypeOf(int64(1)).String() {
+	valueT := U.GetType(value)
+	if valueT == intT {
 		return Value{ParseValue: -value.(int64)}
 	}
-	if reflect.TypeOf(value).String() == reflect.TypeOf(float64(1)).String() {
+	if valueT == floatT {
 		return Value{ParseValue: -value.(float64)}
 	}
-	panic("Unknown type")
+	v.NewError("Error: No se puede aplicar el operador unario - a " + reflect.TypeOf(value).String())
+	return Value{ParseValue: nil}
 }
 
 func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
@@ -68,8 +71,9 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 	if l == nil || r == nil {
 		return Value{ParseValue: nil}
 	}
-	leftT := reflect.TypeOf(l).String()
-	rightT := reflect.TypeOf(r).String()
+
+	leftT := U.GetType(l)
+	rightT := U.GetType(r)
 
 	switch op {
 	case "+":
