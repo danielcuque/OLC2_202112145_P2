@@ -3,14 +3,11 @@ package interfaces
 import (
 	"OLC2/chore/parser"
 	"fmt"
-	"reflect"
 )
 
 func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) Value {
 	id := ctx.ID().GetText()
 	value := v.Visit(ctx.Expr())
-
-	fmt.Println("VariableAssignment", id, value.Type, reflect.TypeOf(value.ParseValue).String())
 
 	// Check if the variable exists
 	_, ok := v.Memory[id]

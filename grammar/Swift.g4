@@ -8,6 +8,7 @@ program: block EOF;
 
 block: (statement)*;
 
+// Statements
 statement:
 	variableAssignment
 	| variableDeclaration
@@ -15,21 +16,39 @@ statement:
 	| whileStatement
 	| forStatement;
 
+// Variable types
 variableType: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
 
+// Variable declaration
 variableCase: (Kw_LET | Kw_VAR);
 
 variableDeclaration:
 	variableCase ID Op_ASSIGN expr (SEMICOLON)?;
 
+// Variable assignment
 variableAssignment: ID Op_ASSIGN expr;
 
-ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
+// If statement
+ifStatement:
+	Kw_IF LPAREN expr RPAREN LBRACE block RBRACE
+	| Kw_IF LPAREN expr RPAREN LBRACE block RBRACE ifStatementTail;
+
+ifStatementTail:
+	elseIfTail elseStatement
+	| elseStatement
+	| elseIfTail;
+
+elseStatement: Kw_ELSE LBRACE block RBRACE;
+
+elseIfTail: elseIfTail elseIf | elseIf;
+
+elseIf: Kw_ELSE Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 
 whileStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
 forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
 
+// Expressions
 expr:
 	Op_MINUS expr													# UnaryExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr

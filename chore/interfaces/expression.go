@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -52,11 +51,10 @@ func (v *Visitor) VisitUnaryMinusExp(ctx *parser.UnaryExprContext) Value {
 	valueT := U.GetType(value)
 	if valueT == intT {
 		return Value{ParseValue: -value.(int64)}
-	}
-	if valueT == floatT {
+	} else if valueT == floatT {
 		return Value{ParseValue: -value.(float64)}
 	}
-	v.NewError("Error: No se puede aplicar el operador unario - a " + reflect.TypeOf(value).String())
+	v.NewError("Error: No se puede aplicar el operador unario - a " + U.GetType(value))
 	return Value{ParseValue: nil}
 }
 
@@ -162,8 +160,8 @@ func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value 
 	op := ctx.GetOp().GetText()
 
 	// Get types
-	leftT := reflect.TypeOf(l).String()
-	rightT := reflect.TypeOf(r).String()
+	leftT := U.GetType(l)
+	rightT := U.GetType(r)
 
 	// Compare
 	switch op {
@@ -253,6 +251,7 @@ func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value 
 		}
 	}
 
+	v.NewError("Error: No se puede comparar " + leftT + " con " + rightT)
 	return Value{ParseValue: false}
 }
 
@@ -273,8 +272,6 @@ func (v *Visitor) VisitLogicalExp(ctx *parser.LogicalExprContext) Value {
 	r := v.Visit(ctx.GetRight()).ParseValue.(bool)
 	op := ctx.GetOp().GetText()
 
-	// Terinary operator is a special case
-
 	operators := map[string]func(bool, bool) bool{
 		"&&": func(a, b bool) bool { return a && b },
 		"||": func(a, b bool) bool { return a || b },
@@ -294,7 +291,6 @@ func (v *Visitor) VisitNotExp(ctx *parser.NotExprContext) Value {
 }
 
 // Range operator
-
 func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) Value {
 	// Catch if the left and right are not integers
 	l, okL := v.Visit(ctx.GetLeft()).ParseValue.(int64)
@@ -302,12 +298,12 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) Value {
 
 	if !okL || !okR {
 		v.NewError("Left and right values must be integers")
-		return Value{}
+		return Value{ParseValue: nil}
 	}
 
 	if l > r {
 		v.NewError("Left value is greater than right value")
-		return Value{}
+		return Value{ParseValue: nil}
 	}
 
 	newVal := make([]int64, r-l+1)

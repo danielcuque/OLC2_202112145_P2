@@ -57,69 +57,90 @@ func swiftParserInit() {
 	}
 	staticData.RuleNames = []string{
 		"program", "block", "statement", "variableType", "variableCase", "variableDeclaration",
-		"variableAssignment", "ifStatement", "whileStatement", "forStatement",
-		"expr",
+		"variableAssignment", "ifStatement", "ifStatementTail", "elseStatement",
+		"elseIfTail", "elseIf", "whileStatement", "forStatement", "expr",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 65, 132, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 65, 182, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
-		10, 1, 0, 1, 0, 1, 0, 1, 1, 5, 1, 27, 8, 1, 10, 1, 12, 1, 30, 9, 1, 1,
-		2, 1, 2, 1, 2, 1, 2, 1, 2, 3, 2, 37, 8, 2, 1, 3, 1, 3, 1, 4, 1, 4, 1, 5,
-		1, 5, 1, 5, 1, 5, 1, 5, 3, 5, 48, 8, 5, 1, 6, 1, 6, 1, 6, 1, 6, 1, 7, 1,
-		7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 1,
-		8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 10, 1,
-		10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10,
-		1, 10, 1, 10, 3, 10, 92, 8, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10,
-		1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1,
-		10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10,
-		1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 5, 10, 127, 8, 10, 10, 10, 12,
-		10, 130, 9, 10, 1, 10, 0, 1, 20, 11, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18,
-		20, 0, 7, 1, 0, 21, 25, 1, 0, 4, 5, 1, 0, 46, 47, 1, 0, 48, 49, 2, 0, 37,
-		37, 39, 39, 2, 0, 36, 36, 38, 38, 1, 0, 34, 35, 143, 0, 22, 1, 0, 0, 0,
-		2, 28, 1, 0, 0, 0, 4, 36, 1, 0, 0, 0, 6, 38, 1, 0, 0, 0, 8, 40, 1, 0, 0,
-		0, 10, 42, 1, 0, 0, 0, 12, 49, 1, 0, 0, 0, 14, 53, 1, 0, 0, 0, 16, 61,
-		1, 0, 0, 0, 18, 69, 1, 0, 0, 0, 20, 91, 1, 0, 0, 0, 22, 23, 3, 2, 1, 0,
-		23, 24, 5, 0, 0, 1, 24, 1, 1, 0, 0, 0, 25, 27, 3, 4, 2, 0, 26, 25, 1, 0,
-		0, 0, 27, 30, 1, 0, 0, 0, 28, 26, 1, 0, 0, 0, 28, 29, 1, 0, 0, 0, 29, 3,
-		1, 0, 0, 0, 30, 28, 1, 0, 0, 0, 31, 37, 3, 12, 6, 0, 32, 37, 3, 10, 5,
-		0, 33, 37, 3, 14, 7, 0, 34, 37, 3, 16, 8, 0, 35, 37, 3, 18, 9, 0, 36, 31,
-		1, 0, 0, 0, 36, 32, 1, 0, 0, 0, 36, 33, 1, 0, 0, 0, 36, 34, 1, 0, 0, 0,
-		36, 35, 1, 0, 0, 0, 37, 5, 1, 0, 0, 0, 38, 39, 7, 0, 0, 0, 39, 7, 1, 0,
-		0, 0, 40, 41, 7, 1, 0, 0, 41, 9, 1, 0, 0, 0, 42, 43, 3, 8, 4, 0, 43, 44,
-		5, 32, 0, 0, 44, 45, 5, 40, 0, 0, 45, 47, 3, 20, 10, 0, 46, 48, 5, 63,
-		0, 0, 47, 46, 1, 0, 0, 0, 47, 48, 1, 0, 0, 0, 48, 11, 1, 0, 0, 0, 49, 50,
-		5, 32, 0, 0, 50, 51, 5, 40, 0, 0, 51, 52, 3, 20, 10, 0, 52, 13, 1, 0, 0,
-		0, 53, 54, 5, 8, 0, 0, 54, 55, 5, 55, 0, 0, 55, 56, 3, 20, 10, 0, 56, 57,
-		5, 56, 0, 0, 57, 58, 5, 57, 0, 0, 58, 59, 3, 2, 1, 0, 59, 60, 5, 58, 0,
-		0, 60, 15, 1, 0, 0, 0, 61, 62, 5, 14, 0, 0, 62, 63, 5, 55, 0, 0, 63, 64,
-		3, 20, 10, 0, 64, 65, 5, 56, 0, 0, 65, 66, 5, 57, 0, 0, 66, 67, 3, 2, 1,
-		0, 67, 68, 5, 58, 0, 0, 68, 17, 1, 0, 0, 0, 69, 70, 5, 13, 0, 0, 70, 71,
-		3, 20, 10, 0, 71, 72, 5, 20, 0, 0, 72, 73, 3, 20, 10, 0, 73, 74, 5, 57,
-		0, 0, 74, 75, 3, 2, 1, 0, 75, 76, 5, 58, 0, 0, 76, 19, 1, 0, 0, 0, 77,
-		78, 6, 10, -1, 0, 78, 79, 5, 49, 0, 0, 79, 92, 3, 20, 10, 18, 80, 81, 5,
-		53, 0, 0, 81, 92, 3, 20, 10, 11, 82, 83, 5, 55, 0, 0, 83, 84, 3, 20, 10,
-		0, 84, 85, 5, 56, 0, 0, 85, 92, 1, 0, 0, 0, 86, 92, 5, 27, 0, 0, 87, 92,
-		5, 32, 0, 0, 88, 92, 5, 28, 0, 0, 89, 92, 5, 30, 0, 0, 90, 92, 5, 29, 0,
-		0, 91, 77, 1, 0, 0, 0, 91, 80, 1, 0, 0, 0, 91, 82, 1, 0, 0, 0, 91, 86,
-		1, 0, 0, 0, 91, 87, 1, 0, 0, 0, 91, 88, 1, 0, 0, 0, 91, 89, 1, 0, 0, 0,
-		91, 90, 1, 0, 0, 0, 92, 128, 1, 0, 0, 0, 93, 94, 10, 17, 0, 0, 94, 95,
-		7, 2, 0, 0, 95, 127, 3, 20, 10, 18, 96, 97, 10, 16, 0, 0, 97, 98, 7, 3,
-		0, 0, 98, 127, 3, 20, 10, 17, 99, 100, 10, 15, 0, 0, 100, 101, 5, 50, 0,
-		0, 101, 127, 3, 20, 10, 16, 102, 103, 10, 14, 0, 0, 103, 104, 7, 4, 0,
-		0, 104, 127, 3, 20, 10, 15, 105, 106, 10, 13, 0, 0, 106, 107, 7, 5, 0,
-		0, 107, 127, 3, 20, 10, 14, 108, 109, 10, 12, 0, 0, 109, 110, 7, 6, 0,
-		0, 110, 127, 3, 20, 10, 13, 111, 112, 10, 10, 0, 0, 112, 113, 5, 54, 0,
-		0, 113, 114, 3, 20, 10, 0, 114, 115, 5, 64, 0, 0, 115, 116, 3, 20, 10,
-		11, 116, 127, 1, 0, 0, 0, 117, 118, 10, 9, 0, 0, 118, 119, 5, 51, 0, 0,
-		119, 127, 3, 20, 10, 10, 120, 121, 10, 8, 0, 0, 121, 122, 5, 52, 0, 0,
-		122, 127, 3, 20, 10, 9, 123, 124, 10, 7, 0, 0, 124, 125, 5, 26, 0, 0, 125,
-		127, 3, 20, 10, 8, 126, 93, 1, 0, 0, 0, 126, 96, 1, 0, 0, 0, 126, 99, 1,
-		0, 0, 0, 126, 102, 1, 0, 0, 0, 126, 105, 1, 0, 0, 0, 126, 108, 1, 0, 0,
-		0, 126, 111, 1, 0, 0, 0, 126, 117, 1, 0, 0, 0, 126, 120, 1, 0, 0, 0, 126,
-		123, 1, 0, 0, 0, 127, 130, 1, 0, 0, 0, 128, 126, 1, 0, 0, 0, 128, 129,
-		1, 0, 0, 0, 129, 21, 1, 0, 0, 0, 130, 128, 1, 0, 0, 0, 6, 28, 36, 47, 91,
-		126, 128,
+		10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 1, 0, 1, 0,
+		1, 0, 1, 1, 5, 1, 35, 8, 1, 10, 1, 12, 1, 38, 9, 1, 1, 2, 1, 2, 1, 2, 1,
+		2, 1, 2, 3, 2, 45, 8, 2, 1, 3, 1, 3, 1, 4, 1, 4, 1, 5, 1, 5, 1, 5, 1, 5,
+		1, 5, 3, 5, 56, 8, 5, 1, 6, 1, 6, 1, 6, 1, 6, 1, 7, 1, 7, 1, 7, 1, 7, 1,
+		7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 1,
+		7, 3, 7, 79, 8, 7, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 3, 8, 86, 8, 8, 1, 9,
+		1, 9, 1, 9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 5, 10, 98, 8,
+		10, 10, 10, 12, 10, 101, 9, 10, 1, 11, 1, 11, 1, 11, 1, 11, 1, 11, 1, 11,
+		1, 11, 1, 11, 1, 11, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1,
+		12, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 14, 1, 14,
+		1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1,
+		14, 1, 14, 3, 14, 142, 8, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14,
+		1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1,
+		14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14,
+		1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 5, 14, 177, 8, 14, 10, 14, 12,
+		14, 180, 9, 14, 1, 14, 0, 2, 20, 28, 15, 0, 2, 4, 6, 8, 10, 12, 14, 16,
+		18, 20, 22, 24, 26, 28, 0, 7, 1, 0, 21, 25, 1, 0, 4, 5, 1, 0, 46, 47, 1,
+		0, 48, 49, 2, 0, 37, 37, 39, 39, 2, 0, 36, 36, 38, 38, 1, 0, 34, 35, 193,
+		0, 30, 1, 0, 0, 0, 2, 36, 1, 0, 0, 0, 4, 44, 1, 0, 0, 0, 6, 46, 1, 0, 0,
+		0, 8, 48, 1, 0, 0, 0, 10, 50, 1, 0, 0, 0, 12, 57, 1, 0, 0, 0, 14, 78, 1,
+		0, 0, 0, 16, 85, 1, 0, 0, 0, 18, 87, 1, 0, 0, 0, 20, 92, 1, 0, 0, 0, 22,
+		102, 1, 0, 0, 0, 24, 111, 1, 0, 0, 0, 26, 119, 1, 0, 0, 0, 28, 141, 1,
+		0, 0, 0, 30, 31, 3, 2, 1, 0, 31, 32, 5, 0, 0, 1, 32, 1, 1, 0, 0, 0, 33,
+		35, 3, 4, 2, 0, 34, 33, 1, 0, 0, 0, 35, 38, 1, 0, 0, 0, 36, 34, 1, 0, 0,
+		0, 36, 37, 1, 0, 0, 0, 37, 3, 1, 0, 0, 0, 38, 36, 1, 0, 0, 0, 39, 45, 3,
+		12, 6, 0, 40, 45, 3, 10, 5, 0, 41, 45, 3, 14, 7, 0, 42, 45, 3, 24, 12,
+		0, 43, 45, 3, 26, 13, 0, 44, 39, 1, 0, 0, 0, 44, 40, 1, 0, 0, 0, 44, 41,
+		1, 0, 0, 0, 44, 42, 1, 0, 0, 0, 44, 43, 1, 0, 0, 0, 45, 5, 1, 0, 0, 0,
+		46, 47, 7, 0, 0, 0, 47, 7, 1, 0, 0, 0, 48, 49, 7, 1, 0, 0, 49, 9, 1, 0,
+		0, 0, 50, 51, 3, 8, 4, 0, 51, 52, 5, 32, 0, 0, 52, 53, 5, 40, 0, 0, 53,
+		55, 3, 28, 14, 0, 54, 56, 5, 63, 0, 0, 55, 54, 1, 0, 0, 0, 55, 56, 1, 0,
+		0, 0, 56, 11, 1, 0, 0, 0, 57, 58, 5, 32, 0, 0, 58, 59, 5, 40, 0, 0, 59,
+		60, 3, 28, 14, 0, 60, 13, 1, 0, 0, 0, 61, 62, 5, 8, 0, 0, 62, 63, 5, 55,
+		0, 0, 63, 64, 3, 28, 14, 0, 64, 65, 5, 56, 0, 0, 65, 66, 5, 57, 0, 0, 66,
+		67, 3, 2, 1, 0, 67, 68, 5, 58, 0, 0, 68, 79, 1, 0, 0, 0, 69, 70, 5, 8,
+		0, 0, 70, 71, 5, 55, 0, 0, 71, 72, 3, 28, 14, 0, 72, 73, 5, 56, 0, 0, 73,
+		74, 5, 57, 0, 0, 74, 75, 3, 2, 1, 0, 75, 76, 5, 58, 0, 0, 76, 77, 3, 16,
+		8, 0, 77, 79, 1, 0, 0, 0, 78, 61, 1, 0, 0, 0, 78, 69, 1, 0, 0, 0, 79, 15,
+		1, 0, 0, 0, 80, 81, 3, 20, 10, 0, 81, 82, 3, 18, 9, 0, 82, 86, 1, 0, 0,
+		0, 83, 86, 3, 18, 9, 0, 84, 86, 3, 20, 10, 0, 85, 80, 1, 0, 0, 0, 85, 83,
+		1, 0, 0, 0, 85, 84, 1, 0, 0, 0, 86, 17, 1, 0, 0, 0, 87, 88, 5, 9, 0, 0,
+		88, 89, 5, 57, 0, 0, 89, 90, 3, 2, 1, 0, 90, 91, 5, 58, 0, 0, 91, 19, 1,
+		0, 0, 0, 92, 93, 6, 10, -1, 0, 93, 94, 3, 22, 11, 0, 94, 99, 1, 0, 0, 0,
+		95, 96, 10, 2, 0, 0, 96, 98, 3, 22, 11, 0, 97, 95, 1, 0, 0, 0, 98, 101,
+		1, 0, 0, 0, 99, 97, 1, 0, 0, 0, 99, 100, 1, 0, 0, 0, 100, 21, 1, 0, 0,
+		0, 101, 99, 1, 0, 0, 0, 102, 103, 5, 9, 0, 0, 103, 104, 5, 8, 0, 0, 104,
+		105, 5, 55, 0, 0, 105, 106, 3, 28, 14, 0, 106, 107, 5, 56, 0, 0, 107, 108,
+		5, 57, 0, 0, 108, 109, 3, 2, 1, 0, 109, 110, 5, 58, 0, 0, 110, 23, 1, 0,
+		0, 0, 111, 112, 5, 14, 0, 0, 112, 113, 5, 55, 0, 0, 113, 114, 3, 28, 14,
+		0, 114, 115, 5, 56, 0, 0, 115, 116, 5, 57, 0, 0, 116, 117, 3, 2, 1, 0,
+		117, 118, 5, 58, 0, 0, 118, 25, 1, 0, 0, 0, 119, 120, 5, 13, 0, 0, 120,
+		121, 3, 28, 14, 0, 121, 122, 5, 20, 0, 0, 122, 123, 3, 28, 14, 0, 123,
+		124, 5, 57, 0, 0, 124, 125, 3, 2, 1, 0, 125, 126, 5, 58, 0, 0, 126, 27,
+		1, 0, 0, 0, 127, 128, 6, 14, -1, 0, 128, 129, 5, 49, 0, 0, 129, 142, 3,
+		28, 14, 18, 130, 131, 5, 53, 0, 0, 131, 142, 3, 28, 14, 11, 132, 133, 5,
+		55, 0, 0, 133, 134, 3, 28, 14, 0, 134, 135, 5, 56, 0, 0, 135, 142, 1, 0,
+		0, 0, 136, 142, 5, 27, 0, 0, 137, 142, 5, 32, 0, 0, 138, 142, 5, 28, 0,
+		0, 139, 142, 5, 30, 0, 0, 140, 142, 5, 29, 0, 0, 141, 127, 1, 0, 0, 0,
+		141, 130, 1, 0, 0, 0, 141, 132, 1, 0, 0, 0, 141, 136, 1, 0, 0, 0, 141,
+		137, 1, 0, 0, 0, 141, 138, 1, 0, 0, 0, 141, 139, 1, 0, 0, 0, 141, 140,
+		1, 0, 0, 0, 142, 178, 1, 0, 0, 0, 143, 144, 10, 17, 0, 0, 144, 145, 7,
+		2, 0, 0, 145, 177, 3, 28, 14, 18, 146, 147, 10, 16, 0, 0, 147, 148, 7,
+		3, 0, 0, 148, 177, 3, 28, 14, 17, 149, 150, 10, 15, 0, 0, 150, 151, 5,
+		50, 0, 0, 151, 177, 3, 28, 14, 16, 152, 153, 10, 14, 0, 0, 153, 154, 7,
+		4, 0, 0, 154, 177, 3, 28, 14, 15, 155, 156, 10, 13, 0, 0, 156, 157, 7,
+		5, 0, 0, 157, 177, 3, 28, 14, 14, 158, 159, 10, 12, 0, 0, 159, 160, 7,
+		6, 0, 0, 160, 177, 3, 28, 14, 13, 161, 162, 10, 10, 0, 0, 162, 163, 5,
+		54, 0, 0, 163, 164, 3, 28, 14, 0, 164, 165, 5, 64, 0, 0, 165, 166, 3, 28,
+		14, 11, 166, 177, 1, 0, 0, 0, 167, 168, 10, 9, 0, 0, 168, 169, 5, 51, 0,
+		0, 169, 177, 3, 28, 14, 10, 170, 171, 10, 8, 0, 0, 171, 172, 5, 52, 0,
+		0, 172, 177, 3, 28, 14, 9, 173, 174, 10, 7, 0, 0, 174, 175, 5, 26, 0, 0,
+		175, 177, 3, 28, 14, 8, 176, 143, 1, 0, 0, 0, 176, 146, 1, 0, 0, 0, 176,
+		149, 1, 0, 0, 0, 176, 152, 1, 0, 0, 0, 176, 155, 1, 0, 0, 0, 176, 158,
+		1, 0, 0, 0, 176, 161, 1, 0, 0, 0, 176, 167, 1, 0, 0, 0, 176, 170, 1, 0,
+		0, 0, 176, 173, 1, 0, 0, 0, 177, 180, 1, 0, 0, 0, 178, 176, 1, 0, 0, 0,
+		178, 179, 1, 0, 0, 0, 179, 29, 1, 0, 0, 0, 180, 178, 1, 0, 0, 0, 9, 36,
+		44, 55, 78, 85, 99, 141, 176, 178,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -235,9 +256,13 @@ const (
 	SwiftParserRULE_variableDeclaration = 5
 	SwiftParserRULE_variableAssignment  = 6
 	SwiftParserRULE_ifStatement         = 7
-	SwiftParserRULE_whileStatement      = 8
-	SwiftParserRULE_forStatement        = 9
-	SwiftParserRULE_expr                = 10
+	SwiftParserRULE_ifStatementTail     = 8
+	SwiftParserRULE_elseStatement       = 9
+	SwiftParserRULE_elseIfTail          = 10
+	SwiftParserRULE_elseIf              = 11
+	SwiftParserRULE_whileStatement      = 12
+	SwiftParserRULE_forStatement        = 13
+	SwiftParserRULE_expr                = 14
 )
 
 // IProgramContext is an interface to support dynamic dispatch.
@@ -330,11 +355,11 @@ func (p *SwiftParser) Program() (localctx IProgramContext) {
 	p.EnterRule(localctx, 0, SwiftParserRULE_program)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(22)
+		p.SetState(30)
 		p.Block()
 	}
 	{
-		p.SetState(23)
+		p.SetState(31)
 		p.Match(SwiftParserEOF)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -467,7 +492,7 @@ func (p *SwiftParser) Block() (localctx IBlockContext) {
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(28)
+	p.SetState(36)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -476,11 +501,11 @@ func (p *SwiftParser) Block() (localctx IBlockContext) {
 
 	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4294992176) != 0 {
 		{
-			p.SetState(25)
+			p.SetState(33)
 			p.Statement()
 		}
 
-		p.SetState(30)
+		p.SetState(38)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -652,7 +677,7 @@ func (s *StatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 func (p *SwiftParser) Statement() (localctx IStatementContext) {
 	localctx = NewStatementContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 4, SwiftParserRULE_statement)
-	p.SetState(36)
+	p.SetState(44)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -662,35 +687,35 @@ func (p *SwiftParser) Statement() (localctx IStatementContext) {
 	case SwiftParserID:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(31)
+			p.SetState(39)
 			p.VariableAssignment()
 		}
 
 	case SwiftParserKw_LET, SwiftParserKw_VAR:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(32)
+			p.SetState(40)
 			p.VariableDeclaration()
 		}
 
 	case SwiftParserKw_IF:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(33)
+			p.SetState(41)
 			p.IfStatement()
 		}
 
 	case SwiftParserKw_WHILE:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(34)
+			p.SetState(42)
 			p.WhileStatement()
 		}
 
 	case SwiftParserKw_FOR:
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(35)
+			p.SetState(43)
 			p.ForStatement()
 		}
 
@@ -807,7 +832,7 @@ func (p *SwiftParser) VariableType() (localctx IVariableTypeContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(38)
+		p.SetState(46)
 		_la = p.GetTokenStream().LA(1)
 
 		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&65011712) != 0) {
@@ -911,7 +936,7 @@ func (p *SwiftParser) VariableCase() (localctx IVariableCaseContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(40)
+		p.SetState(48)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == SwiftParserKw_LET || _la == SwiftParserKw_VAR) {
@@ -1054,11 +1079,11 @@ func (p *SwiftParser) VariableDeclaration() (localctx IVariableDeclarationContex
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(42)
+		p.SetState(50)
 		p.VariableCase()
 	}
 	{
-		p.SetState(43)
+		p.SetState(51)
 		p.Match(SwiftParserID)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1066,7 +1091,7 @@ func (p *SwiftParser) VariableDeclaration() (localctx IVariableDeclarationContex
 		}
 	}
 	{
-		p.SetState(44)
+		p.SetState(52)
 		p.Match(SwiftParserOp_ASSIGN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1074,10 +1099,10 @@ func (p *SwiftParser) VariableDeclaration() (localctx IVariableDeclarationContex
 		}
 	}
 	{
-		p.SetState(45)
+		p.SetState(53)
 		p.expr(0)
 	}
-	p.SetState(47)
+	p.SetState(55)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1086,7 +1111,7 @@ func (p *SwiftParser) VariableDeclaration() (localctx IVariableDeclarationContex
 
 	if _la == SwiftParserSEMICOLON {
 		{
-			p.SetState(46)
+			p.SetState(54)
 			p.Match(SwiftParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1204,7 +1229,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 	p.EnterRule(localctx, 12, SwiftParserRULE_variableAssignment)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(49)
+		p.SetState(57)
 		p.Match(SwiftParserID)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1212,7 +1237,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 		}
 	}
 	{
-		p.SetState(50)
+		p.SetState(58)
 		p.Match(SwiftParserOp_ASSIGN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1220,7 +1245,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 		}
 	}
 	{
-		p.SetState(51)
+		p.SetState(59)
 		p.expr(0)
 	}
 
@@ -1252,6 +1277,7 @@ type IIfStatementContext interface {
 	LBRACE() antlr.TerminalNode
 	Block() IBlockContext
 	RBRACE() antlr.TerminalNode
+	IfStatementTail() IIfStatementTailContext
 
 	// IsIfStatementContext differentiates from other interfaces.
 	IsIfStatementContext()
@@ -1341,6 +1367,22 @@ func (s *IfStatementContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(SwiftParserRBRACE, 0)
 }
 
+func (s *IfStatementContext) IfStatementTail() IIfStatementTailContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IIfStatementTailContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IIfStatementTailContext)
+}
+
 func (s *IfStatementContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
@@ -1362,37 +1404,394 @@ func (s *IfStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 func (p *SwiftParser) IfStatement() (localctx IIfStatementContext) {
 	localctx = NewIfStatementContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 14, SwiftParserRULE_ifStatement)
+	p.SetState(78)
+	p.GetErrorHandler().Sync(p)
+	if p.HasError() {
+		goto errorExit
+	}
+
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 3, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(61)
+			p.Match(SwiftParserKw_IF)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(62)
+			p.Match(SwiftParserLPAREN)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(63)
+			p.expr(0)
+		}
+		{
+			p.SetState(64)
+			p.Match(SwiftParserRPAREN)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(65)
+			p.Match(SwiftParserLBRACE)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(66)
+			p.Block()
+		}
+		{
+			p.SetState(67)
+			p.Match(SwiftParserRBRACE)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case 2:
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(69)
+			p.Match(SwiftParserKw_IF)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(70)
+			p.Match(SwiftParserLPAREN)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(71)
+			p.expr(0)
+		}
+		{
+			p.SetState(72)
+			p.Match(SwiftParserRPAREN)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(73)
+			p.Match(SwiftParserLBRACE)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(74)
+			p.Block()
+		}
+		{
+			p.SetState(75)
+			p.Match(SwiftParserRBRACE)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(76)
+			p.IfStatementTail()
+		}
+
+	case antlr.ATNInvalidAltNumber:
+		goto errorExit
+	}
+
+errorExit:
+	if p.HasError() {
+		v := p.GetError()
+		localctx.SetException(v)
+		p.GetErrorHandler().ReportError(p, v)
+		p.GetErrorHandler().Recover(p, v)
+		p.SetError(nil)
+	}
+	p.ExitRule()
+	return localctx
+	goto errorExit // Trick to prevent compiler error if the label is not used
+}
+
+// IIfStatementTailContext is an interface to support dynamic dispatch.
+type IIfStatementTailContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// Getter signatures
+	ElseIfTail() IElseIfTailContext
+	ElseStatement() IElseStatementContext
+
+	// IsIfStatementTailContext differentiates from other interfaces.
+	IsIfStatementTailContext()
+}
+
+type IfStatementTailContext struct {
+	antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyIfStatementTailContext() *IfStatementTailContext {
+	var p = new(IfStatementTailContext)
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_ifStatementTail
+	return p
+}
+
+func InitEmptyIfStatementTailContext(p *IfStatementTailContext) {
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_ifStatementTail
+}
+
+func (*IfStatementTailContext) IsIfStatementTailContext() {}
+
+func NewIfStatementTailContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *IfStatementTailContext {
+	var p = new(IfStatementTailContext)
+
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SwiftParserRULE_ifStatementTail
+
+	return p
+}
+
+func (s *IfStatementTailContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *IfStatementTailContext) ElseIfTail() IElseIfTailContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IElseIfTailContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IElseIfTailContext)
+}
+
+func (s *IfStatementTailContext) ElseStatement() IElseStatementContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IElseStatementContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IElseStatementContext)
+}
+
+func (s *IfStatementTailContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *IfStatementTailContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *IfStatementTailContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case SwiftVisitor:
+		return t.VisitIfStatementTail(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *SwiftParser) IfStatementTail() (localctx IIfStatementTailContext) {
+	localctx = NewIfStatementTailContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 16, SwiftParserRULE_ifStatementTail)
+	p.SetState(85)
+	p.GetErrorHandler().Sync(p)
+	if p.HasError() {
+		goto errorExit
+	}
+
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(80)
+			p.elseIfTail(0)
+		}
+		{
+			p.SetState(81)
+			p.ElseStatement()
+		}
+
+	case 2:
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(83)
+			p.ElseStatement()
+		}
+
+	case 3:
+		p.EnterOuterAlt(localctx, 3)
+		{
+			p.SetState(84)
+			p.elseIfTail(0)
+		}
+
+	case antlr.ATNInvalidAltNumber:
+		goto errorExit
+	}
+
+errorExit:
+	if p.HasError() {
+		v := p.GetError()
+		localctx.SetException(v)
+		p.GetErrorHandler().ReportError(p, v)
+		p.GetErrorHandler().Recover(p, v)
+		p.SetError(nil)
+	}
+	p.ExitRule()
+	return localctx
+	goto errorExit // Trick to prevent compiler error if the label is not used
+}
+
+// IElseStatementContext is an interface to support dynamic dispatch.
+type IElseStatementContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// Getter signatures
+	Kw_ELSE() antlr.TerminalNode
+	LBRACE() antlr.TerminalNode
+	Block() IBlockContext
+	RBRACE() antlr.TerminalNode
+
+	// IsElseStatementContext differentiates from other interfaces.
+	IsElseStatementContext()
+}
+
+type ElseStatementContext struct {
+	antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyElseStatementContext() *ElseStatementContext {
+	var p = new(ElseStatementContext)
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_elseStatement
+	return p
+}
+
+func InitEmptyElseStatementContext(p *ElseStatementContext) {
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_elseStatement
+}
+
+func (*ElseStatementContext) IsElseStatementContext() {}
+
+func NewElseStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ElseStatementContext {
+	var p = new(ElseStatementContext)
+
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SwiftParserRULE_elseStatement
+
+	return p
+}
+
+func (s *ElseStatementContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ElseStatementContext) Kw_ELSE() antlr.TerminalNode {
+	return s.GetToken(SwiftParserKw_ELSE, 0)
+}
+
+func (s *ElseStatementContext) LBRACE() antlr.TerminalNode {
+	return s.GetToken(SwiftParserLBRACE, 0)
+}
+
+func (s *ElseStatementContext) Block() IBlockContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IBlockContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IBlockContext)
+}
+
+func (s *ElseStatementContext) RBRACE() antlr.TerminalNode {
+	return s.GetToken(SwiftParserRBRACE, 0)
+}
+
+func (s *ElseStatementContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ElseStatementContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *ElseStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case SwiftVisitor:
+		return t.VisitElseStatement(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *SwiftParser) ElseStatement() (localctx IElseStatementContext) {
+	localctx = NewElseStatementContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 18, SwiftParserRULE_elseStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(53)
-		p.Match(SwiftParserKw_IF)
+		p.SetState(87)
+		p.Match(SwiftParserKw_ELSE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
 	{
-		p.SetState(54)
-		p.Match(SwiftParserLPAREN)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
-		}
-	}
-	{
-		p.SetState(55)
-		p.expr(0)
-	}
-	{
-		p.SetState(56)
-		p.Match(SwiftParserRPAREN)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
-		}
-	}
-	{
-		p.SetState(57)
+		p.SetState(88)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1400,11 +1799,384 @@ func (p *SwiftParser) IfStatement() (localctx IIfStatementContext) {
 		}
 	}
 	{
-		p.SetState(58)
+		p.SetState(89)
 		p.Block()
 	}
 	{
-		p.SetState(59)
+		p.SetState(90)
+		p.Match(SwiftParserRBRACE)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+
+errorExit:
+	if p.HasError() {
+		v := p.GetError()
+		localctx.SetException(v)
+		p.GetErrorHandler().ReportError(p, v)
+		p.GetErrorHandler().Recover(p, v)
+		p.SetError(nil)
+	}
+	p.ExitRule()
+	return localctx
+	goto errorExit // Trick to prevent compiler error if the label is not used
+}
+
+// IElseIfTailContext is an interface to support dynamic dispatch.
+type IElseIfTailContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// Getter signatures
+	ElseIf() IElseIfContext
+	ElseIfTail() IElseIfTailContext
+
+	// IsElseIfTailContext differentiates from other interfaces.
+	IsElseIfTailContext()
+}
+
+type ElseIfTailContext struct {
+	antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyElseIfTailContext() *ElseIfTailContext {
+	var p = new(ElseIfTailContext)
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_elseIfTail
+	return p
+}
+
+func InitEmptyElseIfTailContext(p *ElseIfTailContext) {
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_elseIfTail
+}
+
+func (*ElseIfTailContext) IsElseIfTailContext() {}
+
+func NewElseIfTailContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ElseIfTailContext {
+	var p = new(ElseIfTailContext)
+
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SwiftParserRULE_elseIfTail
+
+	return p
+}
+
+func (s *ElseIfTailContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ElseIfTailContext) ElseIf() IElseIfContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IElseIfContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IElseIfContext)
+}
+
+func (s *ElseIfTailContext) ElseIfTail() IElseIfTailContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IElseIfTailContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IElseIfTailContext)
+}
+
+func (s *ElseIfTailContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ElseIfTailContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *ElseIfTailContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case SwiftVisitor:
+		return t.VisitElseIfTail(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *SwiftParser) ElseIfTail() (localctx IElseIfTailContext) {
+	return p.elseIfTail(0)
+}
+
+func (p *SwiftParser) elseIfTail(_p int) (localctx IElseIfTailContext) {
+	var _parentctx antlr.ParserRuleContext = p.GetParserRuleContext()
+
+	_parentState := p.GetState()
+	localctx = NewElseIfTailContext(p, p.GetParserRuleContext(), _parentState)
+	var _prevctx IElseIfTailContext = localctx
+	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
+	_startState := 20
+	p.EnterRecursionRule(localctx, 20, SwiftParserRULE_elseIfTail, _p)
+	var _alt int
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(93)
+		p.ElseIf()
+	}
+
+	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
+	p.SetState(99)
+	p.GetErrorHandler().Sync(p)
+	if p.HasError() {
+		goto errorExit
+	}
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 5, p.GetParserRuleContext())
+	if p.HasError() {
+		goto errorExit
+	}
+	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
+		if _alt == 1 {
+			if p.GetParseListeners() != nil {
+				p.TriggerExitRuleEvent()
+			}
+			_prevctx = localctx
+			localctx = NewElseIfTailContext(p, _parentctx, _parentState)
+			p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_elseIfTail)
+			p.SetState(95)
+
+			if !(p.Precpred(p.GetParserRuleContext(), 2)) {
+				p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 2)", ""))
+				goto errorExit
+			}
+			{
+				p.SetState(96)
+				p.ElseIf()
+			}
+
+		}
+		p.SetState(101)
+		p.GetErrorHandler().Sync(p)
+		if p.HasError() {
+			goto errorExit
+		}
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 5, p.GetParserRuleContext())
+		if p.HasError() {
+			goto errorExit
+		}
+	}
+
+errorExit:
+	if p.HasError() {
+		v := p.GetError()
+		localctx.SetException(v)
+		p.GetErrorHandler().ReportError(p, v)
+		p.GetErrorHandler().Recover(p, v)
+		p.SetError(nil)
+	}
+	p.UnrollRecursionContexts(_parentctx)
+	return localctx
+	goto errorExit // Trick to prevent compiler error if the label is not used
+}
+
+// IElseIfContext is an interface to support dynamic dispatch.
+type IElseIfContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// Getter signatures
+	Kw_ELSE() antlr.TerminalNode
+	Kw_IF() antlr.TerminalNode
+	LPAREN() antlr.TerminalNode
+	Expr() IExprContext
+	RPAREN() antlr.TerminalNode
+	LBRACE() antlr.TerminalNode
+	Block() IBlockContext
+	RBRACE() antlr.TerminalNode
+
+	// IsElseIfContext differentiates from other interfaces.
+	IsElseIfContext()
+}
+
+type ElseIfContext struct {
+	antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyElseIfContext() *ElseIfContext {
+	var p = new(ElseIfContext)
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_elseIf
+	return p
+}
+
+func InitEmptyElseIfContext(p *ElseIfContext) {
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = SwiftParserRULE_elseIf
+}
+
+func (*ElseIfContext) IsElseIfContext() {}
+
+func NewElseIfContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ElseIfContext {
+	var p = new(ElseIfContext)
+
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SwiftParserRULE_elseIf
+
+	return p
+}
+
+func (s *ElseIfContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ElseIfContext) Kw_ELSE() antlr.TerminalNode {
+	return s.GetToken(SwiftParserKw_ELSE, 0)
+}
+
+func (s *ElseIfContext) Kw_IF() antlr.TerminalNode {
+	return s.GetToken(SwiftParserKw_IF, 0)
+}
+
+func (s *ElseIfContext) LPAREN() antlr.TerminalNode {
+	return s.GetToken(SwiftParserLPAREN, 0)
+}
+
+func (s *ElseIfContext) Expr() IExprContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExprContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExprContext)
+}
+
+func (s *ElseIfContext) RPAREN() antlr.TerminalNode {
+	return s.GetToken(SwiftParserRPAREN, 0)
+}
+
+func (s *ElseIfContext) LBRACE() antlr.TerminalNode {
+	return s.GetToken(SwiftParserLBRACE, 0)
+}
+
+func (s *ElseIfContext) Block() IBlockContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IBlockContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IBlockContext)
+}
+
+func (s *ElseIfContext) RBRACE() antlr.TerminalNode {
+	return s.GetToken(SwiftParserRBRACE, 0)
+}
+
+func (s *ElseIfContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ElseIfContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *ElseIfContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case SwiftVisitor:
+		return t.VisitElseIf(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *SwiftParser) ElseIf() (localctx IElseIfContext) {
+	localctx = NewElseIfContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 22, SwiftParserRULE_elseIf)
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(102)
+		p.Match(SwiftParserKw_ELSE)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	{
+		p.SetState(103)
+		p.Match(SwiftParserKw_IF)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	{
+		p.SetState(104)
+		p.Match(SwiftParserLPAREN)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	{
+		p.SetState(105)
+		p.expr(0)
+	}
+	{
+		p.SetState(106)
+		p.Match(SwiftParserRPAREN)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	{
+		p.SetState(107)
+		p.Match(SwiftParserLBRACE)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	{
+		p.SetState(108)
+		p.Block()
+	}
+	{
+		p.SetState(109)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1549,10 +2321,10 @@ func (s *WhileStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface
 
 func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 	localctx = NewWhileStatementContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, SwiftParserRULE_whileStatement)
+	p.EnterRule(localctx, 24, SwiftParserRULE_whileStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(61)
+		p.SetState(111)
 		p.Match(SwiftParserKw_WHILE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1560,7 +2332,7 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 		}
 	}
 	{
-		p.SetState(62)
+		p.SetState(112)
 		p.Match(SwiftParserLPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1568,11 +2340,11 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 		}
 	}
 	{
-		p.SetState(63)
+		p.SetState(113)
 		p.expr(0)
 	}
 	{
-		p.SetState(64)
+		p.SetState(114)
 		p.Match(SwiftParserRPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1580,7 +2352,7 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 		}
 	}
 	{
-		p.SetState(65)
+		p.SetState(115)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1588,11 +2360,11 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 		}
 	}
 	{
-		p.SetState(66)
+		p.SetState(116)
 		p.Block()
 	}
 	{
-		p.SetState(67)
+		p.SetState(117)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1758,10 +2530,10 @@ func (s *ForStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{}
 
 func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 	localctx = NewForStatementContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 18, SwiftParserRULE_forStatement)
+	p.EnterRule(localctx, 26, SwiftParserRULE_forStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(69)
+		p.SetState(119)
 		p.Match(SwiftParserKw_FOR)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1769,11 +2541,11 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(70)
+		p.SetState(120)
 		p.expr(0)
 	}
 	{
-		p.SetState(71)
+		p.SetState(121)
 		p.Match(SwiftParserKw_IN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1781,11 +2553,11 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(72)
+		p.SetState(122)
 		p.expr(0)
 	}
 	{
-		p.SetState(73)
+		p.SetState(123)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1793,11 +2565,11 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(74)
+		p.SetState(124)
 		p.Block()
 	}
 	{
-		p.SetState(75)
+		p.SetState(125)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2675,14 +3447,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 	localctx = NewExprContext(p, p.GetParserRuleContext(), _parentState)
 	var _prevctx IExprContext = localctx
 	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
-	_startState := 20
-	p.EnterRecursionRule(localctx, 20, SwiftParserRULE_expr, _p)
+	_startState := 28
+	p.EnterRecursionRule(localctx, 28, SwiftParserRULE_expr, _p)
 	var _la int
 
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(91)
+	p.SetState(141)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -2695,7 +3467,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		_prevctx = localctx
 
 		{
-			p.SetState(78)
+			p.SetState(128)
 			p.Match(SwiftParserOp_MINUS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2703,7 +3475,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 		{
-			p.SetState(79)
+			p.SetState(129)
 			p.expr(18)
 		}
 
@@ -2712,7 +3484,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(80)
+			p.SetState(130)
 			p.Match(SwiftParserOp_NOT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2720,7 +3492,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 		{
-			p.SetState(81)
+			p.SetState(131)
 
 			var _x = p.expr(11)
 
@@ -2732,7 +3504,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(82)
+			p.SetState(132)
 			p.Match(SwiftParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2740,11 +3512,11 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 		{
-			p.SetState(83)
+			p.SetState(133)
 			p.expr(0)
 		}
 		{
-			p.SetState(84)
+			p.SetState(134)
 			p.Match(SwiftParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2757,7 +3529,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(86)
+			p.SetState(136)
 			p.Match(SwiftParserINT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2770,7 +3542,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(87)
+			p.SetState(137)
 			p.Match(SwiftParserID)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2783,7 +3555,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(88)
+			p.SetState(138)
 			p.Match(SwiftParserDOUBLE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2796,7 +3568,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(89)
+			p.SetState(139)
 			p.Match(SwiftParserSTRING)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2809,7 +3581,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(90)
+			p.SetState(140)
 			p.Match(SwiftParserBOOL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2822,12 +3594,12 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(128)
+	p.SetState(178)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 5, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 8, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
@@ -2837,26 +3609,26 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(126)
+			p.SetState(176)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
 
-			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext()) {
+			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 7, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewArithmeticExprContext(p, NewExprContext(p, _parentctx, _parentState))
 				localctx.(*ArithmeticExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(93)
+				p.SetState(143)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 17)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 17)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(94)
+					p.SetState(144)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -2874,7 +3646,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(95)
+					p.SetState(145)
 
 					var _x = p.expr(18)
 
@@ -2886,14 +3658,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ArithmeticExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(96)
+				p.SetState(146)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 16)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 16)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(97)
+					p.SetState(147)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -2911,7 +3683,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(98)
+					p.SetState(148)
 
 					var _x = p.expr(17)
 
@@ -2923,14 +3695,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ArithmeticExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(99)
+				p.SetState(149)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 15)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 15)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(100)
+					p.SetState(150)
 
 					var _m = p.Match(SwiftParserOp_MOD)
 
@@ -2941,7 +3713,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(101)
+					p.SetState(151)
 
 					var _x = p.expr(16)
 
@@ -2953,14 +3725,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ComparasionExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(102)
+				p.SetState(152)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 14)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 14)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(103)
+					p.SetState(153)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -2978,7 +3750,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(104)
+					p.SetState(154)
 
 					var _x = p.expr(15)
 
@@ -2990,14 +3762,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ComparasionExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(105)
+				p.SetState(155)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 13)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 13)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(106)
+					p.SetState(156)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -3015,7 +3787,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(107)
+					p.SetState(157)
 
 					var _x = p.expr(14)
 
@@ -3027,14 +3799,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ComparasionExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(108)
+				p.SetState(158)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 12)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 12)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(109)
+					p.SetState(159)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -3052,7 +3824,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(110)
+					p.SetState(160)
 
 					var _x = p.expr(13)
 
@@ -3064,14 +3836,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*TernaryExprContext).condition = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(111)
+				p.SetState(161)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 10)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 10)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(112)
+					p.SetState(162)
 					p.Match(SwiftParserOp_TERNARY)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -3079,14 +3851,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(113)
+					p.SetState(163)
 
 					var _x = p.expr(0)
 
 					localctx.(*TernaryExprContext).cTrue = _x
 				}
 				{
-					p.SetState(114)
+					p.SetState(164)
 					p.Match(SwiftParserCOLON)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -3094,7 +3866,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(115)
+					p.SetState(165)
 
 					var _x = p.expr(11)
 
@@ -3106,14 +3878,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*LogicalExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(117)
+				p.SetState(167)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 9)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 9)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(118)
+					p.SetState(168)
 
 					var _m = p.Match(SwiftParserOp_AND)
 
@@ -3124,7 +3896,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(119)
+					p.SetState(169)
 
 					var _x = p.expr(10)
 
@@ -3136,14 +3908,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*LogicalExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(120)
+				p.SetState(170)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 8)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 8)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(121)
+					p.SetState(171)
 
 					var _m = p.Match(SwiftParserOp_OR)
 
@@ -3154,7 +3926,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(122)
+					p.SetState(172)
 
 					var _x = p.expr(9)
 
@@ -3166,14 +3938,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*RangeExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(123)
+				p.SetState(173)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 7)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 7)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(124)
+					p.SetState(174)
 					p.Match(SwiftParserKw_RANGE)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -3181,7 +3953,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(125)
+					p.SetState(175)
 
 					var _x = p.expr(8)
 
@@ -3193,12 +3965,12 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 
 		}
-		p.SetState(130)
+		p.SetState(180)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 5, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 8, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
@@ -3220,6 +3992,13 @@ errorExit:
 func (p *SwiftParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
 	switch ruleIndex {
 	case 10:
+		var t *ElseIfTailContext = nil
+		if localctx != nil {
+			t = localctx.(*ElseIfTailContext)
+		}
+		return p.ElseIfTail_Sempred(t, predIndex)
+
+	case 14:
 		var t *ExprContext = nil
 		if localctx != nil {
 			t = localctx.(*ExprContext)
@@ -3231,36 +4010,46 @@ func (p *SwiftParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex i
 	}
 }
 
-func (p *SwiftParser) Expr_Sempred(localctx antlr.RuleContext, predIndex int) bool {
+func (p *SwiftParser) ElseIfTail_Sempred(localctx antlr.RuleContext, predIndex int) bool {
 	switch predIndex {
 	case 0:
+		return p.Precpred(p.GetParserRuleContext(), 2)
+
+	default:
+		panic("No predicate with index: " + fmt.Sprint(predIndex))
+	}
+}
+
+func (p *SwiftParser) Expr_Sempred(localctx antlr.RuleContext, predIndex int) bool {
+	switch predIndex {
+	case 1:
 		return p.Precpred(p.GetParserRuleContext(), 17)
 
-	case 1:
+	case 2:
 		return p.Precpred(p.GetParserRuleContext(), 16)
 
-	case 2:
+	case 3:
 		return p.Precpred(p.GetParserRuleContext(), 15)
 
-	case 3:
+	case 4:
 		return p.Precpred(p.GetParserRuleContext(), 14)
 
-	case 4:
+	case 5:
 		return p.Precpred(p.GetParserRuleContext(), 13)
 
-	case 5:
+	case 6:
 		return p.Precpred(p.GetParserRuleContext(), 12)
 
-	case 6:
+	case 7:
 		return p.Precpred(p.GetParserRuleContext(), 10)
 
-	case 7:
+	case 8:
 		return p.Precpred(p.GetParserRuleContext(), 9)
 
-	case 8:
+	case 9:
 		return p.Precpred(p.GetParserRuleContext(), 8)
 
-	case 9:
+	case 10:
 		return p.Precpred(p.GetParserRuleContext(), 7)
 
 	default:

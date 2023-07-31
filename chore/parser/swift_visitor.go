@@ -32,6 +32,18 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#ifStatement.
 	VisitIfStatement(ctx *IfStatementContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#ifStatementTail.
+	VisitIfStatementTail(ctx *IfStatementTailContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#elseStatement.
+	VisitElseStatement(ctx *ElseStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#elseIfTail.
+	VisitElseIfTail(ctx *ElseIfTailContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#elseIf.
+	VisitElseIf(ctx *ElseIfContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#whileStatement.
 	VisitWhileStatement(ctx *WhileStatementContext) interface{}
 
