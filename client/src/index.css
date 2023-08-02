@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-3;
+}
+
+@layer components {
+  .main-sidebar-icons {
+    @apply w-8 h-8 text-gray-8 hover:text-white cursor-pointer;
+  }
+  .files-navbar-icons {
+    @apply w-6 h-6 text-gray-8 hover:text-white cursor-pointer;
+  }
+}
