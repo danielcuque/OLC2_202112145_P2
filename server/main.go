@@ -1,7 +1,6 @@
 package main
 
 import (
-	A "OLC2/api"
 	I "OLC2/chore/interfaces"
 	U "OLC2/chore/utils"
 
@@ -17,6 +16,6 @@ func main() {
 	fmt.Println(result.Memory)
 	fmt.Println(result.Errors)
 
-	A.Init()
+	// A.Init()
 
 }

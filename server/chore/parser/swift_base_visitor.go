@@ -24,43 +24,11 @@ func (v *BaseSwiftVisitor) VisitVariableType(ctx *VariableTypeContext) interface
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitVariableCase(ctx *VariableCaseContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseSwiftVisitor) VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitIfStatementTail(ctx *IfStatementTailContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitElseStatement(ctx *ElseStatementContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitElseIfTail(ctx *ElseIfTailContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitElseIf(ctx *ElseIfContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitWhileStatement(ctx *WhileStatementContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

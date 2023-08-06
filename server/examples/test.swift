@@ -14,12 +14,12 @@ var g = 1 > 1.1
 
 var h = "hola" == "hola"
 
-if (a) {
-	evalWhile = 5
-} else {
-    evalWhile = 10
-}
+// if (a) {
+// 	evalWhile = 5
+// } else {
+//     evalWhile = 10
+// }
 
-while (b < evalWhile) {
-	b = b + 1
-}
+// while (b < evalWhile) {
+// 	b = b + 1
+// }

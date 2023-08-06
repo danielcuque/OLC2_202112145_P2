@@ -5,9 +5,9 @@ import (
 	"fmt"
 )
 
-func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContext) Value {
+func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContext) interface{} {
 	id := ctx.ID().GetText()
-	value := v.Visit(ctx.Expr())
+	value := v.Visit(ctx.Expr()).(Value)
 	isIdExist, ok := v.Memory[id]
 
 	if ok && isIdExist.ParseValue != nil {
@@ -16,5 +16,6 @@ func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContex
 	}
 
 	v.Memory[id] = value
+
 	return Value{ParseValue: true}
 }

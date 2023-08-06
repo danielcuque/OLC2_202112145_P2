@@ -12,22 +12,22 @@ var intT = U.GetType(int64(1))
 var floatT = U.GetType(float64(1))
 var stringT = U.GetType("")
 
-func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) Value {
+func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 	i, _ := strconv.ParseInt(ctx.GetText(), 10, 64)
 	return Value{ParseValue: i}
 }
 
-func (v *Visitor) VisitDoubleExpr(ctx *parser.DoubleExprContext) Value {
+func (v *Visitor) VisitDoubleExpr(ctx *parser.DoubleExprContext) interface{} {
 	f, _ := strconv.ParseFloat(ctx.GetText(), 64)
 	return Value{ParseValue: f}
 }
 
-func (v *Visitor) VisitStrExpr(ctx *parser.StrExprContext) Value {
+func (v *Visitor) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	value := strings.Trim(ctx.GetText(), "\"")
 	return Value{ParseValue: value}
 }
 
-func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) Value {
+func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	id := ctx.GetText()
 	value, ok := v.Memory[id]
 	if ok {
@@ -37,17 +37,17 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) Value {
 	}
 }
 
-func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) Value {
+func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 	value, _ := strconv.ParseBool(ctx.GetText())
 	return Value{ParseValue: value}
 }
 
-func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) Value {
+func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 	return v.Visit(ctx.Expr())
 }
 
-func (v *Visitor) VisitUnaryMinusExp(ctx *parser.UnaryExprContext) Value {
-	value := v.Visit(ctx.Expr()).ParseValue
+func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
+	value := v.Visit(ctx.Expr()).(Value).ParseValue
 	valueT := U.GetType(value)
 	if valueT == intT {
 		return Value{ParseValue: -value.(int64)}
@@ -58,9 +58,9 @@ func (v *Visitor) VisitUnaryMinusExp(ctx *parser.UnaryExprContext) Value {
 	return Value{ParseValue: nil}
 }
 
-func (v *Visitor) VisitArithmeticExp(ctx *parser.ArithmeticExprContext) Value {
-	l := v.Visit(ctx.GetLeft()).ParseValue
-	r := v.Visit(ctx.GetRight()).ParseValue
+func (v *Visitor) VisitArithmeticExpr(ctx *parser.ArithmeticExprContext) interface{} {
+	l := v.Visit(ctx.GetLeft()).(Value).ParseValue
+	r := v.Visit(ctx.GetRight()).(Value).ParseValue
 	op := ctx.GetOp().GetText()
 	return v.arithmeticOp(l, r, op)
 }
@@ -152,11 +152,11 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) Value {
 	return Value{ParseValue: nil}
 }
 
-func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value {
+func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) interface{} {
 
 	// Parse left and right
-	l := v.Visit(ctx.GetLeft()).ParseValue
-	r := v.Visit(ctx.GetRight()).ParseValue
+	l := v.Visit(ctx.GetLeft()).(Value).ParseValue
+	r := v.Visit(ctx.GetRight()).(Value).ParseValue
 	op := ctx.GetOp().GetText()
 
 	// Get types
@@ -257,8 +257,8 @@ func (v *Visitor) VisitComparasionExp(ctx *parser.ComparasionExprContext) Value 
 
 // Logical operators
 
-func (v *Visitor) VisitTernaryExpr(ctx *parser.TernaryExprContext) Value {
-	cond := v.Visit(ctx.GetCondition()).ParseValue.(bool)
+func (v *Visitor) VisitTernaryExpr(ctx *parser.TernaryExprContext) interface{} {
+	cond := v.Visit(ctx.GetCondition()).(Value).ParseValue.(bool)
 	if cond {
 		return v.Visit(ctx.GetCTrue())
 	} else {
@@ -267,9 +267,9 @@ func (v *Visitor) VisitTernaryExpr(ctx *parser.TernaryExprContext) Value {
 
 }
 
-func (v *Visitor) VisitLogicalExp(ctx *parser.LogicalExprContext) Value {
-	l := v.Visit(ctx.GetLeft()).ParseValue.(bool)
-	r := v.Visit(ctx.GetRight()).ParseValue.(bool)
+func (v *Visitor) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} {
+	l := v.Visit(ctx.GetLeft()).(Value).ParseValue.(bool)
+	r := v.Visit(ctx.GetRight()).(Value).ParseValue.(bool)
 	op := ctx.GetOp().GetText()
 
 	operators := map[string]func(bool, bool) bool{
@@ -285,16 +285,16 @@ func (v *Visitor) VisitLogicalExp(ctx *parser.LogicalExprContext) Value {
 }
 
 // Not operator
-func (v *Visitor) VisitNotExp(ctx *parser.NotExprContext) Value {
-	value := v.Visit(ctx.GetRight()).ParseValue.(bool)
+func (v *Visitor) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
+	value := v.Visit(ctx.GetRight()).(Value).ParseValue.(bool)
 	return Value{ParseValue: !value}
 }
 
 // Range operator
-func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) Value {
+func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 	// Catch if the left and right are not integers
-	l, okL := v.Visit(ctx.GetLeft()).ParseValue.(int64)
-	r, okR := v.Visit(ctx.GetRight()).ParseValue.(int64)
+	l, okL := v.Visit(ctx.GetLeft()).(Value).ParseValue.(int64)
+	r, okR := v.Visit(ctx.GetRight()).(Value).ParseValue.(int64)
 
 	if !okL || !okR {
 		v.NewError("Left and right values must be integers")
@@ -313,4 +313,8 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) Value {
 	}
 
 	return Value{ParseValue: newVal}
+}
+
+func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {
+	return ""
 }

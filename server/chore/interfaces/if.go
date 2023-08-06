@@ -1,12 +1,22 @@
 package interfaces
 
-import "OLC2/chore/parser"
+// func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
+// 	value, ok := v.Visit(ctx.Expr()).(Value).ParseValue.(bool)
 
-func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) Value {
-	value, ok := v.Visit(ctx.Expr()).ParseValue.(bool)
+// 	if ok && value {
+// 		return v.Visit(ctx.Block())
+// 	}
+// 	return Value{ParseValue: false}
+// }
 
-	if ok && value {
-		return v.Visit(ctx.Block())
-	}
-	return Value{ParseValue: false}
-}
+// func (v *Visitor) VisitIfStatementTail(ctx *parser.IfStatementTailContext) interface{} {
+// 	return ""
+// }
+
+// func (v *Visitor) VisitElseIfTail(ctx *parser.ElseIfTailContext) interface{} {
+// 	return ""
+// }
+
+// func (v *Visitor) VisitElseIf(ctx *parser.ElseIfContext) interface{} {
+// 	return ""
+// }

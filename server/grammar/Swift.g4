@@ -9,44 +9,34 @@ program: block EOF;
 block: (statement)*;
 
 // Statements
-statement:
-	variableAssignment
-	| variableDeclaration
-	| ifStatement
-	| whileStatement
-	| forStatement;
+statement: variableAssignment | variableDeclaration;
+// | ifStatement | whileStatement; | forStatement;
 
 // Variable types
 variableType: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
 
 // Variable declaration
-variableCase: (Kw_LET | Kw_VAR);
 
 variableDeclaration:
-	variableCase ID Op_ASSIGN expr (SEMICOLON)?;
+	(Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?;
 
 // Variable assignment
 variableAssignment: ID Op_ASSIGN expr;
 
-// If statement
-ifStatement:
-	Kw_IF LPAREN expr RPAREN LBRACE block RBRACE
-	| Kw_IF LPAREN expr RPAREN LBRACE block RBRACE ifStatementTail;
+// If statement ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE | Kw_IF LPAREN expr RPAREN
+// LBRACE block RBRACE ifStatementTail;
 
-ifStatementTail:
-	elseIfTail elseStatement
-	| elseStatement
-	| elseIfTail;
+// ifStatementTail: elseIfTail elseStatement | elseStatement | elseIfTail;
 
-elseStatement: Kw_ELSE LBRACE block RBRACE;
+// elseStatement: Kw_ELSE LBRACE block RBRACE;
 
-elseIfTail: elseIfTail elseIf | elseIf;
+// elseIfTail: elseIfTail elseIf | elseIf;
 
-elseIf: Kw_ELSE Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
+// elseIf: Kw_ELSE Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
 
-whileStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
+// whileStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
 
-forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
+// forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
 
 // Expressions
 expr:

@@ -5,9 +5,11 @@ import (
 	"fmt"
 )
 
-func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) Value {
+func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
 	id := ctx.ID().GetText()
-	value := v.Visit(ctx.Expr())
+	value := v.Visit(ctx.Expr()).(Value)
+
+	// fmt.Println("Variable assignment", v.Memory)
 
 	// Check if the variable exists
 	_, ok := v.Memory[id]

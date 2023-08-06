@@ -9,7 +9,7 @@ import (
 )
 
 type Visitor struct {
-	parser.SwiftVisitor
+	parser.BaseSwiftVisitor
 	Memory map[string]Value
 	Errors []error
 }
@@ -24,14 +24,16 @@ func NewVisitor() *Visitor {
 func NewEvaluator(input string) *Visitor {
 	lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
 	stream := antlr.NewCommonTokenStream(lexer, 0)
-	p := parser.NewSwiftParser(stream)
+	parser := parser.NewSwiftParser(stream)
 
-	p.BuildParseTrees = true
-	tree := p.Program()
-	eval := NewVisitor()
-	eval.Visit(tree)
+	parser.BuildParseTrees = true
 
-	return eval
+	tree := parser.Program()
+
+	visitor := NewVisitor()
+	visitor.Visit(tree)
+
+	return visitor
 }
 
 func (v *Visitor) NewError(msg string) {
