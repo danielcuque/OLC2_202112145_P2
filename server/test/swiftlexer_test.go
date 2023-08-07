@@ -16,10 +16,10 @@ type testCases struct {
 func TestSwiftLexerKeywordDataTypes(t *testing.T) {
 	testCases := []testCases{
 		{
-			input: "Int Double String Bool",
+			input: "Int Float String Bool",
 			expectedTokens: []int{
 				parser.SwiftLexerKw_INT,
-				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerKw_FLOAT,
 				parser.SwiftLexerKw_STRING,
 				parser.SwiftLexerKw_BOOL,
 			},
@@ -40,7 +40,7 @@ func TestSwiftLexerLiteralDataTypes(t *testing.T) {
 			`,
 			expectedTokens: []int{
 				parser.SwiftLexerINT,
-				parser.SwiftLexerDOUBLE,
+				parser.SwiftLexerFLOAT,
 				parser.SwiftLexerSTRING,
 				parser.SwiftLexerBOOL,
 			},
@@ -336,16 +336,16 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerLPAREN,
 				parser.SwiftLexerID,
 				parser.SwiftLexerCOLON,
-				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerKw_FLOAT,
 				parser.SwiftLexerRPAREN,
 				parser.SwiftLexerOp_ARROW,
-				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerKw_FLOAT,
 				parser.SwiftLexerLBRACE,
 
 				parser.SwiftLexerKw_VAR,
 				parser.SwiftLexerID,
 				parser.SwiftLexerCOLON,
-				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerKw_FLOAT,
 				parser.SwiftLexerOp_ASSIGN,
 				parser.SwiftLexerINT,
 
@@ -364,7 +364,7 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerKw_RETURN,
 				parser.SwiftLexerID,
 				parser.SwiftLexerOp_DIV,
-				parser.SwiftLexerKw_DOUBLE,
+				parser.SwiftLexerKw_FLOAT,
 				parser.SwiftLexerLPAREN,
 				parser.SwiftLexerID,
 				parser.SwiftLexerDOT,
@@ -390,9 +390,9 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerLPAREN,
 				parser.SwiftLexerINT,
 				parser.SwiftLexerCOMMA,
-				parser.SwiftLexerDOUBLE,
+				parser.SwiftLexerFLOAT,
 				parser.SwiftLexerCOMMA,
-				parser.SwiftLexerDOUBLE,
+				parser.SwiftLexerFLOAT,
 				parser.SwiftLexerRPAREN,
 			},
 		},

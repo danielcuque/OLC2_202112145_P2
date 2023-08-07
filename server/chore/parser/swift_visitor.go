@@ -29,6 +29,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#FloatExpr.
+	VisitFloatExpr(ctx *FloatExprContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#IdExpr.
 	VisitIdExpr(ctx *IdExprContext) interface{}
 
@@ -37,9 +40,6 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#UnaryExpr.
 	VisitUnaryExpr(ctx *UnaryExprContext) interface{}
-
-	// Visit a parse tree produced by SwiftParser#DoubleExpr.
-	VisitDoubleExpr(ctx *DoubleExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ArithmeticExpr.
 	VisitArithmeticExpr(ctx *ArithmeticExprContext) interface{}

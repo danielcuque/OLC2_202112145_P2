@@ -35,7 +35,7 @@ func swiftParserInit() {
 	staticData.LiteralNames = []string{
 		"", "", "", "", "'let'", "'var'", "'func'", "'struct'", "'if'", "'else'",
 		"'switch'", "'case'", "'default'", "'for'", "'while'", "'break'", "'continue'",
-		"'return'", "'do'", "'repeat'", "'in'", "'Int'", "'Double'", "'Bool'",
+		"'return'", "'do'", "'repeat'", "'in'", "'Int'", "'Float'", "'Bool'",
 		"'String'", "'nil'", "'...'", "", "", "", "", "", "", "'->'", "'=='",
 		"'!='", "'<'", "'>'", "'<='", "'>='", "'='", "'*='", "'/='", "'+='",
 		"'-='", "'%='", "'*'", "'/'", "'+'", "'-'", "'%'", "'&&'", "'||'", "'!'",
@@ -46,8 +46,8 @@ func swiftParserInit() {
 		"", "WHITESPACE", "COMMENT", "BLOCK_COMMENT", "Kw_LET", "Kw_VAR", "Kw_FUNC",
 		"Kw_STRUCT", "Kw_IF", "Kw_ELSE", "Kw_SWITCH", "Kw_CASE", "Kw_DEFAULT",
 		"Kw_FOR", "Kw_WHILE", "Kw_BREAK", "Kw_CONTINUE", "Kw_RETURN", "Kw_DO",
-		"Kw_REPEAT", "Kw_IN", "Kw_INT", "Kw_DOUBLE", "Kw_BOOL", "Kw_STRING",
-		"Kw_NIL", "Kw_RANGE", "INT", "DOUBLE", "BOOL", "STRING", "CHAR", "ID",
+		"Kw_REPEAT", "Kw_IN", "Kw_INT", "Kw_FLOAT", "Kw_BOOL", "Kw_STRING",
+		"Kw_NIL", "Kw_RANGE", "INT", "FLOAT", "BOOL", "STRING", "CHAR", "ID",
 		"Op_ARROW", "Op_EQ", "Op_NEQ", "Op_LT", "Op_GT", "Op_LE", "Op_GE", "Op_ASSIGN",
 		"Op_MUL_ASSIGN", "Op_DIV_ASSIGN", "Op_PLUS_ASSIGN", "Op_MINUS_ASSIGN",
 		"Op_MOD_ASSIGN", "Op_MUL", "Op_DIV", "Op_PLUS", "Op_MINUS", "Op_MOD",
@@ -162,13 +162,13 @@ const (
 	SwiftParserKw_REPEAT       = 19
 	SwiftParserKw_IN           = 20
 	SwiftParserKw_INT          = 21
-	SwiftParserKw_DOUBLE       = 22
+	SwiftParserKw_FLOAT        = 22
 	SwiftParserKw_BOOL         = 23
 	SwiftParserKw_STRING       = 24
 	SwiftParserKw_NIL          = 25
 	SwiftParserKw_RANGE        = 26
 	SwiftParserINT             = 27
-	SwiftParserDOUBLE          = 28
+	SwiftParserFLOAT           = 28
 	SwiftParserBOOL            = 29
 	SwiftParserSTRING          = 30
 	SwiftParserCHAR            = 31
@@ -628,7 +628,7 @@ type IVariableTypeContext interface {
 
 	// Getter signatures
 	Kw_INT() antlr.TerminalNode
-	Kw_DOUBLE() antlr.TerminalNode
+	Kw_FLOAT() antlr.TerminalNode
 	Kw_BOOL() antlr.TerminalNode
 	Kw_STRING() antlr.TerminalNode
 	Kw_NIL() antlr.TerminalNode
@@ -673,8 +673,8 @@ func (s *VariableTypeContext) Kw_INT() antlr.TerminalNode {
 	return s.GetToken(SwiftParserKw_INT, 0)
 }
 
-func (s *VariableTypeContext) Kw_DOUBLE() antlr.TerminalNode {
-	return s.GetToken(SwiftParserKw_DOUBLE, 0)
+func (s *VariableTypeContext) Kw_FLOAT() antlr.TerminalNode {
+	return s.GetToken(SwiftParserKw_FLOAT, 0)
 }
 
 func (s *VariableTypeContext) Kw_BOOL() antlr.TerminalNode {
@@ -1126,6 +1126,38 @@ func (s *BoolExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	}
 }
 
+type FloatExprContext struct {
+	ExprContext
+}
+
+func NewFloatExprContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *FloatExprContext {
+	var p = new(FloatExprContext)
+
+	InitEmptyExprContext(&p.ExprContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*ExprContext))
+
+	return p
+}
+
+func (s *FloatExprContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *FloatExprContext) FLOAT() antlr.TerminalNode {
+	return s.GetToken(SwiftParserFLOAT, 0)
+}
+
+func (s *FloatExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case SwiftVisitor:
+		return t.VisitFloatExpr(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
 type IdExprContext struct {
 	ExprContext
 }
@@ -1283,38 +1315,6 @@ func (s *UnaryExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case SwiftVisitor:
 		return t.VisitUnaryExpr(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
-type DoubleExprContext struct {
-	ExprContext
-}
-
-func NewDoubleExprContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *DoubleExprContext {
-	var p = new(DoubleExprContext)
-
-	InitEmptyExprContext(&p.ExprContext)
-	p.parser = parser
-	p.CopyAll(ctx.(*ExprContext))
-
-	return p
-}
-
-func (s *DoubleExprContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *DoubleExprContext) DOUBLE() antlr.TerminalNode {
-	return s.GetToken(SwiftParserDOUBLE, 0)
-}
-
-func (s *DoubleExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case SwiftVisitor:
-		return t.VisitDoubleExpr(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -2000,13 +2000,13 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 
-	case SwiftParserDOUBLE:
-		localctx = NewDoubleExprContext(p, localctx)
+	case SwiftParserFLOAT:
+		localctx = NewFloatExprContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
 			p.SetState(51)
-			p.Match(SwiftParserDOUBLE)
+			p.Match(SwiftParserFLOAT)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit

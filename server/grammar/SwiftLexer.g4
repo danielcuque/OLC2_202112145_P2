@@ -29,7 +29,7 @@ Kw_IN: 'in';
 
 // Types
 Kw_INT: 'Int';
-Kw_DOUBLE: 'Double';
+Kw_FLOAT: 'Float';
 Kw_BOOL: 'Bool';
 Kw_STRING: 'String';
 Kw_NIL: 'nil';
@@ -39,7 +39,7 @@ Kw_RANGE: '...';
 
 // Literals
 INT: [0-9]+;
-DOUBLE: [0-9]* '.' [0-9]+;
+FLOAT: [0-9]* '.' [0-9]+;
 BOOL: 'true' | 'false';
 STRING: '"' (~["\\\r\n] | '\\' [\\\r\n])* '"';
 CHAR: '\'' (~['\\\r\n] | '\\' [\\\r\n])* '\'';

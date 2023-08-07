@@ -21,7 +21,7 @@ null
 'repeat'
 'in'
 'Int'
-'Double'
+'Float'
 'Bool'
 'String'
 'nil'
@@ -89,13 +89,13 @@ Kw_DO
 Kw_REPEAT
 Kw_IN
 Kw_INT
-Kw_DOUBLE
+Kw_FLOAT
 Kw_BOOL
 Kw_STRING
 Kw_NIL
 Kw_RANGE
 INT
-DOUBLE
+FLOAT
 BOOL
 STRING
 CHAR

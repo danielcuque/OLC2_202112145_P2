@@ -1,5 +1,7 @@
 # Run build and main program
 
+cd server/
+
 # Build
 ./build.sh
 

@@ -13,7 +13,7 @@ statement: variableAssignment | variableDeclaration;
 // | ifStatement | whileStatement; | forStatement;
 
 // Variable types
-variableType: Kw_INT | Kw_DOUBLE | Kw_BOOL | Kw_STRING | Kw_NIL;
+variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_NIL;
 
 // Variable declaration
 
@@ -55,6 +55,6 @@ expr:
 	| LPAREN expr RPAREN											# ParExpr
 	| INT															# IntExpr
 	| ID															# IdExpr
-	| DOUBLE														# DoubleExpr
+	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
 	| BOOL															# BoolExpr;

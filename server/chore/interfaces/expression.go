@@ -17,7 +17,7 @@ func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 	return Value{ParseValue: i}
 }
 
-func (v *Visitor) VisitDoubleExpr(ctx *parser.DoubleExprContext) interface{} {
+func (v *Visitor) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
 	f, _ := strconv.ParseFloat(ctx.GetText(), 64)
 	return Value{ParseValue: f}
 }
