@@ -18,4 +18,6 @@ func main() {
 		fmt.Println("Key:", k, "Value:", v.GetValue())
 	}
 
+	fmt.Println(result.Scope)
+
 }

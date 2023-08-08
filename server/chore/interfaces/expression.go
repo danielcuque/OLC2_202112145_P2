@@ -38,7 +38,7 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	if ok {
 		return value
 	} else {
-		v.NewError("Error: Variable " + id + " no definida en la linea")
+		v.NewError("Error: Variable " + id)
 		return nil
 	}
 }
@@ -50,14 +50,14 @@ func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	op := v.Visit(ctx.Expr()).(IValue)
 	value := op.GetValue()
-	valueT := op.GetType()
+	opType := op.GetType()
 
-	if valueT == intT {
+	if opType == intT {
 		return NewIntValue(-value.(int))
-	} else if valueT == floatT {
+	} else if opType == floatT {
 		return NewFloatValue(-value.(float64))
 	}
-	v.NewError("Error: No se puede aplicar el operador unario - a " + valueT)
+	v.NewError("Error: No se puede aplicar el operador unario - a " + opType)
 	return nil
 }
 

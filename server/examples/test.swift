@@ -10,9 +10,11 @@ var evalWhile = 10
 // evalWhile = false
 // b = 1
 
-// var g = 1 > 1.1
+var g = 1 > 1.1
 
-// var h = "hola" == "hola"
+var h = "hola" == "hola"
+
+var i = "ho" + "la"
 
 // if (a) {
 // 	evalWhile = 5

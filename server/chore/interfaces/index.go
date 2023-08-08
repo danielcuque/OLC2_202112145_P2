@@ -2,7 +2,6 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
-	"log"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -10,7 +9,7 @@ import (
 func (v *Visitor) Visit(tree antlr.ParseTree) interface{} {
 	switch val := tree.(type) {
 	case *antlr.ErrorNodeImpl:
-		log.Fatal(val.GetText())
+		v.NewError(val.GetText())
 		return nil
 	default:
 		return tree.Accept(v)
