@@ -35,3 +35,9 @@ type Value struct {
 	Type       ValueType
 	ParseValue interface{}
 }
+
+type Variable struct {
+	Name       string
+	Value      Value
+	IsConstant bool
+}

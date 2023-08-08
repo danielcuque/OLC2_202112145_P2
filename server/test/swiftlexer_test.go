@@ -11,6 +11,7 @@ import (
 type testCases struct {
 	input          string
 	expectedTokens []int
+	desc           string
 }
 
 func TestSwiftLexerKeywordDataTypes(t *testing.T) {
@@ -248,6 +249,7 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerOp_ASSIGN,
 				parser.SwiftLexerINT,
 			},
+			desc: "struct declaration",
 		},
 		{
 			input: `func greet(person: String, alreadyGreeted: Bool) -> String {
@@ -316,15 +318,17 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerRPAREN,
 				parser.SwiftLexerRPAREN,
 			},
+
+			desc: "if else statement",
 		},
 		{
 			input: `
-			func arithmeticMean(numbers: Double) -> Double {
-				var total: Double = 0
+			func arithmeticMean(numbers: Float) -> Float {
+				var total: Float = 0
 				for number in numbers {
 					total += number
 				}
-				return total / Double(numbers.count)
+				return total / Float(numbers.count)
 			}
 			arithmeticMean(1, 2, 3, 4, 5)
 			// returns 3.0, which is the arithmetic mean of these five numbers
@@ -395,6 +399,7 @@ func TestSwiftLexerCompoundBlocks(t *testing.T) {
 				parser.SwiftLexerFLOAT,
 				parser.SwiftLexerRPAREN,
 			},
+			desc: "for in statement",
 		},
 		{
 			input: `
@@ -428,7 +433,7 @@ func TraverseCases(t *testing.T, testCases []testCases) {
 				break
 			}
 			if token.GetTokenType() != expected {
-				t.Errorf("Esperado token %s pero se obtuvo %s en la línea %d, columna %d", tokenNames[expected], tokenNames[token.GetTokenType()], token.GetLine(), token.GetColumn())
+				t.Errorf("Esperado token %s pero se obtuvo %s en la línea %d, columna %d \n Test: %s", tokenNames[expected], tokenNames[token.GetTokenType()], token.GetLine(), token.GetColumn(), tc.desc)
 			}
 			stream.Consume()
 		}

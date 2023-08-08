@@ -5,6 +5,7 @@ package interfaces
 type ScopeNode struct {
 	Parent    *ScopeNode
 	Child     []*ScopeNode
+	Level     int
 	Variables map[string]Value
 }
 
