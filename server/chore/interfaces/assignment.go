@@ -14,14 +14,14 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	if !ok {
 		v.NewError(fmt.Sprintf("La variable %s no existe", id))
 		fmt.Println("Variable doesn't exist", id)
-		return Value{ParseValue: nil}
+		return nil
 	}
 
 	// Check if the types are the same
 	if v.Memory[id].GetType() != value.GetType() {
 		v.NewError(fmt.Sprintf("La variable %s, es de tipo %s y se le quiere asignar un valor de tipo %s", id, v.Memory[id].GetType(), value.GetType()))
 		fmt.Println("Variable is not the same type", id)
-		return Value{ParseValue: nil}
+		return nil
 	}
 
 	// Assign the value

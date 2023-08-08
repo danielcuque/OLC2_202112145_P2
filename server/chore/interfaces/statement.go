@@ -19,5 +19,5 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 	// if ctx.ForStatement() != nil {
 	// 	return v.Visit(ctx.ForStatement())
 	// }
-	return Value{ParseValue: true}
+	return nil
 }

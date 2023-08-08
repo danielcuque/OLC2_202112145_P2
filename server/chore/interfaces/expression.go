@@ -57,7 +57,7 @@ func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	} else if valueT == floatT {
 		return NewFloatValue(-value.(float64))
 	}
-	v.NewError("Error: No se puede aplicar el operador unario - a " + U.GetType(value))
+	v.NewError("Error: No se puede aplicar el operador unario - a " + valueT)
 	return nil
 }
 
@@ -305,21 +305,21 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 
 	if !okL || !okR {
 		v.NewError("Left and right values must be integers")
-		return Value{ParseValue: nil}
+		return nil
 	}
 
 	if l > r {
 		v.NewError("Left value is greater than right value")
-		return Value{ParseValue: nil}
+		return nil
 	}
 
-	newVal := make([]int, r-l+1)
+	newVal := make([]IValue, r-l+1)
 
 	for i := l; i <= r; i++ {
-		newVal[i-l] = i
+		newVal[i-l] = NewIntValue(i)
 	}
 
-	return Value{ParseValue: newVal}
+	return NewArrayValue(newVal)
 }
 
 func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {

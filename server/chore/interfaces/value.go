@@ -14,109 +14,114 @@ type IValue interface {
 	GetType() string
 }
 
-type StringValue struct {
+type StringV struct {
 	Value string
 }
 
-func (s *StringValue) GetValue() interface{} {
+func (s *StringV) GetValue() interface{} {
 	return s.Value
 }
 
-func (s *StringValue) GetType() string {
+func (s *StringV) GetType() string {
 	return STRING_STR
 }
 
-func NewStringValue(value string) *StringValue {
-	return &StringValue{Value: value}
+func NewStringValue(value string) *StringV {
+	return &StringV{Value: value}
 }
 
-type IntValue struct {
+type IntV struct {
 	Value int
 }
 
-func (i *IntValue) GetValue() interface{} {
+func (i *IntV) GetValue() interface{} {
 	return i.Value
 }
 
-func (i *IntValue) GetType() string {
+func (i *IntV) GetType() string {
 	return INT_STR
 }
 
-func NewIntValue(value int) *IntValue {
-	return &IntValue{Value: value}
+func NewIntValue(value int) *IntV {
+	return &IntV{Value: value}
 }
 
-type FloatValue struct {
+type FloatV struct {
 	Value float64
 }
 
-func (f *FloatValue) GetValue() interface{} {
+func (f *FloatV) GetValue() interface{} {
 	return f.Value
 }
 
-func (f *FloatValue) GetType() string {
+func (f *FloatV) GetType() string {
 	return FLOAT_STR
 }
 
-func NewFloatValue(value float64) *FloatValue {
-	return &FloatValue{Value: value}
+func NewFloatValue(value float64) *FloatV {
+	return &FloatV{Value: value}
 }
 
-type BooleanValue struct {
+type BooleanV struct {
 	Value bool
 }
 
-func (b *BooleanValue) GetValue() interface{} {
+func (b *BooleanV) GetValue() interface{} {
 	return b.Value
 }
 
-func (b *BooleanValue) GetType() string {
+func (b *BooleanV) GetType() string {
 	return BOOLEAN_STR
 }
 
-func NewBooleanValue(value bool) *BooleanValue {
-	return &BooleanValue{Value: value}
+func NewBooleanValue(value bool) *BooleanV {
+	return &BooleanV{Value: value}
 }
 
-type CharValue struct {
+type CharV struct {
 	Value rune
 }
 
-func (c *CharValue) GetValue() interface{} {
+func (c *CharV) GetValue() interface{} {
 	return c.Value
 }
 
-func (c *CharValue) GetType() string {
+func (c *CharV) GetType() string {
 	return CHAR_STR
 }
 
-func NewCharValue(value rune) *CharValue {
-	return &CharValue{Value: value}
+func NewCharValue(value rune) *CharV {
+	return &CharV{Value: value}
 }
 
-type NilValue struct {
+type NilV struct {
 	Value interface{}
 }
 
-func (n *NilValue) GetValue() interface{} {
+func (n *NilV) GetValue() interface{} {
 	return n.Value
 }
 
-func (n *NilValue) GetType() string {
+func (n *NilV) GetType() string {
 	return NIL_STR
 }
 
-func NewNilValue(value interface{}) *NilValue {
-	return &NilValue{Value: value}
+func NewNilValue(value interface{}) *NilV {
+	return &NilV{Value: value}
 }
 
-type Value struct {
-	Type       string
-	ParseValue interface{}
+type ArrayV struct {
+	Value []IValue
 }
 
-type Variable struct {
-	Name       string
-	Value      Value
-	IsConstant bool
+func (a *ArrayV) GetValue() interface{} {
+	return a.Value
+}
+
+func (a *ArrayV) GetType() string {
+	return "array"
+}
+
+func NewArrayValue(value []IValue) *ArrayV {
+	return &ArrayV{Value: value}
 }
