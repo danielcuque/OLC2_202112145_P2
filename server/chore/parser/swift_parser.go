@@ -36,20 +36,20 @@ func swiftParserInit() {
 		"", "", "", "", "'let'", "'var'", "'func'", "'struct'", "'if'", "'else'",
 		"'switch'", "'case'", "'default'", "'for'", "'while'", "'break'", "'continue'",
 		"'return'", "'do'", "'repeat'", "'in'", "'Int'", "'Float'", "'Bool'",
-		"'String'", "'nil'", "'...'", "", "", "", "", "", "", "'->'", "'=='",
-		"'!='", "'<'", "'>'", "'<='", "'>='", "'='", "'*='", "'/='", "'+='",
-		"'-='", "'%='", "'*'", "'/'", "'+'", "'-'", "'%'", "'&&'", "'||'", "'!'",
-		"'?'", "'('", "')'", "'{'", "'}'", "'['", "']'", "'\\'", "','", "';'",
-		"':'", "'.'",
+		"'String'", "'nil'", "'Character'", "'...'", "", "", "", "", "", "",
+		"'->'", "'=='", "'!='", "'<'", "'>'", "'<='", "'>='", "'='", "'*='",
+		"'/='", "'+='", "'-='", "'%='", "'*'", "'/'", "'+'", "'-'", "'%'", "'&&'",
+		"'||'", "'!'", "'?'", "'('", "')'", "'{'", "'}'", "'['", "']'", "'\\'",
+		"','", "';'", "':'", "'.'",
 	}
 	staticData.SymbolicNames = []string{
 		"", "WHITESPACE", "COMMENT", "BLOCK_COMMENT", "Kw_LET", "Kw_VAR", "Kw_FUNC",
 		"Kw_STRUCT", "Kw_IF", "Kw_ELSE", "Kw_SWITCH", "Kw_CASE", "Kw_DEFAULT",
 		"Kw_FOR", "Kw_WHILE", "Kw_BREAK", "Kw_CONTINUE", "Kw_RETURN", "Kw_DO",
 		"Kw_REPEAT", "Kw_IN", "Kw_INT", "Kw_FLOAT", "Kw_BOOL", "Kw_STRING",
-		"Kw_NIL", "Kw_RANGE", "INT", "FLOAT", "BOOL", "STRING", "CHAR", "ID",
-		"Op_ARROW", "Op_EQ", "Op_NEQ", "Op_LT", "Op_GT", "Op_LE", "Op_GE", "Op_ASSIGN",
-		"Op_MUL_ASSIGN", "Op_DIV_ASSIGN", "Op_PLUS_ASSIGN", "Op_MINUS_ASSIGN",
+		"Kw_NIL", "Kw_CHAR", "Kw_RANGE", "INT", "FLOAT", "BOOL", "STRING", "CHAR",
+		"ID", "Op_ARROW", "Op_EQ", "Op_NEQ", "Op_LT", "Op_GT", "Op_LE", "Op_GE",
+		"Op_ASSIGN", "Op_MUL_ASSIGN", "Op_DIV_ASSIGN", "Op_PLUS_ASSIGN", "Op_MINUS_ASSIGN",
 		"Op_MOD_ASSIGN", "Op_MUL", "Op_DIV", "Op_PLUS", "Op_MINUS", "Op_MOD",
 		"Op_AND", "Op_OR", "Op_NOT", "Op_TERNARY", "LPAREN", "RPAREN", "LBRACE",
 		"RBRACE", "LBRACKET", "RBRACKET", "BACKSLASH", "COMMA", "SEMICOLON",
@@ -61,7 +61,7 @@ func swiftParserInit() {
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 65, 95, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 66, 95, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 1, 0, 1, 0, 1, 0, 1, 1, 5, 1, 19, 8, 1, 10,
 		1, 12, 1, 22, 9, 1, 1, 2, 1, 2, 3, 2, 26, 8, 2, 1, 3, 1, 3, 1, 4, 1, 4,
 		1, 4, 1, 4, 1, 4, 3, 4, 35, 8, 4, 1, 5, 1, 5, 1, 5, 1, 5, 1, 6, 1, 6, 1,
@@ -70,34 +70,34 @@ func swiftParserInit() {
 		1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6,
 		1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 5, 6,
 		90, 8, 6, 10, 6, 12, 6, 93, 9, 6, 1, 6, 0, 1, 12, 7, 0, 2, 4, 6, 8, 10,
-		12, 0, 7, 1, 0, 21, 25, 1, 0, 4, 5, 1, 0, 46, 47, 1, 0, 48, 49, 2, 0, 37,
-		37, 39, 39, 2, 0, 36, 36, 38, 38, 1, 0, 34, 35, 107, 0, 14, 1, 0, 0, 0,
+		12, 0, 7, 1, 0, 21, 25, 1, 0, 4, 5, 1, 0, 47, 48, 1, 0, 49, 50, 2, 0, 38,
+		38, 40, 40, 2, 0, 37, 37, 39, 39, 1, 0, 35, 36, 107, 0, 14, 1, 0, 0, 0,
 		2, 20, 1, 0, 0, 0, 4, 25, 1, 0, 0, 0, 6, 27, 1, 0, 0, 0, 8, 29, 1, 0, 0,
 		0, 10, 36, 1, 0, 0, 0, 12, 54, 1, 0, 0, 0, 14, 15, 3, 2, 1, 0, 15, 16,
 		5, 0, 0, 1, 16, 1, 1, 0, 0, 0, 17, 19, 3, 4, 2, 0, 18, 17, 1, 0, 0, 0,
 		19, 22, 1, 0, 0, 0, 20, 18, 1, 0, 0, 0, 20, 21, 1, 0, 0, 0, 21, 3, 1, 0,
 		0, 0, 22, 20, 1, 0, 0, 0, 23, 26, 3, 10, 5, 0, 24, 26, 3, 8, 4, 0, 25,
 		23, 1, 0, 0, 0, 25, 24, 1, 0, 0, 0, 26, 5, 1, 0, 0, 0, 27, 28, 7, 0, 0,
-		0, 28, 7, 1, 0, 0, 0, 29, 30, 7, 1, 0, 0, 30, 31, 5, 32, 0, 0, 31, 32,
-		5, 40, 0, 0, 32, 34, 3, 12, 6, 0, 33, 35, 5, 63, 0, 0, 34, 33, 1, 0, 0,
-		0, 34, 35, 1, 0, 0, 0, 35, 9, 1, 0, 0, 0, 36, 37, 5, 32, 0, 0, 37, 38,
-		5, 40, 0, 0, 38, 39, 3, 12, 6, 0, 39, 11, 1, 0, 0, 0, 40, 41, 6, 6, -1,
-		0, 41, 42, 5, 49, 0, 0, 42, 55, 3, 12, 6, 18, 43, 44, 5, 53, 0, 0, 44,
-		55, 3, 12, 6, 11, 45, 46, 5, 55, 0, 0, 46, 47, 3, 12, 6, 0, 47, 48, 5,
-		56, 0, 0, 48, 55, 1, 0, 0, 0, 49, 55, 5, 27, 0, 0, 50, 55, 5, 32, 0, 0,
-		51, 55, 5, 28, 0, 0, 52, 55, 5, 30, 0, 0, 53, 55, 5, 29, 0, 0, 54, 40,
+		0, 28, 7, 1, 0, 0, 0, 29, 30, 7, 1, 0, 0, 30, 31, 5, 33, 0, 0, 31, 32,
+		5, 41, 0, 0, 32, 34, 3, 12, 6, 0, 33, 35, 5, 64, 0, 0, 34, 33, 1, 0, 0,
+		0, 34, 35, 1, 0, 0, 0, 35, 9, 1, 0, 0, 0, 36, 37, 5, 33, 0, 0, 37, 38,
+		5, 41, 0, 0, 38, 39, 3, 12, 6, 0, 39, 11, 1, 0, 0, 0, 40, 41, 6, 6, -1,
+		0, 41, 42, 5, 50, 0, 0, 42, 55, 3, 12, 6, 18, 43, 44, 5, 54, 0, 0, 44,
+		55, 3, 12, 6, 11, 45, 46, 5, 56, 0, 0, 46, 47, 3, 12, 6, 0, 47, 48, 5,
+		57, 0, 0, 48, 55, 1, 0, 0, 0, 49, 55, 5, 28, 0, 0, 50, 55, 5, 33, 0, 0,
+		51, 55, 5, 29, 0, 0, 52, 55, 5, 31, 0, 0, 53, 55, 5, 30, 0, 0, 54, 40,
 		1, 0, 0, 0, 54, 43, 1, 0, 0, 0, 54, 45, 1, 0, 0, 0, 54, 49, 1, 0, 0, 0,
 		54, 50, 1, 0, 0, 0, 54, 51, 1, 0, 0, 0, 54, 52, 1, 0, 0, 0, 54, 53, 1,
 		0, 0, 0, 55, 91, 1, 0, 0, 0, 56, 57, 10, 17, 0, 0, 57, 58, 7, 2, 0, 0,
 		58, 90, 3, 12, 6, 18, 59, 60, 10, 16, 0, 0, 60, 61, 7, 3, 0, 0, 61, 90,
-		3, 12, 6, 17, 62, 63, 10, 15, 0, 0, 63, 64, 5, 50, 0, 0, 64, 90, 3, 12,
+		3, 12, 6, 17, 62, 63, 10, 15, 0, 0, 63, 64, 5, 51, 0, 0, 64, 90, 3, 12,
 		6, 16, 65, 66, 10, 14, 0, 0, 66, 67, 7, 4, 0, 0, 67, 90, 3, 12, 6, 15,
 		68, 69, 10, 13, 0, 0, 69, 70, 7, 5, 0, 0, 70, 90, 3, 12, 6, 14, 71, 72,
 		10, 12, 0, 0, 72, 73, 7, 6, 0, 0, 73, 90, 3, 12, 6, 13, 74, 75, 10, 10,
-		0, 0, 75, 76, 5, 54, 0, 0, 76, 77, 3, 12, 6, 0, 77, 78, 5, 64, 0, 0, 78,
-		79, 3, 12, 6, 11, 79, 90, 1, 0, 0, 0, 80, 81, 10, 9, 0, 0, 81, 82, 5, 51,
-		0, 0, 82, 90, 3, 12, 6, 10, 83, 84, 10, 8, 0, 0, 84, 85, 5, 52, 0, 0, 85,
-		90, 3, 12, 6, 9, 86, 87, 10, 7, 0, 0, 87, 88, 5, 26, 0, 0, 88, 90, 3, 12,
+		0, 0, 75, 76, 5, 55, 0, 0, 76, 77, 3, 12, 6, 0, 77, 78, 5, 65, 0, 0, 78,
+		79, 3, 12, 6, 11, 79, 90, 1, 0, 0, 0, 80, 81, 10, 9, 0, 0, 81, 82, 5, 52,
+		0, 0, 82, 90, 3, 12, 6, 10, 83, 84, 10, 8, 0, 0, 84, 85, 5, 53, 0, 0, 85,
+		90, 3, 12, 6, 9, 86, 87, 10, 7, 0, 0, 87, 88, 5, 27, 0, 0, 88, 90, 3, 12,
 		6, 8, 89, 56, 1, 0, 0, 0, 89, 59, 1, 0, 0, 0, 89, 62, 1, 0, 0, 0, 89, 65,
 		1, 0, 0, 0, 89, 68, 1, 0, 0, 0, 89, 71, 1, 0, 0, 0, 89, 74, 1, 0, 0, 0,
 		89, 80, 1, 0, 0, 0, 89, 83, 1, 0, 0, 0, 89, 86, 1, 0, 0, 0, 90, 93, 1,
@@ -166,46 +166,47 @@ const (
 	SwiftParserKw_BOOL         = 23
 	SwiftParserKw_STRING       = 24
 	SwiftParserKw_NIL          = 25
-	SwiftParserKw_RANGE        = 26
-	SwiftParserINT             = 27
-	SwiftParserFLOAT           = 28
-	SwiftParserBOOL            = 29
-	SwiftParserSTRING          = 30
-	SwiftParserCHAR            = 31
-	SwiftParserID              = 32
-	SwiftParserOp_ARROW        = 33
-	SwiftParserOp_EQ           = 34
-	SwiftParserOp_NEQ          = 35
-	SwiftParserOp_LT           = 36
-	SwiftParserOp_GT           = 37
-	SwiftParserOp_LE           = 38
-	SwiftParserOp_GE           = 39
-	SwiftParserOp_ASSIGN       = 40
-	SwiftParserOp_MUL_ASSIGN   = 41
-	SwiftParserOp_DIV_ASSIGN   = 42
-	SwiftParserOp_PLUS_ASSIGN  = 43
-	SwiftParserOp_MINUS_ASSIGN = 44
-	SwiftParserOp_MOD_ASSIGN   = 45
-	SwiftParserOp_MUL          = 46
-	SwiftParserOp_DIV          = 47
-	SwiftParserOp_PLUS         = 48
-	SwiftParserOp_MINUS        = 49
-	SwiftParserOp_MOD          = 50
-	SwiftParserOp_AND          = 51
-	SwiftParserOp_OR           = 52
-	SwiftParserOp_NOT          = 53
-	SwiftParserOp_TERNARY      = 54
-	SwiftParserLPAREN          = 55
-	SwiftParserRPAREN          = 56
-	SwiftParserLBRACE          = 57
-	SwiftParserRBRACE          = 58
-	SwiftParserLBRACKET        = 59
-	SwiftParserRBRACKET        = 60
-	SwiftParserBACKSLASH       = 61
-	SwiftParserCOMMA           = 62
-	SwiftParserSEMICOLON       = 63
-	SwiftParserCOLON           = 64
-	SwiftParserDOT             = 65
+	SwiftParserKw_CHAR         = 26
+	SwiftParserKw_RANGE        = 27
+	SwiftParserINT             = 28
+	SwiftParserFLOAT           = 29
+	SwiftParserBOOL            = 30
+	SwiftParserSTRING          = 31
+	SwiftParserCHAR            = 32
+	SwiftParserID              = 33
+	SwiftParserOp_ARROW        = 34
+	SwiftParserOp_EQ           = 35
+	SwiftParserOp_NEQ          = 36
+	SwiftParserOp_LT           = 37
+	SwiftParserOp_GT           = 38
+	SwiftParserOp_LE           = 39
+	SwiftParserOp_GE           = 40
+	SwiftParserOp_ASSIGN       = 41
+	SwiftParserOp_MUL_ASSIGN   = 42
+	SwiftParserOp_DIV_ASSIGN   = 43
+	SwiftParserOp_PLUS_ASSIGN  = 44
+	SwiftParserOp_MINUS_ASSIGN = 45
+	SwiftParserOp_MOD_ASSIGN   = 46
+	SwiftParserOp_MUL          = 47
+	SwiftParserOp_DIV          = 48
+	SwiftParserOp_PLUS         = 49
+	SwiftParserOp_MINUS        = 50
+	SwiftParserOp_MOD          = 51
+	SwiftParserOp_AND          = 52
+	SwiftParserOp_OR           = 53
+	SwiftParserOp_NOT          = 54
+	SwiftParserOp_TERNARY      = 55
+	SwiftParserLPAREN          = 56
+	SwiftParserRPAREN          = 57
+	SwiftParserLBRACE          = 58
+	SwiftParserRBRACE          = 59
+	SwiftParserLBRACKET        = 60
+	SwiftParserRBRACKET        = 61
+	SwiftParserBACKSLASH       = 62
+	SwiftParserCOMMA           = 63
+	SwiftParserSEMICOLON       = 64
+	SwiftParserCOLON           = 65
+	SwiftParserDOT             = 66
 )
 
 // SwiftParser rules.
@@ -453,7 +454,7 @@ func (p *SwiftParser) Block() (localctx IBlockContext) {
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4294967344) != 0 {
+	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&8589934640) != 0 {
 		{
 			p.SetState(17)
 			p.Statement()

@@ -11,14 +11,14 @@ import (
 type Visitor struct {
 	parser.BaseSwiftVisitor
 	Scope  *ScopeNode
-	Memory map[string]Value
+	Memory map[string]IValue
 	Errors []error
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
 		Scope:  NewScopeNode(nil),
-		Memory: make(map[string]Value),
+		Memory: make(map[string]IValue),
 		Errors: make([]error, 0),
 	}
 }

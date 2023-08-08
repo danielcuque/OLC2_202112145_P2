@@ -25,5 +25,5 @@ func (v *Visitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 	for i := 0; ctx.Statement(i) != nil; i++ {
 		v.Visit(ctx.Statement(i))
 	}
-	return Value{ParseValue: true}
+	return nil
 }

@@ -13,9 +13,9 @@ func main() {
 
 	result := I.NewEvaluator(content)
 
-	fmt.Println(result.Memory)
 	fmt.Println(result.Errors)
-
-	// A.Init()
+	for k, v := range result.Memory {
+		fmt.Println("Key:", k, "Value:", v.GetValue())
+	}
 
 }
