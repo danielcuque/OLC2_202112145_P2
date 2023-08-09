@@ -16,8 +16,8 @@ func NewVariable(name string, isConst bool, value IValue) *Variable {
 	}
 }
 
-func (v *Variable) GetValue() IValue {
-	return v.Value
+func (v *Variable) GetValue() interface{} {
+	return v.Value.GetValue()
 }
 
 func (v *Variable) SetValue(value IValue) {

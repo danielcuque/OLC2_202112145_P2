@@ -746,6 +746,12 @@ type IVariableDeclarationContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetVarType returns the varType token.
+	GetVarType() antlr.Token
+
+	// SetVarType sets the varType token.
+	SetVarType(antlr.Token)
+
 	// Getter signatures
 	ID() antlr.TerminalNode
 	Op_ASSIGN() antlr.TerminalNode
@@ -760,7 +766,8 @@ type IVariableDeclarationContext interface {
 
 type VariableDeclarationContext struct {
 	antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser  antlr.Parser
+	varType antlr.Token
 }
 
 func NewEmptyVariableDeclarationContext() *VariableDeclarationContext {
@@ -789,6 +796,10 @@ func NewVariableDeclarationContext(parser antlr.Parser, parent antlr.ParserRuleC
 }
 
 func (s *VariableDeclarationContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *VariableDeclarationContext) GetVarType() antlr.Token { return s.varType }
+
+func (s *VariableDeclarationContext) SetVarType(v antlr.Token) { s.varType = v }
 
 func (s *VariableDeclarationContext) ID() antlr.TerminalNode {
 	return s.GetToken(SwiftParserID, 0)
@@ -852,10 +863,17 @@ func (p *SwiftParser) VariableDeclaration() (localctx IVariableDeclarationContex
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(29)
+
+		var _lt = p.GetTokenStream().LT(1)
+
+		localctx.(*VariableDeclarationContext).varType = _lt
+
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == SwiftParserKw_LET || _la == SwiftParserKw_VAR) {
-			p.GetErrorHandler().RecoverInline(p)
+			var _ri = p.GetErrorHandler().RecoverInline(p)
+
+			localctx.(*VariableDeclarationContext).varType = _ri
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
 			p.Consume()

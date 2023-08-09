@@ -6,6 +6,7 @@ import (
 )
 
 func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContext) interface{} {
+	varType := ctx.GetVarType().GetText()
 	id := ctx.ID().GetText()
 	value, okVal := v.Visit(ctx.Expr()).(IValue)
 
@@ -13,12 +14,16 @@ func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContex
 		return nil
 	}
 
-	_, ok := v.Memory[id]
+	_, ok := v.Scope.GetVariable(id).(Variable)
 
 	if ok {
-		v.NewError(fmt.Sprintf("Variable %s already exist", id))
+		v.NewError(fmt.Sprintf("Error: La variable %s ya existe", id))
 		return false
 	}
+
+	newVariable := NewVariable(id, varType == "let", value)
+
+	v.Scope.AddVariable(id, *newVariable)
 
 	v.Memory[id] = value
 

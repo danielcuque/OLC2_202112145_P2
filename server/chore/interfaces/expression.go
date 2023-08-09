@@ -38,7 +38,7 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	if ok {
 		return value
 	} else {
-		v.NewError("Error: Variable " + id)
+		v.NewError("Error: Variable " + id + " no definida")
 		return nil
 	}
 }

@@ -18,7 +18,7 @@ variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_NIL;
 // Variable declaration
 
 variableDeclaration:
-	(Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?;
+	varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?;
 
 // Variable assignment
 variableAssignment: ID Op_ASSIGN expr;

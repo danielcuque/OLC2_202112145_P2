@@ -2,8 +2,6 @@ package interfaces
 
 import "fmt"
 
-// Use nary tree to represent scopes and values
-
 type ScopeType string
 
 const (
@@ -55,6 +53,7 @@ func (s *ScopeNode) String() string {
 	return result
 }
 
+// ScopeTree is a nary tree to represent scopes
 type ScopeTree struct {
 	Root    *ScopeNode
 	Current *ScopeNode
@@ -66,6 +65,14 @@ func NewScopeTree() *ScopeTree {
 		Root:    root,
 		Current: root,
 	}
+}
+
+func (s *ScopeTree) AddVariable(name string, value Variable) {
+	s.Current.AddVariable(name, value)
+}
+
+func (s *ScopeTree) GetVariable(name string) interface{} {
+	return s.Current.GetVariable(name)
 }
 
 func (s *ScopeTree) PushScope(scopeType ScopeType) {
