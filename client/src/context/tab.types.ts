@@ -1,5 +1,4 @@
-import { ParserError } from "../../chore/compiler/error";
-import { TokenSymbol } from "../../chore/compiler/symbols";
+import { ParserError, TokenSymbol } from "../api";
 
 export interface FileI {
   id: number;
@@ -10,7 +9,7 @@ export interface FileI {
 export interface TabI extends FileI {
   parser?: {
     errors: ParserError[];
-    ast: string;
+    cst: string;
     symbols: TokenSymbol[];
     logs: unknown[];
   };

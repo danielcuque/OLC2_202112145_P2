@@ -1,6 +1,7 @@
 package main
 
 import (
+	"OLC2/api"
 	I "OLC2/chore/interfaces"
 	U "OLC2/chore/utils"
 
@@ -24,4 +25,5 @@ func main() {
 		fmt.Println("Key:", k, "Value:", v.GetValue(), "Is constant:", v.IsConstant(), "Value Type: ", v.GetType())
 	}
 
+	api.Init()
 }

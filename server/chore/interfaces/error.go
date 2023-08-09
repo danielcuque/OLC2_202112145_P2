@@ -1,9 +1,20 @@
 package interfaces
 
+type TypeError string
+
+// Lexical | Syntactic | Semantic
+
+const (
+	Lexical   TypeError = "Lexical"
+	Syntactic TypeError = "Syntactic"
+	Semantic  TypeError = "Semantic"
+)
+
 type VisitorError struct {
 	Line   int
 	Column int
 	Msg    string
+	Type   TypeError
 }
 
 func (e *VisitorError) Error() string {

@@ -1,26 +1,34 @@
 import { useContext } from "react";
 import { TabContext, TabI } from "../../context";
-import { initApp } from "../../../chore";
 import toast from "react-hot-toast";
+import { fetchAPI } from "../../api";
 
 interface RunButtonProps {
   tab: TabI | undefined;
 }
 
 export const RunButton = ({ tab }: RunButtonProps) => {
+
   const { setParserAttributes } = useContext(TabContext);
-  const runCode = () => {
+
+  const runCode = async () => {
     if (!tab) return;
-    const result = initApp(tab?.code);
-    if (result)
+    try {
+      const result = await fetchAPI(tab.code)
+      if (result)
+        console.log(result)
       setParserAttributes(
         result.symbols,
         result.errors,
         result.logs,
-        result.ast
+        result.cst,
       );
-    if (result.errors.length > 0) {
-      toast.error("Error al compilar");
+      if (result.errors.length > 0) {
+        toast.error("Error al compilar");
+      }
+    } catch (error) {
+      toast.error("Error al realizar petición");
+      console.log(error);
     }
   };
 

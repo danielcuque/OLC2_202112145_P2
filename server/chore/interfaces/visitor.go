@@ -12,12 +12,14 @@ type Visitor struct {
 	parser.BaseSwiftVisitor
 	Scope  *ScopeTree
 	Errors []*VisitorError
+	Logs   []string
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
 		Scope:  NewScopeTree(),
 		Errors: make([]*VisitorError, 0),
+		Logs:   make([]string, 0),
 	}
 }
 

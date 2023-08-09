@@ -2,8 +2,7 @@ import { FC, ReactNode, useReducer } from "react";
 import { TabContext } from "./TabContext";
 import { TabI, TabState } from "./tab.types";
 import { tabsReducer } from "./tabsReducer";
-import { ParserError } from "../../chore/compiler/error";
-import { TokenSymbol } from "../../chore/compiler/symbols";
+import { ParserError, TokenSymbol } from "../api";
 
 interface TabsProviderProps {
   children: ReactNode;
