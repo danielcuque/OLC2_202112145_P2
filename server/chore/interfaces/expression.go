@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"OLC2/chore/parser"
+
+	"github.com/antlr4-go/antlr/v4"
 )
 
 var intT = INT_STR
@@ -32,10 +34,11 @@ func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 }
 
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
+
 	id := ctx.GetText()
 	value := v.Scope.GetVariable(id)
 	if value == nil {
-		v.NewError("Error: La variable " + id + " no existe")
+		v.NewError("La variable "+id+" no existe", ctx.GetStart())
 		return nil
 	}
 	return value.(*Variable).Value
@@ -55,7 +58,7 @@ func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	} else if opType == floatT {
 		return NewFloatValue(-value.(float64))
 	}
-	v.NewError("Error: No se puede aplicar el operador unario - a " + opType)
+	v.NewError("No se puede aplicar el operador unario - a "+opType, ctx.GetStart())
 	return nil
 }
 
@@ -63,10 +66,10 @@ func (v *Visitor) VisitArithmeticExpr(ctx *parser.ArithmeticExprContext) interfa
 	l := v.Visit(ctx.GetLeft())
 	r := v.Visit(ctx.GetRight())
 	op := ctx.GetOp().GetText()
-	return v.arithmeticOp(l, r, op)
+	return v.arithmeticOp(l, r, op, ctx.GetStart())
 }
 
-func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
+func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) interface{} {
 	if l == nil || r == nil {
 		return false
 	}
@@ -95,7 +98,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
 		if leftT == stringT && rightT == stringT {
 			return NewStringValue(l.(string) + r.(string))
 		}
-		v.NewError("Error: No se puede sumar " + leftT + " con " + rightT)
+		v.NewError("No se puede sumar "+leftT+" con "+rightT, lc)
 	case "-":
 		if leftT == intT && rightT == intT {
 			return NewIntValue(l.(int) - r.(int))
@@ -109,7 +112,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
 		if leftT == intT && rightT == floatT {
 			return NewFloatValue(float64(l.(int)) - r.(float64))
 		}
-		v.NewError("Error: No se puede restar " + leftT + " con " + rightT)
+		v.NewError("No se puede restar "+leftT+" con "+rightT, lc)
 	case "*":
 		if leftT == intT && rightT == intT {
 			return NewIntValue(l.(int) * r.(int))
@@ -123,10 +126,10 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
 		if leftT == intT && rightT == floatT {
 			return NewFloatValue(float64(l.(int)) * r.(float64))
 		}
-		v.NewError("Error: No se puede multiplicar " + leftT + " con " + rightT)
+		v.NewError("No se puede multiplicar "+leftT+" con "+rightT, lc)
 	case "/":
 		if rightT == intT && r.(int) == 0 {
-			v.NewError("Error: No se puede dividir entre 0")
+			v.NewError("No se puede dividir entre 0", lc)
 			return nil
 		}
 
@@ -142,16 +145,16 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
 		if leftT == intT && rightT == floatT {
 			return NewFloatValue(float64(l.(int)) / r.(float64))
 		}
-		v.NewError("Error: No se puede dividir " + leftT + " con " + rightT)
+		v.NewError("No se puede dividir "+leftT+" con "+rightT, lc)
 	case "%":
 		if rightT == intT && r.(int) == 0 {
-			v.NewError("Error: No se puede dividir entre 0")
+			v.NewError("No se puede dividir entre 0", lc)
 			return nil
 		}
 		if leftT == intT && rightT == intT {
 			return NewIntValue(l.(int) % r.(int))
 		}
-		v.NewError("Error: No se puede modular " + leftT + " con " + rightT)
+		v.NewError("No se puede modular "+leftT+" con "+rightT, lc)
 	}
 
 	return nil
@@ -256,7 +259,7 @@ func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) inter
 		}
 	}
 
-	v.NewError("Error: No se puede comparar " + leftT + " con " + rightT)
+	v.NewError("No se puede comparar "+leftT+" con "+rightT, ctx.GetStart())
 	return nil
 }
 
@@ -302,12 +305,12 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 	r, okR := v.Visit(ctx.GetRight()).(IValue).GetValue().(int)
 
 	if !okL || !okR {
-		v.NewError("Left and right values must be integers")
+		v.NewError("Los valores de rango deben ser enteros", ctx.GetStart())
 		return nil
 	}
 
 	if l > r {
-		v.NewError("Left value is greater than right value")
+		v.NewError("El valor izquierdo del rango debe ser menor o igual al valor derecho", ctx.GetStart())
 		return nil
 	}
 

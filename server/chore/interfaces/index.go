@@ -9,7 +9,7 @@ import (
 func (v *Visitor) Visit(tree antlr.ParseTree) interface{} {
 	switch val := tree.(type) {
 	case *antlr.ErrorNodeImpl:
-		v.NewError(val.GetText())
+		v.NewError(val.GetText(), val.GetSymbol())
 		return nil
 	default:
 		return tree.Accept(v)

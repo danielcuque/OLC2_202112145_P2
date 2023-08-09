@@ -11,13 +11,13 @@ import (
 type Visitor struct {
 	parser.BaseSwiftVisitor
 	Scope  *ScopeTree
-	Errors []error
+	Errors []*VisitorError
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
 		Scope:  NewScopeTree(),
-		Errors: make([]error, 0),
+		Errors: make([]*VisitorError, 0),
 	}
 }
 
@@ -36,6 +36,7 @@ func NewEvaluator(input string) *Visitor {
 	return visitor
 }
 
-func (v *Visitor) NewError(msg string) {
-	v.Errors = append(v.Errors, fmt.Errorf(msg))
+func (v *Visitor) NewError(msg string, ctx antlr.Token) {
+	errorMsg := fmt.Sprintf("Error(%d:%d): %s ", ctx.GetLine(), ctx.GetColumn(), msg)
+	v.Errors = append(v.Errors, NewVisitorError(ctx.GetLine(), ctx.GetColumn(), errorMsg))
 }

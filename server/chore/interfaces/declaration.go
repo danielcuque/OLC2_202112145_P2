@@ -17,7 +17,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 	_, ok := v.Scope.GetVariable(id).(Variable)
 
 	if ok {
-		v.NewError(fmt.Sprintf("Error: La variable %s ya existe", id))
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return false
 	}
 
@@ -41,7 +41,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	_, ok := v.Scope.GetVariable(id).(Variable)
 
 	if ok {
-		v.NewError(fmt.Sprintf("Error: La variable %s ya existe", id))
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return false
 	}
 
@@ -52,7 +52,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 		if valueType == floatT && value.GetType() == intT {
 			value = NewFloatValue(float64(value.GetValue().(int)))
 		} else {
-			v.NewError(fmt.Sprintf("Error: El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()))
+			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
 			return false
 		}
 
@@ -75,12 +75,12 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	_, ok := v.Scope.GetVariable(id).(Variable)
 
 	if ok {
-		v.NewError(fmt.Sprintf("Error: La variable %s ya existe", id))
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return false
 	}
 
 	if isConstant {
-		v.NewError(fmt.Sprintf("Error: La variable %s debe ser inicializada", id))
+		v.NewError(fmt.Sprintf("La variable %s debe ser inicializada", id), ctx.GetStart())
 		return false
 	}
 

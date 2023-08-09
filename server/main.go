@@ -14,7 +14,7 @@ func main() {
 	result := I.NewEvaluator(content)
 
 	for _, err := range result.Errors {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 	}
 
 	fmt.Println()
