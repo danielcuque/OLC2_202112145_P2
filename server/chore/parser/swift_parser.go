@@ -71,47 +71,47 @@ func swiftParserInit() {
 		1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6,
 		1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6,
 		1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 5, 6, 109, 8, 6, 10, 6,
-		12, 6, 112, 9, 6, 1, 6, 0, 1, 12, 7, 0, 2, 4, 6, 8, 10, 12, 0, 7, 1, 0,
-		21, 25, 1, 0, 4, 5, 1, 0, 47, 48, 1, 0, 49, 50, 2, 0, 38, 38, 40, 40, 2,
-		0, 37, 37, 39, 39, 1, 0, 35, 36, 130, 0, 14, 1, 0, 0, 0, 2, 20, 1, 0, 0,
-		0, 4, 25, 1, 0, 0, 0, 6, 27, 1, 0, 0, 0, 8, 53, 1, 0, 0, 0, 10, 55, 1,
-		0, 0, 0, 12, 73, 1, 0, 0, 0, 14, 15, 3, 2, 1, 0, 15, 16, 5, 0, 0, 1, 16,
-		1, 1, 0, 0, 0, 17, 19, 3, 4, 2, 0, 18, 17, 1, 0, 0, 0, 19, 22, 1, 0, 0,
-		0, 20, 18, 1, 0, 0, 0, 20, 21, 1, 0, 0, 0, 21, 3, 1, 0, 0, 0, 22, 20, 1,
-		0, 0, 0, 23, 26, 3, 10, 5, 0, 24, 26, 3, 8, 4, 0, 25, 23, 1, 0, 0, 0, 25,
-		24, 1, 0, 0, 0, 26, 5, 1, 0, 0, 0, 27, 28, 7, 0, 0, 0, 28, 7, 1, 0, 0,
-		0, 29, 30, 7, 1, 0, 0, 30, 31, 5, 33, 0, 0, 31, 32, 5, 65, 0, 0, 32, 33,
-		3, 6, 3, 0, 33, 34, 5, 41, 0, 0, 34, 36, 3, 12, 6, 0, 35, 37, 5, 64, 0,
-		0, 36, 35, 1, 0, 0, 0, 36, 37, 1, 0, 0, 0, 37, 54, 1, 0, 0, 0, 38, 39,
-		7, 1, 0, 0, 39, 40, 5, 33, 0, 0, 40, 41, 5, 41, 0, 0, 41, 43, 3, 12, 6,
-		0, 42, 44, 5, 64, 0, 0, 43, 42, 1, 0, 0, 0, 43, 44, 1, 0, 0, 0, 44, 54,
-		1, 0, 0, 0, 45, 46, 7, 1, 0, 0, 46, 47, 5, 33, 0, 0, 47, 48, 5, 65, 0,
-		0, 48, 49, 3, 6, 3, 0, 49, 51, 5, 55, 0, 0, 50, 52, 5, 64, 0, 0, 51, 50,
-		1, 0, 0, 0, 51, 52, 1, 0, 0, 0, 52, 54, 1, 0, 0, 0, 53, 29, 1, 0, 0, 0,
-		53, 38, 1, 0, 0, 0, 53, 45, 1, 0, 0, 0, 54, 9, 1, 0, 0, 0, 55, 56, 5, 33,
-		0, 0, 56, 57, 5, 41, 0, 0, 57, 58, 3, 12, 6, 0, 58, 11, 1, 0, 0, 0, 59,
-		60, 6, 6, -1, 0, 60, 61, 5, 50, 0, 0, 61, 74, 3, 12, 6, 18, 62, 63, 5,
-		54, 0, 0, 63, 74, 3, 12, 6, 11, 64, 65, 5, 56, 0, 0, 65, 66, 3, 12, 6,
-		0, 66, 67, 5, 57, 0, 0, 67, 74, 1, 0, 0, 0, 68, 74, 5, 28, 0, 0, 69, 74,
-		5, 33, 0, 0, 70, 74, 5, 29, 0, 0, 71, 74, 5, 31, 0, 0, 72, 74, 5, 30, 0,
-		0, 73, 59, 1, 0, 0, 0, 73, 62, 1, 0, 0, 0, 73, 64, 1, 0, 0, 0, 73, 68,
-		1, 0, 0, 0, 73, 69, 1, 0, 0, 0, 73, 70, 1, 0, 0, 0, 73, 71, 1, 0, 0, 0,
-		73, 72, 1, 0, 0, 0, 74, 110, 1, 0, 0, 0, 75, 76, 10, 17, 0, 0, 76, 77,
-		7, 2, 0, 0, 77, 109, 3, 12, 6, 18, 78, 79, 10, 16, 0, 0, 79, 80, 7, 3,
-		0, 0, 80, 109, 3, 12, 6, 17, 81, 82, 10, 15, 0, 0, 82, 83, 5, 51, 0, 0,
-		83, 109, 3, 12, 6, 16, 84, 85, 10, 14, 0, 0, 85, 86, 7, 4, 0, 0, 86, 109,
-		3, 12, 6, 15, 87, 88, 10, 13, 0, 0, 88, 89, 7, 5, 0, 0, 89, 109, 3, 12,
-		6, 14, 90, 91, 10, 12, 0, 0, 91, 92, 7, 6, 0, 0, 92, 109, 3, 12, 6, 13,
-		93, 94, 10, 10, 0, 0, 94, 95, 5, 55, 0, 0, 95, 96, 3, 12, 6, 0, 96, 97,
-		5, 65, 0, 0, 97, 98, 3, 12, 6, 11, 98, 109, 1, 0, 0, 0, 99, 100, 10, 9,
-		0, 0, 100, 101, 5, 52, 0, 0, 101, 109, 3, 12, 6, 10, 102, 103, 10, 8, 0,
-		0, 103, 104, 5, 53, 0, 0, 104, 109, 3, 12, 6, 9, 105, 106, 10, 7, 0, 0,
-		106, 107, 5, 27, 0, 0, 107, 109, 3, 12, 6, 8, 108, 75, 1, 0, 0, 0, 108,
-		78, 1, 0, 0, 0, 108, 81, 1, 0, 0, 0, 108, 84, 1, 0, 0, 0, 108, 87, 1, 0,
-		0, 0, 108, 90, 1, 0, 0, 0, 108, 93, 1, 0, 0, 0, 108, 99, 1, 0, 0, 0, 108,
-		102, 1, 0, 0, 0, 108, 105, 1, 0, 0, 0, 109, 112, 1, 0, 0, 0, 110, 108,
-		1, 0, 0, 0, 110, 111, 1, 0, 0, 0, 111, 13, 1, 0, 0, 0, 112, 110, 1, 0,
-		0, 0, 9, 20, 25, 36, 43, 51, 53, 73, 108, 110,
+		12, 6, 112, 9, 6, 1, 6, 0, 1, 12, 7, 0, 2, 4, 6, 8, 10, 12, 0, 8, 1, 0,
+		21, 25, 1, 0, 4, 5, 2, 0, 41, 41, 44, 45, 1, 0, 47, 48, 1, 0, 49, 50, 2,
+		0, 38, 38, 40, 40, 2, 0, 37, 37, 39, 39, 1, 0, 35, 36, 130, 0, 14, 1, 0,
+		0, 0, 2, 20, 1, 0, 0, 0, 4, 25, 1, 0, 0, 0, 6, 27, 1, 0, 0, 0, 8, 53, 1,
+		0, 0, 0, 10, 55, 1, 0, 0, 0, 12, 73, 1, 0, 0, 0, 14, 15, 3, 2, 1, 0, 15,
+		16, 5, 0, 0, 1, 16, 1, 1, 0, 0, 0, 17, 19, 3, 4, 2, 0, 18, 17, 1, 0, 0,
+		0, 19, 22, 1, 0, 0, 0, 20, 18, 1, 0, 0, 0, 20, 21, 1, 0, 0, 0, 21, 3, 1,
+		0, 0, 0, 22, 20, 1, 0, 0, 0, 23, 26, 3, 10, 5, 0, 24, 26, 3, 8, 4, 0, 25,
+		23, 1, 0, 0, 0, 25, 24, 1, 0, 0, 0, 26, 5, 1, 0, 0, 0, 27, 28, 7, 0, 0,
+		0, 28, 7, 1, 0, 0, 0, 29, 30, 7, 1, 0, 0, 30, 31, 5, 33, 0, 0, 31, 32,
+		5, 65, 0, 0, 32, 33, 3, 6, 3, 0, 33, 34, 5, 41, 0, 0, 34, 36, 3, 12, 6,
+		0, 35, 37, 5, 64, 0, 0, 36, 35, 1, 0, 0, 0, 36, 37, 1, 0, 0, 0, 37, 54,
+		1, 0, 0, 0, 38, 39, 7, 1, 0, 0, 39, 40, 5, 33, 0, 0, 40, 41, 5, 41, 0,
+		0, 41, 43, 3, 12, 6, 0, 42, 44, 5, 64, 0, 0, 43, 42, 1, 0, 0, 0, 43, 44,
+		1, 0, 0, 0, 44, 54, 1, 0, 0, 0, 45, 46, 7, 1, 0, 0, 46, 47, 5, 33, 0, 0,
+		47, 48, 5, 65, 0, 0, 48, 49, 3, 6, 3, 0, 49, 51, 5, 55, 0, 0, 50, 52, 5,
+		64, 0, 0, 51, 50, 1, 0, 0, 0, 51, 52, 1, 0, 0, 0, 52, 54, 1, 0, 0, 0, 53,
+		29, 1, 0, 0, 0, 53, 38, 1, 0, 0, 0, 53, 45, 1, 0, 0, 0, 54, 9, 1, 0, 0,
+		0, 55, 56, 5, 33, 0, 0, 56, 57, 7, 2, 0, 0, 57, 58, 3, 12, 6, 0, 58, 11,
+		1, 0, 0, 0, 59, 60, 6, 6, -1, 0, 60, 61, 5, 50, 0, 0, 61, 74, 3, 12, 6,
+		18, 62, 63, 5, 54, 0, 0, 63, 74, 3, 12, 6, 11, 64, 65, 5, 56, 0, 0, 65,
+		66, 3, 12, 6, 0, 66, 67, 5, 57, 0, 0, 67, 74, 1, 0, 0, 0, 68, 74, 5, 28,
+		0, 0, 69, 74, 5, 33, 0, 0, 70, 74, 5, 29, 0, 0, 71, 74, 5, 31, 0, 0, 72,
+		74, 5, 30, 0, 0, 73, 59, 1, 0, 0, 0, 73, 62, 1, 0, 0, 0, 73, 64, 1, 0,
+		0, 0, 73, 68, 1, 0, 0, 0, 73, 69, 1, 0, 0, 0, 73, 70, 1, 0, 0, 0, 73, 71,
+		1, 0, 0, 0, 73, 72, 1, 0, 0, 0, 74, 110, 1, 0, 0, 0, 75, 76, 10, 17, 0,
+		0, 76, 77, 7, 3, 0, 0, 77, 109, 3, 12, 6, 18, 78, 79, 10, 16, 0, 0, 79,
+		80, 7, 4, 0, 0, 80, 109, 3, 12, 6, 17, 81, 82, 10, 15, 0, 0, 82, 83, 5,
+		51, 0, 0, 83, 109, 3, 12, 6, 16, 84, 85, 10, 14, 0, 0, 85, 86, 7, 5, 0,
+		0, 86, 109, 3, 12, 6, 15, 87, 88, 10, 13, 0, 0, 88, 89, 7, 6, 0, 0, 89,
+		109, 3, 12, 6, 14, 90, 91, 10, 12, 0, 0, 91, 92, 7, 7, 0, 0, 92, 109, 3,
+		12, 6, 13, 93, 94, 10, 10, 0, 0, 94, 95, 5, 55, 0, 0, 95, 96, 3, 12, 6,
+		0, 96, 97, 5, 65, 0, 0, 97, 98, 3, 12, 6, 11, 98, 109, 1, 0, 0, 0, 99,
+		100, 10, 9, 0, 0, 100, 101, 5, 52, 0, 0, 101, 109, 3, 12, 6, 10, 102, 103,
+		10, 8, 0, 0, 103, 104, 5, 53, 0, 0, 104, 109, 3, 12, 6, 9, 105, 106, 10,
+		7, 0, 0, 106, 107, 5, 27, 0, 0, 107, 109, 3, 12, 6, 8, 108, 75, 1, 0, 0,
+		0, 108, 78, 1, 0, 0, 0, 108, 81, 1, 0, 0, 0, 108, 84, 1, 0, 0, 0, 108,
+		87, 1, 0, 0, 0, 108, 90, 1, 0, 0, 0, 108, 93, 1, 0, 0, 0, 108, 99, 1, 0,
+		0, 0, 108, 102, 1, 0, 0, 0, 108, 105, 1, 0, 0, 0, 109, 112, 1, 0, 0, 0,
+		110, 108, 1, 0, 0, 0, 110, 111, 1, 0, 0, 0, 111, 13, 1, 0, 0, 0, 112, 110,
+		1, 0, 0, 0, 9, 20, 25, 36, 43, 51, 53, 73, 108, 110,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -1269,10 +1269,18 @@ type IVariableAssignmentContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetOp returns the op token.
+	GetOp() antlr.Token
+
+	// SetOp sets the op token.
+	SetOp(antlr.Token)
+
 	// Getter signatures
 	ID() antlr.TerminalNode
-	Op_ASSIGN() antlr.TerminalNode
 	Expr() IExprContext
+	Op_ASSIGN() antlr.TerminalNode
+	Op_PLUS_ASSIGN() antlr.TerminalNode
+	Op_MINUS_ASSIGN() antlr.TerminalNode
 
 	// IsVariableAssignmentContext differentiates from other interfaces.
 	IsVariableAssignmentContext()
@@ -1281,6 +1289,7 @@ type IVariableAssignmentContext interface {
 type VariableAssignmentContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
+	op     antlr.Token
 }
 
 func NewEmptyVariableAssignmentContext() *VariableAssignmentContext {
@@ -1310,12 +1319,12 @@ func NewVariableAssignmentContext(parser antlr.Parser, parent antlr.ParserRuleCo
 
 func (s *VariableAssignmentContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *VariableAssignmentContext) GetOp() antlr.Token { return s.op }
+
+func (s *VariableAssignmentContext) SetOp(v antlr.Token) { s.op = v }
+
 func (s *VariableAssignmentContext) ID() antlr.TerminalNode {
 	return s.GetToken(SwiftParserID, 0)
-}
-
-func (s *VariableAssignmentContext) Op_ASSIGN() antlr.TerminalNode {
-	return s.GetToken(SwiftParserOp_ASSIGN, 0)
 }
 
 func (s *VariableAssignmentContext) Expr() IExprContext {
@@ -1332,6 +1341,18 @@ func (s *VariableAssignmentContext) Expr() IExprContext {
 	}
 
 	return t.(IExprContext)
+}
+
+func (s *VariableAssignmentContext) Op_ASSIGN() antlr.TerminalNode {
+	return s.GetToken(SwiftParserOp_ASSIGN, 0)
+}
+
+func (s *VariableAssignmentContext) Op_PLUS_ASSIGN() antlr.TerminalNode {
+	return s.GetToken(SwiftParserOp_PLUS_ASSIGN, 0)
+}
+
+func (s *VariableAssignmentContext) Op_MINUS_ASSIGN() antlr.TerminalNode {
+	return s.GetToken(SwiftParserOp_MINUS_ASSIGN, 0)
 }
 
 func (s *VariableAssignmentContext) GetRuleContext() antlr.RuleContext {
@@ -1355,6 +1376,8 @@ func (s *VariableAssignmentContext) Accept(visitor antlr.ParseTreeVisitor) inter
 func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext) {
 	localctx = NewVariableAssignmentContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 10, SwiftParserRULE_variableAssignment)
+	var _la int
+
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(55)
@@ -1366,10 +1389,20 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 	}
 	{
 		p.SetState(56)
-		p.Match(SwiftParserOp_ASSIGN)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
+
+		var _lt = p.GetTokenStream().LT(1)
+
+		localctx.(*VariableAssignmentContext).op = _lt
+
+		_la = p.GetTokenStream().LA(1)
+
+		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&54975581388800) != 0) {
+			var _ri = p.GetErrorHandler().RecoverInline(p)
+
+			localctx.(*VariableAssignmentContext).op = _ri
+		} else {
+			p.GetErrorHandler().ReportMatch(p)
+			p.Consume()
 		}
 	}
 	{

@@ -27,7 +27,8 @@ variableDeclaration:
 	)? # TypeDeclaration;
 
 // Variable assignment
-variableAssignment: ID Op_ASSIGN expr;
+variableAssignment:
+	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
 // If statement ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE | Kw_IF LPAREN expr RPAREN
 // LBRACE block RBRACE ifStatementTail;

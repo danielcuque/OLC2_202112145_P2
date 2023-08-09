@@ -84,7 +84,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 		return false
 	}
 
-	newVariable := NewVariable(id, isConstant, nil, valueType)
+	newVariable := NewVariable(id, isConstant, NewNilValue(nil), valueType)
 
 	v.Scope.AddVariable(id, newVariable)
 
