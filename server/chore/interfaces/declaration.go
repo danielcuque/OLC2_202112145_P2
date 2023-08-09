@@ -21,11 +21,9 @@ func (v *Visitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContex
 		return false
 	}
 
-	newVariable := NewVariable(id, varType == "let", value)
+	newVariable := NewVariable(id, varType == "let", value, value.GetType())
 
-	v.Scope.AddVariable(id, *newVariable)
-
-	v.Memory[id] = value
+	v.Scope.AddVariable(id, newVariable)
 
 	return true
 }

@@ -34,13 +34,12 @@ func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	id := ctx.GetText()
-	value, ok := v.Memory[id]
-	if ok {
-		return value
-	} else {
-		v.NewError("Error: Variable " + id + " no definida")
+	value := v.Scope.GetVariable(id)
+	if value == nil {
+		v.NewError("Error: La variable " + id + " no existe")
 		return nil
 	}
+	return value.(*Variable).Value
 }
 
 func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {

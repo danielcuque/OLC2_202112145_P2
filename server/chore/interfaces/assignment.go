@@ -9,22 +9,24 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	id := ctx.ID().GetText()
 	value := v.Visit(ctx.Expr()).(IValue)
 
-	// Check if the variable exists
-	_, ok := v.Memory[id]
+	variable, ok := v.Scope.GetVariable(id).(*Variable) // Pointer to Variable
+
 	if !ok {
-		v.NewError(fmt.Sprintf("La variable %s no existe", id))
-		fmt.Println("Variable doesn't exist", id)
-		return nil
+		v.NewError(fmt.Sprintf("Error: La variable %s no existe", id))
+		return false
 	}
 
-	// Check if the types are the same
-	if v.Memory[id].GetType() != value.GetType() {
-		v.NewError(fmt.Sprintf("La variable %s, es de tipo %s y se le quiere asignar un valor de tipo %s", id, v.Memory[id].GetType(), value.GetType()))
-		fmt.Println("Variable is not the same type", id)
-		return nil
+	if variable.IsConstant() {
+		v.NewError(fmt.Sprintf("Error: La variable %s es constante", id))
+		return false
 	}
 
-	// Assign the value
-	v.Memory[id] = value
-	return true
+	if variable.Value.GetType() != value.GetType() {
+		v.NewError(fmt.Sprintf("Error: No se puede asignar %s a %s", value.GetType(), variable.Value.GetType()))
+		return false
+	}
+
+	variable.SetValue(value)
+
+	return nil
 }

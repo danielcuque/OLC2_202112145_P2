@@ -6,9 +6,9 @@ var d = -c * -1
 var e = false + 1.1
 var f = m + 1
 var evalWhile = 10
-var evalWhile = 10
-// evalWhile = 5
-// evalWhile = false
+// var num: Float = 1
+evalWhile = 5
+evalWhile = false
 // b = 1
 
 var g = 1 > 1.1

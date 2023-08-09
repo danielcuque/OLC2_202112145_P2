@@ -17,7 +17,7 @@ type ScopeNode struct {
 	Child     []*ScopeNode
 	Level     int
 	ScopeType ScopeType
-	Variables map[string]Variable
+	Variables map[string]*Variable
 }
 
 func NewScopeNode(parent *ScopeNode, scopeType ScopeType, Level int) *ScopeNode {
@@ -26,11 +26,11 @@ func NewScopeNode(parent *ScopeNode, scopeType ScopeType, Level int) *ScopeNode 
 		Child:     make([]*ScopeNode, 0),
 		Level:     Level,
 		ScopeType: scopeType,
-		Variables: make(map[string]Variable),
+		Variables: make(map[string]*Variable),
 	}
 }
 
-func (s *ScopeNode) AddVariable(name string, value Variable) {
+func (s *ScopeNode) AddVariable(name string, value *Variable) {
 	s.Variables[name] = value
 }
 
@@ -39,6 +39,12 @@ func (s *ScopeNode) GetVariable(name string) interface{} {
 		return val
 	}
 	return nil
+}
+
+func (s *ScopeNode) SetVariable(name string, value IValue) {
+	if val, ok := s.Variables[name]; ok {
+		val.SetValue(value)
+	}
 }
 
 func (s *ScopeNode) String() string {
@@ -67,7 +73,7 @@ func NewScopeTree() *ScopeTree {
 	}
 }
 
-func (s *ScopeTree) AddVariable(name string, value Variable) {
+func (s *ScopeTree) AddVariable(name string, value *Variable) {
 	s.Current.AddVariable(name, value)
 }
 
@@ -75,10 +81,15 @@ func (s *ScopeTree) GetVariable(name string) interface{} {
 	return s.Current.GetVariable(name)
 }
 
-func (s *ScopeTree) PushScope(scopeType ScopeType) {
+func (s *ScopeTree) SetVariable(name string, value IValue) {
+	s.Current.SetVariable(name, value)
+}
+
+func (s *ScopeTree) PushScope(scopeType ScopeType) *ScopeNode {
 	node := NewScopeNode(s.Current, scopeType, s.Current.Level+1)
 	s.Current.Child = append(s.Current.Child, node)
 	s.Current = node
+	return node
 }
 
 func (s *ScopeTree) PopScope() {

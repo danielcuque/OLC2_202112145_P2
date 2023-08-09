@@ -14,14 +14,11 @@ func main() {
 	result := I.NewEvaluator(content)
 
 	fmt.Println(result.Errors)
-	// for k, v := range result.Memory {
-	// 	fmt.Println("Key:", k, "Value:", v.GetValue())
-	// }
 
 	variables := result.Scope.Current.Variables
 
 	for k, v := range variables {
-		fmt.Println("Key:", k, "Value:", v.GetValue(), "Type:", v.IsConstant())
+		fmt.Println("Key:", k, "Value:", v.GetValue(), "Type:", v.IsConstant(), "Value Type: ", v.GetType())
 	}
 
 }

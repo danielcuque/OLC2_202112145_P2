@@ -26,7 +26,7 @@ func HandleVisitor(c *fiber.Ctx) error {
 	}
 	result := I.NewEvaluator(message.Content)
 
-	out := fmt.Sprintf("%v", result.Memory)
+	out := fmt.Sprintf("%v", result.Errors)
 
 	response := Resp{
 		Output:  out,

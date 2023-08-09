@@ -6,13 +6,15 @@ type Variable struct {
 	Name    string
 	IsConst bool
 	Value   IValue
+	Type    string
 }
 
-func NewVariable(name string, isConst bool, value IValue) *Variable {
+func NewVariable(name string, isConst bool, value IValue, typeVar string) *Variable {
 	return &Variable{
 		Name:    name,
 		IsConst: isConst,
 		Value:   value,
+		Type:    typeVar,
 	}
 }
 
@@ -30,4 +32,8 @@ func (v *Variable) IsConstant() bool {
 
 func (v *Variable) GetName() string {
 	return v.Name
+}
+
+func (v *Variable) GetType() string {
+	return v.Type
 }
