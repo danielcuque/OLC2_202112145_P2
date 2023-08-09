@@ -22,10 +22,10 @@ export const CSTContainer = ({ tab }: ASTContainerProps) => {
         }
         title="CST"
       >
-        {tab?.parser?.ast ? (
+        {tab?.parser?.cst ? (
           <div>
             <Graphviz
-              dot={tab.parser?.ast}
+              dot={tab.parser?.cst}
               options={{
                 zoom: true,
               }}

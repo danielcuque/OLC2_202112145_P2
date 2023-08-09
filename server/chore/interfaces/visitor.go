@@ -10,14 +10,16 @@ import (
 
 type Visitor struct {
 	parser.BaseSwiftVisitor
-	Memory map[string]Value
-	Errors []error
+	Scope  *ScopeTree
+	Errors []*VisitorError
+	Logs   []string
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
-		Memory: make(map[string]Value),
-		Errors: make([]error, 0),
+		Scope:  NewScopeTree(),
+		Errors: make([]*VisitorError, 0),
+		Logs:   make([]string, 0),
 	}
 }
 
@@ -36,6 +38,7 @@ func NewEvaluator(input string) *Visitor {
 	return visitor
 }
 
-func (v *Visitor) NewError(msg string) {
-	v.Errors = append(v.Errors, fmt.Errorf(msg))
+func (v *Visitor) NewError(msg string, ctx antlr.Token) {
+	errorMsg := fmt.Sprintf("Error(%d:%d): %s ", ctx.GetLine(), ctx.GetColumn(), msg)
+	v.Errors = append(v.Errors, NewVisitorError(ctx.GetLine(), ctx.GetColumn(), errorMsg))
 }

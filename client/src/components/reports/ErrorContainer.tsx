@@ -43,15 +43,15 @@ export const ErrorContainer = ({ tab }: ErrorContainerProps) => {
           </div>
           <div className="h-full max-h-[30rem] w-full overflow-y-auto [&>*:nth-child(odd)]:bg-gray-100 [&>*:nth-child(even)]:bg-white">
             {errors.length > 0 ? (
-              errors.map(({ msg, type, token }, index) => (
+              errors.map(({ message, type, line, column }, index) => (
                 <div
                   key={index}
                   className="w-full flex flex-row py-6 border border-gray-300"
                 >
                   <div className="w-1/4 text-center">{type}</div>
-                  <div className="w-1/3 text-center"> {msg}</div>
-                  <div className="w-1/5 text-center"> {token.line}</div>
-                  <div className="w-1/5 text-center"> {token.col}</div>
+                  <div className="w-1/3 text-center"> {message}</div>
+                  <div className="w-1/5 text-center"> {line}</div>
+                  <div className="w-1/5 text-center"> {column}</div>
                 </div>
               ))
             ) : (

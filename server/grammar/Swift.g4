@@ -13,15 +13,28 @@ statement: variableAssignment | variableDeclaration;
 // | ifStatement | whileStatement; | forStatement;
 
 // Variable types
-variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_NIL;
+variableType:
+	Kw_INT
+	| Kw_FLOAT
+	| Kw_BOOL
+	| Kw_STRING
+	| Kw_CHAR
+	| Kw_NIL;
 
 // Variable declaration
 
 variableDeclaration:
-	(Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?;
+	varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_ASSIGN expr (
+		SEMICOLON
+	)?																# TypeValueDeclaration
+	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?	# ValueDeclaration
+	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY (
+		SEMICOLON
+	)? # TypeDeclaration;
 
 // Variable assignment
-variableAssignment: ID Op_ASSIGN expr;
+variableAssignment:
+	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
 // If statement ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE | Kw_IF LPAREN expr RPAREN
 // LBRACE block RBRACE ifStatementTail;
@@ -57,4 +70,5 @@ expr:
 	| ID															# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
+	| CHAR															# CharExpr
 	| BOOL															# BoolExpr;

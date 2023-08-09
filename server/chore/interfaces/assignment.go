@@ -7,31 +7,42 @@ import (
 
 func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
 	id := ctx.ID().GetText()
-	value := v.Visit(ctx.Expr()).(Value)
+	value := v.Visit(ctx.Expr()).(IValue)
 
-	// Check if the variable exists
-	_, ok := v.Memory[id]
+	variable, ok := v.Scope.GetVariable(id).(*Variable) // Pointer to Variable
 	if !ok {
-		v.NewError(fmt.Sprintf("La variable %s no existe", id))
-		fmt.Println("Variable doesn't exist", id)
-		return Value{ParseValue: nil}
+		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
+		return false
 	}
 
-	// Check if value is not nil
-	if value.ParseValue == nil {
-		v.NewError(fmt.Sprintf("Variable %s is nil", id))
-		fmt.Println("Variable is nil", id)
-		return Value{ParseValue: nil}
+	if variable.IsConstant() {
+		v.NewError(fmt.Sprintf("La variable %s es constante", id), ctx.GetStart())
+		return false
 	}
 
-	// Check if the types are the same
-	if v.Memory[id].Type != value.Type {
-		v.NewError(fmt.Sprintf("La variable %s, es de tipo %s y se le quiere asignar un valor de tipo %s", id, v.Memory[id].Type, value.Type))
-		fmt.Println("Variable is not the same type", id)
-		return Value{ParseValue: nil}
+	if variable.GetType() != value.GetType() {
+		if variable.GetType() == floatT && value.GetType() == intT {
+			value = NewFloatValue(float64(value.GetValue().(int)))
+		} else {
+			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, variable.GetType(), value.GetType()), ctx.GetStart())
+			return false
+		}
 	}
 
-	// Assign the value
-	v.Memory[id] = value
-	return Value{ParseValue: true}
+	// Check the operator assignment (= += -=)
+	op := ctx.GetOp().GetText()
+	switch op {
+	case "=":
+		variable.SetValue(value)
+	case "+=":
+		variable.SetValue(v.arithmeticOp(variable.Value, value, "+", ctx.GetStart()).(IValue))
+	case "-=":
+		variable.SetValue(v.arithmeticOp(variable.Value, value, "-", ctx.GetStart()).(IValue))
+	default:
+		v.NewError(fmt.Sprintf("No se puede aplicar el operador %s a %s", op, variable.GetType()), ctx.GetStart())
+		return false
+	}
+
+	return nil
+
 }

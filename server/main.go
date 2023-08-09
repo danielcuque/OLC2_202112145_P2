@@ -1,6 +1,7 @@
 package main
 
 import (
+	"OLC2/api"
 	I "OLC2/chore/interfaces"
 	U "OLC2/chore/utils"
 
@@ -13,9 +14,16 @@ func main() {
 
 	result := I.NewEvaluator(content)
 
-	fmt.Println(result.Memory)
-	fmt.Println(result.Errors)
+	for _, err := range result.Errors {
+		fmt.Println(err.Error())
+	}
 
-	// A.Init()
+	fmt.Println()
+	variables := result.Scope.Current.Variables
 
+	for k, v := range variables {
+		fmt.Println("Key:", k, "Value:", v.GetValue(), "Is constant:", v.IsConstant(), "Value Type: ", v.GetType())
+	}
+
+	api.Init()
 }

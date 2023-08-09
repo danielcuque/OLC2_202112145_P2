@@ -24,7 +24,15 @@ func (v *BaseSwiftVisitor) VisitVariableType(ctx *VariableTypeContext) interface
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{} {
+func (v *BaseSwiftVisitor) VisitTypeValueDeclaration(ctx *TypeValueDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitValueDeclaration(ctx *ValueDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -49,6 +57,10 @@ func (v *BaseSwiftVisitor) VisitRangeExpr(ctx *RangeExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitCharExpr(ctx *CharExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

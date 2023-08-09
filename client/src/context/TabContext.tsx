@@ -1,7 +1,6 @@
 import { createContext } from "react";
 import { TabState } from "./";
-import { ParserError } from "../../chore/compiler/error";
-import { TokenSymbol } from "../../chore/compiler/symbols";
+import { ParserError, TokenSymbol } from "../api";
 
 interface TabContextProps extends TabState {
   addFile: (code: string, name: string) => void;

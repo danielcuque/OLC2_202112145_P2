@@ -20,8 +20,14 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#variableType.
 	VisitVariableType(ctx *VariableTypeContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#variableDeclaration.
-	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
+	// Visit a parse tree produced by SwiftParser#TypeValueDeclaration.
+	VisitTypeValueDeclaration(ctx *TypeValueDeclarationContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ValueDeclaration.
+	VisitValueDeclaration(ctx *ValueDeclarationContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#TypeDeclaration.
+	VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}
@@ -40,6 +46,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#UnaryExpr.
 	VisitUnaryExpr(ctx *UnaryExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#CharExpr.
+	VisitCharExpr(ctx *CharExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ArithmeticExpr.
 	VisitArithmeticExpr(ctx *ArithmeticExprContext) interface{}
