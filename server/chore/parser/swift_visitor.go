@@ -47,6 +47,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#UnaryExpr.
 	VisitUnaryExpr(ctx *UnaryExprContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#CharExpr.
+	VisitCharExpr(ctx *CharExprContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#ArithmeticExpr.
 	VisitArithmeticExpr(ctx *ArithmeticExprContext) interface{}
 

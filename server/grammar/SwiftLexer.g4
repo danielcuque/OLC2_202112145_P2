@@ -32,8 +32,8 @@ Kw_INT: 'Int';
 Kw_FLOAT: 'Float';
 Kw_BOOL: 'Bool';
 Kw_STRING: 'String';
-Kw_NIL: 'nil';
 Kw_CHAR: 'Character';
+Kw_NIL: 'nil';
 
 // Range expressions
 Kw_RANGE: '...';

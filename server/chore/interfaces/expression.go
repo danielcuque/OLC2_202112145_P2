@@ -24,8 +24,18 @@ func (v *Visitor) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
 }
 
 func (v *Visitor) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
+	// Check if is posible char or string
 	s := strings.Trim(ctx.GetText(), "\"")
+
+	if len(s) == 1 {
+		return NewCharValue([]rune(s)[0])
+	}
 	return NewStringValue(s)
+}
+
+func (v *Visitor) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
+	c := []rune(strings.Trim(ctx.GetText(), "'"))[0]
+	return NewCharValue(c)
 }
 
 func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
