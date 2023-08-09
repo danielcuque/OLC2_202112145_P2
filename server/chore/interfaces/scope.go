@@ -78,7 +78,15 @@ func (s *ScopeTree) AddVariable(name string, value *Variable) {
 }
 
 func (s *ScopeTree) GetVariable(name string) interface{} {
-	return s.Current.GetVariable(name)
+	// Check if var exists in current scope
+	// if not, check in parent scope until root
+
+	for node := s.Current; node != nil; node = node.Parent {
+		if val, ok := node.Variables[name]; ok {
+			return val
+		}
+	}
+	return nil
 }
 
 func (s *ScopeTree) SetVariable(name string, value IValue) {

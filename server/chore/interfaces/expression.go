@@ -322,5 +322,5 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 }
 
 func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {
-	return ""
+	return ctx.GetText()
 }

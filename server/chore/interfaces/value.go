@@ -1,11 +1,11 @@
 package interfaces
 
 const (
-	STRING_STR  = "string"
-	INT_STR     = "int"
-	FLOAT_STR   = "float"
-	BOOLEAN_STR = "boolean"
-	CHAR_STR    = "character"
+	STRING_STR  = "String"
+	INT_STR     = "Int"
+	FLOAT_STR   = "Float"
+	BOOLEAN_STR = "Bool"
+	CHAR_STR    = "Character"
 	NIL_STR     = "nil"
 )
 
