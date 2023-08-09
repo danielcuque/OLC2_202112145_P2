@@ -13,12 +13,15 @@ func main() {
 
 	result := I.NewEvaluator(content)
 
-	fmt.Println(result.Errors)
+	for _, err := range result.Errors {
+		fmt.Println(err)
+	}
 
+	fmt.Println()
 	variables := result.Scope.Current.Variables
 
 	for k, v := range variables {
-		fmt.Println("Key:", k, "Value:", v.GetValue(), "Type:", v.IsConstant(), "Value Type: ", v.GetType())
+		fmt.Println("Key:", k, "Value:", v.GetValue(), "Is constant:", v.IsConstant(), "Value Type: ", v.GetType())
 	}
 
 }

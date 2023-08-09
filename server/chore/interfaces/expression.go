@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"OLC2/chore/parser"
-	U "OLC2/chore/utils"
 )
 
 var intT = INT_STR
@@ -126,6 +125,11 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
 		}
 		v.NewError("Error: No se puede multiplicar " + leftT + " con " + rightT)
 	case "/":
+		if rightT == intT && r.(int) == 0 {
+			v.NewError("Error: No se puede dividir entre 0")
+			return nil
+		}
+
 		if leftT == intT && rightT == intT {
 			return NewIntValue(l.(int) / r.(int))
 		}
@@ -140,17 +144,12 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string) interface{} {
 		}
 		v.NewError("Error: No se puede dividir " + leftT + " con " + rightT)
 	case "%":
+		if rightT == intT && r.(int) == 0 {
+			v.NewError("Error: No se puede dividir entre 0")
+			return nil
+		}
 		if leftT == intT && rightT == intT {
 			return NewIntValue(l.(int) % r.(int))
-		}
-		if leftT == floatT && rightT == floatT {
-			return NewIntValue(int(l.(float64)) % int(r.(float64)))
-		}
-		if leftT == floatT && rightT == intT {
-			return NewIntValue(int(l.(float64)) % r.(int))
-		}
-		if leftT == intT && rightT == floatT {
-			return NewIntValue(l.(int) % int(r.(float64)))
 		}
 		v.NewError("Error: No se puede modular " + leftT + " con " + rightT)
 	}
@@ -166,8 +165,8 @@ func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) inter
 	op := ctx.GetOp().GetText()
 
 	// Get types
-	leftT := U.GetType(l)
-	rightT := U.GetType(r)
+	leftT := v.Visit(ctx.GetLeft()).(IValue).GetType()
+	rightT := v.Visit(ctx.GetRight()).(IValue).GetType()
 
 	// Compare
 	switch op {

@@ -6,7 +6,7 @@ import (
 )
 
 func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
-	varType := ctx.GetVarType().GetText()
+	isConstant := ctx.GetVarType().GetText()
 	id := ctx.ID().GetText()
 	value, okVal := v.Visit(ctx.Expr()).(IValue)
 
@@ -21,7 +21,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 		return false
 	}
 
-	newVariable := NewVariable(id, varType == "let", value, value.GetType())
+	newVariable := NewVariable(id, isConstant == "let", value, value.GetType())
 
 	v.Scope.AddVariable(id, newVariable)
 
@@ -29,7 +29,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 }
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
-	varType := ctx.GetVarType().GetText()
+	isConstant := ctx.GetVarType().GetText()
 	id := ctx.ID().GetText()
 	value, okVal := v.Visit(ctx.Expr()).(IValue)
 	valueType := v.Visit(ctx.VariableType()).(string)
@@ -58,7 +58,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 
 	}
 
-	newVariable := NewVariable(id, varType == "let", value, valueType)
+	newVariable := NewVariable(id, isConstant == "let", value, valueType)
 
 	v.Scope.AddVariable(id, newVariable)
 
@@ -66,5 +66,28 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 }
 
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
-	return nil
+	// Declaration without value
+
+	isConstant := ctx.GetVarType().GetText() == "let"
+	id := ctx.ID().GetText()
+	valueType := v.Visit(ctx.VariableType()).(string)
+
+	_, ok := v.Scope.GetVariable(id).(Variable)
+
+	if ok {
+		v.NewError(fmt.Sprintf("Error: La variable %s ya existe", id))
+		return false
+	}
+
+	if isConstant {
+		v.NewError(fmt.Sprintf("Error: La variable %s debe ser inicializada", id))
+		return false
+	}
+
+	newVariable := NewVariable(id, isConstant, nil, valueType)
+
+	v.Scope.AddVariable(id, newVariable)
+
+	return true
+
 }

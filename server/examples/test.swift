@@ -19,6 +19,11 @@ var h = "hola" == "hola"
 
 var i = "ho" + "la"
 
+let j = 1 > false
+
+let k = 10/0
+let l = 10%0
+
 // if (a) {
 // 	evalWhile = 5
 // } else {
