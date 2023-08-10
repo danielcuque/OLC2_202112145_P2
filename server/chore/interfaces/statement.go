@@ -14,9 +14,9 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.IfStatement())
 	}
 
-	// if ctx.WhileStatement() != nil {
-	// 	return v.Visit(ctx.WhileStatement())
-	// }
+	if ctx.WhileStatement() != nil {
+		return v.Visit(ctx.WhileStatement())
+	}
 
 	// if ctx.ForStatement() != nil {
 	// 	return v.Visit(ctx.ForStatement())

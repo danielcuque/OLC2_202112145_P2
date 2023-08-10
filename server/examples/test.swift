@@ -62,20 +62,31 @@
 
 // Test if else if
 
-var testIfElseIf = 0
+// var testIfElseIf = 0
 
-var o = "e"
+// var o = "e"
 
-if o == "a" {
-    testIfElseIf = 11
-} else if o == "b" {
-    testIfElseIf = 12
-} else if o == "c" {
-    testIfElseIf = 13
-}
-else if 1{
+// if o == "a" {
+//     testIfElseIf = 11
+// } else if o == "b" {
+//     testIfElseIf = 12
+// } else if o == "c" {
+//     testIfElseIf = 13
+// }
+// else if 1{
 
-}
- else {
-    testIfElseIf = 14
+// }
+//  else {
+//     testIfElseIf = 14
+// }
+
+// Test While
+var evalWhile = 20
+var a = 0
+
+while evalWhile > 0 {
+    evalWhile -= 1
+    if evalWhile % 2 == 0 {
+        a += 1
+    }
 }

@@ -12,8 +12,8 @@ block: (statement)*;
 statement:
 	variableAssignment
 	| variableDeclaration
-	| ifStatement;
-//  | whileStatement; | forStatement;
+	| ifStatement
+	| whileStatement;
 
 // Variable types
 variableType:
@@ -46,19 +46,8 @@ ifTail: Kw_IF expr LBRACE block RBRACE;
 
 elseStatement: Kw_ELSE LBRACE block RBRACE;
 
-// LBRACE block RBRACE ifStatementTail;
-
-// ifStatementTail: elseIfTail elseStatement | elseStatement | elseIfTail;
-
-// elseStatement: Kw_ELSE LBRACE block RBRACE;
-
-// elseIfTail: elseIfTail elseIf | elseIf;
-
-// elseIf: Kw_ELSE Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
-
-// whileStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
-
-// forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
+// While statement
+whileStatement: Kw_WHILE expr LBRACE block RBRACE;
 
 // Expressions
 expr:

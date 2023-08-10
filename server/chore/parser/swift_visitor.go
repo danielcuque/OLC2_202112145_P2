@@ -41,6 +41,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#elseStatement.
 	VisitElseStatement(ctx *ElseStatementContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#whileStatement.
+	VisitWhileStatement(ctx *WhileStatementContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 

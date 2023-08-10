@@ -52,6 +52,10 @@ func (v *BaseSwiftVisitor) VisitElseStatement(ctx *ElseStatementContext) interfa
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitWhileStatement(ctx *WhileStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

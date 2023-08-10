@@ -67,6 +67,10 @@ func (s *ScopeNode) SetVariable(name string, value IValue) {
 	}
 }
 
+func (s *ScopeNode) ResetScopeNode() {
+	s.Variables = make(map[string]*Variable)
+}
+
 // Get variables from current scope and all children scopes
 func (s *ScopeNode) GetAllVariables() map[string]*Variable {
 	allVariables := make(map[string]*Variable)
@@ -148,4 +152,9 @@ func (s *ScopeTree) GetSymbolTable() *ScopeNode {
 
 func (s *ScopeTree) String() string {
 	return s.Root.String()
+}
+
+func (s *ScopeTree) ResetScope() {
+	// Clean all variables inside current scope
+	s.Current.ResetScopeNode()
 }
