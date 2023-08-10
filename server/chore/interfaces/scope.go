@@ -71,21 +71,19 @@ func (s *ScopeNode) ResetScopeNode() {
 	s.Variables = make(map[string]*Variable)
 }
 
-// Get variables from current scope and all children scopes
 func (s *ScopeNode) GetAllVariables() map[string]*Variable {
 	allVariables := make(map[string]*Variable)
+	s.collectVariables(allVariables)
+	return allVariables
+}
+
+func (s *ScopeNode) collectVariables(allVariables map[string]*Variable) {
 	for name, variable := range s.Variables {
 		allVariables[name] = variable
 	}
-	if s.Parent != nil {
-		parentVariables := s.Parent.GetAllVariables()
-		for name, variable := range parentVariables {
-			if _, exists := allVariables[name]; !exists {
-				allVariables[name] = variable
-			}
-		}
+	for _, child := range s.Child {
+		child.collectVariables(allVariables)
 	}
-	return allVariables
 }
 
 func (s *ScopeNode) String() string {
@@ -145,9 +143,9 @@ func (s *ScopeTree) PopScope() {
 	s.Current = s.Current.Parent
 }
 
-func (s *ScopeTree) GetSymbolTable() *ScopeNode {
+func (s *ScopeTree) GetSymbolTable() map[string]*Variable {
 	// Traverse tree to get symbol table
-	return s.Root
+	return s.Root.GetAllVariables()
 }
 
 func (s *ScopeTree) String() string {

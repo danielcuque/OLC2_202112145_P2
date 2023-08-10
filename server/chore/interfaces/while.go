@@ -15,8 +15,8 @@ func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interfa
 	v.Scope.PushScope(WhileScope)
 
 	for condition {
-		v.Visit(ctx.Block())
 		v.Scope.ResetScope()
+		v.Visit(ctx.Block())
 		condition = v.Visit(ctx.Expr()).(IValue).GetValue().(bool)
 	}
 

@@ -17,9 +17,7 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Println(result.Scope.GetSymbolTable())
-
-	variables := result.Scope.GetSymbolTable().GetAllVariables()
+	variables := result.Scope.GetSymbolTable()
 
 	fmt.Println()
 	for k, v := range variables {
