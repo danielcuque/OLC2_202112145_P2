@@ -25,6 +25,8 @@ export const RunButton = ({ tab }: RunButtonProps) => {
       );
       if (result.errors.length > 0) {
         toast.error("Error al compilar");
+      } else {
+        toast.success("Compilación exitosa");
       }
     } catch (error) {
       toast.error("Error al realizar petición");
