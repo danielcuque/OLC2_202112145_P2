@@ -49,7 +49,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	if valueType != value.GetType() {
 		// Check if the explicit type is Float and the value type is Int
 		// Change the value type to Float
-		if valueType == floatT && value.GetType() == intT {
+		if valueType == FLOAT_STR && value.GetType() == INT_STR {
 			value = NewFloatValue(float64(value.GetValue().(int)))
 		} else {
 			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())

@@ -21,7 +21,7 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	}
 
 	if variable.GetType() != value.GetType() {
-		if variable.GetType() == floatT && value.GetType() == intT {
+		if variable.GetType() == FLOAT_STR && value.GetType() == INT_STR {
 			value = NewFloatValue(float64(value.GetValue().(int)))
 		} else {
 			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, variable.GetType(), value.GetType()), ctx.GetStart())

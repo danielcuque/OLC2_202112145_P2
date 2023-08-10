@@ -27,7 +27,7 @@ let l = 10%0
 let m: Float?
 var n: Int?
 
-
+// Test simple if with nested if
 if a {
 	evalWhile = 6
     if !aa {
@@ -40,8 +40,38 @@ if a {
     if !!a{
         evalWhile = 9
     }
+}
 
-    if 6 {
+// Test if else
+var testIf = 0
+if !a {
+    testIf = 10
+} else {
+    testIf = 0
+}
 
-    }
+// Test if else
+
+var testIfElse = 0
+
+if a {
+    testIfElse = 100
+} else {
+    testIfElse = 0
+}
+
+// Test if else if
+
+var testIfElseIf = 0
+
+var o = "c"
+
+if o == "a" {
+    testIfElseIf = 11
+} else if o == "b" {
+    testIfElseIf = 12
+} else if o == "c" {
+    testIfElseIf = 13
+} else {
+    testIfElseIf = 14
 }

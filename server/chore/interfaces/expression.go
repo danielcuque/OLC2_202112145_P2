@@ -9,10 +9,6 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 )
 
-var intT = INT_STR
-var floatT = FLOAT_STR
-var stringT = STRING_STR
-
 func (v *Visitor) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 	i, _ := strconv.Atoi(ctx.GetText())
 	return NewIntValue(i)
@@ -63,9 +59,9 @@ func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	value := op.GetValue()
 	opType := op.GetType()
 
-	if opType == intT {
+	if opType == INT_STR {
 		return NewIntValue(-value.(int))
-	} else if opType == floatT {
+	} else if opType == FLOAT_STR {
 		return NewFloatValue(-value.(float64))
 	}
 	v.NewError("No se puede aplicar el operador unario - a "+opType, ctx.GetStart())
@@ -93,75 +89,75 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 	switch op {
 	case "+":
 
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewIntValue(l.(int) + r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(l.(float64) + r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewFloatValue(l.(float64) + float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(float64(l.(int)) + r.(float64))
 		}
-		if leftT == stringT && rightT == stringT {
+		if leftT == STRING_STR && rightT == STRING_STR {
 			return NewStringValue(l.(string) + r.(string))
 		}
 		v.NewError("No se puede sumar "+leftT+" con "+rightT, lc)
 	case "-":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewIntValue(l.(int) - r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(l.(float64) - r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewFloatValue(l.(float64) - float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(float64(l.(int)) - r.(float64))
 		}
 		v.NewError("No se puede restar "+leftT+" con "+rightT, lc)
 	case "*":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewIntValue(l.(int) * r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(l.(float64) * r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewFloatValue(l.(float64) * float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(float64(l.(int)) * r.(float64))
 		}
 		v.NewError("No se puede multiplicar "+leftT+" con "+rightT, lc)
 	case "/":
-		if rightT == intT && r.(int) == 0 {
+		if rightT == INT_STR && r.(int) == 0 {
 			v.NewError("No se puede dividir entre 0", lc)
 			return nil
 		}
 
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewIntValue(l.(int) / r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(l.(float64) / r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewFloatValue(l.(float64) / float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewFloatValue(float64(l.(int)) / r.(float64))
 		}
 		v.NewError("No se puede dividir "+leftT+" con "+rightT, lc)
 	case "%":
-		if rightT == intT && r.(int) == 0 {
+		if rightT == INT_STR && r.(int) == 0 {
 			v.NewError("No se puede dividir entre 0", lc)
 			return nil
 		}
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewIntValue(l.(int) % r.(int))
 		}
 		v.NewError("No se puede modular "+leftT+" con "+rightT, lc)
@@ -184,88 +180,116 @@ func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) inter
 	// Compare
 	switch op {
 	case "==":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(int) == r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(l.(float64) == r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(float64) == float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(float64(l.(int)) == r.(float64))
 		}
-		if leftT == stringT && rightT == stringT {
+		if leftT == STRING_STR && rightT == STRING_STR {
 			return NewBooleanValue(l.(string) == r.(string))
 		}
+		if leftT == CHAR_STR && rightT == CHAR_STR {
+			return NewBooleanValue(l.(rune) == r.(rune))
+		}
+
 	case "!=":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(int) != r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(l.(float64) != r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(float64) != float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(float64(l.(int)) != r.(float64))
 		}
-		if leftT == stringT && rightT == stringT {
+		if leftT == STRING_STR && rightT == STRING_STR {
 			return NewBooleanValue(l.(string) != r.(string))
 		}
+		if leftT == CHAR_STR && rightT == CHAR_STR {
+			return NewBooleanValue(l.(rune) != r.(rune))
+		}
 	case ">":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(int) > r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(l.(float64) > r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(float64) > float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(float64(l.(int)) > r.(float64))
 		}
+		if leftT == STRING_STR && rightT == STRING_STR {
+			return NewBooleanValue(l.(string) > r.(string))
+		}
+		if leftT == CHAR_STR && rightT == CHAR_STR {
+			return NewBooleanValue(l.(rune) > r.(rune))
+		}
 	case "<":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(int) < r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(l.(float64) < r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(float64) < float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(float64(l.(int)) < r.(float64))
 		}
+		if leftT == STRING_STR && rightT == STRING_STR {
+			return NewBooleanValue(l.(string) < r.(string))
+		}
 	case ">=":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(int) >= r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(l.(float64) >= r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(float64) >= float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(float64(l.(int)) >= r.(float64))
 		}
+		if leftT == STRING_STR && rightT == STRING_STR {
+			return NewBooleanValue(l.(string) >= r.(string))
+		}
+		if leftT == CHAR_STR && rightT == CHAR_STR {
+			return NewBooleanValue(l.(rune) >= r.(rune))
+		}
 	case "<=":
-		if leftT == intT && rightT == intT {
+		if leftT == INT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(int) <= r.(int))
 		}
-		if leftT == floatT && rightT == floatT {
+		if leftT == FLOAT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(l.(float64) <= r.(float64))
 		}
-		if leftT == floatT && rightT == intT {
+		if leftT == FLOAT_STR && rightT == INT_STR {
 			return NewBooleanValue(l.(float64) <= float64(r.(int)))
 		}
-		if leftT == intT && rightT == floatT {
+		if leftT == INT_STR && rightT == FLOAT_STR {
 			return NewBooleanValue(float64(l.(int)) <= r.(float64))
+		}
+		if leftT == STRING_STR && rightT == STRING_STR {
+			return NewBooleanValue(l.(string) <= r.(string))
+		}
+		if leftT == CHAR_STR && rightT == CHAR_STR {
+			return NewBooleanValue(l.(rune) <= r.(rune))
 		}
 	}
 
