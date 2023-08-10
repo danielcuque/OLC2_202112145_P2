@@ -9,8 +9,11 @@ program: block EOF;
 block: (statement)*;
 
 // Statements
-statement: variableAssignment | variableDeclaration;
-// | ifStatement | whileStatement; | forStatement;
+statement:
+	variableAssignment
+	| variableDeclaration
+	| ifStatement;
+//  | whileStatement; | forStatement;
 
 // Variable types
 variableType:
@@ -36,7 +39,12 @@ variableDeclaration:
 variableAssignment:
 	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
-// If statement ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE | Kw_IF LPAREN expr RPAREN
+// If statement 
+ifStatement:
+	Kw_IF expr LBRACE block RBRACE									# SimpleIfStatement
+	| Kw_IF expr LBRACE block RBRACE Kw_ELSE LBRACE block RBRACE	# IfElseStatement
+	| Kw_IF expr LBRACE block RBRACE Kw_ELSE ifStatement			# IfElseIfStatement;
+
 // LBRACE block RBRACE ifStatementTail;
 
 // ifStatementTail: elseIfTail elseStatement | elseStatement | elseIfTail;

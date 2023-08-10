@@ -28,12 +28,20 @@ let m: Float?
 var n: Int?
 
 
-// if (a) {
-// 	evalWhile = 5
-// } else {
-//     evalWhile = 10
-// }
+if a {
+	evalWhile = 6
+    if !aa {
+        evalWhile = 7
+        if b < c{
+            evalWhile = 8
+        }
+    }
 
-// while (b < evalWhile) {
-// 	b = b + 1
-// }
+    if !!a{
+        evalWhile = 9
+    }
+
+    if 6 {
+
+    }
+}

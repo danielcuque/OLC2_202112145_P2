@@ -47,6 +47,20 @@ func (s *ScopeNode) SetVariable(name string, value IValue) {
 	}
 }
 
+// Get variables from current scope and all children scopes
+func (s *ScopeNode) GetVariables() map[string]*Variable {
+	result := make(map[string]*Variable)
+	for k, v := range s.Variables {
+		result[k] = v
+	}
+	for _, v := range s.Child {
+		for k, v := range v.GetVariables() {
+			result[k] = v
+		}
+	}
+	return result
+}
+
 func (s *ScopeNode) String() string {
 	result := ""
 	for i := 0; i < s.Level; i++ {
@@ -102,6 +116,11 @@ func (s *ScopeTree) PushScope(scopeType ScopeType) *ScopeNode {
 
 func (s *ScopeTree) PopScope() {
 	s.Current = s.Current.Parent
+}
+
+func (s *ScopeTree) GetSymbolTable() *ScopeNode {
+	// Traverse tree to get symbol table
+	return s.Root
 }
 
 func (s *ScopeTree) String() string {

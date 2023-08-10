@@ -9,9 +9,11 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 	if ctx.VariableDeclaration() != nil {
 		return v.Visit(ctx.VariableDeclaration())
 	}
-	// if ctx.IfStatement() != nil {
-	// 	return v.Visit(ctx.IfStatement())
-	// }
+
+	if ctx.IfStatement() != nil {
+		return v.Visit(ctx.IfStatement())
+	}
+
 	// if ctx.WhileStatement() != nil {
 	// 	return v.Visit(ctx.WhileStatement())
 	// }

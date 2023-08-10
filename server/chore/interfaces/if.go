@@ -1,22 +1,32 @@
 package interfaces
 
-// func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
-// 	value, ok := v.Visit(ctx.Expr()).(Value).ParseValue.(bool)
+import (
+	"OLC2/chore/parser"
+)
 
-// 	if ok && value {
-// 		return v.Visit(ctx.Block())
-// 	}
-// 	return Value{ParseValue: false}
-// }
+func (v *Visitor) VisitSimpleIfStatement(ctx *parser.SimpleIfStatementContext) interface{} {
+	expr, ok := v.Visit(ctx.Expr()).(IValue).GetValue().(bool)
 
-// func (v *Visitor) VisitIfStatementTail(ctx *parser.IfStatementTailContext) interface{} {
-// 	return ""
-// }
+	if !ok {
+		v.NewError("Se esperaba una expresión booleana para la sentencia If", ctx.GetStart())
+		return nil
+	}
 
-// func (v *Visitor) VisitElseIfTail(ctx *parser.ElseIfTailContext) interface{} {
-// 	return ""
-// }
+	v.Scope.PushScope(IfScope)
 
-// func (v *Visitor) VisitElseIf(ctx *parser.ElseIfContext) interface{} {
-// 	return ""
-// }
+	if expr {
+		return v.Visit(ctx.Block())
+	}
+
+	v.Scope.PopScope()
+
+	return nil
+}
+
+func (v *Visitor) VisitIfElseStatement(ctx *parser.IfElseStatementContext) interface{} {
+	return nil
+}
+
+func (v *Visitor) VisitIfElseIfStatement(ctx *parser.IfElseIfStatementContext) interface{} {
+	return nil
+}
