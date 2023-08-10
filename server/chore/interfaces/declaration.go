@@ -21,6 +21,8 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 		return false
 	}
 
+	// fmt.Println(id, "<- ID")
+
 	newVariable := NewVariable(id, isConstant == "let", value, value.GetType())
 
 	v.Scope.AddVariable(id, newVariable)

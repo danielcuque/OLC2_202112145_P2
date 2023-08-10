@@ -32,14 +32,14 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#SimpleIfStatement.
-	VisitSimpleIfStatement(ctx *SimpleIfStatementContext) interface{}
+	// Visit a parse tree produced by SwiftParser#ifStatement.
+	VisitIfStatement(ctx *IfStatementContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#IfElseStatement.
-	VisitIfElseStatement(ctx *IfElseStatementContext) interface{}
+	// Visit a parse tree produced by SwiftParser#ifTail.
+	VisitIfTail(ctx *IfTailContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#IfElseIfStatement.
-	VisitIfElseIfStatement(ctx *IfElseIfStatementContext) interface{}
+	// Visit a parse tree produced by SwiftParser#elseStatement.
+	VisitElseStatement(ctx *ElseStatementContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}

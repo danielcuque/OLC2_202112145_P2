@@ -19,16 +19,12 @@ func main() {
 
 	fmt.Println(result.Scope.GetSymbolTable())
 
-	variables := result.Scope.GetSymbolTable().GetVariables()
+	variables := result.Scope.GetSymbolTable().GetAllVariables()
 
 	fmt.Println()
 	for k, v := range variables {
 		fmt.Println("Key:", k, "Value:", v.GetValue(), "Is constant:", v.IsConstant(), "Value Type: ", v.GetType())
 	}
-
-	// for k, v := range variables {
-	// 	fmt.Println("Key:", k, "Value:", v.GetValue(), "Is constant:", v.IsConstant(), "Value Type: ", v.GetType())
-	// }
 
 	// api.Init()
 }

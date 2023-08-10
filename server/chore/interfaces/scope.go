@@ -12,6 +12,26 @@ const (
 	IfScope    ScopeType = "If"
 )
 
+type TokenSymbol struct {
+	Scope    string
+	Type     string
+	Name     string
+	DataType string
+	Value    string
+	Params   []string
+}
+
+func NewTokenSymbol(scope, tokenType, name, dataType, value string, params []string) *TokenSymbol {
+	return &TokenSymbol{
+		Scope:    scope,
+		Type:     tokenType,
+		Name:     name,
+		DataType: dataType,
+		Value:    value,
+		Params:   params,
+	}
+}
+
 type ScopeNode struct {
 	Parent    *ScopeNode
 	Child     []*ScopeNode
@@ -48,17 +68,20 @@ func (s *ScopeNode) SetVariable(name string, value IValue) {
 }
 
 // Get variables from current scope and all children scopes
-func (s *ScopeNode) GetVariables() map[string]*Variable {
-	result := make(map[string]*Variable)
-	for k, v := range s.Variables {
-		result[k] = v
+func (s *ScopeNode) GetAllVariables() map[string]*Variable {
+	allVariables := make(map[string]*Variable)
+	for name, variable := range s.Variables {
+		allVariables[name] = variable
 	}
-	for _, v := range s.Child {
-		for k, v := range v.GetVariables() {
-			result[k] = v
+	if s.Parent != nil {
+		parentVariables := s.Parent.GetAllVariables()
+		for name, variable := range parentVariables {
+			if _, exists := allVariables[name]; !exists {
+				allVariables[name] = variable
+			}
 		}
 	}
-	return result
+	return allVariables
 }
 
 func (s *ScopeNode) String() string {

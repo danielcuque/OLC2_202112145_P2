@@ -40,15 +40,15 @@ func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContex
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitSimpleIfStatement(ctx *SimpleIfStatementContext) interface{} {
+func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitIfElseStatement(ctx *IfElseStatementContext) interface{} {
+func (v *BaseSwiftVisitor) VisitIfTail(ctx *IfTailContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitIfElseIfStatement(ctx *IfElseIfStatementContext) interface{} {
+func (v *BaseSwiftVisitor) VisitElseStatement(ctx *ElseStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

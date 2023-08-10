@@ -40,10 +40,11 @@ variableAssignment:
 	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
 // If statement 
-ifStatement:
-	Kw_IF expr LBRACE block RBRACE									# SimpleIfStatement
-	| Kw_IF expr LBRACE block RBRACE Kw_ELSE LBRACE block RBRACE	# IfElseStatement
-	| Kw_IF expr LBRACE block RBRACE Kw_ELSE ifStatement			# IfElseIfStatement;
+ifStatement: ifTail (Kw_ELSE ifTail)* elseStatement?;
+
+ifTail: Kw_IF expr LBRACE block RBRACE;
+
+elseStatement: Kw_ELSE LBRACE block RBRACE;
 
 // LBRACE block RBRACE ifStatementTail;
 
