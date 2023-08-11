@@ -18,6 +18,10 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.WhileStatement())
 	}
 
+	if ctx.SwitchStatement() != nil {
+		return v.Visit(ctx.SwitchStatement())
+	}
+
 	// if ctx.ForStatement() != nil {
 	// 	return v.Visit(ctx.ForStatement())
 	// }

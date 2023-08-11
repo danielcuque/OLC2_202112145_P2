@@ -53,7 +53,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 
 func (v *Visitor) VisitElseStatement(ctx *parser.ElseStatementContext) interface{} {
 
-	v.Scope.PushScope(IfScope)
+	v.Scope.PushScope(ElseScope)
 	v.Visit(ctx.Block())
 	v.Scope.PopScope()
 

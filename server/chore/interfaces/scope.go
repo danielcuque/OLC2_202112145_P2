@@ -5,11 +5,13 @@ import "fmt"
 type ScopeType string
 
 const (
-	RootScope  ScopeType = "Root"
-	FuncScope  ScopeType = "Func"
-	WhileScope ScopeType = "While"
-	ForScope   ScopeType = "For"
-	IfScope    ScopeType = "If"
+	RootScope   ScopeType = "Root"
+	FuncScope   ScopeType = "Func"
+	WhileScope  ScopeType = "While"
+	ForScope    ScopeType = "For"
+	IfScope     ScopeType = "If"
+	ElseScope   ScopeType = "Else"
+	SwitchScope ScopeType = "Switch"
 )
 
 type TokenSymbol struct {

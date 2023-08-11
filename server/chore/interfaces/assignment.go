@@ -7,9 +7,15 @@ import (
 
 func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
 	id := ctx.ID().GetText()
-	value := v.Visit(ctx.Expr()).(IValue)
+	value, ok := v.Visit(ctx.Expr()).(IValue)
+
+	if !ok {
+		v.NewError("El valor asignado no es de tipo IValue", ctx.GetStart())
+		return false
+	}
 
 	variable, ok := v.Scope.GetVariable(id).(*Variable) // Pointer to Variable
+
 	if !ok {
 		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
 		return false

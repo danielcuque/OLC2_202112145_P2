@@ -56,6 +56,18 @@ func (v *BaseSwiftVisitor) VisitWhileStatement(ctx *WhileStatementContext) inter
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitSwitchStatement(ctx *SwitchStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitSwitchCase(ctx *SwitchCaseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitSwitchDefault(ctx *SwitchDefaultContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

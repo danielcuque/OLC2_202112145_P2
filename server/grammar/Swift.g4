@@ -13,7 +13,8 @@ statement:
 	variableAssignment
 	| variableDeclaration
 	| ifStatement
-	| whileStatement;
+	| whileStatement
+	| switchStatement;
 
 // Variable types
 variableType:
@@ -48,6 +49,14 @@ elseStatement: Kw_ELSE LBRACE block RBRACE;
 
 // While statement
 whileStatement: Kw_WHILE expr LBRACE block RBRACE;
+
+// Switch statement
+switchStatement:
+	Kw_SWITCH expr LBRACE switchCase* switchDefault? RBRACE;
+
+switchCase: Kw_CASE expr COLON block Kw_BREAK?;
+
+switchDefault: Kw_DEFAULT COLON block Kw_BREAK?;
 
 // Expressions
 expr:
