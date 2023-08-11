@@ -169,8 +169,17 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) interface{} {
 
 	// Parse left and right
-	l := v.Visit(ctx.GetLeft()).(IValue).GetValue()
-	r := v.Visit(ctx.GetRight()).(IValue).GetValue()
+	lV, okL := v.Visit(ctx.GetLeft()).(IValue)
+	rV, okR := v.Visit(ctx.GetRight()).(IValue)
+
+	if !okL || !okR {
+		v.NewError("No es posible realizar la comparación", ctx.GetStart())
+		return nil
+	}
+
+	l := lV.GetValue()
+	r := rV.GetValue()
+
 	op := ctx.GetOp().GetText()
 
 	// Get types

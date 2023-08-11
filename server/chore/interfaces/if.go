@@ -28,7 +28,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 	condition, ok := v.Visit(ctx.Expr()).(IValue)
 
 	if !ok {
-		v.NewError("La condición debe ser de tipo bool", ctx.GetStart())
+		v.NewError("La expresión es inválida", ctx.GetStart())
 		return false
 	}
 

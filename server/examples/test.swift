@@ -67,16 +67,16 @@
 
 var o = "b"
 
-// if o == "a" {
-//     let am = 10
-//     testIfElseIf = am
-// } else if o == "b" {
-//     testIfElseIf = 12
-// } else if o == "c" {
-//     testIfElseIf = 13
-// } else {
-//     testIfElseIf = 14
-// }
+if b == "a" {
+    let am = 10
+    testIfElseIf = am
+} else if o == "b" {
+    testIfElseIf = 12
+} else if o == "c" {
+    testIfElseIf = 13
+} else {
+    testIfElseIf = 14
+}
 
 // Test switch
 

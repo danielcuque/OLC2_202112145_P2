@@ -38,3 +38,12 @@ var2 += 10.0                            //var2 tendrá el valor de 20.0
 var str:String = "cad"
 str += "cad"                            //str tendrá el valor de "cadcad"
 str += 10                               //operación inválida String + Int
+
+var i = 10 // variable global es accesible desde este ámbito 
+if i == 10 {
+    var j:Int = 10 + i // i es accesible desde este ámbito 
+    if i==10 {
+        var k:Int=j+1 //iyjsonaccesiblesdesdeesteámbito 
+    }
+    j = k // error k ya no es accesible en este ámbito 
+}
