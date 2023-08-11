@@ -88,6 +88,10 @@ func (s *ScopeNode) collectVariables(allVariables map[string]*Variable) {
 	}
 }
 
+func (s *ScopeNode) GetType() string {
+	return string(s.ScopeType)
+}
+
 func (s *ScopeNode) String() string {
 	result := ""
 	for i := 0; i < s.Level; i++ {
@@ -157,4 +161,8 @@ func (s *ScopeTree) String() string {
 func (s *ScopeTree) ResetScope() {
 	// Clean all variables inside current scope
 	s.Current.ResetScopeNode()
+}
+
+func (s *ScopeTree) GetCurrentScope() *ScopeNode {
+	return s.Current
 }

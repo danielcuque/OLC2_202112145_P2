@@ -63,7 +63,7 @@
 
 // Test if else if
 
-// var testIfElseIf = 0
+var testIfElseIf = 0
 
 var o = "b"
 
@@ -85,7 +85,7 @@ switch o {
         let testSwitch = 10
         testIfElseIf -= testSwitch
     case "b":
-        testIfElseIf += testSwitch
+        testIfElseIf += 11
     case "c":
         testIfElseIf = 13
     default:

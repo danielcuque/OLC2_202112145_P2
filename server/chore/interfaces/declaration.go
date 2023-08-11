@@ -3,6 +3,8 @@ package interfaces
 import (
 	"OLC2/chore/parser"
 	"fmt"
+
+	"github.com/antlr4-go/antlr/v4"
 )
 
 func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
@@ -23,7 +25,10 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 
 	// fmt.Println(id, "<- ID")
 
-	newVariable := NewVariable(id, isConstant == "let", value, value.GetType())
+	// Get line, column and scope
+	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+
+	newVariable := NewVariable(id, isConstant == "let", value, value.GetType(), line, column, scope)
 
 	v.Scope.AddVariable(id, newVariable)
 
@@ -60,7 +65,10 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 
 	}
 
-	newVariable := NewVariable(id, isConstant == "let", value, valueType)
+	// Get line, column and scope
+	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+
+	newVariable := NewVariable(id, isConstant == "let", value, valueType, line, column, scope)
 
 	v.Scope.AddVariable(id, newVariable)
 
@@ -86,10 +94,19 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 		return false
 	}
 
-	newVariable := NewVariable(id, isConstant, NewNilValue(nil), valueType)
+	// Get line, column and scope
+	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	newVariable := NewVariable(id, isConstant, NewNilValue(nil), valueType, line, column, scope)
 
 	v.Scope.AddVariable(id, newVariable)
 
 	return true
 
+}
+
+func GetVariableAttr(v *Visitor, lc antlr.Token) (int, int, *ScopeNode) {
+	line := lc.GetLine()
+	column := lc.GetColumn()
+	scope := v.Scope.GetCurrentScope()
+	return line, column, scope
 }
