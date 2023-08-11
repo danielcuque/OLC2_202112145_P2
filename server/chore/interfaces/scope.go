@@ -73,21 +73,6 @@ func (s *ScopeNode) ResetScopeNode() {
 	s.Variables = make(map[string]*Variable)
 }
 
-func (s *ScopeNode) GetAllVariables() []*Variable {
-	var allVariables []*Variable
-	s.collectVariables(&allVariables)
-	return allVariables
-}
-
-func (s *ScopeNode) collectVariables(allVariables *[]*Variable) {
-	for _, variable := range s.Variables {
-		*allVariables = append(*allVariables, variable)
-	}
-	for _, child := range s.Child {
-		child.collectVariables(allVariables)
-	}
-}
-
 func (s *ScopeNode) GetType() string {
 	return string(s.ScopeType)
 }
@@ -149,7 +134,7 @@ func (s *ScopeTree) PopScope() {
 	s.Current = s.Current.Parent
 }
 
-func (s *ScopeTree) GetSymbolTable() []*Variable {
+func (s *ScopeTree) GetSymbolTable() []ApiVariable {
 	// Traverse tree to get symbol table
 	return s.Root.GetAllVariables()
 }
@@ -165,4 +150,39 @@ func (s *ScopeTree) ResetScope() {
 
 func (s *ScopeTree) GetCurrentScope() *ScopeNode {
 	return s.Current
+}
+
+// ApiVariable is a struct to represent variables in api
+type ApiVariable struct {
+	Name    string
+	IsConst bool
+	Value   interface{}
+	Type    string
+	Line    int
+	Column  int
+	Scope   string
+}
+
+func (s *ScopeNode) GetAllVariables() []ApiVariable {
+	var allVariables []ApiVariable
+	s.collectVariables(&allVariables)
+	return allVariables
+}
+
+func (s *ScopeNode) collectVariables(allVariables *[]ApiVariable) {
+	for _, variable := range s.Variables {
+		apiVar := ApiVariable{
+			Name:    variable.GetName(),
+			IsConst: variable.IsConstant(),
+			Value:   variable.GetValue(), // Puedes decidir cómo manejar el valor aquí
+			Type:    variable.GetType(),
+			Line:    variable.GetLine(),
+			Column:  variable.GetColumn(),
+			Scope:   s.GetType(),
+		}
+		*allVariables = append(*allVariables, apiVar)
+	}
+	for _, child := range s.Child {
+		child.collectVariables(allVariables)
+	}
 }
