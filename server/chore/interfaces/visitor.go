@@ -10,16 +10,18 @@ import (
 
 type Visitor struct {
 	parser.BaseSwiftVisitor
-	Scope  *ScopeTree
 	Errors []*VisitorError
 	Logs   []string
+	Scope  *ScopeTree
+	Stack  *Stack
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
-		Scope:  NewScopeTree(),
 		Errors: make([]*VisitorError, 0),
 		Logs:   make([]string, 0),
+		Scope:  NewScopeTree(),
+		Stack:  NewStack(),
 	}
 }
 

@@ -22,8 +22,9 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.SwitchStatement())
 	}
 
-	// if ctx.ForStatement() != nil {
-	// 	return v.Visit(ctx.ForStatement())
-	// }
+	if ctx.ControlFlow() != nil {
+		return v.Visit(ctx.ControlFlow())
+	}
+
 	return nil
 }

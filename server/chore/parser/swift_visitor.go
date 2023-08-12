@@ -94,4 +94,13 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#TernaryExpr.
 	VisitTernaryExpr(ctx *TernaryExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ControlBreak.
+	VisitControlBreak(ctx *ControlBreakContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ControlContinue.
+	VisitControlContinue(ctx *ControlContinueContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ControlReturn.
+	VisitControlReturn(ctx *ControlReturnContext) interface{}
 }

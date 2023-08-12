@@ -1,25 +1,27 @@
 package main
 
 import (
-	"OLC2/api"
+	I "OLC2/chore/interfaces"
+	U "OLC2/chore/utils"
+	"fmt"
 )
 
 func main() {
 
-	// content := U.ReadFile("./examples/test.swift")
+	content := U.ReadFile("./examples/test.swift")
 
-	// result := I.NewEvaluator(content)
+	result := I.NewEvaluator(content)
 
-	// for _, err := range result.Errors {
-	// 	fmt.Println(err.Error())
-	// }
+	for _, err := range result.Errors {
+		fmt.Println(err.Error())
+	}
 
-	// variables := result.Scope.GetSymbolTable()
+	variables := result.Scope.GetSymbolTable()
 
-	// fmt.Println()
-	// for _, v := range variables {
-	// 	fmt.Println("Name:", v.GetName(), "Value:", v.GetValue(), "Is constant:", v.IsConstant(), "Value Type: ", v.GetType(), "Scope: ", v.GetScopeName(), "Line: ", v.GetLine(), "Column: ", v.GetColumn())
-	// }
+	fmt.Println()
+	for _, v := range variables {
+		fmt.Println(v)
+	}
 
-	api.Init()
+	// api.Init()
 }

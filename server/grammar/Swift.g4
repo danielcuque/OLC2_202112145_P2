@@ -14,7 +14,8 @@ statement:
 	| variableDeclaration
 	| ifStatement
 	| whileStatement
-	| switchStatement;
+	| switchStatement
+	| controlFlow;
 
 // Variable types
 variableType:
@@ -79,3 +80,9 @@ expr:
 	| STRING														# StrExpr
 	| CHAR															# CharExpr
 	| BOOL															# BoolExpr;
+
+// ControlFlow expressions
+controlFlow:
+	Kw_BREAK			# ControlBreak
+	| Kw_CONTINUE		# ControlContinue
+	| Kw_RETURN expr?	# ControlReturn;

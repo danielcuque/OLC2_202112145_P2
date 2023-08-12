@@ -123,3 +123,15 @@ func (v *BaseSwiftVisitor) VisitLogicalExpr(ctx *LogicalExprContext) interface{}
 func (v *BaseSwiftVisitor) VisitTernaryExpr(ctx *TernaryExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
+
+func (v *BaseSwiftVisitor) VisitControlBreak(ctx *ControlBreakContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitControlContinue(ctx *ControlContinueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitControlReturn(ctx *ControlReturnContext) interface{} {
+	return v.VisitChildren(ctx)
+}
