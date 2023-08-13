@@ -148,3 +148,10 @@ var testFor = 0
 for i in 6...10 {
     testFor += i
 }
+
+var testStringFor = "hola"
+
+for i in testStringFor {
+    let bbb = 1
+    testFor += bbb
+}
