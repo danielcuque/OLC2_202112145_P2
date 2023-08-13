@@ -12,6 +12,13 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	// Create a new scope
 	v.Scope.PushScope(IfScope)
 
+	v.Stack.Push(
+		NewStackItem(
+			"For",
+			NewNilValue(nil),
+			[]StackItemType{BreakType, ContinueType},
+		))
+
 	// Now get the value to iterate
 	argIterator, ok := v.Visit(ctx.Expr()).(IValue)
 
@@ -41,13 +48,16 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 
 	NewForVariable(v, id, valuesToIterate[0], iteratorType, ctx)
 
-	for _, value := range valuesToIterate {
-		// Assign the value to the variable
-		v.Scope.SetVariable(id, value)
+	// Execute the for loop
+	v.ExecuteFor(id, valuesToIterate, ctx)
 
-		// Visit the for loop
-		v.Visit(ctx.Block())
-	}
+	// for _, value := range valuesToIterate {
+	// 	// Assign the value to the variable
+	// 	v.Scope.SetVariable(id, value)
+
+	// 	// Visit the for loop
+	// 	v.Visit(ctx.Block())
+	// }
 
 	// Pop the scope
 	v.Scope.PopScope()
@@ -59,4 +69,34 @@ func NewForVariable(v *Visitor, id string, value IValue, valueType string, ctx *
 	line, column, scope := GetVariableAttr(v, ctx.GetStart())
 	newVariable := NewVariable(id, true, value, valueType, line, column, scope)
 	v.Scope.AddVariable(id, newVariable)
+}
+
+func (v *Visitor) ExecuteFor(id string, valuesToIterate []IValue, ctx *parser.ForStatementContext) {
+	defer func() {
+		peek, ok := recover().(*StackItem)
+
+		if !ok {
+			return
+		}
+
+		if peek.Trigger == ReturnType {
+			panic(peek)
+		}
+
+		if peek.Trigger == BreakType {
+			return
+		}
+
+		if peek.Trigger == ContinueType {
+			v.ExecuteFor(id, valuesToIterate, ctx)
+		}
+	}()
+
+	for _, value := range valuesToIterate {
+		// Assign the value to the variable
+		v.Scope.SetVariable(id, value)
+
+		// Visit the for loop
+		v.Visit(ctx.Block())
+	}
 }
