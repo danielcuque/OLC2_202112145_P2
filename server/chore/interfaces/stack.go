@@ -5,42 +5,52 @@ package interfaces
 type StackItemType string
 
 const (
-	Return   StackItemType = "return"
-	Break    StackItemType = "break"
-	Continue StackItemType = "continue"
+	ReturnType   StackItemType = "return"
+	BreakType    StackItemType = "break"
+	ContinueType StackItemType = "continue"
 )
 
 type StackItem struct {
-	ItemType []StackItemType
-	Value    IValue
-	Function string
+	Name       string
+	Value      IValue
+	ValidProps []StackItemType
+	Trigger    StackItemType
 }
 
-func NewStackItem(itemType []StackItemType, value IValue, function string) *StackItem {
+func (s *StackItem) Contains(prop StackItemType) bool {
+	for _, p := range s.ValidProps {
+		if p == prop {
+			return true
+		}
+	}
+	return false
+}
+
+func NewStackItem(name string, value IValue, validProps []StackItemType) *StackItem {
 	return &StackItem{
-		ItemType: itemType,
-		Value:    value,
-		Function: function,
+		Name:       name,
+		Value:      value,
+		ValidProps: validProps,
 	}
 }
 
 type Stack struct {
-	Items []StackItem
+	Items []*StackItem
 }
 
 func NewStack() *Stack {
 	return &Stack{
-		Items: make([]StackItem, 0),
+		Items: make([]*StackItem, 0),
 	}
 }
 
-func (s *Stack) Push(item StackItem) {
+func (s *Stack) Push(item *StackItem) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Stack) Pop() StackItem {
+func (s *Stack) Pop() *StackItem {
 	if len(s.Items) == 0 {
-		return StackItem{}
+		return &StackItem{}
 	} else {
 		item := s.Items[len(s.Items)-1]
 		s.Items = s.Items[:len(s.Items)-1]
@@ -48,9 +58,9 @@ func (s *Stack) Pop() StackItem {
 	}
 }
 
-func (s *Stack) Peek() StackItem {
+func (s *Stack) Peek() *StackItem {
 	if len(s.Items) == 0 {
-		return StackItem{}
+		return &StackItem{}
 	} else {
 		return s.Items[len(s.Items)-1]
 	}
@@ -69,5 +79,5 @@ func (s *Stack) Size() int {
 }
 
 func (s *Stack) Clear() {
-	s.Items = []StackItem{}
+	s.Items = []*StackItem{}
 }

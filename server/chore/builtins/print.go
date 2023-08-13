@@ -1,5 +1,8 @@
 package builtins
 
-func Print() {
+import (
+	I "OLC2/chore/interfaces"
+)
 
+func Print(v *I.Visitor) {
 }

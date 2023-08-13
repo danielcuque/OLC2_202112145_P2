@@ -14,13 +14,48 @@ func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interfa
 
 	v.Scope.PushScope(WhileScope)
 
+	v.Stack.Push(NewStackItem(
+		"While",
+		NewNilValue(nil),
+		[]StackItemType{BreakType, ContinueType},
+	))
+
+	v.ExecuteWhile(condition, ctx)
+
+	v.Stack.Pop()
+	v.Scope.PopScope()
+
+	return nil
+}
+
+func (v *Visitor) ExecuteWhile(condition bool, ctx *parser.WhileStatementContext) {
+
+	defer func() {
+		peek, ok := recover().(*StackItem)
+
+		if !ok {
+			return
+		}
+
+		if peek.Trigger == ReturnType {
+			panic(peek)
+		}
+
+		if peek.Trigger == BreakType {
+			return
+		}
+
+		if peek.Trigger == ContinueType {
+			condition = v.Visit(ctx.Expr()).(IValue).GetValue().(bool)
+			v.ExecuteWhile(condition, ctx)
+
+		}
+	}()
+
 	for condition {
 		v.Scope.ResetScope()
 		v.Visit(ctx.Block())
 		condition = v.Visit(ctx.Expr()).(IValue).GetValue().(bool)
 	}
 
-	v.Scope.PopScope()
-
-	return nil
 }

@@ -97,9 +97,19 @@ var evalWhile = 20
 var a = 0
 
 while evalWhile > 0 {
+    if evalWhile > 10 {
+        while evalWhile > 10 {
+            evalWhile -= 1
+            break
+        }
+    }
+    
     if evalWhile == 20 {
         break
+    } else if evalWhile == 10 {
+        continue
     }
+
     switch evalWhile {
         case 20:
             let rest = 100
@@ -109,5 +119,26 @@ while evalWhile > 0 {
         default:
             evalWhile -= 1
     }
-    
+
+}
+
+/*
+1. While {
+    validProps: ["break", "continue"]
+}
+2. While {
+    validProps: ["break", "continue"]
+}
+*/
+var nums = 100
+
+var testContinue = 0
+
+while nums >= 0 {
+    if nums % 2 == 0 {
+        nums -= 1
+        break
+    }
+    testContinue += 1
+    nums -= 1
 }
