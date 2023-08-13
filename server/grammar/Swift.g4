@@ -15,6 +15,7 @@ statement:
 	| ifStatement
 	| whileStatement
 	| switchStatement
+	| forStatement
 	| controlFlow;
 
 // Variable types
@@ -58,6 +59,9 @@ switchStatement:
 switchCase: Kw_CASE expr COLON block Kw_BREAK?;
 
 switchDefault: Kw_DEFAULT COLON block Kw_BREAK?;
+
+// For statement, we will have two types of for statements, one for arrays and one for ranges
+forStatement: Kw_FOR ID Kw_IN expr LBRACE block RBRACE;
 
 // Expressions
 expr:

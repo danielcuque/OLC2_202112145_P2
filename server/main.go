@@ -1,7 +1,6 @@
 package main
 
 import (
-	"OLC2/api"
 	I "OLC2/chore/interfaces"
 	U "OLC2/chore/utils"
 	"fmt"
@@ -24,5 +23,5 @@ func main() {
 		fmt.Println(v)
 	}
 
-	api.Init()
+	// api.Init()
 }

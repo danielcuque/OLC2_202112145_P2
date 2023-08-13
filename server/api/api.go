@@ -2,7 +2,6 @@ package api
 
 import (
 	I "OLC2/chore/interfaces"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -26,8 +25,6 @@ func HandleVisitor(c *fiber.Ctx) error {
 
 	code := c.FormValue("code")
 
-	fmt.Println("Code: ", code)
-
 	result := I.NewEvaluator(code)
 
 	response := Resp{
@@ -36,8 +33,6 @@ func HandleVisitor(c *fiber.Ctx) error {
 		Logs:    result.Logs,
 		Cst:     "graph G { a -- b }",
 	}
-
-	fmt.Println("Response: ", response)
 
 	return c.Status(fiber.StatusOK).JSON(response)
 }

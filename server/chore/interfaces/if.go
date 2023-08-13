@@ -32,7 +32,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 		return false
 	}
 
-	if condition.GetType() != BOOLEAN_STR {
+	if condition.GetType() != BooleanType {
 		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())
 		return false
 	}

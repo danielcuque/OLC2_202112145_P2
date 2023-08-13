@@ -68,6 +68,10 @@ func (v *BaseSwiftVisitor) VisitSwitchDefault(ctx *SwitchDefaultContext) interfa
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

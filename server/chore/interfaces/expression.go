@@ -59,9 +59,9 @@ func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	value := op.GetValue()
 	opType := op.GetType()
 
-	if opType == INT_STR {
+	if opType == IntType {
 		return NewIntValue(-value.(int))
-	} else if opType == FLOAT_STR {
+	} else if opType == FloatType {
 		return NewFloatValue(-value.(float64))
 	}
 	v.NewError("No se puede aplicar el operador unario - a "+opType, ctx.GetStart())
@@ -89,83 +89,83 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 	switch op {
 	case "+":
 
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewIntValue(l.(int) + r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewFloatValue(l.(float64) + r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewFloatValue(l.(float64) + float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewFloatValue(float64(l.(int)) + r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewStringValue(l.(string) + r.(string))
 		}
 		// Sumamos string con char
-		if leftT == STRING_STR && rightT == CHAR_STR {
+		if leftT == StringType && rightT == CharType {
 			return NewStringValue(l.(string) + string(r.(rune)))
 		}
 		// Sumamos char con string
-		if leftT == CHAR_STR && rightT == STRING_STR {
+		if leftT == CharType && rightT == StringType {
 			return NewStringValue(string(l.(rune)) + r.(string))
 		}
 		v.NewError("No se puede sumar "+leftT+" con "+rightT, lc)
 	case "-":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewIntValue(l.(int) - r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewFloatValue(l.(float64) - r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewFloatValue(l.(float64) - float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewFloatValue(float64(l.(int)) - r.(float64))
 		}
 		v.NewError("No se puede restar "+leftT+" con "+rightT, lc)
 	case "*":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewIntValue(l.(int) * r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewFloatValue(l.(float64) * r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewFloatValue(l.(float64) * float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewFloatValue(float64(l.(int)) * r.(float64))
 		}
 		v.NewError("No se puede multiplicar "+leftT+" con "+rightT, lc)
 	case "/":
-		if rightT == INT_STR && r.(int) == 0 {
+		if rightT == IntType && r.(int) == 0 {
 			v.NewError("No se puede dividir entre 0", lc)
 			return nil
 		}
 
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewIntValue(l.(int) / r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewFloatValue(l.(float64) / r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewFloatValue(l.(float64) / float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewFloatValue(float64(l.(int)) / r.(float64))
 		}
 		v.NewError("No se puede dividir "+leftT+" con "+rightT, lc)
 	case "%":
-		if rightT == INT_STR && r.(int) == 0 {
+		if rightT == IntType && r.(int) == 0 {
 			v.NewError("No se puede dividir entre 0", lc)
 			return nil
 		}
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewIntValue(l.(int) % r.(int))
 		}
 		v.NewError("No se puede modular "+leftT+" con "+rightT, lc)
@@ -197,115 +197,115 @@ func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) inter
 	// Compare
 	switch op {
 	case "==":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewBooleanValue(l.(int) == r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewBooleanValue(l.(float64) == r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewBooleanValue(l.(float64) == float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewBooleanValue(float64(l.(int)) == r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewBooleanValue(l.(string) == r.(string))
 		}
-		if leftT == CHAR_STR && rightT == CHAR_STR {
+		if leftT == CharType && rightT == CharType {
 			return NewBooleanValue(l.(rune) == r.(rune))
 		}
 
 	case "!=":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewBooleanValue(l.(int) != r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewBooleanValue(l.(float64) != r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewBooleanValue(l.(float64) != float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewBooleanValue(float64(l.(int)) != r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewBooleanValue(l.(string) != r.(string))
 		}
-		if leftT == CHAR_STR && rightT == CHAR_STR {
+		if leftT == CharType && rightT == CharType {
 			return NewBooleanValue(l.(rune) != r.(rune))
 		}
 	case ">":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewBooleanValue(l.(int) > r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewBooleanValue(l.(float64) > r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewBooleanValue(l.(float64) > float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewBooleanValue(float64(l.(int)) > r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewBooleanValue(l.(string) > r.(string))
 		}
-		if leftT == CHAR_STR && rightT == CHAR_STR {
+		if leftT == CharType && rightT == CharType {
 			return NewBooleanValue(l.(rune) > r.(rune))
 		}
 	case "<":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewBooleanValue(l.(int) < r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewBooleanValue(l.(float64) < r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewBooleanValue(l.(float64) < float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewBooleanValue(float64(l.(int)) < r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewBooleanValue(l.(string) < r.(string))
 		}
 	case ">=":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewBooleanValue(l.(int) >= r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewBooleanValue(l.(float64) >= r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewBooleanValue(l.(float64) >= float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewBooleanValue(float64(l.(int)) >= r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewBooleanValue(l.(string) >= r.(string))
 		}
-		if leftT == CHAR_STR && rightT == CHAR_STR {
+		if leftT == CharType && rightT == CharType {
 			return NewBooleanValue(l.(rune) >= r.(rune))
 		}
 	case "<=":
-		if leftT == INT_STR && rightT == INT_STR {
+		if leftT == IntType && rightT == IntType {
 			return NewBooleanValue(l.(int) <= r.(int))
 		}
-		if leftT == FLOAT_STR && rightT == FLOAT_STR {
+		if leftT == FloatType && rightT == FloatType {
 			return NewBooleanValue(l.(float64) <= r.(float64))
 		}
-		if leftT == FLOAT_STR && rightT == INT_STR {
+		if leftT == FloatType && rightT == IntType {
 			return NewBooleanValue(l.(float64) <= float64(r.(int)))
 		}
-		if leftT == INT_STR && rightT == FLOAT_STR {
+		if leftT == IntType && rightT == FloatType {
 			return NewBooleanValue(float64(l.(int)) <= r.(float64))
 		}
-		if leftT == STRING_STR && rightT == STRING_STR {
+		if leftT == StringType && rightT == StringType {
 			return NewBooleanValue(l.(string) <= r.(string))
 		}
-		if leftT == CHAR_STR && rightT == CHAR_STR {
+		if leftT == CharType && rightT == CharType {
 			return NewBooleanValue(l.(rune) <= r.(rune))
 		}
 	}
@@ -371,7 +371,7 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 		newVal[i-l] = NewIntValue(i)
 	}
 
-	return NewArrayValue(newVal)
+	return NewRangeValue(newVal)
 }
 
 func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {

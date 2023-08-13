@@ -1,12 +1,12 @@
 package interfaces
 
 const (
-	STRING_STR  = "String"
-	INT_STR     = "Int"
-	FLOAT_STR   = "Float"
-	BOOLEAN_STR = "Bool"
-	CHAR_STR    = "Character"
-	NIL_STR     = "nil"
+	StringType  = "String"
+	IntType     = "Int"
+	FloatType   = "Float"
+	BooleanType = "Bool"
+	CharType    = "Character"
+	NilType     = "nil"
 )
 
 type IValue interface {
@@ -23,7 +23,7 @@ func (s *StringV) GetValue() interface{} {
 }
 
 func (s *StringV) GetType() string {
-	return STRING_STR
+	return StringType
 }
 
 func NewStringValue(value string) *StringV {
@@ -39,7 +39,7 @@ func (i *IntV) GetValue() interface{} {
 }
 
 func (i *IntV) GetType() string {
-	return INT_STR
+	return IntType
 }
 
 func NewIntValue(value int) *IntV {
@@ -55,7 +55,7 @@ func (f *FloatV) GetValue() interface{} {
 }
 
 func (f *FloatV) GetType() string {
-	return FLOAT_STR
+	return FloatType
 }
 
 func NewFloatValue(value float64) *FloatV {
@@ -71,7 +71,7 @@ func (b *BooleanV) GetValue() interface{} {
 }
 
 func (b *BooleanV) GetType() string {
-	return BOOLEAN_STR
+	return BooleanType
 }
 
 func NewBooleanValue(value bool) *BooleanV {
@@ -87,7 +87,7 @@ func (c *CharV) GetValue() interface{} {
 }
 
 func (c *CharV) GetType() string {
-	return CHAR_STR
+	return CharType
 }
 
 func NewCharValue(value rune) *CharV {
@@ -103,25 +103,25 @@ func (n *NilV) GetValue() interface{} {
 }
 
 func (n *NilV) GetType() string {
-	return NIL_STR
+	return NilType
 }
 
 func NewNilValue(value interface{}) *NilV {
 	return &NilV{Value: value}
 }
 
-type ArrayV struct {
+type RangeV struct {
 	Value []IValue
 }
 
-func (a *ArrayV) GetValue() interface{} {
+func (a *RangeV) GetValue() interface{} {
 	return a.Value
 }
 
-func (a *ArrayV) GetType() string {
-	return "array"
+func (a *RangeV) GetType() string {
+	return IntType
 }
 
-func NewArrayValue(value []IValue) *ArrayV {
-	return &ArrayV{Value: value}
+func NewRangeValue(value []IValue) *RangeV {
+	return &RangeV{Value: value}
 }

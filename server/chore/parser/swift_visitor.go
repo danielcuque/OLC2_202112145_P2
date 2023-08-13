@@ -53,6 +53,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#switchDefault.
 	VisitSwitchDefault(ctx *SwitchDefaultContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#forStatement.
+	VisitForStatement(ctx *ForStatementContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 
