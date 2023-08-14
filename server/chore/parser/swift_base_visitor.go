@@ -36,6 +36,30 @@ func (v *BaseSwiftVisitor) VisitTypeDeclaration(ctx *TypeDeclarationContext) int
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitFunctionDeclarationStatement(ctx *FunctionDeclarationStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionParameters(ctx *FunctionParametersContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionParameter(ctx *FunctionParameterContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionReturnType(ctx *FunctionReturnTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionCall(ctx *FunctionCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionCallParameters(ctx *FunctionCallParametersContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -97,6 +121,10 @@ func (v *BaseSwiftVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitCharExpr(ctx *CharExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionCallExpr(ctx *FunctionCallExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

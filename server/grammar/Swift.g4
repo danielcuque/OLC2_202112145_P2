@@ -17,7 +17,9 @@ statement:
 	| switchStatement
 	| forStatement
 	| guardStatement
-	| controlFlowStatement;
+	| controlFlowStatement
+	| functionDeclarationStatement
+	| functionCall;
 
 // Variable types
 variableType:
@@ -38,6 +40,22 @@ variableDeclaration:
 	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY (
 		SEMICOLON
 	)? # TypeDeclaration;
+
+// Function declaration
+functionDeclarationStatement:
+	Kw_FUNC ID LPAREN functionParameters? RPAREN functionReturnType? LBRACE block RBRACE;
+
+functionParameters:
+	functionParameter (COMMA functionParameter)*;
+
+functionParameter: ID COLON variableType;
+
+functionReturnType: Op_ARROW variableType;
+
+// Function call 
+functionCall: ID LPAREN functionCallParameters? RPAREN;
+
+functionCallParameters: expr (COMMA expr)*;
 
 // Variable assignment
 variableAssignment:
@@ -69,14 +87,15 @@ guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
 
 // Expressions
 expr:
-	Op_MINUS expr													# UnaryExpr
+	functionCall													# FunctionCallExpr
+	| Op_MINUS expr													# UnaryExpr
+	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
 	| left = expr op = (Op_PLUS | Op_MINUS) right = expr			# ArithmeticExpr
 	| left = expr op = Op_MOD right = expr							# ArithmeticExpr
 	| left = expr op = (Op_GE | Op_GT) right = expr					# ComparasionExpr
 	| left = expr op = (Op_LE | Op_LT) right = expr					# ComparasionExpr
 	| left = expr op = (Op_EQ | Op_NEQ) right = expr				# ComparasionExpr
-	| Op_NOT right = expr											# NotExpr
 	| condition = expr Op_TERNARY cTrue = expr COLON cFalse = expr	# TernaryExpr
 	| left = expr op = Op_AND right = expr							# LogicalExpr
 	| left = expr op = Op_OR right = expr							# LogicalExpr

@@ -29,6 +29,24 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#TypeDeclaration.
 	VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#functionDeclarationStatement.
+	VisitFunctionDeclarationStatement(ctx *FunctionDeclarationStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionParameters.
+	VisitFunctionParameters(ctx *FunctionParametersContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionParameter.
+	VisitFunctionParameter(ctx *FunctionParameterContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionReturnType.
+	VisitFunctionReturnType(ctx *FunctionReturnTypeContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionCall.
+	VisitFunctionCall(ctx *FunctionCallContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionCallParameters.
+	VisitFunctionCallParameters(ctx *FunctionCallParametersContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}
 
@@ -76,6 +94,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#CharExpr.
 	VisitCharExpr(ctx *CharExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#FunctionCallExpr.
+	VisitFunctionCallExpr(ctx *FunctionCallExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ArithmeticExpr.
 	VisitArithmeticExpr(ctx *ArithmeticExprContext) interface{}

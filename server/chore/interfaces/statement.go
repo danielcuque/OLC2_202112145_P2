@@ -34,5 +34,13 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.GuardStatement())
 	}
 
+	if ctx.FunctionCall() != nil {
+		return v.Visit(ctx.FunctionCall())
+	}
+
+	if ctx.FunctionDeclarationStatement() != nil {
+		return v.Visit(ctx.FunctionDeclarationStatement())
+	}
+
 	return nil
 }

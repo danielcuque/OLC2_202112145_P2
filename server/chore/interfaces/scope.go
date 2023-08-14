@@ -40,6 +40,7 @@ type ScopeNode struct {
 	Level     int
 	ScopeType ScopeType
 	Variables map[string]*Variable
+	Functions map[string]*Function
 }
 
 func NewScopeNode(parent *ScopeNode, scopeType ScopeType, Level int) *ScopeNode {
@@ -123,6 +124,18 @@ func (s *ScopeTree) SetVariable(name string, value IValue) {
 	s.Current.SetVariable(name, value)
 }
 
+func (s *ScopeTree) GetFunction(name string) interface{} {
+	// Check if function exists in current scope
+	// if not, check in parent scope until root
+
+	for node := s.Current; node != nil; node = node.Parent {
+		if _, ok := node.Functions[name]; ok {
+			return node.Functions[name]
+		}
+	}
+	return nil
+}
+
 func (s *ScopeTree) PushScope(scopeType ScopeType) *ScopeNode {
 	node := NewScopeNode(s.Current, scopeType, s.Current.Level+1)
 	s.Current.Child = append(s.Current.Child, node)
@@ -139,10 +152,6 @@ func (s *ScopeTree) GetSymbolTable() []ApiVariable {
 	return s.Root.GetAllVariables()
 }
 
-func (s *ScopeTree) String() string {
-	return s.Root.String()
-}
-
 func (s *ScopeTree) ResetScope() {
 	// Clean all variables inside current scope
 	s.Current.ResetScopeNode()
@@ -150,6 +159,10 @@ func (s *ScopeTree) ResetScope() {
 
 func (s *ScopeTree) GetCurrentScope() *ScopeNode {
 	return s.Current
+}
+
+func (s *ScopeTree) String() string {
+	return s.Root.String()
 }
 
 // ApiVariable is a struct to represent variables in api
