@@ -41,4 +41,6 @@ func NewVisitorError(line int, column int, msg string) *VisitorError {
 
 const (
 	InvalidExpressionError = "No se pudo obtener el valor de la expresión"
+	InvalidParameterError  = "No se pudo obtener el valor del parámetro"
+	FunctionNotFoundError  = "No se encontró la función en este ambiente"
 )

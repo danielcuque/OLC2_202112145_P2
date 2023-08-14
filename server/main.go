@@ -23,5 +23,7 @@ func main() {
 		fmt.Println(v)
 	}
 
+	fmt.Println(result.GetLogs())
+
 	// api.Init()
 }

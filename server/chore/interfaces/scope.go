@@ -124,6 +124,10 @@ func (s *ScopeTree) SetVariable(name string, value IValue) {
 	s.Current.SetVariable(name, value)
 }
 
+func (s *ScopeTree) AddFunction(name string, value *Function) {
+	s.Current.Functions[name] = value
+}
+
 func (s *ScopeTree) GetFunction(name string) interface{} {
 	// Check if function exists in current scope
 	// if not, check in parent scope until root

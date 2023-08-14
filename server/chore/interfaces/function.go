@@ -8,13 +8,35 @@ import (
 type IFunction interface {
 	GetName() string
 	GetParameters() []IValue
-	Evaluate() IValue
 }
 
 type Function struct {
-	Name       string
-	Parameters []IValue
+	Name           string
+	ReturnDataType string
+	Parameters     []IValue
 }
+
+type Arguments struct {
+	Value IValue
+}
+
+func (f *Function) GetName() string {
+	return f.Name
+}
+
+func (f *Function) GetParameters() []IValue {
+	return f.Parameters
+}
+
+func NewFunction(name string, returnDataType string, parameters []IValue) *Function {
+	return &Function{
+		Name:           name,
+		ReturnDataType: returnDataType,
+		Parameters:     parameters,
+	}
+}
+
+// Visit methods
 
 func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarationStatementContext) interface{} {
 	return v.VisitChildren(ctx)
@@ -35,21 +57,22 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
 	id := ctx.ID().GetText()
 
+	function := GetInternalBuiltinFunctions(id)
+
+	if function != nil {
+		return function(v, ctx)
+	}
+
 	// Verify if the function exists
 	_, ok := v.Scope.GetFunction(id).(*Function)
 
 	if !ok {
-		v.NewError("La funcion no existe en este ambiente", ctx.GetStart())
+		v.NewError(FunctionNotFoundError, ctx.GetStart())
 		return nil
 	}
 
 	// Assert to array of IValue
-	params, ok := v.Visit(ctx.FunctionCallParameters()).([]IValue)
-
-	if !ok {
-		v.NewError("No se pudieron obtener los parametros de la funcion", ctx.GetStart())
-		return nil
-	}
+	params := v.Visit(ctx.FunctionCallParameters()).([]IValue)
 
 	fmt.Println(params)
 
@@ -64,7 +87,7 @@ func (v *Visitor) VisitFunctionCallParameters(ctx *parser.FunctionCallParameters
 		param, ok := v.Visit(param).(IValue)
 
 		if !ok {
-			v.NewError("No se pudo obtener el parametro", ctx.GetStart())
+			v.NewError(InvalidParameterError, ctx.GetStart())
 			// Return empty array
 			return make([]IValue, 0)
 		}

@@ -171,7 +171,7 @@ while (testGuard <= 10){
         testGuard += 1
         continue
     }
-    print(testGuard)
+    print(testGuard, "es impar", "adios", "hola")
     num += testGuard
     testGuard = testGuard + 1
 
