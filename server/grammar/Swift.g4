@@ -22,13 +22,7 @@ statement:
 	| functionCall;
 
 // Variable types
-variableType:
-	Kw_INT
-	| Kw_FLOAT
-	| Kw_BOOL
-	| Kw_STRING
-	| Kw_CHAR
-	| Kw_NIL;
+variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
 
 // Variable declaration
 
@@ -105,6 +99,7 @@ expr:
 	| ID															# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
+	| NIL															# NilExpr
 	| CHAR															# CharExpr
 	| BOOL															# BoolExpr;
 

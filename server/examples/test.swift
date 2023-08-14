@@ -178,3 +178,6 @@ while (testGuard <= 10){
 }
 
 print(testGuard, "|", num)
+print(1.0001)
+print(true)
+print(nil)

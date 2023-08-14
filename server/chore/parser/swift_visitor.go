@@ -83,6 +83,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#FloatExpr.
 	VisitFloatExpr(ctx *FloatExprContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#NilExpr.
+	VisitNilExpr(ctx *NilExprContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#IdExpr.
 	VisitIdExpr(ctx *IdExprContext) interface{}
 

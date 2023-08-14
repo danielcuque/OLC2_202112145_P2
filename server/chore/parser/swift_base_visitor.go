@@ -108,6 +108,10 @@ func (v *BaseSwiftVisitor) VisitFloatExpr(ctx *FloatExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitNilExpr(ctx *NilExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitIdExpr(ctx *IdExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

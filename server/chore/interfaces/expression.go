@@ -40,6 +40,10 @@ func (v *Visitor) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 	return V.NewBooleanValue(b)
 }
 
+func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
+	return V.NewNilValue(nil)
+}
+
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	id := ctx.GetText()

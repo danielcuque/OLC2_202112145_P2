@@ -34,7 +34,6 @@ Kw_FLOAT: 'Float';
 Kw_BOOL: 'Bool';
 Kw_STRING: 'String';
 Kw_CHAR: 'Character';
-Kw_NIL: 'nil';
 
 // Range expressions
 Kw_RANGE: '...';
@@ -45,7 +44,7 @@ FLOAT: [0-9]* '.' [0-9]+;
 BOOL: 'true' | 'false';
 STRING: '"' (~["\\\r\n] | '\\' [\\\r\n])* '"';
 CHAR: '\'' (~['\\\r\n] | '\\' [\\\r\n])* '\'';
-
+NIL: 'nil';
 // Identifiers
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 
