@@ -8,7 +8,7 @@ func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interfa
 	condition, ok := v.Visit(ctx.Expr()).(IValue).GetValue().(bool)
 
 	if !ok {
-		v.NewError("La condición debe ser de tipo bool", ctx.GetStart())
+		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())
 		return nil
 	}
 

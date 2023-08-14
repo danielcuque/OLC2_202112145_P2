@@ -2,7 +2,6 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
-	"fmt"
 )
 
 func (v *Visitor) VisitControlBreak(ctx *parser.ControlBreakContext) interface{} {
@@ -35,6 +34,15 @@ func (v *Visitor) VisitControlContinue(ctx *parser.ControlContinueContext) inter
 }
 
 func (v *Visitor) VisitControlReturn(ctx *parser.ControlReturnContext) interface{} {
-	fmt.Println("VisitControlReturn")
-	return nil
+	peek := v.Stack.Peek()
+
+	if !peek.Contains(ReturnType) {
+		v.NewError("No se puede usar return en este contexto", ctx.GetStart())
+		return nil
+	}
+
+	peek.Trigger = ReturnType
+
+	// Throw panic to stop execution and return to the top of the stack
+	panic(peek)
 }

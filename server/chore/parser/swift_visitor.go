@@ -56,6 +56,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#forStatement.
 	VisitForStatement(ctx *ForStatementContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#guardStatement.
+	VisitGuardStatement(ctx *GuardStatementContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 

@@ -51,14 +51,6 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	// Execute the for loop
 	v.ExecuteFor(id, valuesToIterate, ctx)
 
-	// for _, value := range valuesToIterate {
-	// 	// Assign the value to the variable
-	// 	v.Scope.SetVariable(id, value)
-
-	// 	// Visit the for loop
-	// 	v.Visit(ctx.Block())
-	// }
-
 	// Pop the scope
 	v.Scope.PopScope()
 

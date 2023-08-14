@@ -16,7 +16,8 @@ statement:
 	| whileStatement
 	| switchStatement
 	| forStatement
-	| controlFlow;
+	| guardStatement
+	| controlFlowStatement;
 
 // Variable types
 variableType:
@@ -63,6 +64,9 @@ switchDefault: Kw_DEFAULT COLON block Kw_BREAK?;
 // For statement, we will have two types of for statements, one for arrays and one for ranges
 forStatement: Kw_FOR ID Kw_IN expr LBRACE block RBRACE;
 
+// Guard statement
+guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
+
 // Expressions
 expr:
 	Op_MINUS expr													# UnaryExpr
@@ -86,7 +90,7 @@ expr:
 	| BOOL															# BoolExpr;
 
 // ControlFlow expressions
-controlFlow:
+controlFlowStatement:
 	Kw_BREAK			# ControlBreak
 	| Kw_CONTINUE		# ControlContinue
 	| Kw_RETURN expr?	# ControlReturn;

@@ -26,8 +26,12 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.ForStatement())
 	}
 
-	if ctx.ControlFlow() != nil {
-		return v.Visit(ctx.ControlFlow())
+	if ctx.ControlFlowStatement() != nil {
+		return v.Visit(ctx.ControlFlowStatement())
+	}
+
+	if ctx.GuardStatement() != nil {
+		return v.Visit(ctx.GuardStatement())
 	}
 
 	return nil

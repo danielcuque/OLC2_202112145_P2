@@ -65,19 +65,3 @@ func (s *Stack) Peek() *StackItem {
 		return s.Items[len(s.Items)-1]
 	}
 }
-
-func (s *Stack) Remove(index int) {
-	s.Items = append(s.Items[:index], s.Items[index+1:]...)
-}
-
-func (s *Stack) IsEmpty() bool {
-	return len(s.Items) == 0
-}
-
-func (s *Stack) Size() int {
-	return len(s.Items)
-}
-
-func (s *Stack) Clear() {
-	s.Items = []*StackItem{}
-}

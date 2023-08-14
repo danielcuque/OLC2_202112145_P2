@@ -72,6 +72,10 @@ func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitGuardStatement(ctx *GuardStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

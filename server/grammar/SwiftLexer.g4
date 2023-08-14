@@ -26,6 +26,7 @@ Kw_RETURN: 'return';
 Kw_DO: 'do';
 Kw_REPEAT: 'repeat';
 Kw_IN: 'in';
+Kw_GUARD: 'guard';
 
 // Types
 Kw_INT: 'Int';
