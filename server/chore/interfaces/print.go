@@ -25,7 +25,7 @@ func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 			return nil
 		}
 
-		log += fmt.Sprintf("%v ", param.GetValue())
+		log += fmt.Sprintf("%v ", param.String())
 	}
 
 	v.NewLog(log)

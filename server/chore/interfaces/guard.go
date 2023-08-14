@@ -22,7 +22,7 @@ func (v *Visitor) VisitGuardStatement(ctx *parser.GuardStatementContext) interfa
 		return nil
 	}
 
-	if expr {
+	if !expr {
 		v.Visit(ctx.Block())
 		return nil
 	}

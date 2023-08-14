@@ -16,12 +16,12 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	variables := result.Scope.GetSymbolTable()
+	// variables := result.Scope.GetSymbolTable()
 
-	fmt.Println()
-	for _, v := range variables {
-		fmt.Println(v)
-	}
+	// fmt.Println()
+	// for _, v := range variables {
+	// 	fmt.Println(v)
+	// }
 
 	fmt.Println(result.GetLogs())
 

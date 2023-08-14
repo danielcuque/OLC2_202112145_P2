@@ -175,5 +175,6 @@ while (testGuard <= 10){
     print(testGuard, "es par")
     num += testGuard
     testGuard = testGuard + 1
-
 }
+
+print(testGuard, "|", num)
