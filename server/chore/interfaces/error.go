@@ -40,7 +40,10 @@ func NewVisitorError(line int, column int, msg string) *VisitorError {
 // Standar error message
 
 const (
-	InvalidExpressionError = "No se pudo obtener el valor de la expresión"
-	InvalidParameterError  = "No se pudo obtener el valor del parámetro"
-	FunctionNotFoundError  = "No se encontró la función en este ambiente"
+	InvalidExpressionError            = "No se pudo obtener el valor de la expresión"
+	InvalidParameterError             = "No se pudo obtener el valor del parámetro"
+	FunctionNotFoundError             = "No se encontró la función en este ambiente"
+	FunctionAlreadyExistsError        = "Ya existe una función con este nombre en este ambiente"
+	InvalidReturnTypeDeclarationError = "El tipo de retorno no es válido"
+	InvalidParameterTypeError         = "El tipo del parámetro no es válido"
 )

@@ -387,5 +387,18 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 }
 
 func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {
-	return ctx.GetText()
+	switch ctx.GetText() {
+	case "Int":
+		return V.IntType
+	case "Float":
+		return V.FloatType
+	case "String":
+		return V.StringType
+	case "Char":
+		return V.CharType
+	case "Bool":
+		return V.BooleanType
+	default:
+		return V.NilType
+	}
 }

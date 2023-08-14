@@ -184,3 +184,7 @@ print(nil)
 print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
 // Test double quote
 print("cadena1 \"cadena2\" cadena3")
+
+func addTwoNumbers(a: Int, b: Int) -> Int {
+    let c = a + b
+}

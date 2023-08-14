@@ -53,6 +53,7 @@ func NewScopeNode(parent *ScopeNode, scopeType ScopeType, Level int) *ScopeNode 
 		Level:     Level,
 		ScopeType: scopeType,
 		Variables: make(map[string]*Variable),
+		Functions: make(map[string]*Function),
 	}
 }
 
