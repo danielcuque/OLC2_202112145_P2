@@ -1,18 +1,20 @@
 package interfaces
 
+import V "OLC2/chore/values"
+
 // Create struct to handle Variables
 
 type Variable struct {
 	Name    string
 	IsConst bool
-	Value   IValue
+	Value   V.IValue
 	Type    string
 	Line    int
 	Column  int
 	Scope   *ScopeNode
 }
 
-func NewVariable(name string, isConst bool, value IValue, typeVar string, line, column int, scope *ScopeNode) *Variable {
+func NewVariable(name string, isConst bool, value V.IValue, typeVar string, line, column int, scope *ScopeNode) *Variable {
 	return &Variable{
 		Name:    name,
 		IsConst: isConst,
@@ -28,7 +30,7 @@ func (v *Variable) GetValue() interface{} {
 	return v.Value.GetValue()
 }
 
-func (v *Variable) SetValue(value IValue) {
+func (v *Variable) SetValue(value V.IValue) {
 	v.Value = value
 }
 

@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 )
 
 func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
@@ -25,19 +26,19 @@ func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
 }
 
 func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
-	condition, ok := v.Visit(ctx.Expr()).(IValue)
+	condition, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
 		v.NewError(InvalidExpressionError, ctx.GetStart())
 		return false
 	}
 
-	if condition.GetType() != BooleanType {
+	if condition.GetType() != V.BooleanType {
 		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())
 		return false
 	}
 
-	if condition.(*BooleanV).Value {
+	if condition.(*V.BooleanV).Value {
 
 		v.Scope.PushScope(IfScope)
 

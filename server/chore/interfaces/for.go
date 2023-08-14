@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 	"fmt"
 )
 
@@ -15,12 +16,12 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	v.Stack.Push(
 		NewStackItem(
 			"For",
-			NewNilValue(nil),
+			V.NewNilValue(nil),
 			[]StackItemType{BreakType, ContinueType},
 		))
 
 	// Now get the value to iterate
-	argIterator, ok := v.Visit(ctx.Expr()).(IValue)
+	argIterator, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
 		v.NewError(InvalidExpressionError, ctx.GetStart())
@@ -31,15 +32,15 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	iteratorType := argIterator.GetType()
 
 	// Check if is string, array or number
-	var valuesToIterate []IValue
+	var valuesToIterate []V.IValue
 
 	switch iteratorType {
-	case IntType:
-		valuesToIterate = argIterator.GetValue().([]IValue)
-	case StringType:
-		valuesToIterate = make([]IValue, len(argIterator.GetValue().(string)))
+	case V.IntType:
+		valuesToIterate = argIterator.GetValue().([]V.IValue)
+	case V.StringType:
+		valuesToIterate = make([]V.IValue, len(argIterator.GetValue().(string)))
 		for i, char := range argIterator.GetValue().(string) {
-			valuesToIterate[i] = NewCharValue(char)
+			valuesToIterate[i] = V.NewCharValue(char)
 		}
 	default:
 		v.NewError(fmt.Sprintf("No se puede iterar un objeto de tipo %s", iteratorType), ctx.GetStart())
@@ -57,13 +58,13 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	return nil
 }
 
-func NewForVariable(v *Visitor, id string, value IValue, valueType string, ctx *parser.ForStatementContext) {
+func NewForVariable(v *Visitor, id string, value V.IValue, valueType string, ctx *parser.ForStatementContext) {
 	line, column, scope := GetVariableAttr(v, ctx.GetStart())
 	newVariable := NewVariable(id, true, value, valueType, line, column, scope)
 	v.Scope.AddVariable(id, newVariable)
 }
 
-func (v *Visitor) ExecuteFor(id string, valuesToIterate []IValue, ctx *parser.ForStatementContext) {
+func (v *Visitor) ExecuteFor(id string, valuesToIterate []V.IValue, ctx *parser.ForStatementContext) {
 	defer func() {
 		peek, ok := recover().(*StackItem)
 

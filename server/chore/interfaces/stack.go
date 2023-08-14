@@ -1,5 +1,7 @@
 package interfaces
 
+import V "OLC2/chore/values"
+
 // This struct will handle when program founds a return, break or continue
 
 type StackItemType string
@@ -12,7 +14,7 @@ const (
 
 type StackItem struct {
 	Name       string
-	Value      IValue
+	Value      V.IValue
 	ValidProps []StackItemType
 	Trigger    StackItemType
 }
@@ -26,7 +28,7 @@ func (s *StackItem) Contains(prop StackItemType) bool {
 	return false
 }
 
-func NewStackItem(name string, value IValue, validProps []StackItemType) *StackItem {
+func NewStackItem(name string, value V.IValue, validProps []StackItemType) *StackItem {
 	return &StackItem{
 		Name:       name,
 		Value:      value,

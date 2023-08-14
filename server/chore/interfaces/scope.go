@@ -1,6 +1,9 @@
 package interfaces
 
-import "fmt"
+import (
+	V "OLC2/chore/values"
+	"fmt"
+)
 
 type ScopeType string
 
@@ -64,7 +67,7 @@ func (s *ScopeNode) GetVariable(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeNode) SetVariable(name string, value IValue) {
+func (s *ScopeNode) SetVariable(name string, value V.IValue) {
 	if val, ok := s.Variables[name]; ok {
 		val.SetValue(value)
 	}
@@ -120,7 +123,7 @@ func (s *ScopeTree) GetVariable(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeTree) SetVariable(name string, value IValue) {
+func (s *ScopeTree) SetVariable(name string, value V.IValue) {
 	s.Current.SetVariable(name, value)
 }
 

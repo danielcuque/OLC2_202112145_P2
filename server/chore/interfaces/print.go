@@ -1,14 +1,16 @@
 package interfaces
 
 import (
-	"OLC2/chore/parser"
 	"fmt"
+
+	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 )
 
 // We extends the visitor to add the print function, create PrintContext and add it to the scope
 
 func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
-	params, ok := v.Visit(ctx.FunctionCallParameters()).([]IValue)
+	params, ok := v.Visit(ctx.FunctionCallParameters()).([]V.IValue)
 
 	if !ok {
 		v.NewError(InvalidParameterError, ctx.GetStart())
@@ -18,7 +20,7 @@ func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	var log string
 
 	for _, param := range params {
-		if !IsBaseType(param) {
+		if !V.IsBaseType(param) {
 			v.NewError("El parámetro no es de tipo primitivo", ctx.GetStart())
 			return nil
 		}

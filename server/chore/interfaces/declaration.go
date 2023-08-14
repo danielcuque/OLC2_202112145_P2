@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 	"fmt"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -10,7 +11,7 @@ import (
 func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
 	isConstant := ctx.GetVarType().GetText()
 	id := ctx.ID().GetText()
-	value, okVal := v.Visit(ctx.Expr()).(IValue)
+	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !okVal {
 		v.NewError(InvalidExpressionError, ctx.GetStart())
@@ -37,7 +38,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
 	isConstant := ctx.GetVarType().GetText()
 	id := ctx.ID().GetText()
-	value, okVal := v.Visit(ctx.Expr()).(IValue)
+	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 	valueType := v.Visit(ctx.VariableType()).(string)
 
 	if !okVal {
@@ -56,8 +57,8 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	if valueType != value.GetType() {
 		// Check if the explicit type is Float and the value type is Int
 		// Change the value type to Float
-		if valueType == FloatType && value.GetType() == IntType {
-			value = NewFloatValue(float64(value.GetValue().(int)))
+		if valueType == V.FloatType && value.GetType() == V.IntType {
+			value = V.NewFloatValue(float64(value.GetValue().(int)))
 		} else {
 			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
 			return false
@@ -96,7 +97,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 
 	// Get line, column and scope
 	line, column, scope := GetVariableAttr(v, ctx.GetStart())
-	newVariable := NewVariable(id, isConstant, NewNilValue(nil), valueType, line, column, scope)
+	newVariable := NewVariable(id, isConstant, V.NewNilValue(nil), valueType, line, column, scope)
 
 	v.Scope.AddVariable(id, newVariable)
 

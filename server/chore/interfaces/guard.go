@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 )
 
 func (v *Visitor) VisitGuardStatement(ctx *parser.GuardStatementContext) interface{} {
@@ -14,7 +15,7 @@ func (v *Visitor) VisitGuardStatement(ctx *parser.GuardStatementContext) interfa
 		return nil
 	}
 
-	expr, ok := v.Visit(ctx.Expr()).(IValue).GetValue().(bool)
+	expr, ok := v.Visit(ctx.Expr()).(V.IValue).GetValue().(bool)
 
 	if !ok {
 		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())

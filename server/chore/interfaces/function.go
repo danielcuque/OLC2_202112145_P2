@@ -2,33 +2,34 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 	"fmt"
 )
 
 type IFunction interface {
 	GetName() string
-	GetParameters() []IValue
+	GetParameters() []V.IValue
 }
 
 type Function struct {
 	Name           string
 	ReturnDataType string
-	Parameters     []IValue
+	Parameters     []V.IValue
 }
 
 type Arguments struct {
-	Value IValue
+	Value V.IValue
 }
 
 func (f *Function) GetName() string {
 	return f.Name
 }
 
-func (f *Function) GetParameters() []IValue {
+func (f *Function) GetParameters() []V.IValue {
 	return f.Parameters
 }
 
-func NewFunction(name string, returnDataType string, parameters []IValue) *Function {
+func NewFunction(name string, returnDataType string, parameters []V.IValue) *Function {
 	return &Function{
 		Name:           name,
 		ReturnDataType: returnDataType,
@@ -71,8 +72,8 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		return nil
 	}
 
-	// Assert to array of IValue
-	params := v.Visit(ctx.FunctionCallParameters()).([]IValue)
+	// Assert to array of V.IValue
+	params := v.Visit(ctx.FunctionCallParameters()).([]V.IValue)
 
 	fmt.Println(params)
 
@@ -80,16 +81,16 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 }
 
 func (v *Visitor) VisitFunctionCallParameters(ctx *parser.FunctionCallParametersContext) interface{} {
-	// Return an array of IValue
-	params := make([]IValue, 0)
+	// Return an array of V.IValue
+	params := make([]V.IValue, 0)
 
 	for _, param := range ctx.AllExpr() {
-		param, ok := v.Visit(param).(IValue)
+		param, ok := v.Visit(param).(V.IValue)
 
 		if !ok {
 			v.NewError(InvalidParameterError, ctx.GetStart())
 			// Return empty array
-			return make([]IValue, 0)
+			return make([]V.IValue, 0)
 		}
 
 		params = append(params, param)

@@ -2,12 +2,13 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 )
 
-var switchContextExpr IValue
+var switchContextExpr V.IValue
 
 func (v *Visitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext) interface{} {
-	expr, ok := v.Visit(ctx.Expr()).(IValue)
+	expr, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
 		v.NewError(InvalidExpressionError, ctx.GetStart())
@@ -35,7 +36,7 @@ func (v *Visitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext) inter
 
 func (v *Visitor) VisitSwitchCase(ctx *parser.SwitchCaseContext) interface{} {
 
-	expr := v.Visit(ctx.Expr()).(IValue)
+	expr := v.Visit(ctx.Expr()).(V.IValue)
 
 	if expr.GetType() != switchContextExpr.GetType() {
 		v.NewError("El tipo de dato de la expresion del case no coincide con el tipo de dato de la expresion del switch", ctx.GetStart())

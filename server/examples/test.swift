@@ -168,10 +168,11 @@ var num = 0
 
 while (testGuard <= 10){
     guard testGuard % 2 == 0 else {
+        print(testGuard, "es impar")
         testGuard += 1
         continue
     }
-    print(testGuard, "es impar", "adios", "hola")
+    print(testGuard, "es par")
     num += testGuard
     testGuard = testGuard + 1
 
