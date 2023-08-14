@@ -181,3 +181,6 @@ print(testGuard, "|", num)
 print(1.0001)
 print(true)
 print(nil)
+print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+// Test double quote
+print("cadena1 \"cadena2\" cadena3")

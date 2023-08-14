@@ -27,6 +27,13 @@ func (v *Visitor) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	if len(s) == 1 {
 		return V.NewCharValue([]rune(s)[0])
 	}
+
+	// Replace scape characters: double quote, backslash, new line, carriage return, tab
+	s = strings.ReplaceAll(s, "\\\"", "\"")
+	s = strings.ReplaceAll(s, "\\\\", "\\")
+	s = strings.ReplaceAll(s, "\\n", "\n")
+	s = strings.ReplaceAll(s, "\\r", "\r")
+	s = strings.ReplaceAll(s, "\\t", "\t")
 	return V.NewStringValue(s)
 }
 

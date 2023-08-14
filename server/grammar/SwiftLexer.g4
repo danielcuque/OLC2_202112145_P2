@@ -42,8 +42,9 @@ Kw_RANGE: '...';
 INT: [0-9]+;
 FLOAT: [0-9]* '.' [0-9]+;
 BOOL: 'true' | 'false';
-STRING: '"' (~["\\\r\n] | '\\' [\\\r\n])* '"';
-CHAR: '\'' (~['\\\r\n] | '\\' [\\\r\n])* '\'';
+// String recognize scape sequences
+STRING: '"' ( '\\' [nrt"\\] | ~[\n\r"])* '"';
+CHAR: '\'' ( '\\' [nrt"\\] | ~[\n\r']) '\'';
 NIL: 'nil';
 // Identifiers
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
