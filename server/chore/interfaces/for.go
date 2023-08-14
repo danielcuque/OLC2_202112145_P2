@@ -23,7 +23,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	argIterator, ok := v.Visit(ctx.Expr()).(IValue)
 
 	if !ok {
-		v.NewError("Error al obtener el valor de la expresión", ctx.GetStart())
+		v.NewError(InvalidExpressionError, ctx.GetStart())
 		return nil
 	}
 

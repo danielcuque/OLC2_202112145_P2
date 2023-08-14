@@ -13,6 +13,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 	value, okVal := v.Visit(ctx.Expr()).(IValue)
 
 	if !okVal {
+		v.NewError(InvalidExpressionError, ctx.GetStart())
 		return nil
 	}
 
@@ -40,6 +41,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	valueType := v.Visit(ctx.VariableType()).(string)
 
 	if !okVal {
+		v.NewError(InvalidExpressionError, ctx.GetStart())
 		return nil
 	}
 

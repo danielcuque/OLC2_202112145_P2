@@ -10,7 +10,7 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	value, ok := v.Visit(ctx.Expr()).(IValue)
 
 	if !ok {
-		v.NewError("El valor asignado no es de tipo IValue", ctx.GetStart())
+		v.NewError(InvalidExpressionError, ctx.GetStart())
 		return false
 	}
 

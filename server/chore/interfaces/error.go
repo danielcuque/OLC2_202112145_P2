@@ -36,3 +36,9 @@ func NewVisitorError(line int, column int, msg string) *VisitorError {
 		Msg:    msg,
 	}
 }
+
+// Standar error message
+
+const (
+	InvalidExpressionError = "No se pudo obtener el valor de la expresión"
+)

@@ -10,7 +10,7 @@ func (v *Visitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext) inter
 	expr, ok := v.Visit(ctx.Expr()).(IValue)
 
 	if !ok {
-		v.NewError("La expresion del switch no es de tipo IValue", ctx.GetStart())
+		v.NewError(InvalidExpressionError, ctx.GetStart())
 		return nil
 	}
 
