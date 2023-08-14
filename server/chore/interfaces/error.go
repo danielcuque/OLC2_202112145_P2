@@ -46,4 +46,8 @@ const (
 	FunctionAlreadyExistsError        = "Ya existe una función con este nombre en este ambiente"
 	InvalidReturnTypeDeclarationError = "El tipo de retorno no es válido"
 	InvalidParameterTypeError         = "El tipo del parámetro no es válido"
+	InvalidNumberOfParametersError    = "El número de parámetros no es válido"
+	InvalidReturnTypeFunctionError    = "El tipo de retorno de la función no es válido"
+	InvalidArgumentNameError          = "El nombre del argumento no es válido"
+	InvalidFunctionBodyError          = "El cuerpo de la función no es válido"
 )

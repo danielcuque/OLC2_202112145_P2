@@ -44,8 +44,11 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#functionCall.
 	VisitFunctionCall(ctx *FunctionCallContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#functionCallParameters.
-	VisitFunctionCallParameters(ctx *FunctionCallParametersContext) interface{}
+	// Visit a parse tree produced by SwiftParser#Arguments.
+	VisitArguments(ctx *ArgumentsContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#NamedArguments.
+	VisitNamedArguments(ctx *NamedArgumentsContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}

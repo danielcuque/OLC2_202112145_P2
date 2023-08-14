@@ -10,7 +10,7 @@ import (
 // We extends the visitor to add the print function, create PrintContext and add it to the scope
 
 func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
-	params, ok := v.Visit(ctx.FunctionCallParameters()).([]V.IValue)
+	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
 
 	if !ok {
 		v.NewError(InvalidParameterError, ctx.GetStart())
@@ -19,13 +19,13 @@ func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 
 	var log string
 
-	for _, param := range params {
-		if !V.IsBaseType(param) {
+	for _, arg := range args {
+		if !V.IsBaseType(arg.Value) {
 			v.NewError("El parámetro no es de tipo primitivo", ctx.GetStart())
 			return nil
 		}
 
-		log += fmt.Sprintf("%v ", param.String())
+		log += fmt.Sprintf("%v ", arg.Value.String())
 	}
 
 	v.NewLog(log)

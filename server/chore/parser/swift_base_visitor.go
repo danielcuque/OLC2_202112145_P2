@@ -56,7 +56,11 @@ func (v *BaseSwiftVisitor) VisitFunctionCall(ctx *FunctionCallContext) interface
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitFunctionCallParameters(ctx *FunctionCallParametersContext) interface{} {
+func (v *BaseSwiftVisitor) VisitArguments(ctx *ArgumentsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitNamedArguments(ctx *NamedArgumentsContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

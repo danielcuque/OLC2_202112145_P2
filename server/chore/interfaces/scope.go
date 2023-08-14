@@ -5,16 +5,14 @@ import (
 	"fmt"
 )
 
-type ScopeType string
-
 const (
-	RootScope   ScopeType = "Root"
-	FuncScope   ScopeType = "Func"
-	WhileScope  ScopeType = "While"
-	ForScope    ScopeType = "For"
-	IfScope     ScopeType = "If"
-	ElseScope   ScopeType = "Else"
-	SwitchScope ScopeType = "Switch"
+	RootScope   = "Root"
+	FuncScope   = "Func"
+	WhileScope  = "While"
+	ForScope    = "For"
+	IfScope     = "If"
+	ElseScope   = "Else"
+	SwitchScope = "Switch"
 )
 
 type TokenSymbol struct {
@@ -41,12 +39,12 @@ type ScopeNode struct {
 	Parent    *ScopeNode
 	Child     []*ScopeNode
 	Level     int
-	ScopeType ScopeType
+	ScopeType string
 	Variables map[string]*Variable
 	Functions map[string]*Function
 }
 
-func NewScopeNode(parent *ScopeNode, scopeType ScopeType, Level int) *ScopeNode {
+func NewScopeNode(parent *ScopeNode, scopeType string, Level int) *ScopeNode {
 	return &ScopeNode{
 		Parent:    parent,
 		Child:     make([]*ScopeNode, 0),
@@ -144,7 +142,7 @@ func (s *ScopeTree) GetFunction(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeTree) PushScope(scopeType ScopeType) *ScopeNode {
+func (s *ScopeTree) PushScope(scopeType string) *ScopeNode {
 	node := NewScopeNode(s.Current, scopeType, s.Current.Level+1)
 	s.Current.Child = append(s.Current.Child, node)
 	s.Current = node

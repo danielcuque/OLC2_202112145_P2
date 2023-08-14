@@ -47,9 +47,11 @@ functionParameter: ID COLON variableType;
 functionReturnType: Op_ARROW variableType;
 
 // Function call 
-functionCall: ID LPAREN functionCallParameters? RPAREN;
+functionCall: ID LPAREN functionCallArguments? RPAREN;
 
-functionCallParameters: expr (COMMA expr)*;
+functionCallArguments:
+	expr (COMMA expr)*						# Arguments
+	| ID COLON expr (COMMA ID COLON expr)*	# NamedArguments;
 
 // Variable assignment
 variableAssignment:

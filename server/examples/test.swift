@@ -187,4 +187,7 @@ print("cadena1 \"cadena2\" cadena3")
 
 func addTwoNumbers(a: Int, b: Int) -> Int {
     let c = a + b
+    print(c)
 }
+
+addTwoNumbers(a: 1, b: 2)
