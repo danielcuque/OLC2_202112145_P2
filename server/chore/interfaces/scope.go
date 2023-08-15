@@ -1,32 +1,57 @@
 package interfaces
 
-import "fmt"
-
-type ScopeType string
+import (
+	V "OLC2/chore/values"
+	"fmt"
+)
 
 const (
-	RootScope  ScopeType = "Root"
-	FuncScope  ScopeType = "Func"
-	WhileScope ScopeType = "While"
-	ForScope   ScopeType = "For"
-	IfScope    ScopeType = "If"
+	RootScope   = "Root"
+	FuncScope   = "Func"
+	WhileScope  = "While"
+	ForScope    = "For"
+	IfScope     = "If"
+	ElseScope   = "Else"
+	SwitchScope = "Switch"
 )
+
+type TokenSymbol struct {
+	Scope    string
+	Type     string
+	Name     string
+	DataType string
+	Value    string
+	Params   []string
+}
+
+func NewTokenSymbol(scope, tokenType, name, dataType, value string, params []string) *TokenSymbol {
+	return &TokenSymbol{
+		Scope:    scope,
+		Type:     tokenType,
+		Name:     name,
+		DataType: dataType,
+		Value:    value,
+		Params:   params,
+	}
+}
 
 type ScopeNode struct {
 	Parent    *ScopeNode
 	Child     []*ScopeNode
 	Level     int
-	ScopeType ScopeType
+	ScopeType string
 	Variables map[string]*Variable
+	Functions map[string]*Function
 }
 
-func NewScopeNode(parent *ScopeNode, scopeType ScopeType, Level int) *ScopeNode {
+func NewScopeNode(parent *ScopeNode, scopeType string, Level int) *ScopeNode {
 	return &ScopeNode{
 		Parent:    parent,
 		Child:     make([]*ScopeNode, 0),
 		Level:     Level,
 		ScopeType: scopeType,
 		Variables: make(map[string]*Variable),
+		Functions: make(map[string]*Function),
 	}
 }
 
@@ -41,10 +66,18 @@ func (s *ScopeNode) GetVariable(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeNode) SetVariable(name string, value IValue) {
+func (s *ScopeNode) SetVariable(name string, value V.IValue) {
 	if val, ok := s.Variables[name]; ok {
 		val.SetValue(value)
 	}
+}
+
+func (s *ScopeNode) ResetScopeNode() {
+	s.Variables = make(map[string]*Variable)
+}
+
+func (s *ScopeNode) GetType() string {
+	return string(s.ScopeType)
 }
 
 func (s *ScopeNode) String() string {
@@ -89,11 +122,27 @@ func (s *ScopeTree) GetVariable(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeTree) SetVariable(name string, value IValue) {
+func (s *ScopeTree) SetVariable(name string, value V.IValue) {
 	s.Current.SetVariable(name, value)
 }
 
-func (s *ScopeTree) PushScope(scopeType ScopeType) *ScopeNode {
+func (s *ScopeTree) AddFunction(name string, value *Function) {
+	s.Current.Functions[name] = value
+}
+
+func (s *ScopeTree) GetFunction(name string) interface{} {
+	// Check if function exists in current scope
+	// if not, check in parent scope until root
+
+	for node := s.Current; node != nil; node = node.Parent {
+		if _, ok := node.Functions[name]; ok {
+			return node.Functions[name]
+		}
+	}
+	return nil
+}
+
+func (s *ScopeTree) PushScope(scopeType string) *ScopeNode {
 	node := NewScopeNode(s.Current, scopeType, s.Current.Level+1)
 	s.Current.Child = append(s.Current.Child, node)
 	s.Current = node
@@ -104,6 +153,55 @@ func (s *ScopeTree) PopScope() {
 	s.Current = s.Current.Parent
 }
 
+func (s *ScopeTree) GetSymbolTable() []ApiVariable {
+	// Traverse tree to get symbol table
+	return s.Root.GetAllVariables()
+}
+
+func (s *ScopeTree) ResetScope() {
+	// Clean all variables inside current scope
+	s.Current.ResetScopeNode()
+}
+
+func (s *ScopeTree) GetCurrentScope() *ScopeNode {
+	return s.Current
+}
+
 func (s *ScopeTree) String() string {
 	return s.Root.String()
+}
+
+// ApiVariable is a struct to represent variables in api
+type ApiVariable struct {
+	Name    string
+	IsConst bool
+	Value   interface{}
+	Type    string
+	Line    int
+	Column  int
+	Scope   string
+}
+
+func (s *ScopeNode) GetAllVariables() []ApiVariable {
+	var allVariables []ApiVariable
+	s.collectVariables(&allVariables)
+	return allVariables
+}
+
+func (s *ScopeNode) collectVariables(allVariables *[]ApiVariable) {
+	for _, variable := range s.Variables {
+		apiVar := ApiVariable{
+			Name:    variable.GetName(),
+			IsConst: variable.IsConstant(),
+			Value:   variable.GetValue(), // Puedes decidir cómo manejar el valor aquí
+			Type:    variable.GetType(),
+			Line:    variable.GetLine(),
+			Column:  variable.GetColumn(),
+			Scope:   s.GetType(),
+		}
+		*allVariables = append(*allVariables, apiVar)
+	}
+	for _, child := range s.Child {
+		child.collectVariables(allVariables)
+	}
 }

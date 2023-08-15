@@ -5,16 +5,16 @@ import { ParserError, TokenSymbol } from "./types";
 const url = import.meta.env.VITE_API_URL;
 
 export const fetchAPI = async (code: string) => {
+    const body = new FormData();
+    body.append("code", code);
     const res = await fetch(`${url}/compile`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ code }),
+        body: body,
     });
 
     // Return symbols, errors, logs and cst
     const data: CompileResponse = await res.json();
+    console.log(data);
 
     return data;
 }

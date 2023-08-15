@@ -9,17 +9,20 @@ program: block EOF;
 block: (statement)*;
 
 // Statements
-statement: variableAssignment | variableDeclaration;
-// | ifStatement | whileStatement; | forStatement;
+statement:
+	variableAssignment
+	| variableDeclaration
+	| ifStatement
+	| whileStatement
+	| switchStatement
+	| forStatement
+	| guardStatement
+	| controlFlowStatement
+	| functionDeclarationStatement
+	| functionCall;
 
 // Variable types
-variableType:
-	Kw_INT
-	| Kw_FLOAT
-	| Kw_BOOL
-	| Kw_STRING
-	| Kw_CHAR
-	| Kw_NIL;
+variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
 
 // Variable declaration
 
@@ -32,35 +35,63 @@ variableDeclaration:
 		SEMICOLON
 	)? # TypeDeclaration;
 
+// Function declaration
+functionDeclarationStatement:
+	Kw_FUNC ID LPAREN functionParameters? RPAREN functionReturnType? LBRACE block RBRACE;
+
+functionParameters:
+	functionParameter (COMMA functionParameter)*;
+
+functionParameter: ID? ID COLON Kw_INOUT? variableType;
+
+functionReturnType: Op_ARROW variableType;
+
+// Function call 
+functionCall: ID LPAREN functionCallArguments? RPAREN;
+
+functionCallArguments:
+	expr (COMMA expr)*						# Arguments
+	| ID COLON expr (COMMA ID COLON expr)*	# NamedArguments;
+
 // Variable assignment
 variableAssignment:
 	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
-// If statement ifStatement: Kw_IF LPAREN expr RPAREN LBRACE block RBRACE | Kw_IF LPAREN expr RPAREN
-// LBRACE block RBRACE ifStatementTail;
+// If statement 
+ifStatement: ifTail (Kw_ELSE ifTail)* elseStatement?;
 
-// ifStatementTail: elseIfTail elseStatement | elseStatement | elseIfTail;
+ifTail: Kw_IF expr LBRACE block RBRACE;
 
-// elseStatement: Kw_ELSE LBRACE block RBRACE;
+elseStatement: Kw_ELSE LBRACE block RBRACE;
 
-// elseIfTail: elseIfTail elseIf | elseIf;
+// While statement
+whileStatement: Kw_WHILE expr LBRACE block RBRACE;
 
-// elseIf: Kw_ELSE Kw_IF LPAREN expr RPAREN LBRACE block RBRACE;
+// Switch statement
+switchStatement:
+	Kw_SWITCH expr LBRACE switchCase* switchDefault? RBRACE;
 
-// whileStatement: Kw_WHILE LPAREN expr RPAREN LBRACE block RBRACE;
+switchCase: Kw_CASE expr COLON block Kw_BREAK?;
 
-// forStatement: Kw_FOR expr Kw_IN expr LBRACE block RBRACE;
+switchDefault: Kw_DEFAULT COLON block Kw_BREAK?;
+
+// For statement, we will have two types of for statements, one for arrays and one for ranges
+forStatement: Kw_FOR ID Kw_IN expr LBRACE block RBRACE;
+
+// Guard statement
+guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
 
 // Expressions
 expr:
-	Op_MINUS expr													# UnaryExpr
+	functionCall													# FunctionCallExpr
+	| Op_MINUS expr													# UnaryExpr
+	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
 	| left = expr op = (Op_PLUS | Op_MINUS) right = expr			# ArithmeticExpr
 	| left = expr op = Op_MOD right = expr							# ArithmeticExpr
 	| left = expr op = (Op_GE | Op_GT) right = expr					# ComparasionExpr
 	| left = expr op = (Op_LE | Op_LT) right = expr					# ComparasionExpr
 	| left = expr op = (Op_EQ | Op_NEQ) right = expr				# ComparasionExpr
-	| Op_NOT right = expr											# NotExpr
 	| condition = expr Op_TERNARY cTrue = expr COLON cFalse = expr	# TernaryExpr
 	| left = expr op = Op_AND right = expr							# LogicalExpr
 	| left = expr op = Op_OR right = expr							# LogicalExpr
@@ -70,5 +101,12 @@ expr:
 	| ID															# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
+	| NIL															# NilExpr
 	| CHAR															# CharExpr
 	| BOOL															# BoolExpr;
+
+// ControlFlow expressions
+controlFlowStatement:
+	Kw_BREAK			# ControlBreak
+	| Kw_CONTINUE		# ControlContinue
+	| Kw_RETURN expr?	# ControlReturn;

@@ -1,19 +1,21 @@
 export interface ParserError {
-    line: string
-    column: string
-    message: string
-    type: string
-}
-
-export interface TokenSymbol {
-    name: string;
+    Line: string
+    Column: string
+    Msg: string
+    Type: string
 }
 
 // export interface TokenSymbol {
-//     scope: string;
-//     type: string;
 //     name: string;
-//     dataType: string;
-//     value: string;
-//     params?: string[];
-//   }
+// }
+
+export interface TokenSymbol {
+    Column: number
+    IsConst: boolean
+    Line: number
+    Name: string
+    Scope: string
+    Type: string
+    Value: string
+
+}

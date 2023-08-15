@@ -33,7 +33,8 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
           <Editor
             height="100%"
             theme="vs-dark"
-            defaultLanguage="java"
+            defaultLanguage="swift"
+            language="swift"
             value={code}
             onChange={onChange}
             onMount={handleEditorDidMount}

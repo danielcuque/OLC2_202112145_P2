@@ -45,28 +45,28 @@ export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
           </div>
           <div className="h-full max-h-[30rem] w-full overflow-y-auto [&>*:nth-child(odd)]:bg-gray-100 [&>*:nth-child(even)]:bg-white">
             {symbols.length > 0 ? (
-              // symbols.map(
-              //   ({ scope, name, type, dataType, value, params }, index) => (
-              //     <div
-              //       key={index}
-              //       className="w-full flex flex-row py-6 border border-gray-300"
-              //     >
-              //       <div className="w-1/3 text-center">{scope}</div>
-              //       <div className="w-1/3 text-center">{type}</div>
-              //       <div className="w-1/3 text-center"> {name}</div>
-              //       <div className="w-1/3 text-center">{dataType}</div>
-              //       <div className="w-1/3 text-center">{value}</div>
-              //       <div className="w-1/3 text-center">
-              //         {params && params.length > 0
-              //           ? params.map((param, index) => (
-              //               <div key={index}>{param}</div>
-              //             ))
-              //           : "..."}
-              //       </div>
-              //     </div>
-              //   )
-              // )
-              <div></div>
+              symbols.map(
+                ({ Column, Line, Name, Scope, Type, Value }, index) => (
+                  <div
+                    key={index}
+                    className="w-full flex flex-row py-6 border border-gray-300"
+                  >
+                    <div className="w-1/3 text-center">{Scope}</div>
+                    <div className="w-1/3 text-center">{Type}</div>
+                    <div className="w-1/3 text-center"> {Name}</div>
+                    <div className="w-1/3 text-center">{Type}</div>
+                    <div className="w-1/3 text-center">{Value}</div>
+                    <div className="w-1/3 text-center">
+                      {/* {params && params.length > 0
+                        ? params.map((param, index) => (
+                          <div key={index}>{param}</div>
+                        ))
+                        : "..."} */}
+                      ...
+                    </div>
+                  </div>
+                )
+              )
             ) : (
               <div className="w-full flex flex-row py-6 border border-gray-300">
                 <div className="w-full text-center">No hay símbolos</div>

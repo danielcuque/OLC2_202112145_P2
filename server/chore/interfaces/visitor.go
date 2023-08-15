@@ -10,16 +10,18 @@ import (
 
 type Visitor struct {
 	parser.BaseSwiftVisitor
-	Scope  *ScopeTree
 	Errors []*VisitorError
 	Logs   []string
+	Scope  *ScopeTree
+	Stack  *Stack
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
-		Scope:  NewScopeTree(),
 		Errors: make([]*VisitorError, 0),
 		Logs:   make([]string, 0),
+		Scope:  NewScopeTree(),
+		Stack:  NewStack(),
 	}
 }
 
@@ -41,4 +43,16 @@ func NewEvaluator(input string) *Visitor {
 func (v *Visitor) NewError(msg string, ctx antlr.Token) {
 	errorMsg := fmt.Sprintf("Error(%d:%d): %s ", ctx.GetLine(), ctx.GetColumn(), msg)
 	v.Errors = append(v.Errors, NewVisitorError(ctx.GetLine(), ctx.GetColumn(), errorMsg))
+}
+
+func (v *Visitor) NewLog(msg string) {
+	v.Logs = append(v.Logs, msg)
+}
+
+func (v *Visitor) GetLogs() string {
+	var logs string
+	for _, log := range v.Logs {
+		logs += log + "\n"
+	}
+	return logs
 }

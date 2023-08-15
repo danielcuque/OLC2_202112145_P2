@@ -4,24 +4,7 @@ import (
 	"io"
 	"os"
 	"reflect"
-	"strconv"
-	"strings"
 )
-
-// Parse strings to numbers (int or float) if possible
-func ParseNumber(str string) interface{} {
-	if strings.Contains(str, ".") {
-		if f, err := strconv.ParseFloat(str, 64); err == nil {
-			return f
-		}
-	} else {
-		if i, err := strconv.ParseInt(str, 10, 64); err == nil {
-			return i
-		}
-	}
-
-	return str
-}
 
 func ReadFile(filename string) string {
 	file, err := os.Open(filename)

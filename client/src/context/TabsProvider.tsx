@@ -11,7 +11,10 @@ interface TabsProviderProps {
 const INITIAL_TAB: TabI = {
   id: 0,
   code: `// Bienvenido a T-Swift
-  `,
+let hola = "Hola"
+let mundo = "Mundo"
+let palabra = hola + " " + mundo
+`,
   name: "example.swift",
 };
 

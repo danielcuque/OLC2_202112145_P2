@@ -36,7 +36,71 @@ func (v *BaseSwiftVisitor) VisitTypeDeclaration(ctx *TypeDeclarationContext) int
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitFunctionDeclarationStatement(ctx *FunctionDeclarationStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionParameters(ctx *FunctionParametersContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionParameter(ctx *FunctionParameterContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionReturnType(ctx *FunctionReturnTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionCall(ctx *FunctionCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitArguments(ctx *ArgumentsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitNamedArguments(ctx *NamedArgumentsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitIfTail(ctx *IfTailContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitElseStatement(ctx *ElseStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitWhileStatement(ctx *WhileStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitSwitchStatement(ctx *SwitchStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitSwitchCase(ctx *SwitchCaseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitSwitchDefault(ctx *SwitchDefaultContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitGuardStatement(ctx *GuardStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -45,6 +109,10 @@ func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitFloatExpr(ctx *FloatExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitNilExpr(ctx *NilExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -61,6 +129,10 @@ func (v *BaseSwiftVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitCharExpr(ctx *CharExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionCallExpr(ctx *FunctionCallExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -93,5 +165,17 @@ func (v *BaseSwiftVisitor) VisitLogicalExpr(ctx *LogicalExprContext) interface{}
 }
 
 func (v *BaseSwiftVisitor) VisitTernaryExpr(ctx *TernaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitControlBreak(ctx *ControlBreakContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitControlContinue(ctx *ControlContinueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitControlReturn(ctx *ControlReturnContext) interface{} {
 	return v.VisitChildren(ctx)
 }

@@ -9,7 +9,7 @@ import (
 
 // Response will have symbols, errors, logs and cst
 type Resp struct {
-	Symbols string            `json:"symbols"`
+	Symbols []I.ApiVariable   `json:"symbols"`
 	Errors  []*I.VisitorError `json:"errors"`
 	Logs    []string          `json:"logs"`
 	Cst     string            `json:"cst"`
@@ -23,14 +23,12 @@ type Message struct {
 
 func HandleVisitor(c *fiber.Ctx) error {
 
-	var message Message
-	if err := c.BodyParser(&message); err != nil {
-		return err
-	}
-	result := I.NewEvaluator(message.Content)
+	code := c.FormValue("code")
+
+	result := I.NewEvaluator(code)
 
 	response := Resp{
-		Symbols: "Symbols",
+		Symbols: result.Scope.GetSymbolTable(),
 		Errors:  result.Errors,
 		Logs:    result.Logs,
 		Cst:     "graph G { a -- b }",

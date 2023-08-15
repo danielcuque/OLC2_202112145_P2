@@ -29,14 +29,65 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#TypeDeclaration.
 	VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#functionDeclarationStatement.
+	VisitFunctionDeclarationStatement(ctx *FunctionDeclarationStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionParameters.
+	VisitFunctionParameters(ctx *FunctionParametersContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionParameter.
+	VisitFunctionParameter(ctx *FunctionParameterContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionReturnType.
+	VisitFunctionReturnType(ctx *FunctionReturnTypeContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#functionCall.
+	VisitFunctionCall(ctx *FunctionCallContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#Arguments.
+	VisitArguments(ctx *ArgumentsContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#NamedArguments.
+	VisitNamedArguments(ctx *NamedArgumentsContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ifStatement.
+	VisitIfStatement(ctx *IfStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ifTail.
+	VisitIfTail(ctx *IfTailContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#elseStatement.
+	VisitElseStatement(ctx *ElseStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#whileStatement.
+	VisitWhileStatement(ctx *WhileStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#switchStatement.
+	VisitSwitchStatement(ctx *SwitchStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#switchCase.
+	VisitSwitchCase(ctx *SwitchCaseContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#switchDefault.
+	VisitSwitchDefault(ctx *SwitchDefaultContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#forStatement.
+	VisitForStatement(ctx *ForStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#guardStatement.
+	VisitGuardStatement(ctx *GuardStatementContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#FloatExpr.
 	VisitFloatExpr(ctx *FloatExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#NilExpr.
+	VisitNilExpr(ctx *NilExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#IdExpr.
 	VisitIdExpr(ctx *IdExprContext) interface{}
@@ -49,6 +100,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#CharExpr.
 	VisitCharExpr(ctx *CharExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#FunctionCallExpr.
+	VisitFunctionCallExpr(ctx *FunctionCallExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ArithmeticExpr.
 	VisitArithmeticExpr(ctx *ArithmeticExprContext) interface{}
@@ -73,4 +127,13 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#TernaryExpr.
 	VisitTernaryExpr(ctx *TernaryExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ControlBreak.
+	VisitControlBreak(ctx *ControlBreakContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ControlContinue.
+	VisitControlContinue(ctx *ControlContinueContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#ControlReturn.
+	VisitControlReturn(ctx *ControlReturnContext) interface{}
 }

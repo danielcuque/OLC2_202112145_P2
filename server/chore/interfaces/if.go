@@ -1,22 +1,62 @@
 package interfaces
 
-// func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
-// 	value, ok := v.Visit(ctx.Expr()).(Value).ParseValue.(bool)
+import (
+	"OLC2/chore/parser"
+	V "OLC2/chore/values"
+)
 
-// 	if ok && value {
-// 		return v.Visit(ctx.Block())
-// 	}
-// 	return Value{ParseValue: false}
-// }
+func (v *Visitor) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
+	executeElse := true
 
-// func (v *Visitor) VisitIfStatementTail(ctx *parser.IfStatementTailContext) interface{} {
-// 	return ""
-// }
+	// Visit each if tail
+	for _, ifStmt := range ctx.AllIfTail() {
 
-// func (v *Visitor) VisitElseIfTail(ctx *parser.ElseIfTailContext) interface{} {
-// 	return ""
-// }
+		executeElse = !v.Visit(ifStmt).(bool)
 
-// func (v *Visitor) VisitElseIf(ctx *parser.ElseIfContext) interface{} {
-// 	return ""
-// }
+		if !executeElse {
+			break
+		}
+	}
+
+	if executeElse && ctx.ElseStatement() != nil {
+		v.Visit(ctx.ElseStatement())
+	}
+
+	return nil
+}
+
+func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
+	condition, ok := v.Visit(ctx.Expr()).(V.IValue)
+
+	if !ok {
+		v.NewError(InvalidExpressionError, ctx.GetStart())
+		return false
+	}
+
+	if condition.GetType() != V.BooleanType {
+		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())
+		return false
+	}
+
+	if condition.(*V.BooleanV).Value {
+
+		v.Scope.PushScope(IfScope)
+
+		v.Visit(ctx.Block())
+
+		v.Scope.PopScope()
+
+		return true
+	}
+
+	return false
+}
+
+func (v *Visitor) VisitElseStatement(ctx *parser.ElseStatementContext) interface{} {
+
+	v.Scope.PushScope(ElseScope)
+	v.Visit(ctx.Block())
+	v.Scope.PopScope()
+
+	return nil
+}
