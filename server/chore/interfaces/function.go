@@ -78,15 +78,27 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	}
 
 	// Get the function parameters
-	parameters := v.Visit(ctx.FunctionParameters()).([]Parameter)
+	var parameters []Parameter
+
+	// Check if parameters are nil
+	if ctx.FunctionParameters() != nil {
+		parameters = v.Visit(ctx.FunctionParameters()).([]Parameter)
+	} else {
+		parameters = make([]Parameter, 0)
+	}
 
 	// Get the function return type
-	returnType, ok := v.Visit(ctx.FunctionReturnType()).(string)
+	returnType := V.NilType
 
-	if !ok {
-		v.NewError("No se pudo obtener el tipo de valor de retorno", ctx.GetStart())
-		return nil
+	// Check if return type is nil
+	if ctx.FunctionReturnType() != nil {
+		returnType = v.Visit(ctx.FunctionReturnType()).(string)
 	}
+
+	// if !ok {
+	// 	v.NewError("No se pudo obtener el tipo de valor de retorno", ctx.GetStart())
+	// 	return nil
+	// }
 
 	v.Scope.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
 
@@ -173,7 +185,7 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 	returnType, ok := v.Visit(ctx.VariableType()).(string)
 
 	if !ok {
-		v.NewError(InvalidReturnTypeDeclarationError, ctx.GetStart())
+		v.NewError(InvalidReturnTypeFunctionError, ctx.GetStart())
 		return nil
 	}
 
@@ -198,7 +210,12 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Get the arguments
-	args := v.Visit(ctx.FunctionCallArguments()).([]Argument)
+	args := make([]Argument, 0)
+
+	// Check if arguments are nil
+	if ctx.FunctionCallArguments() != nil {
+		args = v.Visit(ctx.FunctionCallArguments()).([]Argument)
+	}
 
 	// Verify if the number of parameters is the same
 	if len(args) != len(fn.Parameters) {
@@ -290,7 +307,6 @@ func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallCont
 
 	defer func() {
 		v.Stack.Reset()
-		v.Scope.PopScope()
 		v.Scope.Current = calledScope
 
 		peek, ok := recover().(*StackItem)

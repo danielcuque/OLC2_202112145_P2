@@ -229,13 +229,37 @@ print(resta(numero1, numero2))
 //llamada con nombres externos e internos idénticos
 print(mul(x: numero1, y: numero2))
 
-func fibonacci(n: Int) -> Int {
-    if n <= 1 {
-        return n
+func fibonacci(_ n: Int) -> Int {
+    if n > 1 {
+        return fibonacci(n - 1) + fibonacci(n - 2)
+    } else if n == 1 {
+        return 1
+    } else if n == 0 {
+        return 0
     } else {
-        return fibonacci(n: n - 1) + fibonacci(n: n - 2)
+        print("error")
+        return 0
     }
 }
 
-// print("Fibonacci de 10:")
-print(fibonacci(n: 15))
+print("Debería ser 55")
+print(fibonacci(10)) 
+
+func ackerman(_ m: Int, _ n: Int) -> Int {
+    if m == 0 {
+        return n + 1
+    } else if m > 0 && n == 0 {
+        return ackerman(m - 1, 1)
+    } else {
+        return ackerman(m - 1, ackerman(m, n - 1))
+    }
+}
+
+print("Debería ser 125")
+print(ackerman(3,4))
+
+func func1() -> Int  {
+    return 1
+}
+
+func1()
