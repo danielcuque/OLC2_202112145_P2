@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -55,8 +56,9 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	id := ctx.GetText()
 	value := v.Scope.GetVariable(id)
+
 	if value == nil {
-		v.NewError("La variable "+id+" no existe", ctx.GetStart())
+		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
 		return nil
 	}
 	return value.(*Variable).Value

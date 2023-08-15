@@ -228,3 +228,14 @@ print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: nu
 print(resta(numero1, numero2))
 //llamada con nombres externos e internos idénticos
 print(mul(x: numero1, y: numero2))
+
+func fibonacci(n: Int) -> Int {
+    if n <= 1 {
+        return n
+    } else {
+        return fibonacci(n: n - 1) + fibonacci(n: n - 2)
+    }
+}
+
+// print("Fibonacci de 10:")
+print(fibonacci(n: 15))

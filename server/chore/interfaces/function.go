@@ -224,13 +224,13 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	// Check if parameters have a different external name than '_', then throw an error
 	for _, param := range fn.Parameters {
 		if areArgsPositional && param.ExternalName != "_" {
-			v.NewError("La función no tiene nombres externos", ctx.GetStart())
+			v.NewError("La función no acepta parámetros posicionales", ctx.GetStart())
 			return nil
 		}
 	}
 
 	// Create a new scope
-	v.Scope.PushScope(id)
+	fnScope := v.Scope.PushScope(id)
 	v.Stack.Push(NewStackItem(
 		id,
 		V.NewNilValue(nil),
@@ -271,12 +271,9 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Execute the function
-	v.ExecuteFunctionBody(fn, ctx)
+	v.ExecuteFunctionBody(fn, ctx, fnScope)
 
 	returnValue := fn.ReturnValue
-
-	// Clean the stack
-	v.Stack.Reset()
 
 	// Return scope to root scope
 	v.Scope.PopScope()
@@ -288,10 +285,14 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	return returnValue
 }
 
-func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext) {
+func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext, calledScope *ScopeNode) {
 	// Create a new scope
 
 	defer func() {
+		v.Stack.Reset()
+		v.Scope.PopScope()
+		v.Scope.Current = calledScope
+
 		peek, ok := recover().(*StackItem)
 
 		if !ok {
