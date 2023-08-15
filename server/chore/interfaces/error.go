@@ -48,6 +48,6 @@ const (
 	InvalidParameterTypeError         = "El tipo del parámetro no es válido"
 	InvalidNumberOfParametersError    = "El número de parámetros no es válido"
 	InvalidReturnTypeFunctionError    = "El tipo de retorno de la función no es válido"
-	InvalidArgumentNameError          = "El nombre del argumento no es válido"
+	InvalidArgumentNameError          = "El nombre del argumento no es existe"
 	InvalidFunctionBodyError          = "El cuerpo de la función no es válido"
 )

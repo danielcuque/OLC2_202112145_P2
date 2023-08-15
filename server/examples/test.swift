@@ -163,31 +163,74 @@
 //     testFor += bbb
 // }
 
-var testGuard = 2
-var num = 0
+// var testGuard = 2
+// var num = 0
 
-while (testGuard <= 10){
-    guard testGuard % 2 == 0 else {
-        print(testGuard, "es impar")
-        testGuard += 1
-        continue
-    }
-    print(testGuard, "es par")
-    num += testGuard
-    testGuard = testGuard + 1
+// while (testGuard <= 10){
+//     guard testGuard % 2 == 0 else {
+//         print(testGuard, "es impar")
+//         testGuard += 1
+//         continue
+//     }
+//     print(testGuard, "es par")
+//     num += testGuard
+//     testGuard = testGuard + 1
+// }
+
+// print(testGuard, "|", num)
+// print(1.0001)
+// print(true)
+// print(nil)
+// print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+// // Test double quote
+// print("cadena1 \"cadena2\" cadena3")
+
+// func addTwoNumbers(a: Int, b: Int) -> Int {
+//     let c = a + b
+//     print(c)
+// }
+
+// addTwoNumbers(a: 1, b: 2)
+
+func suma( num1 x : Int, num2 y: Int) -> Int {
+    let res = x + y
+    print(res)
+    // return x + y
 }
 
-print(testGuard, "|", num)
-print(1.0001)
-print(true)
-print(nil)
-print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
-// Test double quote
-print("cadena1 \"cadena2\" cadena3")
-
-func addTwoNumbers(a: Int, b: Int) -> Int {
-    let c = a + b
-    print(c)
+func resta(_ x : Int, _ y: Int) -> Int {
+    let res = x - y
+    print(res)
+    // return x - y
 }
 
-addTwoNumbers(a: 1, b: 2)
+//función mul
+// Nombres externos: x, y
+// Nombres internos: x, y
+func mul(x: Int, y: Int) -> Int {
+    let res = x * y
+    print(res)
+    // return x * y
+}
+
+// func duplicar(_ x: inout Int){
+//     x += x
+// }
+
+// func duplicarA (_ array: inout [Int] ) {
+//     var i = 0
+//     while (i < array.count ) {
+//         array[i] += array[i]
+//         i += 1
+//     }
+// }
+
+
+var numero1 = 3
+var numero2 = 2
+//llamada con nombres externos
+suma(num1: numero1, num2: numero2) //imprime 5
+//llamada sin nombres externos
+resta(numero1, numero2) //imprime 1
+//llamada con nombres externos e internos idénticos
+mul(x: numero1, y: numero2) //imprime 6

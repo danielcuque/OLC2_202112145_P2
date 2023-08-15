@@ -3,6 +3,7 @@ package interfaces
 import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
+	"fmt"
 )
 
 type IFunction interface {
@@ -25,14 +26,14 @@ func (f *Function) GetParameters() []Parameter {
 	return f.Parameters
 }
 
-func (f *Function) GetParameter(name string) *Parameter {
+func (f *Function) GetParameter(name string) Parameter {
 	for _, param := range f.Parameters {
-		if param.Name == name {
-			return &param
+		if param.ExternalName == name {
+			return param
 		}
 	}
 
-	return nil
+	return Parameter{}
 }
 
 func (f *Function) GetBody() *parser.BlockContext {
@@ -49,8 +50,10 @@ func NewFunction(name string, returnDataType string, parameters []Parameter, bod
 }
 
 type Parameter struct {
-	Name  string
-	Value V.IValue
+	ExternalName string
+	InternalName string
+	Value        V.IValue
+	IsINOUT      bool
 }
 
 type Argument struct {
@@ -108,9 +111,28 @@ func (v *Visitor) VisitFunctionParameters(ctx *parser.FunctionParametersContext)
 	return params
 }
 
+// There are three types of parameters:
+
+/*
+	1. External name and internal name
+	2. Only external name
+	3. Only internal name
+*/
+
 func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) interface{} {
 	// Get the parameter name
-	id := ctx.ID().GetText()
+	var externalName string
+	var internalName string
+
+	if len(ctx.AllID()) == 2 {
+		externalName = ctx.ID(0).GetText()
+		internalName = ctx.ID(1).GetText()
+	} else {
+		externalName = ctx.ID(0).GetText()
+		internalName = externalName
+	}
+
+	isINOUT := ctx.Kw_INOUT() != nil
 
 	// Get the parameter type
 	dataType, ok := v.Visit(ctx.VariableType()).(string)
@@ -139,8 +161,10 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 	}
 
 	return Parameter{
-		Name:  id,
-		Value: param,
+		ExternalName: externalName,
+		InternalName: internalName,
+		Value:        param,
+		IsINOUT:      isINOUT,
 	}
 }
 
@@ -181,76 +205,77 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		return nil
 	}
 
-	isAllPositional := true
+	/*
+		There are three verifications to do:
+		1. Check if is positional, for this, we need to check if the arguments have name and and if parameter external name is different to '_' (underscore)
+		2. Check if the function contains external name, for this, we need to check if the arguments have name
+	*/
 
-	// Check if arguments have name, if not, is a positional argument
+	areArgsPositional := true
+
 	for _, arg := range args {
-		if arg.Name == "" {
-			continue
-		} else {
-			// Check if the argument name exists in the function parameters
-			exists := false
-			for _, param := range fn.Parameters {
-				if param.Name == arg.Name {
-					exists = true
-					break
-				}
-			}
+		if arg.Name != "" {
+			areArgsPositional = false
+			break
+		}
+	}
 
-			if !exists {
-				v.NewError(InvalidArgumentNameError, ctx.GetStart())
-				return nil
-			}
-
-			isAllPositional = false
+	// Check if parameters have a different external name than '_', then throw an error
+	for _, param := range fn.Parameters {
+		if areArgsPositional && param.ExternalName != "_" {
+			v.NewError("La función no tiene nombres externos", ctx.GetStart())
+			return nil
 		}
 	}
 
 	// Create a new scope
-	fnScope := v.Scope.PushScope(id)
+	v.Scope.PushScope(id)
+	v.Stack.Push(NewStackItem(
+		id,
+		V.NewNilValue(nil),
+		[]StackItemType{ReturnType},
+	))
 
-	if isAllPositional {
-		// Add the arguments to the scope by index
-		for i, arg := range args {
-			var param = fn.Parameters[i]
-			fnScope.AddVariable(param.Name, NewVariable(
-				param.Name,
-				false,
-				arg.Value,
-				arg.Value.GetType(),
-				ctx.GetStart().GetLine(),
-				ctx.GetStart().GetColumn(),
-				v.Scope.GetCurrentScope(),
-			))
+	// Now, initialize the parameters into a new Scope
+	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+
+	for i, arg := range args {
+		var param Parameter
+
+		if areArgsPositional {
+			param = fn.Parameters[i]
+		} else {
+			param = fn.GetParameter(arg.Name)
 		}
-	} else {
-		// Add the arguments to the scope
-		for _, arg := range args {
-			var param = fn.GetParameter(arg.Name)
-			fnScope.AddVariable(param.Name, NewVariable(
-				param.Name,
-				false,
-				arg.Value,
-				arg.Value.GetType(),
-				ctx.GetStart().GetLine(),
-				ctx.GetStart().GetColumn(),
-				v.Scope.GetCurrentScope(),
-			))
+
+		if param.Value == nil {
+			v.NewError(fmt.Sprintf("El parámetro '%s' no existe", param.InternalName), ctx.GetStart())
+			return false
 		}
+
+		if arg.Value.GetType() != param.Value.GetType() {
+			v.NewError(fmt.Sprintf("El parámetro '%s' no es del tipo '%s'", param.InternalName, param.Value.GetType()), ctx.GetStart())
+			return false
+		}
+
+		v.Scope.AddVariable(param.InternalName, NewVariable(
+			param.InternalName,
+			false,
+			arg.Value,
+			arg.Value.GetType(),
+			line,
+			column,
+			scope,
+		))
 	}
 
 	// Execute the function
 	body := fn.GetBody()
 
-	if body == nil {
-		v.NewError(InvalidFunctionBodyError, ctx.GetStart())
-		v.Scope.PopScope()
-		return nil
-	}
-
 	v.Visit(body)
 
 	// Pop the scope
+	v.Stack.Pop()
 	v.Scope.PopScope()
 
 	// if retunrValue.GetType() != fn.ReturnDataType {
@@ -258,6 +283,24 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	// }
 
 	return nil
+}
+
+func (v *Visitor) ExecuteFunctionBody(ctx *parser.BlockContext) {
+	defer func() {
+		peek, ok := recover().(*StackItem)
+
+		if !ok {
+			return
+		}
+
+		if peek.Trigger != ReturnType {
+			v.NewError("No se pudo encontrar una sentencia de retorno", ctx.GetStart())
+			return
+		}
+
+		v.ExecuteFunctionBody(ctx)
+	}()
+
 }
 
 func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {

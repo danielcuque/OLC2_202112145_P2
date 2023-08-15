@@ -37,6 +37,7 @@ Kw_CHAR: 'Character';
 
 // Range expressions
 Kw_RANGE: '...';
+Kw_INOUT: 'inout';
 
 // Literals
 INT: [0-9]+;

@@ -42,7 +42,7 @@ functionDeclarationStatement:
 functionParameters:
 	functionParameter (COMMA functionParameter)*;
 
-functionParameter: ID COLON variableType;
+functionParameter: ID? ID COLON Kw_INOUT? variableType;
 
 functionReturnType: Op_ARROW variableType;
 
