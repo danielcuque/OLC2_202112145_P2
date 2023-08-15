@@ -402,3 +402,7 @@ func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{}
 		return V.NilType
 	}
 }
+
+func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {
+	return v.Visit(ctx.FunctionCall())
+}

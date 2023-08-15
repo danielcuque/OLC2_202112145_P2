@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"OLC2/chore/parser"
+	V "OLC2/chore/values"
 )
 
 func (v *Visitor) VisitControlBreak(ctx *parser.ControlBreakContext) interface{} {
@@ -42,6 +43,10 @@ func (v *Visitor) VisitControlReturn(ctx *parser.ControlReturnContext) interface
 	}
 
 	peek.Trigger = ReturnType
+
+	if ctx.Expr() != nil {
+		peek.Value = v.Visit(ctx.Expr()).(V.IValue)
+	}
 
 	// Throw panic to stop execution and return to the top of the stack
 	panic(peek)

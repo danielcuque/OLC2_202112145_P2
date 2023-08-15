@@ -193,24 +193,18 @@
 // addTwoNumbers(a: 1, b: 2)
 
 func suma( num1 x : Int, num2 y: Int) -> Int {
-    let res = x + y
-    print(res)
-    // return x + y
+    return x + y
 }
 
 func resta(_ x : Int, _ y: Int) -> Int {
-    let res = x - y
-    print(res)
-    // return x - y
+    return x - y
 }
 
 //función mul
 // Nombres externos: x, y
 // Nombres internos: x, y
 func mul(x: Int, y: Int) -> Int {
-    let res = x * y
-    print(res)
-    // return x * y
+    return x * y
 }
 
 // func duplicar(_ x: inout Int){
@@ -229,8 +223,8 @@ func mul(x: Int, y: Int) -> Int {
 var numero1 = 3
 var numero2 = 2
 //llamada con nombres externos
-suma(num1: numero1, num2: numero2) //imprime 5
+print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: numero2))
 //llamada sin nombres externos
-resta(numero1, numero2) //imprime 1
+print(resta(numero1, numero2))
 //llamada con nombres externos e internos idénticos
-mul(x: numero1, y: numero2) //imprime 6
+print(mul(x: numero1, y: numero2))

@@ -67,3 +67,7 @@ func (s *Stack) Peek() *StackItem {
 		return s.Items[len(s.Items)-1]
 	}
 }
+
+func (s *Stack) Reset() {
+	s.Items = make([]*StackItem, 0)
+}

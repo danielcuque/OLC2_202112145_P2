@@ -16,6 +16,7 @@ type Function struct {
 	ReturnDataType string
 	Parameters     []Parameter
 	Body           *parser.BlockContext
+	ReturnValue    V.IValue
 }
 
 func (f *Function) GetName() string {
@@ -270,22 +271,26 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Execute the function
-	body := fn.GetBody()
+	v.ExecuteFunctionBody(fn, ctx)
 
-	v.Visit(body)
+	returnValue := fn.ReturnValue
 
-	// Pop the scope
-	v.Stack.Pop()
+	// Clean the stack
+	v.Stack.Reset()
+
+	// Return scope to root scope
 	v.Scope.PopScope()
 
-	// if retunrValue.GetType() != fn.ReturnDataType {
-	// 	v.NewError(InvalidReturnTypeFunctionError, ctx.GetStart())
-	// }
+	if returnValue.GetType() != fn.ReturnDataType {
+		v.NewError(InvalidReturnTypeFunctionError, ctx.GetStart())
+	}
 
-	return nil
+	return returnValue
 }
 
-func (v *Visitor) ExecuteFunctionBody(ctx *parser.BlockContext) {
+func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext) {
+	// Create a new scope
+
 	defer func() {
 		peek, ok := recover().(*StackItem)
 
@@ -294,13 +299,15 @@ func (v *Visitor) ExecuteFunctionBody(ctx *parser.BlockContext) {
 		}
 
 		if peek.Trigger != ReturnType {
-			v.NewError("No se pudo encontrar una sentencia de retorno", ctx.GetStart())
+			v.NewError("No se pudo obtener un valor de retorno", ctx.GetStart())
 			return
 		}
 
-		v.ExecuteFunctionBody(ctx)
+		fn.ReturnValue = peek.Value
 	}()
 
+	// Execute the function body
+	v.Visit(fn.Body)
 }
 
 func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
@@ -308,7 +315,13 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 	args := make([]Argument, 0)
 
 	for _, expr := range ctx.AllExpr() {
-		value := v.Visit(expr).(V.IValue)
+		value, ok := v.Visit(expr).(V.IValue)
+
+		if !ok {
+			v.NewError(InvalidArgumentError, ctx.GetStart())
+			return nil
+		}
+
 		args = append(args, Argument{Value: value, Name: ""})
 	}
 
