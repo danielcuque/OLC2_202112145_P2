@@ -245,6 +245,9 @@ func fibonacci(_ n: Int) -> Int {
 print("Debería ser 55")
 print(fibonacci(10)) 
 
+print("Debería ser 125")
+print(ackerman(3,4))
+
 func ackerman(_ m: Int, _ n: Int) -> Int {
     if m == 0 {
         return n + 1
@@ -255,11 +258,8 @@ func ackerman(_ m: Int, _ n: Int) -> Int {
     }
 }
 
-print("Debería ser 125")
-print(ackerman(3,4))
+
 
 func func1() -> Int  {
     return 1
 }
-
-func1()

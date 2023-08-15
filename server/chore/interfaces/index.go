@@ -21,8 +21,20 @@ func (v *Visitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 }
 
 func (v *Visitor) VisitBlock(ctx *parser.BlockContext) interface{} {
+	// First we visit the function declarations
+
 	for i := 0; ctx.Statement(i) != nil; i++ {
-		v.Visit(ctx.Statement(i))
+		if ctx.Statement(i).(*parser.StatementContext).FunctionDeclarationStatement() != nil {
+			v.Visit(ctx.Statement(i))
+		}
 	}
+
+	// Then we visit the statements
+	for i := 0; ctx.Statement(i) != nil; i++ {
+		if ctx.Statement(i).(*parser.StatementContext).FunctionDeclarationStatement() == nil {
+			v.Visit(ctx.Statement(i))
+		}
+	}
+
 	return nil
 }
