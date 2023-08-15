@@ -193,7 +193,13 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 }
 
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
-	id := ctx.ID().GetText()
+	var id string
+
+	if ctx.ID() != nil {
+		id = ctx.ID().GetText()
+	} else {
+		id = v.Visit(ctx.VariableType()).(string)
+	}
 
 	function := GetInternalBuiltinFunctions(id)
 

@@ -65,7 +65,7 @@ func swiftParserInit() {
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 68, 299, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 68, 302, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
 		10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15,
 		2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 7, 20, 2,
@@ -77,129 +77,131 @@ func swiftParserInit() {
 		5, 1, 5, 1, 5, 3, 5, 100, 8, 5, 1, 5, 1, 5, 3, 5, 104, 8, 5, 1, 5, 1, 5,
 		1, 5, 1, 5, 1, 6, 1, 6, 1, 6, 5, 6, 113, 8, 6, 10, 6, 12, 6, 116, 9, 6,
 		1, 7, 3, 7, 119, 8, 7, 1, 7, 1, 7, 1, 7, 3, 7, 124, 8, 7, 1, 7, 1, 7, 1,
-		8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 3, 9, 134, 8, 9, 1, 9, 1, 9, 1, 10, 1,
-		10, 1, 10, 5, 10, 141, 8, 10, 10, 10, 12, 10, 144, 9, 10, 1, 10, 1, 10,
-		1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 5, 10, 153, 8, 10, 10, 10, 12, 10, 156,
-		9, 10, 3, 10, 158, 8, 10, 1, 11, 1, 11, 1, 11, 1, 11, 1, 12, 1, 12, 1,
-		12, 5, 12, 167, 8, 12, 10, 12, 12, 12, 170, 9, 12, 1, 12, 3, 12, 173, 8,
-		12, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 14, 1, 14, 1, 14, 1, 14,
-		1, 14, 1, 15, 1, 15, 1, 15, 1, 15, 1, 15, 1, 15, 1, 16, 1, 16, 1, 16, 1,
-		16, 5, 16, 196, 8, 16, 10, 16, 12, 16, 199, 9, 16, 1, 16, 3, 16, 202, 8,
-		16, 1, 16, 1, 16, 1, 17, 1, 17, 1, 17, 1, 17, 1, 17, 3, 17, 211, 8, 17,
-		1, 18, 1, 18, 1, 18, 1, 18, 3, 18, 217, 8, 18, 1, 19, 1, 19, 1, 19, 1,
-		19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20,
-		1, 20, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1,
-		21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 3, 21, 251, 8, 21,
-		1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1,
+		8, 1, 8, 1, 8, 1, 9, 1, 9, 3, 9, 133, 8, 9, 1, 9, 1, 9, 3, 9, 137, 8, 9,
+		1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 5, 10, 144, 8, 10, 10, 10, 12, 10, 147,
+		9, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 5, 10, 156, 8,
+		10, 10, 10, 12, 10, 159, 9, 10, 3, 10, 161, 8, 10, 1, 11, 1, 11, 1, 11,
+		1, 11, 1, 12, 1, 12, 1, 12, 5, 12, 170, 8, 12, 10, 12, 12, 12, 173, 9,
+		12, 1, 12, 3, 12, 176, 8, 12, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13,
+		1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 15, 1, 15, 1, 15, 1, 15, 1, 15, 1,
+		15, 1, 16, 1, 16, 1, 16, 1, 16, 5, 16, 199, 8, 16, 10, 16, 12, 16, 202,
+		9, 16, 1, 16, 3, 16, 205, 8, 16, 1, 16, 1, 16, 1, 17, 1, 17, 1, 17, 1,
+		17, 1, 17, 3, 17, 214, 8, 17, 1, 18, 1, 18, 1, 18, 1, 18, 3, 18, 220, 8,
+		18, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 20, 1, 20,
+		1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1,
+		21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21,
+		1, 21, 3, 21, 254, 8, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1,
 		21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21,
 		1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1,
-		21, 1, 21, 5, 21, 286, 8, 21, 10, 21, 12, 21, 289, 9, 21, 1, 22, 1, 22,
-		1, 22, 1, 22, 3, 22, 295, 8, 22, 3, 22, 297, 8, 22, 1, 22, 0, 1, 42, 23,
-		0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36,
-		38, 40, 42, 44, 0, 8, 1, 0, 22, 26, 1, 0, 4, 5, 2, 0, 43, 43, 46, 47, 1,
-		0, 49, 50, 1, 0, 51, 52, 2, 0, 40, 40, 42, 42, 2, 0, 39, 39, 41, 41, 1,
-		0, 37, 38, 328, 0, 46, 1, 0, 0, 0, 2, 52, 1, 0, 0, 0, 4, 65, 1, 0, 0, 0,
-		6, 67, 1, 0, 0, 0, 8, 93, 1, 0, 0, 0, 10, 95, 1, 0, 0, 0, 12, 109, 1, 0,
-		0, 0, 14, 118, 1, 0, 0, 0, 16, 127, 1, 0, 0, 0, 18, 130, 1, 0, 0, 0, 20,
-		157, 1, 0, 0, 0, 22, 159, 1, 0, 0, 0, 24, 163, 1, 0, 0, 0, 26, 174, 1,
-		0, 0, 0, 28, 180, 1, 0, 0, 0, 30, 185, 1, 0, 0, 0, 32, 191, 1, 0, 0, 0,
-		34, 205, 1, 0, 0, 0, 36, 212, 1, 0, 0, 0, 38, 218, 1, 0, 0, 0, 40, 226,
-		1, 0, 0, 0, 42, 250, 1, 0, 0, 0, 44, 296, 1, 0, 0, 0, 46, 47, 3, 2, 1,
-		0, 47, 48, 5, 0, 0, 1, 48, 1, 1, 0, 0, 0, 49, 51, 3, 4, 2, 0, 50, 49, 1,
-		0, 0, 0, 51, 54, 1, 0, 0, 0, 52, 50, 1, 0, 0, 0, 52, 53, 1, 0, 0, 0, 53,
-		3, 1, 0, 0, 0, 54, 52, 1, 0, 0, 0, 55, 66, 3, 22, 11, 0, 56, 66, 3, 8,
-		4, 0, 57, 66, 3, 24, 12, 0, 58, 66, 3, 30, 15, 0, 59, 66, 3, 32, 16, 0,
-		60, 66, 3, 38, 19, 0, 61, 66, 3, 40, 20, 0, 62, 66, 3, 44, 22, 0, 63, 66,
-		3, 10, 5, 0, 64, 66, 3, 18, 9, 0, 65, 55, 1, 0, 0, 0, 65, 56, 1, 0, 0,
-		0, 65, 57, 1, 0, 0, 0, 65, 58, 1, 0, 0, 0, 65, 59, 1, 0, 0, 0, 65, 60,
-		1, 0, 0, 0, 65, 61, 1, 0, 0, 0, 65, 62, 1, 0, 0, 0, 65, 63, 1, 0, 0, 0,
-		65, 64, 1, 0, 0, 0, 66, 5, 1, 0, 0, 0, 67, 68, 7, 0, 0, 0, 68, 7, 1, 0,
-		0, 0, 69, 70, 7, 1, 0, 0, 70, 71, 5, 35, 0, 0, 71, 72, 5, 67, 0, 0, 72,
-		73, 3, 6, 3, 0, 73, 74, 5, 43, 0, 0, 74, 76, 3, 42, 21, 0, 75, 77, 5, 66,
-		0, 0, 76, 75, 1, 0, 0, 0, 76, 77, 1, 0, 0, 0, 77, 94, 1, 0, 0, 0, 78, 79,
-		7, 1, 0, 0, 79, 80, 5, 35, 0, 0, 80, 81, 5, 43, 0, 0, 81, 83, 3, 42, 21,
-		0, 82, 84, 5, 66, 0, 0, 83, 82, 1, 0, 0, 0, 83, 84, 1, 0, 0, 0, 84, 94,
-		1, 0, 0, 0, 85, 86, 7, 1, 0, 0, 86, 87, 5, 35, 0, 0, 87, 88, 5, 67, 0,
-		0, 88, 89, 3, 6, 3, 0, 89, 91, 5, 57, 0, 0, 90, 92, 5, 66, 0, 0, 91, 90,
-		1, 0, 0, 0, 91, 92, 1, 0, 0, 0, 92, 94, 1, 0, 0, 0, 93, 69, 1, 0, 0, 0,
-		93, 78, 1, 0, 0, 0, 93, 85, 1, 0, 0, 0, 94, 9, 1, 0, 0, 0, 95, 96, 5, 6,
-		0, 0, 96, 97, 5, 35, 0, 0, 97, 99, 5, 58, 0, 0, 98, 100, 3, 12, 6, 0, 99,
-		98, 1, 0, 0, 0, 99, 100, 1, 0, 0, 0, 100, 101, 1, 0, 0, 0, 101, 103, 5,
-		59, 0, 0, 102, 104, 3, 16, 8, 0, 103, 102, 1, 0, 0, 0, 103, 104, 1, 0,
-		0, 0, 104, 105, 1, 0, 0, 0, 105, 106, 5, 60, 0, 0, 106, 107, 3, 2, 1, 0,
-		107, 108, 5, 61, 0, 0, 108, 11, 1, 0, 0, 0, 109, 114, 3, 14, 7, 0, 110,
-		111, 5, 65, 0, 0, 111, 113, 3, 14, 7, 0, 112, 110, 1, 0, 0, 0, 113, 116,
-		1, 0, 0, 0, 114, 112, 1, 0, 0, 0, 114, 115, 1, 0, 0, 0, 115, 13, 1, 0,
-		0, 0, 116, 114, 1, 0, 0, 0, 117, 119, 5, 35, 0, 0, 118, 117, 1, 0, 0, 0,
-		118, 119, 1, 0, 0, 0, 119, 120, 1, 0, 0, 0, 120, 121, 5, 35, 0, 0, 121,
-		123, 5, 67, 0, 0, 122, 124, 5, 28, 0, 0, 123, 122, 1, 0, 0, 0, 123, 124,
-		1, 0, 0, 0, 124, 125, 1, 0, 0, 0, 125, 126, 3, 6, 3, 0, 126, 15, 1, 0,
-		0, 0, 127, 128, 5, 36, 0, 0, 128, 129, 3, 6, 3, 0, 129, 17, 1, 0, 0, 0,
-		130, 131, 5, 35, 0, 0, 131, 133, 5, 58, 0, 0, 132, 134, 3, 20, 10, 0, 133,
-		132, 1, 0, 0, 0, 133, 134, 1, 0, 0, 0, 134, 135, 1, 0, 0, 0, 135, 136,
-		5, 59, 0, 0, 136, 19, 1, 0, 0, 0, 137, 142, 3, 42, 21, 0, 138, 139, 5,
-		65, 0, 0, 139, 141, 3, 42, 21, 0, 140, 138, 1, 0, 0, 0, 141, 144, 1, 0,
-		0, 0, 142, 140, 1, 0, 0, 0, 142, 143, 1, 0, 0, 0, 143, 158, 1, 0, 0, 0,
-		144, 142, 1, 0, 0, 0, 145, 146, 5, 35, 0, 0, 146, 147, 5, 67, 0, 0, 147,
-		154, 3, 42, 21, 0, 148, 149, 5, 65, 0, 0, 149, 150, 5, 35, 0, 0, 150, 151,
-		5, 67, 0, 0, 151, 153, 3, 42, 21, 0, 152, 148, 1, 0, 0, 0, 153, 156, 1,
-		0, 0, 0, 154, 152, 1, 0, 0, 0, 154, 155, 1, 0, 0, 0, 155, 158, 1, 0, 0,
-		0, 156, 154, 1, 0, 0, 0, 157, 137, 1, 0, 0, 0, 157, 145, 1, 0, 0, 0, 158,
-		21, 1, 0, 0, 0, 159, 160, 5, 35, 0, 0, 160, 161, 7, 2, 0, 0, 161, 162,
-		3, 42, 21, 0, 162, 23, 1, 0, 0, 0, 163, 168, 3, 26, 13, 0, 164, 165, 5,
-		9, 0, 0, 165, 167, 3, 26, 13, 0, 166, 164, 1, 0, 0, 0, 167, 170, 1, 0,
-		0, 0, 168, 166, 1, 0, 0, 0, 168, 169, 1, 0, 0, 0, 169, 172, 1, 0, 0, 0,
-		170, 168, 1, 0, 0, 0, 171, 173, 3, 28, 14, 0, 172, 171, 1, 0, 0, 0, 172,
-		173, 1, 0, 0, 0, 173, 25, 1, 0, 0, 0, 174, 175, 5, 8, 0, 0, 175, 176, 3,
-		42, 21, 0, 176, 177, 5, 60, 0, 0, 177, 178, 3, 2, 1, 0, 178, 179, 5, 61,
-		0, 0, 179, 27, 1, 0, 0, 0, 180, 181, 5, 9, 0, 0, 181, 182, 5, 60, 0, 0,
-		182, 183, 3, 2, 1, 0, 183, 184, 5, 61, 0, 0, 184, 29, 1, 0, 0, 0, 185,
-		186, 5, 14, 0, 0, 186, 187, 3, 42, 21, 0, 187, 188, 5, 60, 0, 0, 188, 189,
-		3, 2, 1, 0, 189, 190, 5, 61, 0, 0, 190, 31, 1, 0, 0, 0, 191, 192, 5, 10,
-		0, 0, 192, 193, 3, 42, 21, 0, 193, 197, 5, 60, 0, 0, 194, 196, 3, 34, 17,
-		0, 195, 194, 1, 0, 0, 0, 196, 199, 1, 0, 0, 0, 197, 195, 1, 0, 0, 0, 197,
-		198, 1, 0, 0, 0, 198, 201, 1, 0, 0, 0, 199, 197, 1, 0, 0, 0, 200, 202,
-		3, 36, 18, 0, 201, 200, 1, 0, 0, 0, 201, 202, 1, 0, 0, 0, 202, 203, 1,
-		0, 0, 0, 203, 204, 5, 61, 0, 0, 204, 33, 1, 0, 0, 0, 205, 206, 5, 11, 0,
-		0, 206, 207, 3, 42, 21, 0, 207, 208, 5, 67, 0, 0, 208, 210, 3, 2, 1, 0,
-		209, 211, 5, 15, 0, 0, 210, 209, 1, 0, 0, 0, 210, 211, 1, 0, 0, 0, 211,
-		35, 1, 0, 0, 0, 212, 213, 5, 12, 0, 0, 213, 214, 5, 67, 0, 0, 214, 216,
-		3, 2, 1, 0, 215, 217, 5, 15, 0, 0, 216, 215, 1, 0, 0, 0, 216, 217, 1, 0,
-		0, 0, 217, 37, 1, 0, 0, 0, 218, 219, 5, 13, 0, 0, 219, 220, 5, 35, 0, 0,
-		220, 221, 5, 20, 0, 0, 221, 222, 3, 42, 21, 0, 222, 223, 5, 60, 0, 0, 223,
-		224, 3, 2, 1, 0, 224, 225, 5, 61, 0, 0, 225, 39, 1, 0, 0, 0, 226, 227,
-		5, 21, 0, 0, 227, 228, 3, 42, 21, 0, 228, 229, 5, 9, 0, 0, 229, 230, 5,
-		60, 0, 0, 230, 231, 3, 2, 1, 0, 231, 232, 5, 61, 0, 0, 232, 41, 1, 0, 0,
-		0, 233, 234, 6, 21, -1, 0, 234, 251, 3, 18, 9, 0, 235, 236, 5, 52, 0, 0,
-		236, 251, 3, 42, 21, 20, 237, 238, 5, 56, 0, 0, 238, 251, 3, 42, 21, 19,
-		239, 240, 5, 58, 0, 0, 240, 241, 3, 42, 21, 0, 241, 242, 5, 59, 0, 0, 242,
-		251, 1, 0, 0, 0, 243, 251, 5, 29, 0, 0, 244, 251, 5, 35, 0, 0, 245, 251,
-		5, 30, 0, 0, 246, 251, 5, 32, 0, 0, 247, 251, 5, 34, 0, 0, 248, 251, 5,
-		33, 0, 0, 249, 251, 5, 31, 0, 0, 250, 233, 1, 0, 0, 0, 250, 235, 1, 0,
-		0, 0, 250, 237, 1, 0, 0, 0, 250, 239, 1, 0, 0, 0, 250, 243, 1, 0, 0, 0,
-		250, 244, 1, 0, 0, 0, 250, 245, 1, 0, 0, 0, 250, 246, 1, 0, 0, 0, 250,
-		247, 1, 0, 0, 0, 250, 248, 1, 0, 0, 0, 250, 249, 1, 0, 0, 0, 251, 287,
-		1, 0, 0, 0, 252, 253, 10, 18, 0, 0, 253, 254, 7, 3, 0, 0, 254, 286, 3,
-		42, 21, 19, 255, 256, 10, 17, 0, 0, 256, 257, 7, 4, 0, 0, 257, 286, 3,
-		42, 21, 18, 258, 259, 10, 16, 0, 0, 259, 260, 5, 53, 0, 0, 260, 286, 3,
-		42, 21, 17, 261, 262, 10, 15, 0, 0, 262, 263, 7, 5, 0, 0, 263, 286, 3,
-		42, 21, 16, 264, 265, 10, 14, 0, 0, 265, 266, 7, 6, 0, 0, 266, 286, 3,
-		42, 21, 15, 267, 268, 10, 13, 0, 0, 268, 269, 7, 7, 0, 0, 269, 286, 3,
-		42, 21, 14, 270, 271, 10, 12, 0, 0, 271, 272, 5, 57, 0, 0, 272, 273, 3,
-		42, 21, 0, 273, 274, 5, 67, 0, 0, 274, 275, 3, 42, 21, 13, 275, 286, 1,
-		0, 0, 0, 276, 277, 10, 11, 0, 0, 277, 278, 5, 54, 0, 0, 278, 286, 3, 42,
-		21, 12, 279, 280, 10, 10, 0, 0, 280, 281, 5, 55, 0, 0, 281, 286, 3, 42,
-		21, 11, 282, 283, 10, 9, 0, 0, 283, 284, 5, 27, 0, 0, 284, 286, 3, 42,
-		21, 10, 285, 252, 1, 0, 0, 0, 285, 255, 1, 0, 0, 0, 285, 258, 1, 0, 0,
-		0, 285, 261, 1, 0, 0, 0, 285, 264, 1, 0, 0, 0, 285, 267, 1, 0, 0, 0, 285,
-		270, 1, 0, 0, 0, 285, 276, 1, 0, 0, 0, 285, 279, 1, 0, 0, 0, 285, 282,
-		1, 0, 0, 0, 286, 289, 1, 0, 0, 0, 287, 285, 1, 0, 0, 0, 287, 288, 1, 0,
-		0, 0, 288, 43, 1, 0, 0, 0, 289, 287, 1, 0, 0, 0, 290, 297, 5, 15, 0, 0,
-		291, 297, 5, 16, 0, 0, 292, 294, 5, 17, 0, 0, 293, 295, 3, 42, 21, 0, 294,
-		293, 1, 0, 0, 0, 294, 295, 1, 0, 0, 0, 295, 297, 1, 0, 0, 0, 296, 290,
-		1, 0, 0, 0, 296, 291, 1, 0, 0, 0, 296, 292, 1, 0, 0, 0, 297, 45, 1, 0,
-		0, 0, 26, 52, 65, 76, 83, 91, 93, 99, 103, 114, 118, 123, 133, 142, 154,
-		157, 168, 172, 197, 201, 210, 216, 250, 285, 287, 294, 296,
+		21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 5, 21, 289, 8, 21, 10, 21, 12, 21,
+		292, 9, 21, 1, 22, 1, 22, 1, 22, 1, 22, 3, 22, 298, 8, 22, 3, 22, 300,
+		8, 22, 1, 22, 0, 1, 42, 23, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22,
+		24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 0, 8, 1, 0, 22, 26, 1, 0, 4,
+		5, 2, 0, 43, 43, 46, 47, 1, 0, 49, 50, 1, 0, 51, 52, 2, 0, 40, 40, 42,
+		42, 2, 0, 39, 39, 41, 41, 1, 0, 37, 38, 332, 0, 46, 1, 0, 0, 0, 2, 52,
+		1, 0, 0, 0, 4, 65, 1, 0, 0, 0, 6, 67, 1, 0, 0, 0, 8, 93, 1, 0, 0, 0, 10,
+		95, 1, 0, 0, 0, 12, 109, 1, 0, 0, 0, 14, 118, 1, 0, 0, 0, 16, 127, 1, 0,
+		0, 0, 18, 132, 1, 0, 0, 0, 20, 160, 1, 0, 0, 0, 22, 162, 1, 0, 0, 0, 24,
+		166, 1, 0, 0, 0, 26, 177, 1, 0, 0, 0, 28, 183, 1, 0, 0, 0, 30, 188, 1,
+		0, 0, 0, 32, 194, 1, 0, 0, 0, 34, 208, 1, 0, 0, 0, 36, 215, 1, 0, 0, 0,
+		38, 221, 1, 0, 0, 0, 40, 229, 1, 0, 0, 0, 42, 253, 1, 0, 0, 0, 44, 299,
+		1, 0, 0, 0, 46, 47, 3, 2, 1, 0, 47, 48, 5, 0, 0, 1, 48, 1, 1, 0, 0, 0,
+		49, 51, 3, 4, 2, 0, 50, 49, 1, 0, 0, 0, 51, 54, 1, 0, 0, 0, 52, 50, 1,
+		0, 0, 0, 52, 53, 1, 0, 0, 0, 53, 3, 1, 0, 0, 0, 54, 52, 1, 0, 0, 0, 55,
+		66, 3, 22, 11, 0, 56, 66, 3, 8, 4, 0, 57, 66, 3, 24, 12, 0, 58, 66, 3,
+		30, 15, 0, 59, 66, 3, 32, 16, 0, 60, 66, 3, 38, 19, 0, 61, 66, 3, 40, 20,
+		0, 62, 66, 3, 44, 22, 0, 63, 66, 3, 10, 5, 0, 64, 66, 3, 18, 9, 0, 65,
+		55, 1, 0, 0, 0, 65, 56, 1, 0, 0, 0, 65, 57, 1, 0, 0, 0, 65, 58, 1, 0, 0,
+		0, 65, 59, 1, 0, 0, 0, 65, 60, 1, 0, 0, 0, 65, 61, 1, 0, 0, 0, 65, 62,
+		1, 0, 0, 0, 65, 63, 1, 0, 0, 0, 65, 64, 1, 0, 0, 0, 66, 5, 1, 0, 0, 0,
+		67, 68, 7, 0, 0, 0, 68, 7, 1, 0, 0, 0, 69, 70, 7, 1, 0, 0, 70, 71, 5, 35,
+		0, 0, 71, 72, 5, 67, 0, 0, 72, 73, 3, 6, 3, 0, 73, 74, 5, 43, 0, 0, 74,
+		76, 3, 42, 21, 0, 75, 77, 5, 66, 0, 0, 76, 75, 1, 0, 0, 0, 76, 77, 1, 0,
+		0, 0, 77, 94, 1, 0, 0, 0, 78, 79, 7, 1, 0, 0, 79, 80, 5, 35, 0, 0, 80,
+		81, 5, 43, 0, 0, 81, 83, 3, 42, 21, 0, 82, 84, 5, 66, 0, 0, 83, 82, 1,
+		0, 0, 0, 83, 84, 1, 0, 0, 0, 84, 94, 1, 0, 0, 0, 85, 86, 7, 1, 0, 0, 86,
+		87, 5, 35, 0, 0, 87, 88, 5, 67, 0, 0, 88, 89, 3, 6, 3, 0, 89, 91, 5, 57,
+		0, 0, 90, 92, 5, 66, 0, 0, 91, 90, 1, 0, 0, 0, 91, 92, 1, 0, 0, 0, 92,
+		94, 1, 0, 0, 0, 93, 69, 1, 0, 0, 0, 93, 78, 1, 0, 0, 0, 93, 85, 1, 0, 0,
+		0, 94, 9, 1, 0, 0, 0, 95, 96, 5, 6, 0, 0, 96, 97, 5, 35, 0, 0, 97, 99,
+		5, 58, 0, 0, 98, 100, 3, 12, 6, 0, 99, 98, 1, 0, 0, 0, 99, 100, 1, 0, 0,
+		0, 100, 101, 1, 0, 0, 0, 101, 103, 5, 59, 0, 0, 102, 104, 3, 16, 8, 0,
+		103, 102, 1, 0, 0, 0, 103, 104, 1, 0, 0, 0, 104, 105, 1, 0, 0, 0, 105,
+		106, 5, 60, 0, 0, 106, 107, 3, 2, 1, 0, 107, 108, 5, 61, 0, 0, 108, 11,
+		1, 0, 0, 0, 109, 114, 3, 14, 7, 0, 110, 111, 5, 65, 0, 0, 111, 113, 3,
+		14, 7, 0, 112, 110, 1, 0, 0, 0, 113, 116, 1, 0, 0, 0, 114, 112, 1, 0, 0,
+		0, 114, 115, 1, 0, 0, 0, 115, 13, 1, 0, 0, 0, 116, 114, 1, 0, 0, 0, 117,
+		119, 5, 35, 0, 0, 118, 117, 1, 0, 0, 0, 118, 119, 1, 0, 0, 0, 119, 120,
+		1, 0, 0, 0, 120, 121, 5, 35, 0, 0, 121, 123, 5, 67, 0, 0, 122, 124, 5,
+		28, 0, 0, 123, 122, 1, 0, 0, 0, 123, 124, 1, 0, 0, 0, 124, 125, 1, 0, 0,
+		0, 125, 126, 3, 6, 3, 0, 126, 15, 1, 0, 0, 0, 127, 128, 5, 36, 0, 0, 128,
+		129, 3, 6, 3, 0, 129, 17, 1, 0, 0, 0, 130, 133, 5, 35, 0, 0, 131, 133,
+		3, 6, 3, 0, 132, 130, 1, 0, 0, 0, 132, 131, 1, 0, 0, 0, 133, 134, 1, 0,
+		0, 0, 134, 136, 5, 58, 0, 0, 135, 137, 3, 20, 10, 0, 136, 135, 1, 0, 0,
+		0, 136, 137, 1, 0, 0, 0, 137, 138, 1, 0, 0, 0, 138, 139, 5, 59, 0, 0, 139,
+		19, 1, 0, 0, 0, 140, 145, 3, 42, 21, 0, 141, 142, 5, 65, 0, 0, 142, 144,
+		3, 42, 21, 0, 143, 141, 1, 0, 0, 0, 144, 147, 1, 0, 0, 0, 145, 143, 1,
+		0, 0, 0, 145, 146, 1, 0, 0, 0, 146, 161, 1, 0, 0, 0, 147, 145, 1, 0, 0,
+		0, 148, 149, 5, 35, 0, 0, 149, 150, 5, 67, 0, 0, 150, 157, 3, 42, 21, 0,
+		151, 152, 5, 65, 0, 0, 152, 153, 5, 35, 0, 0, 153, 154, 5, 67, 0, 0, 154,
+		156, 3, 42, 21, 0, 155, 151, 1, 0, 0, 0, 156, 159, 1, 0, 0, 0, 157, 155,
+		1, 0, 0, 0, 157, 158, 1, 0, 0, 0, 158, 161, 1, 0, 0, 0, 159, 157, 1, 0,
+		0, 0, 160, 140, 1, 0, 0, 0, 160, 148, 1, 0, 0, 0, 161, 21, 1, 0, 0, 0,
+		162, 163, 5, 35, 0, 0, 163, 164, 7, 2, 0, 0, 164, 165, 3, 42, 21, 0, 165,
+		23, 1, 0, 0, 0, 166, 171, 3, 26, 13, 0, 167, 168, 5, 9, 0, 0, 168, 170,
+		3, 26, 13, 0, 169, 167, 1, 0, 0, 0, 170, 173, 1, 0, 0, 0, 171, 169, 1,
+		0, 0, 0, 171, 172, 1, 0, 0, 0, 172, 175, 1, 0, 0, 0, 173, 171, 1, 0, 0,
+		0, 174, 176, 3, 28, 14, 0, 175, 174, 1, 0, 0, 0, 175, 176, 1, 0, 0, 0,
+		176, 25, 1, 0, 0, 0, 177, 178, 5, 8, 0, 0, 178, 179, 3, 42, 21, 0, 179,
+		180, 5, 60, 0, 0, 180, 181, 3, 2, 1, 0, 181, 182, 5, 61, 0, 0, 182, 27,
+		1, 0, 0, 0, 183, 184, 5, 9, 0, 0, 184, 185, 5, 60, 0, 0, 185, 186, 3, 2,
+		1, 0, 186, 187, 5, 61, 0, 0, 187, 29, 1, 0, 0, 0, 188, 189, 5, 14, 0, 0,
+		189, 190, 3, 42, 21, 0, 190, 191, 5, 60, 0, 0, 191, 192, 3, 2, 1, 0, 192,
+		193, 5, 61, 0, 0, 193, 31, 1, 0, 0, 0, 194, 195, 5, 10, 0, 0, 195, 196,
+		3, 42, 21, 0, 196, 200, 5, 60, 0, 0, 197, 199, 3, 34, 17, 0, 198, 197,
+		1, 0, 0, 0, 199, 202, 1, 0, 0, 0, 200, 198, 1, 0, 0, 0, 200, 201, 1, 0,
+		0, 0, 201, 204, 1, 0, 0, 0, 202, 200, 1, 0, 0, 0, 203, 205, 3, 36, 18,
+		0, 204, 203, 1, 0, 0, 0, 204, 205, 1, 0, 0, 0, 205, 206, 1, 0, 0, 0, 206,
+		207, 5, 61, 0, 0, 207, 33, 1, 0, 0, 0, 208, 209, 5, 11, 0, 0, 209, 210,
+		3, 42, 21, 0, 210, 211, 5, 67, 0, 0, 211, 213, 3, 2, 1, 0, 212, 214, 5,
+		15, 0, 0, 213, 212, 1, 0, 0, 0, 213, 214, 1, 0, 0, 0, 214, 35, 1, 0, 0,
+		0, 215, 216, 5, 12, 0, 0, 216, 217, 5, 67, 0, 0, 217, 219, 3, 2, 1, 0,
+		218, 220, 5, 15, 0, 0, 219, 218, 1, 0, 0, 0, 219, 220, 1, 0, 0, 0, 220,
+		37, 1, 0, 0, 0, 221, 222, 5, 13, 0, 0, 222, 223, 5, 35, 0, 0, 223, 224,
+		5, 20, 0, 0, 224, 225, 3, 42, 21, 0, 225, 226, 5, 60, 0, 0, 226, 227, 3,
+		2, 1, 0, 227, 228, 5, 61, 0, 0, 228, 39, 1, 0, 0, 0, 229, 230, 5, 21, 0,
+		0, 230, 231, 3, 42, 21, 0, 231, 232, 5, 9, 0, 0, 232, 233, 5, 60, 0, 0,
+		233, 234, 3, 2, 1, 0, 234, 235, 5, 61, 0, 0, 235, 41, 1, 0, 0, 0, 236,
+		237, 6, 21, -1, 0, 237, 254, 3, 18, 9, 0, 238, 239, 5, 52, 0, 0, 239, 254,
+		3, 42, 21, 20, 240, 241, 5, 56, 0, 0, 241, 254, 3, 42, 21, 19, 242, 243,
+		5, 58, 0, 0, 243, 244, 3, 42, 21, 0, 244, 245, 5, 59, 0, 0, 245, 254, 1,
+		0, 0, 0, 246, 254, 5, 29, 0, 0, 247, 254, 5, 35, 0, 0, 248, 254, 5, 30,
+		0, 0, 249, 254, 5, 32, 0, 0, 250, 254, 5, 34, 0, 0, 251, 254, 5, 33, 0,
+		0, 252, 254, 5, 31, 0, 0, 253, 236, 1, 0, 0, 0, 253, 238, 1, 0, 0, 0, 253,
+		240, 1, 0, 0, 0, 253, 242, 1, 0, 0, 0, 253, 246, 1, 0, 0, 0, 253, 247,
+		1, 0, 0, 0, 253, 248, 1, 0, 0, 0, 253, 249, 1, 0, 0, 0, 253, 250, 1, 0,
+		0, 0, 253, 251, 1, 0, 0, 0, 253, 252, 1, 0, 0, 0, 254, 290, 1, 0, 0, 0,
+		255, 256, 10, 18, 0, 0, 256, 257, 7, 3, 0, 0, 257, 289, 3, 42, 21, 19,
+		258, 259, 10, 17, 0, 0, 259, 260, 7, 4, 0, 0, 260, 289, 3, 42, 21, 18,
+		261, 262, 10, 16, 0, 0, 262, 263, 5, 53, 0, 0, 263, 289, 3, 42, 21, 17,
+		264, 265, 10, 15, 0, 0, 265, 266, 7, 5, 0, 0, 266, 289, 3, 42, 21, 16,
+		267, 268, 10, 14, 0, 0, 268, 269, 7, 6, 0, 0, 269, 289, 3, 42, 21, 15,
+		270, 271, 10, 13, 0, 0, 271, 272, 7, 7, 0, 0, 272, 289, 3, 42, 21, 14,
+		273, 274, 10, 12, 0, 0, 274, 275, 5, 57, 0, 0, 275, 276, 3, 42, 21, 0,
+		276, 277, 5, 67, 0, 0, 277, 278, 3, 42, 21, 13, 278, 289, 1, 0, 0, 0, 279,
+		280, 10, 11, 0, 0, 280, 281, 5, 54, 0, 0, 281, 289, 3, 42, 21, 12, 282,
+		283, 10, 10, 0, 0, 283, 284, 5, 55, 0, 0, 284, 289, 3, 42, 21, 11, 285,
+		286, 10, 9, 0, 0, 286, 287, 5, 27, 0, 0, 287, 289, 3, 42, 21, 10, 288,
+		255, 1, 0, 0, 0, 288, 258, 1, 0, 0, 0, 288, 261, 1, 0, 0, 0, 288, 264,
+		1, 0, 0, 0, 288, 267, 1, 0, 0, 0, 288, 270, 1, 0, 0, 0, 288, 273, 1, 0,
+		0, 0, 288, 279, 1, 0, 0, 0, 288, 282, 1, 0, 0, 0, 288, 285, 1, 0, 0, 0,
+		289, 292, 1, 0, 0, 0, 290, 288, 1, 0, 0, 0, 290, 291, 1, 0, 0, 0, 291,
+		43, 1, 0, 0, 0, 292, 290, 1, 0, 0, 0, 293, 300, 5, 15, 0, 0, 294, 300,
+		5, 16, 0, 0, 295, 297, 5, 17, 0, 0, 296, 298, 3, 42, 21, 0, 297, 296, 1,
+		0, 0, 0, 297, 298, 1, 0, 0, 0, 298, 300, 1, 0, 0, 0, 299, 293, 1, 0, 0,
+		0, 299, 294, 1, 0, 0, 0, 299, 295, 1, 0, 0, 0, 300, 45, 1, 0, 0, 0, 27,
+		52, 65, 76, 83, 91, 93, 99, 103, 114, 118, 123, 132, 136, 145, 157, 160,
+		171, 175, 200, 204, 213, 219, 253, 288, 290, 297, 299,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -2275,9 +2277,10 @@ type IFunctionCallContext interface {
 	GetParser() antlr.Parser
 
 	// Getter signatures
-	ID() antlr.TerminalNode
 	LPAREN() antlr.TerminalNode
 	RPAREN() antlr.TerminalNode
+	ID() antlr.TerminalNode
+	VariableType() IVariableTypeContext
 	FunctionCallArguments() IFunctionCallArgumentsContext
 
 	// IsFunctionCallContext differentiates from other interfaces.
@@ -2316,16 +2319,32 @@ func NewFunctionCallContext(parser antlr.Parser, parent antlr.ParserRuleContext,
 
 func (s *FunctionCallContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *FunctionCallContext) ID() antlr.TerminalNode {
-	return s.GetToken(SwiftParserID, 0)
-}
-
 func (s *FunctionCallContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserLPAREN, 0)
 }
 
 func (s *FunctionCallContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserRPAREN, 0)
+}
+
+func (s *FunctionCallContext) ID() antlr.TerminalNode {
+	return s.GetToken(SwiftParserID, 0)
+}
+
+func (s *FunctionCallContext) VariableType() IVariableTypeContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IVariableTypeContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IVariableTypeContext)
 }
 
 func (s *FunctionCallContext) FunctionCallArguments() IFunctionCallArgumentsContext {
@@ -2368,38 +2387,57 @@ func (p *SwiftParser) FunctionCall() (localctx IFunctionCallContext) {
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
-	{
-		p.SetState(130)
-		p.Match(SwiftParserID)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
+	p.SetState(132)
+	p.GetErrorHandler().Sync(p)
+	if p.HasError() {
+		goto errorExit
+	}
+
+	switch p.GetTokenStream().LA(1) {
+	case SwiftParserID:
+		{
+			p.SetState(130)
+			p.Match(SwiftParserID)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
 		}
+
+	case SwiftParserKw_INT, SwiftParserKw_FLOAT, SwiftParserKw_BOOL, SwiftParserKw_STRING, SwiftParserKw_CHAR:
+		{
+			p.SetState(131)
+			p.VariableType()
+		}
+
+	default:
+		p.SetError(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
+		goto errorExit
 	}
 	{
-		p.SetState(131)
+		p.SetState(134)
 		p.Match(SwiftParserLPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(133)
+	p.SetState(136)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	if (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&364791637999616000) != 0 {
+	if (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&364791638129639424) != 0 {
 		{
-			p.SetState(132)
+			p.SetState(135)
 			p.FunctionCallArguments()
 		}
 
 	}
 	{
-		p.SetState(135)
+		p.SetState(138)
 		p.Match(SwiftParserRPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2649,21 +2687,21 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 	p.EnterRule(localctx, 20, SwiftParserRULE_functionCallArguments)
 	var _la int
 
-	p.SetState(157)
+	p.SetState(160)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 14, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 15, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewArgumentsContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(137)
+			p.SetState(140)
 			p.expr(0)
 		}
-		p.SetState(142)
+		p.SetState(145)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2672,7 +2710,7 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 
 		for _la == SwiftParserCOMMA {
 			{
-				p.SetState(138)
+				p.SetState(141)
 				p.Match(SwiftParserCOMMA)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -2680,11 +2718,11 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 				}
 			}
 			{
-				p.SetState(139)
+				p.SetState(142)
 				p.expr(0)
 			}
 
-			p.SetState(144)
+			p.SetState(147)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -2696,7 +2734,7 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 		localctx = NewNamedArgumentsContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(145)
+			p.SetState(148)
 			p.Match(SwiftParserID)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2704,7 +2742,7 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 			}
 		}
 		{
-			p.SetState(146)
+			p.SetState(149)
 			p.Match(SwiftParserCOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2712,10 +2750,10 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 			}
 		}
 		{
-			p.SetState(147)
+			p.SetState(150)
 			p.expr(0)
 		}
-		p.SetState(154)
+		p.SetState(157)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2724,7 +2762,7 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 
 		for _la == SwiftParserCOMMA {
 			{
-				p.SetState(148)
+				p.SetState(151)
 				p.Match(SwiftParserCOMMA)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -2732,7 +2770,7 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 				}
 			}
 			{
-				p.SetState(149)
+				p.SetState(152)
 				p.Match(SwiftParserID)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -2740,7 +2778,7 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 				}
 			}
 			{
-				p.SetState(150)
+				p.SetState(153)
 				p.Match(SwiftParserCOLON)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -2748,11 +2786,11 @@ func (p *SwiftParser) FunctionCallArguments() (localctx IFunctionCallArgumentsCo
 				}
 			}
 			{
-				p.SetState(151)
+				p.SetState(154)
 				p.expr(0)
 			}
 
-			p.SetState(156)
+			p.SetState(159)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -2895,7 +2933,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(159)
+		p.SetState(162)
 		p.Match(SwiftParserID)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2903,7 +2941,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 		}
 	}
 	{
-		p.SetState(160)
+		p.SetState(163)
 
 		var _lt = p.GetTokenStream().LT(1)
 
@@ -2921,7 +2959,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 		}
 	}
 	{
-		p.SetState(161)
+		p.SetState(164)
 		p.expr(0)
 	}
 
@@ -3080,22 +3118,22 @@ func (p *SwiftParser) IfStatement() (localctx IIfStatementContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(163)
+		p.SetState(166)
 		p.IfTail()
 	}
-	p.SetState(168)
+	p.SetState(171)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 15, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 16, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
 	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		if _alt == 1 {
 			{
-				p.SetState(164)
+				p.SetState(167)
 				p.Match(SwiftParserKw_ELSE)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -3103,22 +3141,22 @@ func (p *SwiftParser) IfStatement() (localctx IIfStatementContext) {
 				}
 			}
 			{
-				p.SetState(165)
+				p.SetState(168)
 				p.IfTail()
 			}
 
 		}
-		p.SetState(170)
+		p.SetState(173)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 15, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 16, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
 	}
-	p.SetState(172)
+	p.SetState(175)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3127,7 +3165,7 @@ func (p *SwiftParser) IfStatement() (localctx IIfStatementContext) {
 
 	if _la == SwiftParserKw_ELSE {
 		{
-			p.SetState(171)
+			p.SetState(174)
 			p.ElseStatement()
 		}
 
@@ -3263,7 +3301,7 @@ func (p *SwiftParser) IfTail() (localctx IIfTailContext) {
 	p.EnterRule(localctx, 26, SwiftParserRULE_ifTail)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(174)
+		p.SetState(177)
 		p.Match(SwiftParserKw_IF)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3271,11 +3309,11 @@ func (p *SwiftParser) IfTail() (localctx IIfTailContext) {
 		}
 	}
 	{
-		p.SetState(175)
+		p.SetState(178)
 		p.expr(0)
 	}
 	{
-		p.SetState(176)
+		p.SetState(179)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3283,11 +3321,11 @@ func (p *SwiftParser) IfTail() (localctx IIfTailContext) {
 		}
 	}
 	{
-		p.SetState(177)
+		p.SetState(180)
 		p.Block()
 	}
 	{
-		p.SetState(178)
+		p.SetState(181)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3408,7 +3446,7 @@ func (p *SwiftParser) ElseStatement() (localctx IElseStatementContext) {
 	p.EnterRule(localctx, 28, SwiftParserRULE_elseStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(180)
+		p.SetState(183)
 		p.Match(SwiftParserKw_ELSE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3416,7 +3454,7 @@ func (p *SwiftParser) ElseStatement() (localctx IElseStatementContext) {
 		}
 	}
 	{
-		p.SetState(181)
+		p.SetState(184)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3424,11 +3462,11 @@ func (p *SwiftParser) ElseStatement() (localctx IElseStatementContext) {
 		}
 	}
 	{
-		p.SetState(182)
+		p.SetState(185)
 		p.Block()
 	}
 	{
-		p.SetState(183)
+		p.SetState(186)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3566,7 +3604,7 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 	p.EnterRule(localctx, 30, SwiftParserRULE_whileStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(185)
+		p.SetState(188)
 		p.Match(SwiftParserKw_WHILE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3574,11 +3612,11 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 		}
 	}
 	{
-		p.SetState(186)
+		p.SetState(189)
 		p.expr(0)
 	}
 	{
-		p.SetState(187)
+		p.SetState(190)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3586,11 +3624,11 @@ func (p *SwiftParser) WhileStatement() (localctx IWhileStatementContext) {
 		}
 	}
 	{
-		p.SetState(188)
+		p.SetState(191)
 		p.Block()
 	}
 	{
-		p.SetState(189)
+		p.SetState(192)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3773,7 +3811,7 @@ func (p *SwiftParser) SwitchStatement() (localctx ISwitchStatementContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(191)
+		p.SetState(194)
 		p.Match(SwiftParserKw_SWITCH)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3781,18 +3819,18 @@ func (p *SwiftParser) SwitchStatement() (localctx ISwitchStatementContext) {
 		}
 	}
 	{
-		p.SetState(192)
+		p.SetState(195)
 		p.expr(0)
 	}
 	{
-		p.SetState(193)
+		p.SetState(196)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(197)
+	p.SetState(200)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3801,18 +3839,18 @@ func (p *SwiftParser) SwitchStatement() (localctx ISwitchStatementContext) {
 
 	for _la == SwiftParserKw_CASE {
 		{
-			p.SetState(194)
+			p.SetState(197)
 			p.SwitchCase()
 		}
 
-		p.SetState(199)
+		p.SetState(202)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 	}
-	p.SetState(201)
+	p.SetState(204)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3821,13 +3859,13 @@ func (p *SwiftParser) SwitchStatement() (localctx ISwitchStatementContext) {
 
 	if _la == SwiftParserKw_DEFAULT {
 		{
-			p.SetState(200)
+			p.SetState(203)
 			p.SwitchDefault()
 		}
 
 	}
 	{
-		p.SetState(203)
+		p.SetState(206)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3967,7 +4005,7 @@ func (p *SwiftParser) SwitchCase() (localctx ISwitchCaseContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(205)
+		p.SetState(208)
 		p.Match(SwiftParserKw_CASE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3975,11 +4013,11 @@ func (p *SwiftParser) SwitchCase() (localctx ISwitchCaseContext) {
 		}
 	}
 	{
-		p.SetState(206)
+		p.SetState(209)
 		p.expr(0)
 	}
 	{
-		p.SetState(207)
+		p.SetState(210)
 		p.Match(SwiftParserCOLON)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3987,10 +4025,10 @@ func (p *SwiftParser) SwitchCase() (localctx ISwitchCaseContext) {
 		}
 	}
 	{
-		p.SetState(208)
+		p.SetState(211)
 		p.Block()
 	}
-	p.SetState(210)
+	p.SetState(213)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3999,7 +4037,7 @@ func (p *SwiftParser) SwitchCase() (localctx ISwitchCaseContext) {
 
 	if _la == SwiftParserKw_BREAK {
 		{
-			p.SetState(209)
+			p.SetState(212)
 			p.Match(SwiftParserKw_BREAK)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4124,7 +4162,7 @@ func (p *SwiftParser) SwitchDefault() (localctx ISwitchDefaultContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(212)
+		p.SetState(215)
 		p.Match(SwiftParserKw_DEFAULT)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4132,7 +4170,7 @@ func (p *SwiftParser) SwitchDefault() (localctx ISwitchDefaultContext) {
 		}
 	}
 	{
-		p.SetState(213)
+		p.SetState(216)
 		p.Match(SwiftParserCOLON)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4140,10 +4178,10 @@ func (p *SwiftParser) SwitchDefault() (localctx ISwitchDefaultContext) {
 		}
 	}
 	{
-		p.SetState(214)
+		p.SetState(217)
 		p.Block()
 	}
-	p.SetState(216)
+	p.SetState(219)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4152,7 +4190,7 @@ func (p *SwiftParser) SwitchDefault() (localctx ISwitchDefaultContext) {
 
 	if _la == SwiftParserKw_BREAK {
 		{
-			p.SetState(215)
+			p.SetState(218)
 			p.Match(SwiftParserKw_BREAK)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4302,7 +4340,7 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 	p.EnterRule(localctx, 38, SwiftParserRULE_forStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(218)
+		p.SetState(221)
 		p.Match(SwiftParserKw_FOR)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4310,7 +4348,7 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(219)
+		p.SetState(222)
 		p.Match(SwiftParserID)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4318,7 +4356,7 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(220)
+		p.SetState(223)
 		p.Match(SwiftParserKw_IN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4326,11 +4364,11 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(221)
+		p.SetState(224)
 		p.expr(0)
 	}
 	{
-		p.SetState(222)
+		p.SetState(225)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4338,11 +4376,11 @@ func (p *SwiftParser) ForStatement() (localctx IForStatementContext) {
 		}
 	}
 	{
-		p.SetState(223)
+		p.SetState(226)
 		p.Block()
 	}
 	{
-		p.SetState(224)
+		p.SetState(227)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4485,7 +4523,7 @@ func (p *SwiftParser) GuardStatement() (localctx IGuardStatementContext) {
 	p.EnterRule(localctx, 40, SwiftParserRULE_guardStatement)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(226)
+		p.SetState(229)
 		p.Match(SwiftParserKw_GUARD)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4493,11 +4531,11 @@ func (p *SwiftParser) GuardStatement() (localctx IGuardStatementContext) {
 		}
 	}
 	{
-		p.SetState(227)
+		p.SetState(230)
 		p.expr(0)
 	}
 	{
-		p.SetState(228)
+		p.SetState(231)
 		p.Match(SwiftParserKw_ELSE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4505,7 +4543,7 @@ func (p *SwiftParser) GuardStatement() (localctx IGuardStatementContext) {
 		}
 	}
 	{
-		p.SetState(229)
+		p.SetState(232)
 		p.Match(SwiftParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4513,11 +4551,11 @@ func (p *SwiftParser) GuardStatement() (localctx IGuardStatementContext) {
 		}
 	}
 	{
-		p.SetState(230)
+		p.SetState(233)
 		p.Block()
 	}
 	{
-		p.SetState(231)
+		p.SetState(234)
 		p.Match(SwiftParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5510,20 +5548,20 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(250)
+	p.SetState(253)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 21, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 22, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewFunctionCallExprContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 
 		{
-			p.SetState(234)
+			p.SetState(237)
 			p.FunctionCall()
 		}
 
@@ -5532,7 +5570,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(235)
+			p.SetState(238)
 			p.Match(SwiftParserOp_MINUS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5540,7 +5578,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 		{
-			p.SetState(236)
+			p.SetState(239)
 			p.expr(20)
 		}
 
@@ -5549,7 +5587,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(237)
+			p.SetState(240)
 			p.Match(SwiftParserOp_NOT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5557,7 +5595,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 		{
-			p.SetState(238)
+			p.SetState(241)
 
 			var _x = p.expr(19)
 
@@ -5569,7 +5607,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(239)
+			p.SetState(242)
 			p.Match(SwiftParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5577,11 +5615,11 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 		}
 		{
-			p.SetState(240)
+			p.SetState(243)
 			p.expr(0)
 		}
 		{
-			p.SetState(241)
+			p.SetState(244)
 			p.Match(SwiftParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5594,7 +5632,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(243)
+			p.SetState(246)
 			p.Match(SwiftParserINT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5607,7 +5645,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(244)
+			p.SetState(247)
 			p.Match(SwiftParserID)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5620,7 +5658,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(245)
+			p.SetState(248)
 			p.Match(SwiftParserFLOAT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5633,7 +5671,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(246)
+			p.SetState(249)
 			p.Match(SwiftParserSTRING)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5646,7 +5684,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(247)
+			p.SetState(250)
 			p.Match(SwiftParserNIL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5659,7 +5697,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(248)
+			p.SetState(251)
 			p.Match(SwiftParserCHAR)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5672,7 +5710,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(249)
+			p.SetState(252)
 			p.Match(SwiftParserBOOL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5684,12 +5722,12 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(287)
+	p.SetState(290)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 23, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 24, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
@@ -5699,26 +5737,26 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(285)
+			p.SetState(288)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
 
-			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 22, p.GetParserRuleContext()) {
+			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 23, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewArithmeticExprContext(p, NewExprContext(p, _parentctx, _parentState))
 				localctx.(*ArithmeticExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(252)
+				p.SetState(255)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 18)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 18)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(253)
+					p.SetState(256)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -5736,7 +5774,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(254)
+					p.SetState(257)
 
 					var _x = p.expr(19)
 
@@ -5748,14 +5786,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ArithmeticExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(255)
+				p.SetState(258)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 17)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 17)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(256)
+					p.SetState(259)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -5773,7 +5811,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(257)
+					p.SetState(260)
 
 					var _x = p.expr(18)
 
@@ -5785,14 +5823,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ArithmeticExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(258)
+				p.SetState(261)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 16)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 16)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(259)
+					p.SetState(262)
 
 					var _m = p.Match(SwiftParserOp_MOD)
 
@@ -5803,7 +5841,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(260)
+					p.SetState(263)
 
 					var _x = p.expr(17)
 
@@ -5815,14 +5853,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ComparasionExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(261)
+				p.SetState(264)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 15)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 15)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(262)
+					p.SetState(265)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -5840,7 +5878,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(263)
+					p.SetState(266)
 
 					var _x = p.expr(16)
 
@@ -5852,14 +5890,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ComparasionExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(264)
+				p.SetState(267)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 14)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 14)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(265)
+					p.SetState(268)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -5877,7 +5915,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(266)
+					p.SetState(269)
 
 					var _x = p.expr(15)
 
@@ -5889,14 +5927,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*ComparasionExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(267)
+				p.SetState(270)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 13)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 13)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(268)
+					p.SetState(271)
 
 					var _lt = p.GetTokenStream().LT(1)
 
@@ -5914,7 +5952,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(269)
+					p.SetState(272)
 
 					var _x = p.expr(14)
 
@@ -5926,14 +5964,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*TernaryExprContext).condition = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(270)
+				p.SetState(273)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 12)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 12)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(271)
+					p.SetState(274)
 					p.Match(SwiftParserOp_TERNARY)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -5941,14 +5979,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(272)
+					p.SetState(275)
 
 					var _x = p.expr(0)
 
 					localctx.(*TernaryExprContext).cTrue = _x
 				}
 				{
-					p.SetState(273)
+					p.SetState(276)
 					p.Match(SwiftParserCOLON)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -5956,7 +5994,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(274)
+					p.SetState(277)
 
 					var _x = p.expr(13)
 
@@ -5968,14 +6006,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*LogicalExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(276)
+				p.SetState(279)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 11)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 11)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(277)
+					p.SetState(280)
 
 					var _m = p.Match(SwiftParserOp_AND)
 
@@ -5986,7 +6024,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(278)
+					p.SetState(281)
 
 					var _x = p.expr(12)
 
@@ -5998,14 +6036,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*LogicalExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(279)
+				p.SetState(282)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 10)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 10)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(280)
+					p.SetState(283)
 
 					var _m = p.Match(SwiftParserOp_OR)
 
@@ -6016,7 +6054,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(281)
+					p.SetState(284)
 
 					var _x = p.expr(11)
 
@@ -6028,14 +6066,14 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 				localctx.(*RangeExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftParserRULE_expr)
-				p.SetState(282)
+				p.SetState(285)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 9)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 9)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(283)
+					p.SetState(286)
 					p.Match(SwiftParserKw_RANGE)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -6043,7 +6081,7 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 					}
 				}
 				{
-					p.SetState(284)
+					p.SetState(287)
 
 					var _x = p.expr(10)
 
@@ -6055,12 +6093,12 @@ func (p *SwiftParser) expr(_p int) (localctx IExprContext) {
 			}
 
 		}
-		p.SetState(289)
+		p.SetState(292)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 23, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 24, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
@@ -6248,7 +6286,7 @@ func (s *ControlContinueContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 func (p *SwiftParser) ControlFlowStatement() (localctx IControlFlowStatementContext) {
 	localctx = NewControlFlowStatementContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 44, SwiftParserRULE_controlFlowStatement)
-	p.SetState(296)
+	p.SetState(299)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -6259,7 +6297,7 @@ func (p *SwiftParser) ControlFlowStatement() (localctx IControlFlowStatementCont
 		localctx = NewControlBreakContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(290)
+			p.SetState(293)
 			p.Match(SwiftParserKw_BREAK)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6271,7 +6309,7 @@ func (p *SwiftParser) ControlFlowStatement() (localctx IControlFlowStatementCont
 		localctx = NewControlContinueContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(291)
+			p.SetState(294)
 			p.Match(SwiftParserKw_CONTINUE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6283,19 +6321,19 @@ func (p *SwiftParser) ControlFlowStatement() (localctx IControlFlowStatementCont
 		localctx = NewControlReturnContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(292)
+			p.SetState(295)
 			p.Match(SwiftParserKw_RETURN)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(294)
+		p.SetState(297)
 		p.GetErrorHandler().Sync(p)
 
-		if p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 24, p.GetParserRuleContext()) == 1 {
+		if p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 25, p.GetParserRuleContext()) == 1 {
 			{
-				p.SetState(293)
+				p.SetState(296)
 				p.expr(0)
 			}
 

@@ -9,7 +9,10 @@ var internalFunction map[string]func(v *Visitor, ctx *parser.FunctionCallContext
 func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	if internalFunction == nil {
 		internalFunction = map[string]func(v *Visitor, ctx *parser.FunctionCallContext) interface{}{
-			"print": Print,
+			"print":  Print,
+			"Int":    Int,
+			"Float":  Float,
+			"String": String,
 		}
 	}
 	return internalFunction[name]

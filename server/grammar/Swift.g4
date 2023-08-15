@@ -47,7 +47,8 @@ functionParameter: ID? ID COLON Kw_INOUT? variableType;
 functionReturnType: Op_ARROW variableType;
 
 // Function call 
-functionCall: ID LPAREN functionCallArguments? RPAREN;
+functionCall:
+	(ID | variableType) LPAREN functionCallArguments? RPAREN;
 
 functionCallArguments:
 	expr (COMMA expr)*						# Arguments
@@ -80,6 +81,8 @@ forStatement: Kw_FOR ID Kw_IN expr LBRACE block RBRACE;
 
 // Guard statement
 guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
+
+// Vector declarations
 
 // Expressions
 expr:

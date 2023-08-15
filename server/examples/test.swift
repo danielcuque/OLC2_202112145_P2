@@ -263,3 +263,19 @@ func ackerman(_ m: Int, _ n: Int) -> Int {
 func func1() -> Int  {
     return 1
 }
+
+print(Int("10"))
+print(Int("12.001"))
+print(Int(10.9999))
+print(Int("Q10"))
+
+print(Float("10"))
+print(Float("10.001"))
+print(Float("Q10.00"))
+
+
+print(String(10) + String(3.51)) //imprime 103.5000 
+print( String( true )) //true
+var cadena = String(true) + "->" + String(3.504) 
+print(cadena) // imprime true->3.50400000
+
