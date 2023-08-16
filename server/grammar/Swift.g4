@@ -100,11 +100,13 @@ vectorValues: expr (COMMA expr)*;
 callProperties: ID (DOT ID)+;
 
 // Call methods
-callMethods: ID DOT ID LPAREN functionCallArguments? RPAREN;
+callMethods:
+	ID DOT callProperties LPAREN functionCallArguments? RPAREN;
 
 // Expressions
 expr:
-	functionCall													# FunctionCallExpr
+	callProperties													# CallPropertiesExpr
+	| functionCall													# FunctionCallExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr

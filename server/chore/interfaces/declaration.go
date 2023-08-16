@@ -148,11 +148,18 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	}
 
 	// New Vector Variable
-
 	newVector := NewVector(valueType, dataList)
 
+	// Create a new generic object
+	newObj := NewObjectV(V.VectorType, newVector)
+
+	// Add native properties
+	count := NewVariable("count", true, V.NewIntValue(len(dataList)), V.IntType, line, column, scope)
+
+	newObj.AddProp("count", count)
+
 	v.Scope.AddVariable(id,
-		NewVariable(id, isConstant, newVector, valueType, line, column, scope),
+		NewVariable(id, isConstant, newObj, valueType, line, column, scope),
 	)
 
 	return nil
@@ -167,7 +174,7 @@ func (v *Visitor) VisitVectorListValue(ctx *parser.VectorListValueContext) inter
 }
 
 func (v *Visitor) VisitVectorSingleValue(ctx *parser.VectorSingleValueContext) interface{} {
-	value, ok := v.Visit(ctx.Expr()).(*VectorV)
+	value, ok := v.Visit(ctx.Expr()).(*ObjectV).GetValue().(V.IValue)
 
 	if !ok {
 		v.NewError(InvalidVectorValueError, ctx.GetStart())

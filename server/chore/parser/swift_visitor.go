@@ -140,6 +140,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#IntExpr.
 	VisitIntExpr(ctx *IntExprContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#CallPropertiesExpr.
+	VisitCallPropertiesExpr(ctx *CallPropertiesExprContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#LogicalExpr.
 	VisitLogicalExpr(ctx *LogicalExprContext) interface{}
 

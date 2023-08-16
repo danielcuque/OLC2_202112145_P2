@@ -184,6 +184,10 @@ func (v *BaseSwiftVisitor) VisitIntExpr(ctx *IntExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitCallPropertiesExpr(ctx *CallPropertiesExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitLogicalExpr(ctx *LogicalExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

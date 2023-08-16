@@ -31,21 +31,17 @@ func (v *Visitor) VisitCallProperties(ctx *parser.CallPropertiesContext) interfa
 		params = append(params, id.GetText())
 	}
 
-	fmt.Println("params: ", params)
-	fmt.Println("variable: ", variable.Name)
+	// fmt.Print(reflect.TypeOf(obj.Body))
 
-	return V.NewNilValue(nil)
+	// return nil
+
+	prop, okP := GetPropValue(variable, params).(*Variable)
+
+	if !okP {
+		v.NewError(fmt.Sprint("La propiedad ", params[len(params)-1], " no existe"), ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
+
+	return prop.Value
+
 }
-
-// func getProperty(obj interface{}, properties []string) (interface{}, error) {
-// 	if len(properties) == 0 {
-// 		return obj, nil
-// 	}
-
-// 	propertyName := properties[0]
-
-// 	// Aquí debes implementar la lógica para obtener la propiedad "propertyName" del objeto "obj"
-
-// 	// Luego, recursivamente llamamos a getProperty con el objeto de la propiedad y las propiedades restantes
-// 	return getProperty(newObj, properties[1:])
-// }

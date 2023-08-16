@@ -229,34 +229,34 @@
 // //llamada con nombres externos e internos idénticos
 // print(mul(x: numero1, y: numero2))
 
-func fibonacci(_ n: Int) -> Int {
-    if n > 1 {
-        return fibonacci(n - 1) + fibonacci(n - 2)
-    } else if n == 1 {
-        return 1
-    } else if n == 0 {
-        return 0
-    } else {
-        print("error")
-        return 0
-    }
-}
+// func fibonacci(_ n: Int) -> Int {
+//     if n > 1 {
+//         return fibonacci(n - 1) + fibonacci(n - 2)
+//     } else if n == 1 {
+//         return 1
+//     } else if n == 0 {
+//         return 0
+//     } else {
+//         print("error")
+//         return 0
+//     }
+// }
 
-print("Debería ser 55")
-print(fibonacci(10)) 
+// print("Debería ser 55")
+// print(fibonacci(10)) 
 
-print("Debería ser 125")
-print(ackerman(3,4))
+// print("Debería ser 125")
+// print(ackerman(3,4))
 
-func ackerman(_ m: Int, _ n: Int) -> Int {
-    if m == 0 {
-        return n + 1
-    } else if m > 0 && n == 0 {
-        return ackerman(m - 1, 1)
-    } else {
-        return ackerman(m - 1, ackerman(m, n - 1))
-    }
-}
+// func ackerman(_ m: Int, _ n: Int) -> Int {
+//     if m == 0 {
+//         return n + 1
+//     } else if m > 0 && n == 0 {
+//         return ackerman(m - 1, 1)
+//     } else {
+//         return ackerman(m - 1, ackerman(m, n - 1))
+//     }
+// }
 
 
 
@@ -284,13 +284,15 @@ func ackerman(_ m: Int, _ n: Int) -> Int {
 //vector con valores
 var vec1: [Int] = [20, 30, 40] 
 //vector vacío
-var vec2: [Float] = []
+var vec2: [Float] = [1.1]
 //vector vacío
 var vec3: [String] = []
 
 var copiaVec: [Int] = vec1
 
-vec1.count
+print("La cantidad de objetos en el vector es de:", vec1.count)
+print("La cantidad de objetos en el vector es de:", vec2.count)
+print("La cantidad de objetos en el vector es de:", vec3.count)
 
 let number12 = 5
 let result = factorial(number12)

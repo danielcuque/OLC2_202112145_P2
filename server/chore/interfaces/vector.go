@@ -7,28 +7,19 @@ import (
 )
 
 type VectorV struct {
-	Object   *ObjectV
 	DataType string
 	Body     []V.IValue
 }
 
 func NewVector(Type string, body []V.IValue) *VectorV {
 	return &VectorV{
-		Body:     body,
 		DataType: Type,
+		Body:     body,
 	}
 }
 
 func (v *VectorV) GetValue() interface{} {
 	return v.Body
-}
-
-func (v *VectorV) GetType() string {
-	return V.VectorType
-}
-
-func (v *VectorV) GetDataType() string {
-	return v.DataType
 }
 
 func (v *VectorV) String() string {
@@ -41,6 +32,14 @@ func (v *VectorV) String() string {
 		}
 	}
 	return str
+}
+
+func (v *VectorV) GetType() string {
+	return v.DataType
+}
+
+func (v *VectorV) GetDataType() string {
+	return v.DataType
 }
 
 func (v *VectorV) Append(value V.IValue) {

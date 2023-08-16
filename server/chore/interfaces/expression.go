@@ -408,3 +408,7 @@ func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{}
 func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {
 	return v.Visit(ctx.FunctionCall())
 }
+
+func (v *Visitor) VisitCallPropertiesExpr(ctx *parser.CallPropertiesExprContext) interface{} {
+	return v.Visit(ctx.CallProperties())
+}
