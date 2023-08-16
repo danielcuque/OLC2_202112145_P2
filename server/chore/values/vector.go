@@ -1,8 +1,11 @@
 package values
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type VectorV struct {
+	Object   *ObjectV
 	DataType string
 	Body     []IValue
 }

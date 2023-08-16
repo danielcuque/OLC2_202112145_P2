@@ -92,6 +92,12 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#vectorValues.
 	VisitVectorValues(ctx *VectorValuesContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#callProperties.
+	VisitCallProperties(ctx *CallPropertiesContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#callMethods.
+	VisitCallMethods(ctx *CallMethodsContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 

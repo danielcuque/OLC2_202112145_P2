@@ -229,34 +229,34 @@
 // //llamada con nombres externos e internos idénticos
 // print(mul(x: numero1, y: numero2))
 
-// func fibonacci(_ n: Int) -> Int {
-//     if n > 1 {
-//         return fibonacci(n - 1) + fibonacci(n - 2)
-//     } else if n == 1 {
-//         return 1
-//     } else if n == 0 {
-//         return 0
-//     } else {
-//         print("error")
-//         return 0
-//     }
-// }
+func fibonacci(_ n: Int) -> Int {
+    if n > 1 {
+        return fibonacci(n - 1) + fibonacci(n - 2)
+    } else if n == 1 {
+        return 1
+    } else if n == 0 {
+        return 0
+    } else {
+        print("error")
+        return 0
+    }
+}
 
-// print("Debería ser 55")
-// print(fibonacci(10)) 
+print("Debería ser 55")
+print(fibonacci(10)) 
 
-// print("Debería ser 125")
-// print(ackerman(3,4))
+print("Debería ser 125")
+print(ackerman(3,4))
 
-// func ackerman(_ m: Int, _ n: Int) -> Int {
-//     if m == 0 {
-//         return n + 1
-//     } else if m > 0 && n == 0 {
-//         return ackerman(m - 1, 1)
-//     } else {
-//         return ackerman(m - 1, ackerman(m, n - 1))
-//     }
-// }
+func ackerman(_ m: Int, _ n: Int) -> Int {
+    if m == 0 {
+        return n + 1
+    } else if m > 0 && n == 0 {
+        return ackerman(m - 1, 1)
+    } else {
+        return ackerman(m - 1, ackerman(m, n - 1))
+    }
+}
 
 
 
@@ -290,3 +290,30 @@ var vec3: [String] = []
 
 var copiaVec: [Int] = vec1
 
+vec1.count
+
+let number12 = 5
+let result = factorial(number12)
+
+func factorial(_ n: Int) -> Int {
+    if n <= 1{
+        return 1
+    }
+
+    return n * factorial(n -1)
+}
+
+print(result)
+
+func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
+    if discos == 1 {
+        print("Mover disco de", origen, "a", destino)
+    } else {
+        Hanoi(discos - 1, origen, destino, auxiliar)
+        print("Mover disco de", origen, "a", destino)
+        Hanoi(discos - 1, auxiliar, origen, destino)
+    }
+}
+
+print("Hanoi")
+Hanoi(3, 1, 2, 3)

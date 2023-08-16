@@ -26,3 +26,15 @@ func ackerman(_ m: Int, _ n: Int) -> Int {
 
 print("Debería ser 125")
 print(ackerman(3,4))
+
+func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
+    if discos == 1 {
+        print("Mover disco de", origen, "a", destino)
+    } else {
+        Hanoi(discos - 1, origen, destino, auxiliar)
+        print("Mover disco de", origen, "a", destino)
+        Hanoi(discos - 1, auxiliar, origen, destino)
+    }
+}
+
+print(Hanoi(3, 1, 2, 3))

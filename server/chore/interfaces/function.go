@@ -296,7 +296,13 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	// Execute the function
 	v.ExecuteFunctionBody(fn, ctx, fnScope)
 
-	returnValue := fn.ReturnValue
+	var returnValue V.IValue
+
+	if fn.ReturnValue != nil {
+		returnValue = fn.ReturnValue
+	} else {
+		returnValue = V.NewNilValue(nil)
+	}
 
 	// Return scope to root scope
 	v.Scope.PopScope()

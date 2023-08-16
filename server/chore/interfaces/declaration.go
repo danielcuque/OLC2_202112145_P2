@@ -151,8 +151,6 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	newVector := V.NewVector(valueType, dataList)
 
-	fmt.Println(newVector.String())
-
 	v.Scope.AddVariable(id,
 		NewVariable(id, isConstant, newVector, valueType, line, column, scope),
 	)

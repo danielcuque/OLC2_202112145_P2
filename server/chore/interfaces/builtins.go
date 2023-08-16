@@ -5,6 +5,7 @@ import (
 )
 
 var internalFunction map[string]func(v *Visitor, ctx *parser.FunctionCallContext) interface{}
+var internalProperty map[string]func(v *Visitor, ctx *parser.CallPropertiesContext) interface{}
 
 func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	if internalFunction == nil {
@@ -16,4 +17,13 @@ func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.Funct
 		}
 	}
 	return internalFunction[name]
+}
+
+func GetInternalBuiltinProperties(name string) func(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
+	if internalFunction == nil {
+		internalProperty = map[string]func(v *Visitor, ctx *parser.CallPropertiesContext) interface{}{
+			"count": Count,
+		}
+	}
+	return internalProperty[name]
 }

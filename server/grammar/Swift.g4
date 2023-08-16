@@ -20,7 +20,9 @@ statement:
 	| controlFlowStatement
 	| functionDeclarationStatement
 	| functionCall
-	| vectorDeclaration;
+	| vectorDeclaration
+	| callProperties
+	| callMethods;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -93,6 +95,12 @@ vectorDefinition:
 	| expr							# VectorSingleValue;
 
 vectorValues: expr (COMMA expr)*;
+
+// Call Properties
+callProperties: ID (DOT ID)+;
+
+// Call methods
+callMethods: ID DOT ID LPAREN functionCallArguments? RPAREN;
 
 // Expressions
 expr:

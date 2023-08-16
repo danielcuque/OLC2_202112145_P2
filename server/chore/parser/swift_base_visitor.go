@@ -120,6 +120,14 @@ func (v *BaseSwiftVisitor) VisitVectorValues(ctx *VectorValuesContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitCallProperties(ctx *CallPropertiesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitCallMethods(ctx *CallMethodsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
