@@ -50,4 +50,5 @@ const (
 	InvalidArgumentNameError       = "El nombre del argumento no es existe"
 	InvalidFunctionBodyError       = "El cuerpo de la función no es válido"
 	InvalidArgumentError           = "El argumento no es válido"
+	InvalidVectorValueError        = "No se pudo obtener el valor del vector"
 )

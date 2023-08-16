@@ -19,7 +19,8 @@ statement:
 	| guardStatement
 	| controlFlowStatement
 	| functionDeclarationStatement
-	| functionCall;
+	| functionCall
+	| vectorDeclaration;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -83,6 +84,15 @@ forStatement: Kw_FOR ID Kw_IN expr LBRACE block RBRACE;
 guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
 
 // Vector declarations
+
+vectorDeclaration:
+	varType = (Kw_LET | Kw_VAR) ID COLON LBRACKET variableType RBRACKET Op_ASSIGN vectorDefinition;
+
+vectorDefinition:
+	LBRACKET vectorValues? RBRACKET	# VectorListValue
+	| expr							# VectorSingleValue;
+
+vectorValues: expr (COMMA expr)*;
 
 // Expressions
 expr:

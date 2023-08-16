@@ -7,6 +7,8 @@ const (
 	BooleanType = "Bool"
 	CharType    = "Character"
 	NilType     = "nil"
+
+	VectorType = "Vector"
 )
 
 type IValue interface {

@@ -104,6 +104,22 @@ func (v *BaseSwiftVisitor) VisitGuardStatement(ctx *GuardStatementContext) inter
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitVectorDeclaration(ctx *VectorDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorListValue(ctx *VectorListValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorSingleValue(ctx *VectorSingleValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorValues(ctx *VectorValuesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
