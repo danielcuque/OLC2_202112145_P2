@@ -101,7 +101,7 @@ callProperties: ID (DOT ID)+;
 
 // Call methods
 callMethods:
-	ID DOT callProperties LPAREN functionCallArguments? RPAREN;
+	(ID DOT | callProperties) LPAREN functionCallArguments? RPAREN;
 
 // Expressions
 expr:

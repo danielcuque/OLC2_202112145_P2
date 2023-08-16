@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (v *Visitor) VisitorCallMethods(ctx *parser.CallMethodsContext) interface{} {
+func (v *Visitor) VisitCallMethods(ctx *parser.CallMethodsContext) interface{} {
 	fmt.Println("CallMethods")
 	return nil
 }
