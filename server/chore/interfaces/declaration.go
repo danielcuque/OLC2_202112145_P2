@@ -149,7 +149,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	// New Vector Variable
 
-	newVector := V.NewVector(valueType, dataList)
+	newVector := NewVector(valueType, dataList)
 
 	v.Scope.AddVariable(id,
 		NewVariable(id, isConstant, newVector, valueType, line, column, scope),
@@ -167,7 +167,7 @@ func (v *Visitor) VisitVectorListValue(ctx *parser.VectorListValueContext) inter
 }
 
 func (v *Visitor) VisitVectorSingleValue(ctx *parser.VectorSingleValueContext) interface{} {
-	value, ok := v.Visit(ctx.Expr()).(*V.VectorV)
+	value, ok := v.Visit(ctx.Expr()).(*VectorV)
 
 	if !ok {
 		v.NewError(InvalidVectorValueError, ctx.GetStart())

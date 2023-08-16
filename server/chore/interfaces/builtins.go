@@ -22,7 +22,7 @@ func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.Funct
 func GetInternalBuiltinProperties(name string) func(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
 	if internalFunction == nil {
 		internalProperty = map[string]func(v *Visitor, ctx *parser.CallPropertiesContext) interface{}{
-			"count": Count,
+			"count": CountBuiltin,
 		}
 	}
 	return internalProperty[name]

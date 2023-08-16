@@ -1,18 +1,18 @@
-package values
+package interfaces
 
 type ObjectV struct {
-	Props  map[string]interface{}
+	Props  map[string]*Variable
 	Method map[string]interface{}
 }
 
 func NewObjectV(name string) *ObjectV {
 	return &ObjectV{
-		Props:  make(map[string]interface{}),
+		Props:  make(map[string]*Variable),
 		Method: make(map[string]interface{}),
 	}
 }
 
-func (o *ObjectV) AddProp(name string, value interface{}) {
+func (o *ObjectV) AddProp(name string, value *Variable) {
 	o.Props[name] = value
 }
 
