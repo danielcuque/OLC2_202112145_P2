@@ -155,8 +155,10 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	// Add native properties
 	count := NewVariable("count", true, V.NewIntValue(len(dataList)), V.IntType, line, column, scope)
+	isEmpty := NewVariable("isEmpty", true, V.NewBooleanValue(len(dataList) == 0), V.BooleanType, line, column, scope)
 
 	newObj.AddProp("count", count)
+	newObj.AddProp("isEmpty", isEmpty)
 
 	v.Scope.AddVariable(id,
 		NewVariable(id, isConstant, newObj, valueType, line, column, scope),

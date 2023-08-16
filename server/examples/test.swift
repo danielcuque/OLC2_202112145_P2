@@ -290,9 +290,9 @@ var vec3: [String] = []
 
 var copiaVec: [Int] = vec1
 
-print("La cantidad de objetos en el vector es de:", vec1.count)
-print("La cantidad de objetos en el vector es de:", vec2.count)
-print("La cantidad de objetos en el vector es de:", vec3.count)
+print("La cantidad de objetos en el vector es de:", vec1.count, "está vacío:", vec1.isEmpty)
+print("La cantidad de objetos en el vector es de:", vec2.count, "está vacío:", vec2.isEmpty)
+print("La cantidad de objetos en el vector es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
 let number12 = 5
 let result = factorial(number12)
