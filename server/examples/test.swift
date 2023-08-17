@@ -294,8 +294,8 @@ print("La cantidad de objetos en el vector es de:", vec1.count, "está vacío:",
 print("La cantidad de objetos en el vector es de:", vec2.count, "está vacío:", vec2.isEmpty)
 print("La cantidad de objetos en el vector es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
-persona.vec1.append(50)
-vec1.append(50)
+// persona.vec1.append(50)
+// vec1.append(50)
 
 let number12 = 5
 let result = factorial(number12)

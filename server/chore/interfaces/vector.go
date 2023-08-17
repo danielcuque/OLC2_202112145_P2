@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
 )
@@ -82,7 +81,7 @@ func (v *VectorV) Count() int {
 	return len(v.Body)
 }
 
-func CountBuiltin(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
-	fmt.Println("Count")
-	return V.NewNilValue(nil)
-}
+// func CountBuiltin(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
+// 	fmt.Println("Count")
+// 	return V.NewNilValue(nil)
+// }

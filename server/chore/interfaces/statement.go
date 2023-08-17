@@ -46,13 +46,13 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.VectorDeclaration())
 	}
 
-	if ctx.CallProperties() != nil {
-		return v.Visit(ctx.CallProperties())
-	}
+	// if ctx.CallProperties() != nil {
+	// 	return v.Visit(ctx.CallProperties())
+	// }
 
-	if ctx.CallMethods() != nil {
-		return v.Visit(ctx.CallMethods())
-	}
+	// if ctx.CallMethods() != nil {
+	// 	return v.Visit(ctx.CallMethods())
+	// }
 
 	return nil
 }

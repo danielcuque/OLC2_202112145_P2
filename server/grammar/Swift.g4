@@ -4,6 +4,8 @@ options {
 	tokenVocab = SwiftLexer;
 }
 
+idChain: ID (DOT ID)*;
+
 program: block EOF;
 
 block: (statement)*;
@@ -20,9 +22,7 @@ statement:
 	| controlFlowStatement
 	| functionDeclarationStatement
 	| functionCall
-	| vectorDeclaration
-	| callProperties
-	| callMethods;
+	| vectorDeclaration;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -96,17 +96,11 @@ vectorDefinition:
 
 vectorValues: expr (COMMA expr)*;
 
-// Call Properties
-callProperties: ID (DOT ID)+;
-
-// Call methods
-callMethods:
-	(ID DOT | callProperties) LPAREN functionCallArguments? RPAREN;
+// Call methods callMethods: callProperties LPAREN functionCallArguments? RPAREN;
 
 // Expressions
 expr:
-	callProperties													# CallPropertiesExpr
-	| functionCall													# FunctionCallExpr
+	functionCall													# FunctionCallExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
@@ -121,7 +115,7 @@ expr:
 	| left = expr Kw_RANGE right = expr								# RangeExpr
 	| LPAREN expr RPAREN											# ParExpr
 	| INT															# IntExpr
-	| ID															# IdExpr
+	| idChain														# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
 	| NIL															# NilExpr
