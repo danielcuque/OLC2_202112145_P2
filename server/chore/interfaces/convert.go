@@ -12,12 +12,12 @@ func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
 
 	if !ok {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return nil
 	}
 
 	if len(args) != 1 {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return V.NewNilValue(nil)
 
 	}
@@ -33,7 +33,7 @@ func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		if err == nil {
 			return V.NewIntValue(int(math.Trunc(floatValue)))
 		} else {
-			v.NewError(InvalidParameterError, ctx.GetStart())
+			v.NewError(InvalidParameter, ctx.GetStart())
 			return V.NewNilValue(nil)
 		}
 
@@ -41,7 +41,7 @@ func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		return V.NewIntValue(int(math.Trunc(value.GetValue().(float64))))
 
 	default:
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 }
@@ -51,12 +51,12 @@ func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
 
 	if !ok {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return nil
 	}
 
 	if len(args) != 1 {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return V.NewNilValue(nil)
 
 	}
@@ -72,7 +72,7 @@ func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		if err == nil {
 			return V.NewFloatValue(floatValue)
 		} else {
-			v.NewError(InvalidParameterError, ctx.GetStart())
+			v.NewError(InvalidParameter, ctx.GetStart())
 			return V.NewNilValue(nil)
 		}
 
@@ -80,7 +80,7 @@ func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		return V.NewFloatValue(float64(value.GetValue().(int)))
 
 	default:
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 }
@@ -93,12 +93,12 @@ func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
 
 	if !ok {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return nil
 	}
 
 	if len(args) != 1 {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -119,7 +119,7 @@ func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		}
 
 	default:
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 }

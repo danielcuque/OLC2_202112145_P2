@@ -16,7 +16,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !okVal {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return nil
 	}
 
@@ -44,7 +44,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	valueType := v.Visit(ctx.VariableType()).(string)
 
 	if !okVal {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return nil
 	}
 
@@ -121,7 +121,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	dataList, okVal := v.Visit(ctx.VectorDefinition()).([]V.IValue) // [1,2,3]
 
 	if !okVal {
-		v.NewError(InvalidVectorValueError, ctx.GetStart())
+		v.NewError(InvalidVectorValue, ctx.GetStart())
 		return nil
 	}
 
@@ -179,7 +179,7 @@ func (v *Visitor) VisitVectorSingleValue(ctx *parser.VectorSingleValueContext) i
 	value, ok := v.Visit(ctx.Expr()).(*ObjectV).GetValue().(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidVectorValueError, ctx.GetStart())
+		v.NewError(InvalidVectorValue, ctx.GetStart())
 		return make([]V.IValue, 0)
 	}
 
@@ -196,7 +196,7 @@ func (v *Visitor) VisitVectorValues(ctx *parser.VectorValuesContext) interface{}
 		value, ok := v.Visit(value).(V.IValue)
 
 		if !ok {
-			v.NewError(InvalidVectorValueError, ctx.GetStart())
+			v.NewError(InvalidVectorValue, ctx.GetStart())
 			return make([]V.IValue, 0)
 		}
 

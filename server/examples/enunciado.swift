@@ -47,3 +47,61 @@ if i == 10 {
     }
     j = k // error k ya no es accesible en este ámbito 
 }
+
+func suma( num1 x : Int, num2 y: Int) -> Int {
+    return x + y
+}
+
+func resta(_ x : Int, _ y: Int) -> Int {
+    return x - y
+}
+
+//función mul
+// Nombres externos: x, y
+// Nombres internos: x, y
+func mul(x: Int, y: Int) -> Int {
+    return x * y
+}
+
+// // func duplicar(_ x: inout Int){
+// //     x += x
+// // }
+
+// // func duplicarA (_ array: inout [Int] ) {
+// //     var i = 0
+// //     while (i < array.count ) {
+// //         array[i] += array[i]
+// //         i += 1
+// //     }
+// // }
+
+
+var numero1 = 3
+var numero2 = 2
+//llamada con nombres externos
+print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: numero2))
+//llamada sin nombres externos
+print(resta(numero1, numero2))
+//llamada con nombres externos e internos idénticos
+print(mul(x: numero1, y: numero2))
+
+
+
+func func1() -> Int  {
+    return 1
+}
+
+print(Int("10"))
+print(Int("12.001"))
+print(Int(10.9999))
+print(Int("Q10"))
+
+print(Float("10"))
+print(Float("10.001"))
+print(Float("Q10.00"))
+
+
+print(String(10) + String(3.51)) //imprime 103.5000 
+print( String( true )) //true
+var cadena = String(true) + "->" + String(3.504) 
+print(cadena) // imprime true->3.50400000

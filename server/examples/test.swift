@@ -178,12 +178,12 @@
 // }
 
 // print(testGuard, "|", num)
-// print(1.0001)
-// print(true)
-// print(nil)
-// print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
-// // Test double quote
-// print("cadena1 \"cadena2\" cadena3")
+print(1.0001)
+print(true)
+print(nil)
+print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+// Test double quote
+print("cadena1 \"cadena2\" cadena3")
 
 // func addTwoNumbers(a: Int, b: Int) -> Int {
 //     let c = a + b
@@ -192,92 +192,7 @@
 
 // addTwoNumbers(a: 1, b: 2)
 
-func suma( num1 x : Int, num2 y: Int) -> Int {
-    return x + y
-}
 
-func resta(_ x : Int, _ y: Int) -> Int {
-    return x - y
-}
-
-//función mul
-// Nombres externos: x, y
-// Nombres internos: x, y
-func mul(x: Int, y: Int) -> Int {
-    return x * y
-}
-
-// // func duplicar(_ x: inout Int){
-// //     x += x
-// // }
-
-// // func duplicarA (_ array: inout [Int] ) {
-// //     var i = 0
-// //     while (i < array.count ) {
-// //         array[i] += array[i]
-// //         i += 1
-// //     }
-// // }
-
-
-var numero1 = 3
-var numero2 = 2
-//llamada con nombres externos
-print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: numero2))
-//llamada sin nombres externos
-print(resta(numero1, numero2))
-//llamada con nombres externos e internos idénticos
-print(mul(x: numero1, y: numero2))
-
-func fibonacci(_ n: Int) -> Int {
-    if n > 1 {
-        return fibonacci(n - 1) + fibonacci(n - 2)
-    } else if n == 1 {
-        return 1
-    } else if n == 0 {
-        return 0
-    } else {
-        print("error")
-        return 0
-    }
-}
-
-print("Debería ser 55")
-print(fibonacci(10)) 
-
-print("Debería ser 125")
-print(ackerman(3,4))
-
-func ackerman(_ m: Int, _ n: Int) -> Int {
-    if m == 0 {
-        return n + 1
-    } else if m > 0 && n == 0 {
-        return ackerman(m - 1, 1)
-    } else {
-        return ackerman(m - 1, ackerman(m, n - 1))
-    }
-}
-
-
-
-func func1() -> Int  {
-    return 1
-}
-
-print(Int("10"))
-print(Int("12.001"))
-print(Int(10.9999))
-print(Int("Q10"))
-
-print(Float("10"))
-print(Float("10.001"))
-print(Float("Q10.00"))
-
-
-print(String(10) + String(3.51)) //imprime 103.5000 
-print( String( true )) //true
-var cadena = String(true) + "->" + String(3.504) 
-print(cadena) // imprime true->3.50400000
 
 // Vectors
 
@@ -295,31 +210,5 @@ print("La cantidad de objetos en el vector es de:", vec2.count, "está vacío:",
 print("La cantidad de objetos en el vector es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
 
-// persona.vec1.append(50)
-// vec1.append(50)
-
-let number12 = 5
-let result = factorial(number12)
-
-func factorial(_ n: Int) -> Int {
-    if n <= 1{
-        return 1
-    }
-
-    return n * factorial(n -1)
-}
-
-print(result)
-
-func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
-    if discos == 1 {
-        print("Mover disco de", origen, "a", destino)
-    } else {
-        Hanoi(discos - 1, origen, destino, auxiliar)
-        print("Mover disco de", origen, "a", destino)
-        Hanoi(discos - 1, auxiliar, origen, destino)
-    }
-}
-
-print("Hanoi")
-Hanoi(3, 1, 2, 3)
+persona.vec1.append(50)
+vec1.append(50)

@@ -51,7 +51,6 @@ func (o *ObjectV) String() string {
 // Recursive function to get the value of a property
 
 func GetPropValue(variable *Variable, props []string) interface{} {
-
 	// There are two cases, variable can store another object, or not
 
 	obj, ok := variable.Value.(*ObjectV)

@@ -37,4 +37,4 @@ func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
     }
 }
 
-print(Hanoi(3, 1, 2, 3))
+Hanoi(3, 1, 2, 3)

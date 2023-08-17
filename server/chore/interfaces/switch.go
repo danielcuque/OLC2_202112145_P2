@@ -11,7 +11,7 @@ func (v *Visitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext) inter
 	expr, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return nil
 	}
 

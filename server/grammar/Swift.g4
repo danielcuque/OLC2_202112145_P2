@@ -22,6 +22,7 @@ statement:
 	| controlFlowStatement
 	| functionDeclarationStatement
 	| functionCall
+	// | methodCall
 	| vectorDeclaration;
 
 // Variable types
@@ -51,7 +52,7 @@ functionReturnType: Op_ARROW variableType;
 
 // Function call 
 functionCall:
-	(ID | variableType) LPAREN functionCallArguments? RPAREN;
+	(idChain | variableType) LPAREN functionCallArguments? RPAREN;
 
 functionCallArguments:
 	expr (COMMA expr)*						# Arguments
@@ -96,11 +97,12 @@ vectorDefinition:
 
 vectorValues: expr (COMMA expr)*;
 
-// Call methods callMethods: callProperties LPAREN functionCallArguments? RPAREN;
+// Call methods methodCall: idChain LPAREN functionCallArguments? RPAREN;
 
 // Expressions
 expr:
-	functionCall													# FunctionCallExpr
+	functionCall # FunctionCallExpr
+	// | methodCall													# MethodCallExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr

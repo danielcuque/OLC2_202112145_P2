@@ -11,7 +11,7 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	value, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return false
 	}
 

@@ -145,7 +145,7 @@ func swiftParserInit() {
 		5, 67, 0, 0, 139, 141, 5, 28, 0, 0, 140, 139, 1, 0, 0, 0, 140, 141, 1,
 		0, 0, 0, 141, 142, 1, 0, 0, 0, 142, 143, 3, 8, 4, 0, 143, 17, 1, 0, 0,
 		0, 144, 145, 5, 36, 0, 0, 145, 146, 3, 8, 4, 0, 146, 19, 1, 0, 0, 0, 147,
-		150, 5, 35, 0, 0, 148, 150, 3, 8, 4, 0, 149, 147, 1, 0, 0, 0, 149, 148,
+		150, 3, 0, 0, 0, 148, 150, 3, 8, 4, 0, 149, 147, 1, 0, 0, 0, 149, 148,
 		1, 0, 0, 0, 150, 151, 1, 0, 0, 0, 151, 153, 5, 58, 0, 0, 152, 154, 3, 22,
 		11, 0, 153, 152, 1, 0, 0, 0, 153, 154, 1, 0, 0, 0, 154, 155, 1, 0, 0, 0,
 		155, 156, 5, 59, 0, 0, 156, 21, 1, 0, 0, 0, 157, 162, 3, 50, 25, 0, 158,
@@ -2492,7 +2492,7 @@ type IFunctionCallContext interface {
 	// Getter signatures
 	LPAREN() antlr.TerminalNode
 	RPAREN() antlr.TerminalNode
-	ID() antlr.TerminalNode
+	IdChain() IIdChainContext
 	VariableType() IVariableTypeContext
 	FunctionCallArguments() IFunctionCallArgumentsContext
 
@@ -2540,8 +2540,20 @@ func (s *FunctionCallContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(SwiftParserRPAREN, 0)
 }
 
-func (s *FunctionCallContext) ID() antlr.TerminalNode {
-	return s.GetToken(SwiftParserID, 0)
+func (s *FunctionCallContext) IdChain() IIdChainContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IIdChainContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IIdChainContext)
 }
 
 func (s *FunctionCallContext) VariableType() IVariableTypeContext {
@@ -2610,11 +2622,7 @@ func (p *SwiftParser) FunctionCall() (localctx IFunctionCallContext) {
 	case SwiftParserID:
 		{
 			p.SetState(147)
-			p.Match(SwiftParserID)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
+			p.IdChain()
 		}
 
 	case SwiftParserKw_INT, SwiftParserKw_FLOAT, SwiftParserKw_BOOL, SwiftParserKw_STRING, SwiftParserKw_CHAR:

@@ -29,7 +29,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 	condition, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return false
 	}
 

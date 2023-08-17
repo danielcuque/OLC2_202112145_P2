@@ -6,8 +6,6 @@ import (
 
 var internalFunction map[string]func(v *Visitor, ctx *parser.FunctionCallContext) interface{}
 
-// var internalProperty map[string]func(v *Visitor, ctx *parser.CallPropertiesContext) interface{}
-
 func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	if internalFunction == nil {
 		internalFunction = map[string]func(v *Visitor, ctx *parser.FunctionCallContext) interface{}{
@@ -15,16 +13,8 @@ func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.Funct
 			"Int":    Int,
 			"Float":  Float,
 			"String": String,
+			"append": Append,
 		}
 	}
 	return internalFunction[name]
 }
-
-// func GetInternalBuiltinProperties(name string) func(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
-// 	if internalFunction == nil {
-// 		internalProperty = map[string]func(v *Visitor, ctx *parser.CallPropertiesContext) interface{}{
-// 			"count": CountBuiltin,
-// 		}
-// 	}
-// 	return internalProperty[name]
-// }

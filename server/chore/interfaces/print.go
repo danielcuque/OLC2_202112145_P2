@@ -13,7 +13,7 @@ func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
 
 	if !ok {
-		v.NewError(InvalidParameterError, ctx.GetStart())
+		v.NewError(InvalidParameter, ctx.GetStart())
 		return nil
 	}
 
