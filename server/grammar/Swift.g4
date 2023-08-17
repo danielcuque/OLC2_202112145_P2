@@ -4,6 +4,8 @@ options {
 	tokenVocab = SwiftLexer;
 }
 
+idChain: ID (DOT ID)* # IDChain;
+
 program: block EOF;
 
 block: (statement)*;
@@ -19,7 +21,9 @@ statement:
 	| guardStatement
 	| controlFlowStatement
 	| functionDeclarationStatement
-	| functionCall;
+	| functionCall
+	// | methodCall
+	| vectorDeclaration;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -47,7 +51,8 @@ functionParameter: ID? ID COLON Kw_INOUT? variableType;
 functionReturnType: Op_ARROW variableType;
 
 // Function call 
-functionCall: ID LPAREN functionCallArguments? RPAREN;
+functionCall:
+	(idChain | variableType) LPAREN functionCallArguments? RPAREN;
 
 functionCallArguments:
 	expr (COMMA expr)*						# Arguments
@@ -81,9 +86,23 @@ forStatement: Kw_FOR ID Kw_IN expr LBRACE block RBRACE;
 // Guard statement
 guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
 
+// Vector declarations
+
+vectorDeclaration:
+	varType = (Kw_LET | Kw_VAR) ID COLON LBRACKET variableType RBRACKET Op_ASSIGN vectorDefinition;
+
+vectorDefinition:
+	LBRACKET vectorValues? RBRACKET	# VectorListValue
+	| expr							# VectorSingleValue;
+
+vectorValues: expr (COMMA expr)*;
+
+// Call methods methodCall: idChain LPAREN functionCallArguments? RPAREN;
+
 // Expressions
 expr:
-	functionCall													# FunctionCallExpr
+	functionCall # FunctionCallExpr
+	// | methodCall													# MethodCallExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
@@ -98,7 +117,7 @@ expr:
 	| left = expr Kw_RANGE right = expr								# RangeExpr
 	| LPAREN expr RPAREN											# ParExpr
 	| INT															# IntExpr
-	| ID															# IdExpr
+	| idChain														# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
 	| NIL															# NilExpr

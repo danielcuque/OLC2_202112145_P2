@@ -42,5 +42,9 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.FunctionDeclarationStatement())
 	}
 
+	if ctx.VectorDeclaration() != nil {
+		return v.Visit(ctx.VectorDeclaration())
+	}
+
 	return nil
 }

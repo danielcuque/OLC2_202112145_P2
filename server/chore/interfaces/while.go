@@ -13,7 +13,7 @@ func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interfa
 		return nil
 	}
 
-	v.Scope.PushScope(WhileScope)
+	v.Env.PushEnv(WhileEnv)
 
 	v.Stack.Push(NewStackItem(
 		"While",
@@ -24,7 +24,7 @@ func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interfa
 	v.ExecuteWhile(condition, ctx)
 
 	v.Stack.Pop()
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 
 	return nil
 }
@@ -54,7 +54,7 @@ func (v *Visitor) ExecuteWhile(condition bool, ctx *parser.WhileStatementContext
 	}()
 
 	for condition {
-		v.Scope.ResetScope()
+		v.Env.ResetEnv()
 		v.Visit(ctx.Block())
 		condition = v.Visit(ctx.Expr()).(V.IValue).GetValue().(bool)
 	}

@@ -12,7 +12,7 @@ type Visitor struct {
 	parser.BaseSwiftVisitor
 	Errors []*VisitorError
 	Logs   []string
-	Scope  *ScopeTree
+	Env    *EnvTree
 	Stack  *Stack
 }
 
@@ -20,7 +20,7 @@ func NewVisitor() *Visitor {
 	return &Visitor{
 		Errors: make([]*VisitorError, 0),
 		Logs:   make([]string, 0),
-		Scope:  NewScopeTree(),
+		Env:    NewEnvTree(),
 		Stack:  NewStack(),
 	}
 }

@@ -8,6 +8,10 @@ type BaseSwiftVisitor struct {
 	*antlr.BaseParseTreeVisitor
 }
 
+func (v *BaseSwiftVisitor) VisitIDChain(ctx *IDChainContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitProgram(ctx *ProgramContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -101,6 +105,22 @@ func (v *BaseSwiftVisitor) VisitForStatement(ctx *ForStatementContext) interface
 }
 
 func (v *BaseSwiftVisitor) VisitGuardStatement(ctx *GuardStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorDeclaration(ctx *VectorDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorListValue(ctx *VectorListValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorSingleValue(ctx *VectorSingleValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorValues(ctx *VectorValuesContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -178,12 +178,12 @@
 // }
 
 // print(testGuard, "|", num)
-// print(1.0001)
-// print(true)
-// print(nil)
-// print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
-// // Test double quote
-// print("cadena1 \"cadena2\" cadena3")
+print(1.0001)
+print(true)
+print(nil)
+print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+// Test double quote
+print("cadena1 \"cadena2\" cadena3")
 
 // func addTwoNumbers(a: Int, b: Int) -> Int {
 //     let c = a + b
@@ -192,50 +192,23 @@
 
 // addTwoNumbers(a: 1, b: 2)
 
-func suma( num1 x : Int, num2 y: Int) -> Int {
-    return x + y
-}
-
-func resta(_ x : Int, _ y: Int) -> Int {
-    return x - y
-}
-
-//función mul
-// Nombres externos: x, y
-// Nombres internos: x, y
-func mul(x: Int, y: Int) -> Int {
-    return x * y
-}
-
-// func duplicar(_ x: inout Int){
-//     x += x
-// }
-
-// func duplicarA (_ array: inout [Int] ) {
-//     var i = 0
-//     while (i < array.count ) {
-//         array[i] += array[i]
-//         i += 1
-//     }
-// }
 
 
-var numero1 = 3
-var numero2 = 2
-//llamada con nombres externos
-print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: numero2))
-//llamada sin nombres externos
-print(resta(numero1, numero2))
-//llamada con nombres externos e internos idénticos
-print(mul(x: numero1, y: numero2))
+// Vectors
 
-func fibonacci(n: Int) -> Int {
-    if n <= 1 {
-        return n
-    } else {
-        return fibonacci(n: n - 1) + fibonacci(n: n - 2)
-    }
-}
+//vector con valores
+var vec1: [Int] = [20, 30, 40] 
+//vector vacío
+var vec2: [Float] = [1.1]
+//vector vacío
+var vec3: [String] = []
 
-// print("Fibonacci de 10:")
-print(fibonacci(n: 15))
+var copiaVec: [Int] = vec1
+
+print("La cantidad de objetos en el vector es de:", vec1.count, "está vacío:", vec1.isEmpty)
+print("La cantidad de objetos en el vector es de:", vec2.count, "está vacío:", vec2.isEmpty)
+print("La cantidad de objetos en el vector es de:", vec3.count, "está vacío:", vec3.isEmpty)
+
+
+persona.vec1.append(50)
+vec1.append(50)

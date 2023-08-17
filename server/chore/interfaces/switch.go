@@ -11,7 +11,7 @@ func (v *Visitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext) inter
 	expr, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return nil
 	}
 
@@ -43,9 +43,9 @@ func (v *Visitor) VisitSwitchCase(ctx *parser.SwitchCaseContext) interface{} {
 	}
 
 	if expr.GetValue() == switchContextExpr.GetValue() {
-		v.Scope.PushScope(SwitchScope)
+		v.Env.PushEnv(SwitchEnv)
 		v.Visit(ctx.Block())
-		v.Scope.PopScope()
+		v.Env.PopEnv()
 		return true
 	}
 
@@ -53,8 +53,8 @@ func (v *Visitor) VisitSwitchCase(ctx *parser.SwitchCaseContext) interface{} {
 }
 
 func (v *Visitor) VisitSwitchDefault(ctx *parser.SwitchDefaultContext) interface{} {
-	v.Scope.PushScope(SwitchScope)
+	v.Env.PushEnv(SwitchEnv)
 	v.Visit(ctx.Block())
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 	return nil
 }

@@ -53,15 +53,33 @@ func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
 }
 
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
+	// variableName :=
 
-	id := ctx.GetText()
-	value := v.Scope.GetVariable(id)
+	expr := strings.Split(ctx.IdChain().GetText(), ".")
 
-	if value == nil {
-		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
+	variable, ok := v.Env.GetVariable(expr[0]).(*Variable)
+
+	if !ok {
+		v.NewError(fmt.Sprintf("La variable %s no existe", expr[0]), ctx.GetStart())
 		return nil
 	}
-	return value.(*Variable).Value
+
+	if len(expr) == 1 {
+		return variable.Value
+	}
+
+	// Check if there is more than one id
+
+	params := expr[1:]
+
+	prop, okP := GetPropValue(variable, params).(*Variable)
+
+	if !okP {
+		v.NewError(fmt.Sprint("La propiedad ", params[len(params)-1], " no existe"), ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
+
+	return prop.Value
 }
 
 func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {
@@ -408,3 +426,7 @@ func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{}
 func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {
 	return v.Visit(ctx.FunctionCall())
 }
+
+// func (v *Visitor) VisitMethodCallExpr(ctx *parser.MethodCallExprContext) interface{} {
+// 	return v.Visit(ctx.MethodCall())
+// }

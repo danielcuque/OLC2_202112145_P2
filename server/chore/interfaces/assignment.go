@@ -11,11 +11,11 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	value, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return false
 	}
 
-	variable, ok := v.Scope.GetVariable(id).(*Variable) // Pointer to Variable
+	variable, ok := v.Env.GetVariable(id).(*Variable) // Pointer to Variable
 
 	if !ok {
 		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())

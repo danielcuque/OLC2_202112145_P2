@@ -28,7 +28,7 @@ func HandleVisitor(c *fiber.Ctx) error {
 	result := I.NewEvaluator(code)
 
 	response := Resp{
-		Symbols: result.Scope.GetSymbolTable(),
+		Symbols: result.Env.GetSymbolTable(),
 		Errors:  result.Errors,
 		Logs:    result.Logs,
 		Cst:     "graph G { a -- b }",

@@ -4,6 +4,8 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+
+	"github.com/antlr4-go/antlr/v4"
 )
 
 type IFunction interface {
@@ -70,25 +72,37 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	id := ctx.ID().GetText()
 
 	// Verify if the function already exists
-	_, ok := v.Scope.GetFunction(id).(*Function)
+	_, ok := v.Env.GetFunction(id).(*Function)
 
 	if ok {
-		v.NewError(FunctionAlreadyExistsError, ctx.GetStart())
+		v.NewError(FunctionAlreadyExists, ctx.GetStart())
 		return nil
 	}
 
 	// Get the function parameters
-	parameters := v.Visit(ctx.FunctionParameters()).([]Parameter)
+	var parameters []Parameter
 
-	// Get the function return type
-	returnType, ok := v.Visit(ctx.FunctionReturnType()).(string)
-
-	if !ok {
-		v.NewError("No se pudo obtener el tipo de valor de retorno", ctx.GetStart())
-		return nil
+	// Check if parameters are nil
+	if ctx.FunctionParameters() != nil {
+		parameters = v.Visit(ctx.FunctionParameters()).([]Parameter)
+	} else {
+		parameters = make([]Parameter, 0)
 	}
 
-	v.Scope.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
+	// Get the function return type
+	returnType := V.NilType
+
+	// Check if return type is nil
+	if ctx.FunctionReturnType() != nil {
+		returnType = v.Visit(ctx.FunctionReturnType()).(string)
+	}
+
+	// if !ok {
+	// 	v.NewError("No se pudo obtener el tipo de valor de retorno", ctx.GetStart())
+	// 	return nil
+	// }
+
+	v.Env.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
 
 	return nil
 }
@@ -101,7 +115,7 @@ func (v *Visitor) VisitFunctionParameters(ctx *parser.FunctionParametersContext)
 		param, ok := v.Visit(param).(Parameter)
 
 		if !ok {
-			v.NewError(InvalidParameterError, ctx.GetStart())
+			v.NewError(InvalidParameter, ctx.GetStart())
 			// Return empty array
 			return make([]Parameter, 0)
 		}
@@ -139,7 +153,7 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 	dataType, ok := v.Visit(ctx.VariableType()).(string)
 
 	if !ok {
-		v.NewError(InvalidParameterTypeError, ctx.GetStart())
+		v.NewError(InvalidParameterType, ctx.GetStart())
 		return nil
 	}
 
@@ -173,7 +187,7 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 	returnType, ok := v.Visit(ctx.VariableType()).(string)
 
 	if !ok {
-		v.NewError(InvalidReturnTypeDeclarationError, ctx.GetStart())
+		v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
 		return nil
 	}
 
@@ -181,7 +195,15 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 }
 
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
-	id := ctx.ID().GetText()
+	var id string
+	var ids []antlr.TerminalNode
+
+	if ctx.IdChain() != nil {
+		ids = v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
+		id = ids[0].GetText()
+	} else {
+		id = v.Visit(ctx.VariableType()).(string)
+	}
 
 	function := GetInternalBuiltinFunctions(id)
 
@@ -189,20 +211,90 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		return function(v, ctx)
 	}
 
-	// Verify if the function exists
-	fn, ok := v.Scope.GetFunction(id).(*Function)
+	var fn *Function
 
-	if !ok {
-		v.NewError(FunctionNotFoundError, ctx.GetStart())
-		return nil
+	// There are two cases, the function is inside the environment or inside an object
+
+	if len(ids) == 1 {
+		// Assert that the function exists
+		fnt, ok := v.Env.GetFunction(id).(*Function)
+
+		if !ok {
+			v.NewError(FunctionNotFound, ctx.GetStart())
+			return nil
+		}
+		fn = fnt
+	} else {
+		// Get the baseVar
+		baseVar, okV := v.Env.GetVariable(id).(*Variable)
+
+		if !okV {
+			v.NewError(ObjectNotFound, ctx.GetStart())
+			return nil
+		}
+
+		var props []string
+		var methodName string
+		var object *ObjectV
+
+		// Check if there are not properties
+
+		// If there are just two ids, means that second id is the method
+		if len(ids) == 2 {
+			// Get object
+			obj, okP := baseVar.Value.(*ObjectV)
+
+			if !okP {
+				v.NewError(ObjectNotFound, ctx.GetStart())
+				return nil
+			}
+
+			object = obj
+			methodName = ids[1].GetText()
+		} else {
+			for _, id := range ids[1 : len(ids)-1] {
+				props = append(props, id.GetText())
+			}
+			methodName = ids[len(ids)-1].GetText()
+
+			obj, okP := GetPropValue(baseVar, props).(*Variable).Value.(*ObjectV)
+
+			if !okP {
+				v.NewError(ObjectNotFound, ctx.GetStart())
+				return nil
+			}
+
+			object = obj
+		}
+
+		// Check if is a native function
+		nativeFn := GetInternalBuiltinFunctions(methodName)
+
+		if nativeFn != nil {
+			return nativeFn(v, ctx)
+		}
+
+		objFn, okObjFn := object.GetMethod(methodName).(*Function)
+
+		if !okObjFn {
+			v.NewError(MethodNotFound, ctx.GetStart())
+			return nil
+		}
+
+		fn = objFn
 	}
 
 	// Get the arguments
-	args := v.Visit(ctx.FunctionCallArguments()).([]Argument)
+	args := make([]Argument, 0)
+
+	// Check if arguments are nil
+	if ctx.FunctionCallArguments() != nil {
+		args = v.Visit(ctx.FunctionCallArguments()).([]Argument)
+	}
 
 	// Verify if the number of parameters is the same
 	if len(args) != len(fn.Parameters) {
-		v.NewError(InvalidNumberOfParametersError, ctx.GetStart())
+		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
 		return nil
 	}
 
@@ -230,7 +322,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Create a new scope
-	fnScope := v.Scope.PushScope(id)
+	fnScope := v.Env.PushEnv(id)
 	v.Stack.Push(NewStackItem(
 		id,
 		V.NewNilValue(nil),
@@ -259,7 +351,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 			return false
 		}
 
-		v.Scope.AddVariable(param.InternalName, NewVariable(
+		v.Env.AddVariable(param.InternalName, NewVariable(
 			param.InternalName,
 			false,
 			arg.Value,
@@ -273,25 +365,30 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	// Execute the function
 	v.ExecuteFunctionBody(fn, ctx, fnScope)
 
-	returnValue := fn.ReturnValue
+	var returnValue V.IValue
+
+	if fn.ReturnValue != nil {
+		returnValue = fn.ReturnValue
+	} else {
+		returnValue = V.NewNilValue(nil)
+	}
 
 	// Return scope to root scope
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 
 	if returnValue.GetType() != fn.ReturnDataType {
-		v.NewError(InvalidReturnTypeFunctionError, ctx.GetStart())
+		v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
 	}
 
 	return returnValue
 }
 
-func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext, calledScope *ScopeNode) {
+func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext, calledScope *EnvNode) {
 	// Create a new scope
 
 	defer func() {
 		v.Stack.Reset()
-		v.Scope.PopScope()
-		v.Scope.Current = calledScope
+		v.Env.Current = calledScope
 
 		peek, ok := recover().(*StackItem)
 
@@ -319,7 +416,7 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 		value, ok := v.Visit(expr).(V.IValue)
 
 		if !ok {
-			v.NewError(InvalidArgumentError, ctx.GetStart())
+			v.NewError(InvalidArgument, ctx.GetStart())
 			return nil
 		}
 
@@ -340,4 +437,8 @@ func (v *Visitor) VisitNamedArguments(ctx *parser.NamedArgumentsContext) interfa
 	}
 
 	return args
+}
+
+func (v *Visitor) VisitIDChain(ctx *parser.IDChainContext) interface{} {
+	return ctx.AllID()
 }

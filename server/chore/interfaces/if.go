@@ -29,7 +29,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 	condition, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpressionError, ctx.GetStart())
+		v.NewError(InvalidExpression, ctx.GetStart())
 		return false
 	}
 
@@ -40,11 +40,11 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 
 	if condition.(*V.BooleanV).Value {
 
-		v.Scope.PushScope(IfScope)
+		v.Env.PushEnv(IfSEnv)
 
 		v.Visit(ctx.Block())
 
-		v.Scope.PopScope()
+		v.Env.PopEnv()
 
 		return true
 	}
@@ -54,9 +54,9 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 
 func (v *Visitor) VisitElseStatement(ctx *parser.ElseStatementContext) interface{} {
 
-	v.Scope.PushScope(ElseScope)
+	v.Env.PushEnv(ElseEnv)
 	v.Visit(ctx.Block())
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 
 	return nil
 }

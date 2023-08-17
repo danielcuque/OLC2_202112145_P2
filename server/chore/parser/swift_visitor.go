@@ -8,6 +8,9 @@ import "github.com/antlr4-go/antlr/v4"
 type SwiftVisitor interface {
 	antlr.ParseTreeVisitor
 
+	// Visit a parse tree produced by SwiftParser#IDChain.
+	VisitIDChain(ctx *IDChainContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#program.
 	VisitProgram(ctx *ProgramContext) interface{}
 
@@ -79,6 +82,18 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#guardStatement.
 	VisitGuardStatement(ctx *GuardStatementContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#vectorDeclaration.
+	VisitVectorDeclaration(ctx *VectorDeclarationContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#VectorListValue.
+	VisitVectorListValue(ctx *VectorListValueContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#VectorSingleValue.
+	VisitVectorSingleValue(ctx *VectorSingleValueContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#vectorValues.
+	VisitVectorValues(ctx *VectorValuesContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}

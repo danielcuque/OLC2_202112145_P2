@@ -40,15 +40,17 @@ func NewVisitorError(line int, column int, msg string) *VisitorError {
 // Standar error message
 
 const (
-	InvalidExpressionError            = "No se pudo obtener el valor de la expresión"
-	InvalidParameterError             = "No se pudo obtener el valor del parámetro"
-	FunctionNotFoundError             = "No se encontró la función en este ambiente"
-	FunctionAlreadyExistsError        = "Ya existe una función con este nombre en este ambiente"
-	InvalidReturnTypeDeclarationError = "El tipo de retorno no es válido"
-	InvalidParameterTypeError         = "El tipo del parámetro no es válido"
-	InvalidNumberOfParametersError    = "El número de parámetros no es válido"
-	InvalidReturnTypeFunctionError    = "El tipo de retorno de la función no es válido"
-	InvalidArgumentNameError          = "El nombre del argumento no es existe"
-	InvalidFunctionBodyError          = "El cuerpo de la función no es válido"
-	InvalidArgumentError              = "El argumento no es válido"
+	InvalidExpression         = "No se pudo obtener el valor de la expresión"
+	InvalidParameter          = "No se pudo obtener el valor del parámetro"
+	FunctionNotFound          = "No se encontró la función en este ambiente"
+	FunctionAlreadyExists     = "Ya existe una función con este nombre en este ambiente"
+	InvalidParameterType      = "El tipo del parámetro no es válido"
+	InvalidNumberOfParameters = "El número de parámetros no es válido"
+	InvalidReturnTypeFunction = "El tipo de retorno de la función no es válido"
+	InvalidArgumentName       = "El nombre del argumento no es existe"
+	InvalidFunctionBody       = "El cuerpo de la función no es válido"
+	InvalidArgument           = "El argumento no es válido"
+	InvalidVectorValue        = "No se pudo obtener el valor del vector"
+	ObjectNotFound            = "No se encontró el objeto en este ambiente"
+	MethodNotFound            = "No se encontró el método para este objeto"
 )

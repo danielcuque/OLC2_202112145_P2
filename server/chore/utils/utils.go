@@ -3,7 +3,6 @@ package utils
 import (
 	"io"
 	"os"
-	"reflect"
 )
 
 func ReadFile(filename string) string {
@@ -15,8 +14,4 @@ func ReadFile(filename string) string {
 
 	content, _ := io.ReadAll(file)
 	return string(content)
-}
-
-func GetType(v interface{}) string {
-	return reflect.TypeOf(v).String()
 }
