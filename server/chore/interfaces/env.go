@@ -6,17 +6,17 @@ import (
 )
 
 const (
-	RootScope   = "Root"
-	FuncScope   = "Func"
-	WhileScope  = "While"
-	ForScope    = "For"
-	IfScope     = "If"
-	ElseScope   = "Else"
-	SwitchScope = "Switch"
+	RootEnv   = "Root"
+	FuncEnv   = "Func"
+	WhileEnv  = "While"
+	ForEnv    = "For"
+	IfSEnv    = "If"
+	ElseEnv   = "Else"
+	SwitchEnv = "Switch"
 )
 
 type TokenSymbol struct {
-	Scope    string
+	Env      string
 	Type     string
 	Name     string
 	DataType string
@@ -24,9 +24,9 @@ type TokenSymbol struct {
 	Params   []string
 }
 
-func NewTokenSymbol(scope, tokenType, name, dataType, value string, params []string) *TokenSymbol {
+func NewTokenSymbol(env, tokenType, name, dataType, value string, params []string) *TokenSymbol {
 	return &TokenSymbol{
-		Scope:    scope,
+		Env:      env,
 		Type:     tokenType,
 		Name:     name,
 		DataType: dataType,
@@ -35,52 +35,52 @@ func NewTokenSymbol(scope, tokenType, name, dataType, value string, params []str
 	}
 }
 
-type ScopeNode struct {
-	Parent    *ScopeNode
-	Child     []*ScopeNode
+type EnvNode struct {
+	Parent    *EnvNode
+	Child     []*EnvNode
 	Level     int
 	ScopeType string
 	Variables map[string]*Variable
 	Functions map[string]*Function
 }
 
-func NewScopeNode(parent *ScopeNode, scopeType string, Level int) *ScopeNode {
-	return &ScopeNode{
+func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
+	return &EnvNode{
 		Parent:    parent,
-		Child:     make([]*ScopeNode, 0),
+		Child:     make([]*EnvNode, 0),
 		Level:     Level,
-		ScopeType: scopeType,
+		ScopeType: envType,
 		Variables: make(map[string]*Variable),
 		Functions: make(map[string]*Function),
 	}
 }
 
-func (s *ScopeNode) AddVariable(name string, value *Variable) {
+func (s *EnvNode) AddVariable(name string, value *Variable) {
 	s.Variables[name] = value
 }
 
-func (s *ScopeNode) GetVariable(name string) interface{} {
+func (s *EnvNode) GetVariable(name string) interface{} {
 	if val, ok := s.Variables[name]; ok {
 		return val
 	}
 	return nil
 }
 
-func (s *ScopeNode) SetVariable(name string, value V.IValue) {
+func (s *EnvNode) SetVariable(name string, value V.IValue) {
 	if val, ok := s.Variables[name]; ok {
 		val.SetValue(value)
 	}
 }
 
-func (s *ScopeNode) ResetScopeNode() {
+func (s *EnvNode) ResetEnvNode() {
 	s.Variables = make(map[string]*Variable)
 }
 
-func (s *ScopeNode) GetType() string {
+func (s *EnvNode) GetType() string {
 	return string(s.ScopeType)
 }
 
-func (s *ScopeNode) String() string {
+func (s *EnvNode) String() string {
 	result := ""
 	for i := 0; i < s.Level; i++ {
 		result += "\t"
@@ -92,25 +92,25 @@ func (s *ScopeNode) String() string {
 	return result
 }
 
-// ScopeTree is a nary tree to represent scopes
-type ScopeTree struct {
-	Root    *ScopeNode
-	Current *ScopeNode
+// EnvTree is a nary tree to represent scopes
+type EnvTree struct {
+	Root    *EnvNode
+	Current *EnvNode
 }
 
-func NewScopeTree() *ScopeTree {
-	root := NewScopeNode(nil, RootScope, 0)
-	return &ScopeTree{
+func NewEnvTree() *EnvTree {
+	root := NewEnvNode(nil, RootEnv, 0)
+	return &EnvTree{
 		Root:    root,
 		Current: root,
 	}
 }
 
-func (s *ScopeTree) AddVariable(name string, value *Variable) {
+func (s *EnvTree) AddVariable(name string, value *Variable) {
 	s.Current.AddVariable(name, value)
 }
 
-func (s *ScopeTree) GetVariable(name string) interface{} {
+func (s *EnvTree) GetVariable(name string) interface{} {
 	// Check if var exists in current scope
 	// if not, check in parent scope until root
 
@@ -122,15 +122,15 @@ func (s *ScopeTree) GetVariable(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeTree) SetVariable(name string, value V.IValue) {
+func (s *EnvTree) SetVariable(name string, value V.IValue) {
 	s.Current.SetVariable(name, value)
 }
 
-func (s *ScopeTree) AddFunction(name string, value *Function) {
+func (s *EnvTree) AddFunction(name string, value *Function) {
 	s.Current.Functions[name] = value
 }
 
-func (s *ScopeTree) GetFunction(name string) interface{} {
+func (s *EnvTree) GetFunction(name string) interface{} {
 	// Check if function exists in current scope
 	// if not, check in parent scope until root
 
@@ -142,32 +142,32 @@ func (s *ScopeTree) GetFunction(name string) interface{} {
 	return nil
 }
 
-func (s *ScopeTree) PushScope(scopeType string) *ScopeNode {
-	node := NewScopeNode(s.Current, scopeType, s.Current.Level+1)
+func (s *EnvTree) PushEnv(scopeType string) *EnvNode {
+	node := NewEnvNode(s.Current, scopeType, s.Current.Level+1)
 	s.Current.Child = append(s.Current.Child, node)
 	s.Current = node
 	return node
 }
 
-func (s *ScopeTree) PopScope() {
+func (s *EnvTree) PopEnv() {
 	s.Current = s.Current.Parent
 }
 
-func (s *ScopeTree) GetSymbolTable() []ApiVariable {
+func (s *EnvTree) GetSymbolTable() []ApiVariable {
 	// Traverse tree to get symbol table
 	return s.Root.GetAllVariables()
 }
 
-func (s *ScopeTree) ResetScope() {
+func (s *EnvTree) ResetEnv() {
 	// Clean all variables inside current scope
-	s.Current.ResetScopeNode()
+	s.Current.ResetEnvNode()
 }
 
-func (s *ScopeTree) GetCurrentScope() *ScopeNode {
+func (s *EnvTree) GetCurrentScope() *EnvNode {
 	return s.Current
 }
 
-func (s *ScopeTree) String() string {
+func (s *EnvTree) String() string {
 	return s.Root.String()
 }
 
@@ -182,13 +182,13 @@ type ApiVariable struct {
 	Scope   string
 }
 
-func (s *ScopeNode) GetAllVariables() []ApiVariable {
+func (s *EnvNode) GetAllVariables() []ApiVariable {
 	var allVariables []ApiVariable
 	s.collectVariables(&allVariables)
 	return allVariables
 }
 
-func (s *ScopeNode) collectVariables(allVariables *[]ApiVariable) {
+func (s *EnvNode) collectVariables(allVariables *[]ApiVariable) {
 	for _, variable := range s.Variables {
 		apiVar := ApiVariable{
 			Name:    variable.GetName(),

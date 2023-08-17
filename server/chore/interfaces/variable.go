@@ -11,10 +11,10 @@ type Variable struct {
 	Type    string
 	Line    int
 	Column  int
-	Scope   *ScopeNode
+	Env     *EnvNode
 }
 
-func NewVariable(name string, isConst bool, value V.IValue, typeVar string, line, column int, scope *ScopeNode) *Variable {
+func NewVariable(name string, isConst bool, value V.IValue, typeVar string, line, column int, scope *EnvNode) *Variable {
 	return &Variable{
 		Name:    name,
 		IsConst: isConst,
@@ -22,7 +22,7 @@ func NewVariable(name string, isConst bool, value V.IValue, typeVar string, line
 		Type:    typeVar,
 		Line:    line,
 		Column:  column,
-		Scope:   scope,
+		Env:     scope,
 	}
 }
 
@@ -55,5 +55,5 @@ func (v *Variable) GetColumn() int {
 }
 
 func (v *Variable) GetScopeName() string {
-	return v.Scope.GetType()
+	return v.Env.GetType()
 }

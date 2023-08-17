@@ -20,7 +20,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 		return nil
 	}
 
-	_, ok := v.Scope.GetVariable(id).(Variable)
+	_, ok := v.Env.GetVariable(id).(Variable)
 
 	if ok {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
@@ -32,7 +32,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 
 	newVariable := NewVariable(id, isConstant == "let", value, value.GetType(), line, column, scope)
 
-	v.Scope.AddVariable(id, newVariable)
+	v.Env.AddVariable(id, newVariable)
 
 	return true
 }
@@ -48,7 +48,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 		return nil
 	}
 
-	_, ok := v.Scope.GetVariable(id).(Variable)
+	_, ok := v.Env.GetVariable(id).(Variable)
 
 	if ok {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
@@ -73,7 +73,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 
 	newVariable := NewVariable(id, isConstant, value, valueType, line, column, scope)
 
-	v.Scope.AddVariable(id, newVariable)
+	v.Env.AddVariable(id, newVariable)
 
 	return true
 }
@@ -85,7 +85,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	id := ctx.ID().GetText()
 	valueType := v.Visit(ctx.VariableType()).(string)
 
-	_, ok := v.Scope.GetVariable(id).(Variable)
+	_, ok := v.Env.GetVariable(id).(Variable)
 
 	if ok {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
@@ -101,16 +101,16 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	line, column, scope := GetVariableAttr(v, ctx.GetStart())
 	newVariable := NewVariable(id, isConstant, V.NewNilValue(nil), valueType, line, column, scope)
 
-	v.Scope.AddVariable(id, newVariable)
+	v.Env.AddVariable(id, newVariable)
 
 	return true
 
 }
 
-func GetVariableAttr(v *Visitor, lc antlr.Token) (int, int, *ScopeNode) {
+func GetVariableAttr(v *Visitor, lc antlr.Token) (int, int, *EnvNode) {
 	line := lc.GetLine()
 	column := lc.GetColumn()
-	scope := v.Scope.GetCurrentScope()
+	scope := v.Env.GetCurrentScope()
 	return line, column, scope
 }
 
@@ -127,7 +127,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	id := ctx.ID().GetText() // a
 
-	_, ok := v.Scope.GetVariable(id).(Variable)
+	_, ok := v.Env.GetVariable(id).(Variable)
 
 	if ok {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
@@ -160,7 +160,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	newObj.AddProp("count", count)
 	newObj.AddProp("isEmpty", isEmpty)
 
-	v.Scope.AddVariable(id,
+	v.Env.AddVariable(id,
 		NewVariable(id, isConstant, newObj, valueType, line, column, scope),
 	)
 

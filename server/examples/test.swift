@@ -192,20 +192,20 @@
 
 // addTwoNumbers(a: 1, b: 2)
 
-// func suma( num1 x : Int, num2 y: Int) -> Int {
-//     return x + y
-// }
+func suma( num1 x : Int, num2 y: Int) -> Int {
+    return x + y
+}
 
-// func resta(_ x : Int, _ y: Int) -> Int {
-//     return x - y
-// }
+func resta(_ x : Int, _ y: Int) -> Int {
+    return x - y
+}
 
-// //función mul
-// // Nombres externos: x, y
-// // Nombres internos: x, y
-// func mul(x: Int, y: Int) -> Int {
-//     return x * y
-// }
+//función mul
+// Nombres externos: x, y
+// Nombres internos: x, y
+func mul(x: Int, y: Int) -> Int {
+    return x * y
+}
 
 // // func duplicar(_ x: inout Int){
 // //     x += x
@@ -220,64 +220,64 @@
 // // }
 
 
-// var numero1 = 3
-// var numero2 = 2
-// //llamada con nombres externos
-// print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: numero2))
-// //llamada sin nombres externos
-// print(resta(numero1, numero2))
-// //llamada con nombres externos e internos idénticos
-// print(mul(x: numero1, y: numero2))
+var numero1 = 3
+var numero2 = 2
+//llamada con nombres externos
+print("La suma de", numero1, "y", numero2, "es ->", suma(num1: numero1, num2: numero2))
+//llamada sin nombres externos
+print(resta(numero1, numero2))
+//llamada con nombres externos e internos idénticos
+print(mul(x: numero1, y: numero2))
 
-// func fibonacci(_ n: Int) -> Int {
-//     if n > 1 {
-//         return fibonacci(n - 1) + fibonacci(n - 2)
-//     } else if n == 1 {
-//         return 1
-//     } else if n == 0 {
-//         return 0
-//     } else {
-//         print("error")
-//         return 0
-//     }
-// }
+func fibonacci(_ n: Int) -> Int {
+    if n > 1 {
+        return fibonacci(n - 1) + fibonacci(n - 2)
+    } else if n == 1 {
+        return 1
+    } else if n == 0 {
+        return 0
+    } else {
+        print("error")
+        return 0
+    }
+}
 
-// print("Debería ser 55")
-// print(fibonacci(10)) 
+print("Debería ser 55")
+print(fibonacci(10)) 
 
-// print("Debería ser 125")
-// print(ackerman(3,4))
+print("Debería ser 125")
+print(ackerman(3,4))
 
-// func ackerman(_ m: Int, _ n: Int) -> Int {
-//     if m == 0 {
-//         return n + 1
-//     } else if m > 0 && n == 0 {
-//         return ackerman(m - 1, 1)
-//     } else {
-//         return ackerman(m - 1, ackerman(m, n - 1))
-//     }
-// }
-
-
-
-// func func1() -> Int  {
-//     return 1
-// }
-
-// print(Int("10"))
-// print(Int("12.001"))
-// print(Int(10.9999))
-// print(Int("Q10"))
-
-// print(Float("10"))
-// print(Float("10.001"))
-// print(Float("Q10.00"))
+func ackerman(_ m: Int, _ n: Int) -> Int {
+    if m == 0 {
+        return n + 1
+    } else if m > 0 && n == 0 {
+        return ackerman(m - 1, 1)
+    } else {
+        return ackerman(m - 1, ackerman(m, n - 1))
+    }
+}
 
 
-// print(String(10) + String(3.51)) //imprime 103.5000 
-// print( String( true )) //true
-// var cadena = String(true) + "->" + String(3.504) 
-// print(cadena) // imprime true->3.50400000
+
+func func1() -> Int  {
+    return 1
+}
+
+print(Int("10"))
+print(Int("12.001"))
+print(Int(10.9999))
+print(Int("Q10"))
+
+print(Float("10"))
+print(Float("10.001"))
+print(Float("Q10.00"))
+
+
+print(String(10) + String(3.51)) //imprime 103.5000 
+print( String( true )) //true
+var cadena = String(true) + "->" + String(3.504) 
+print(cadena) // imprime true->3.50400000
 
 // Vectors
 
@@ -293,6 +293,7 @@ var copiaVec: [Int] = vec1
 print("La cantidad de objetos en el vector es de:", vec1.count, "está vacío:", vec1.isEmpty)
 print("La cantidad de objetos en el vector es de:", vec2.count, "está vacío:", vec2.isEmpty)
 print("La cantidad de objetos en el vector es de:", vec3.count, "está vacío:", vec3.isEmpty)
+
 
 // persona.vec1.append(50)
 // vec1.append(50)

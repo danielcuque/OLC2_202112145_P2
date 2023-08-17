@@ -366,13 +366,6 @@ type IIdChainContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
-
-	// Getter signatures
-	AllID() []antlr.TerminalNode
-	ID(i int) antlr.TerminalNode
-	AllDOT() []antlr.TerminalNode
-	DOT(i int) antlr.TerminalNode
-
 	// IsIdChainContext differentiates from other interfaces.
 	IsIdChainContext()
 }
@@ -409,20 +402,8 @@ func NewIdChainContext(parser antlr.Parser, parent antlr.ParserRuleContext, invo
 
 func (s *IdChainContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *IdChainContext) AllID() []antlr.TerminalNode {
-	return s.GetTokens(SwiftParserID)
-}
-
-func (s *IdChainContext) ID(i int) antlr.TerminalNode {
-	return s.GetToken(SwiftParserID, i)
-}
-
-func (s *IdChainContext) AllDOT() []antlr.TerminalNode {
-	return s.GetTokens(SwiftParserDOT)
-}
-
-func (s *IdChainContext) DOT(i int) antlr.TerminalNode {
-	return s.GetToken(SwiftParserDOT, i)
+func (s *IdChainContext) CopyAll(ctx *IdChainContext) {
+	s.CopyFrom(&ctx.BaseParserRuleContext)
 }
 
 func (s *IdChainContext) GetRuleContext() antlr.RuleContext {
@@ -433,10 +414,44 @@ func (s *IdChainContext) ToStringTree(ruleNames []string, recog antlr.Recognizer
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *IdChainContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+type IDChainContext struct {
+	IdChainContext
+}
+
+func NewIDChainContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *IDChainContext {
+	var p = new(IDChainContext)
+
+	InitEmptyIdChainContext(&p.IdChainContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*IdChainContext))
+
+	return p
+}
+
+func (s *IDChainContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *IDChainContext) AllID() []antlr.TerminalNode {
+	return s.GetTokens(SwiftParserID)
+}
+
+func (s *IDChainContext) ID(i int) antlr.TerminalNode {
+	return s.GetToken(SwiftParserID, i)
+}
+
+func (s *IDChainContext) AllDOT() []antlr.TerminalNode {
+	return s.GetTokens(SwiftParserDOT)
+}
+
+func (s *IDChainContext) DOT(i int) antlr.TerminalNode {
+	return s.GetToken(SwiftParserDOT, i)
+}
+
+func (s *IDChainContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case SwiftVisitor:
-		return t.VisitIdChain(s)
+		return t.VisitIDChain(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -448,6 +463,7 @@ func (p *SwiftParser) IdChain() (localctx IIdChainContext) {
 	p.EnterRule(localctx, 0, SwiftParserRULE_idChain)
 	var _alt int
 
+	localctx = NewIDChainContext(p, localctx)
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(54)

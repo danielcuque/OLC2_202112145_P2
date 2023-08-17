@@ -43,9 +43,9 @@ func (v *Visitor) VisitSwitchCase(ctx *parser.SwitchCaseContext) interface{} {
 	}
 
 	if expr.GetValue() == switchContextExpr.GetValue() {
-		v.Scope.PushScope(SwitchScope)
+		v.Env.PushEnv(SwitchEnv)
 		v.Visit(ctx.Block())
-		v.Scope.PopScope()
+		v.Env.PopEnv()
 		return true
 	}
 
@@ -53,8 +53,8 @@ func (v *Visitor) VisitSwitchCase(ctx *parser.SwitchCaseContext) interface{} {
 }
 
 func (v *Visitor) VisitSwitchDefault(ctx *parser.SwitchDefaultContext) interface{} {
-	v.Scope.PushScope(SwitchScope)
+	v.Env.PushEnv(SwitchEnv)
 	v.Visit(ctx.Block())
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 	return nil
 }

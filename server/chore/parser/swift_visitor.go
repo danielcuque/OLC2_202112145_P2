@@ -8,8 +8,8 @@ import "github.com/antlr4-go/antlr/v4"
 type SwiftVisitor interface {
 	antlr.ParseTreeVisitor
 
-	// Visit a parse tree produced by SwiftParser#idChain.
-	VisitIdChain(ctx *IdChainContext) interface{}
+	// Visit a parse tree produced by SwiftParser#IDChain.
+	VisitIDChain(ctx *IDChainContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#program.
 	VisitProgram(ctx *ProgramContext) interface{}

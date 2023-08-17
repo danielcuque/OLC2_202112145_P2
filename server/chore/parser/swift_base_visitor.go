@@ -8,7 +8,7 @@ type BaseSwiftVisitor struct {
 	*antlr.BaseParseTreeVisitor
 }
 
-func (v *BaseSwiftVisitor) VisitIdChain(ctx *IdChainContext) interface{} {
+func (v *BaseSwiftVisitor) VisitIDChain(ctx *IDChainContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -4,7 +4,7 @@ options {
 	tokenVocab = SwiftLexer;
 }
 
-idChain: ID (DOT ID)*;
+idChain: ID (DOT ID)* # IDChain;
 
 program: block EOF;
 

@@ -70,7 +70,7 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	id := ctx.ID().GetText()
 
 	// Verify if the function already exists
-	_, ok := v.Scope.GetFunction(id).(*Function)
+	_, ok := v.Env.GetFunction(id).(*Function)
 
 	if ok {
 		v.NewError(FunctionAlreadyExistsError, ctx.GetStart())
@@ -100,7 +100,7 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	// 	return nil
 	// }
 
-	v.Scope.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
+	v.Env.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
 
 	return nil
 }
@@ -208,7 +208,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Verify if the function exists
-	fn, ok := v.Scope.GetFunction(id).(*Function)
+	fn, ok := v.Env.GetFunction(id).(*Function)
 
 	if !ok {
 		v.NewError(FunctionNotFoundError, ctx.GetStart())
@@ -253,7 +253,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Create a new scope
-	fnScope := v.Scope.PushScope(id)
+	fnScope := v.Env.PushEnv(id)
 	v.Stack.Push(NewStackItem(
 		id,
 		V.NewNilValue(nil),
@@ -282,7 +282,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 			return false
 		}
 
-		v.Scope.AddVariable(param.InternalName, NewVariable(
+		v.Env.AddVariable(param.InternalName, NewVariable(
 			param.InternalName,
 			false,
 			arg.Value,
@@ -305,7 +305,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Return scope to root scope
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 
 	if returnValue.GetType() != fn.ReturnDataType {
 		v.NewError(InvalidReturnTypeFunctionError, ctx.GetStart())
@@ -314,12 +314,12 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	return returnValue
 }
 
-func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext, calledScope *ScopeNode) {
+func (v *Visitor) ExecuteFunctionBody(fn *Function, ctx *parser.FunctionCallContext, calledScope *EnvNode) {
 	// Create a new scope
 
 	defer func() {
 		v.Stack.Reset()
-		v.Scope.Current = calledScope
+		v.Env.Current = calledScope
 
 		peek, ok := recover().(*StackItem)
 

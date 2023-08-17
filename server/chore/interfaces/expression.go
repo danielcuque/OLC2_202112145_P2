@@ -53,25 +53,24 @@ func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
 }
 
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
+	// variableName :=
 
-	id := ctx.IdChain().ID(0).GetText()
-	variable, ok := v.Scope.GetVariable(id).(*Variable)
+	expr := strings.Split(ctx.IdChain().GetText(), ".")
+
+	variable, ok := v.Env.GetVariable(expr[0]).(*Variable)
 
 	if !ok {
-		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
+		v.NewError(fmt.Sprintf("La variable %s no existe", expr[0]), ctx.GetStart())
 		return nil
 	}
 
-	if len(ctx.IdChain().AllID()) == 1 {
+	if len(expr) == 1 {
 		return variable.Value
 	}
 
 	// Check if there is more than one id
-	var params []string
 
-	for _, id := range ctx.IdChain().AllID()[1:] {
-		params = append(params, id.GetText())
-	}
+	params := expr[1:]
 
 	prop, okP := GetPropValue(variable, params).(*Variable)
 

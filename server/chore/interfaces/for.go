@@ -11,7 +11,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	id := ctx.ID().GetText()
 
 	// Create a new scope
-	v.Scope.PushScope(IfScope)
+	v.Env.PushEnv(IfSEnv)
 
 	v.Stack.Push(
 		NewStackItem(
@@ -53,7 +53,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	v.ExecuteFor(id, valuesToIterate, ctx)
 
 	// Pop the scope
-	v.Scope.PopScope()
+	v.Env.PopEnv()
 
 	return nil
 }
@@ -61,7 +61,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 func NewForVariable(v *Visitor, id string, value V.IValue, valueType string, ctx *parser.ForStatementContext) {
 	line, column, scope := GetVariableAttr(v, ctx.GetStart())
 	newVariable := NewVariable(id, true, value, valueType, line, column, scope)
-	v.Scope.AddVariable(id, newVariable)
+	v.Env.AddVariable(id, newVariable)
 }
 
 func (v *Visitor) ExecuteFor(id string, valuesToIterate []V.IValue, ctx *parser.ForStatementContext) {
@@ -87,7 +87,7 @@ func (v *Visitor) ExecuteFor(id string, valuesToIterate []V.IValue, ctx *parser.
 
 	for _, value := range valuesToIterate {
 		// Assign the value to the variable
-		v.Scope.SetVariable(id, value)
+		v.Env.SetVariable(id, value)
 
 		// Visit the for loop
 		v.Visit(ctx.Block())
