@@ -14,7 +14,7 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	vectorObj, _ := v.LookUpObject(id, nil, ctx)
 
 	if vectorObj.GetType() != V.VectorType {
-		v.NewError(InvalidParameter, ctx.GetStart())
+		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -44,7 +44,7 @@ func RemoveLast(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	vectorObj, _ := v.LookUpObject(id, nil, ctx)
 
 	if vectorObj.GetType() != V.VectorType {
-		v.NewError(InvalidParameter, ctx.GetStart())
+		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -80,7 +80,7 @@ func Remove(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	vectorObj, _ := v.LookUpObject(id, nil, ctx)
 
 	if vectorObj.GetType() != V.VectorType {
-		v.NewError(InvalidParameter, ctx.GetStart())
+		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -91,12 +91,28 @@ func Remove(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		return V.NewNilValue(nil)
 	}
 
+	if args[0].Name != "at" {
+		v.NewError(InvalidArgumentName, ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
+
+	if args[0].Value.GetType() != V.IntType {
+		v.NewError(InvalidParameterType, ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
+
+	index := args[0].Value.GetValue().(int)
+
+	if index < 0 {
+		v.NewError("El índice no puede ser negativo", ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
+
 	// Change object props as isEmpty and count
 
 	vector := vectorObj.GetValue().(*VectorV)
 
 	// Check index out of range
-	index := args[0].Value.GetValue().(int)
 
 	if index < 0 || index >= vector.Count() {
 		v.NewError("El índice está fuera de rango", ctx.GetStart())

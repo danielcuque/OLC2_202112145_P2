@@ -216,7 +216,7 @@ while vec1.count > 0 {
 print("\n")
 
 vec2.remove(at: 3) // Error
-vec2.remove(at: 2)
+vec2.remove(asds: 2)
 
 
 print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
