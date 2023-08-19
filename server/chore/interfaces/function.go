@@ -218,46 +218,28 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		}
 		fn = fnt
 	} else {
-		// Get the baseVar
+		// Get props if there are
+		props := make([]string, 0)
 
-		baseVar, okV := v.LookUpObject(id, ctx)
+		if len(ids) > 2 {
+			props = make([]string, len(ids)-2)
+
+			for i, id := range ids[1 : len(ids)-1] {
+				props[i] = id.GetText()
+			}
+		}
+
+		// Get the baseVar
+		object, okV := v.LookUpObject(id, props, ctx)
 
 		if !okV {
 			return nil
 		}
 
-		var props []string
-		var methodName string
-		var object *ObjectV
+		methodName := ids[1].GetText()
 
-		// Check if there are not properties
-
-		// If there are just two ids, means that second id is the method
-		if len(ids) == 2 {
-			// Get object
-			obj, okP := baseVar.Value.(*ObjectV)
-
-			if !okP {
-				v.NewError(ObjectNotFound, ctx.GetStart())
-				return nil
-			}
-
-			object = obj
-			methodName = ids[1].GetText()
-		} else {
-			for _, id := range ids[1 : len(ids)-1] {
-				props = append(props, id.GetText())
-			}
+		if len(ids) > 2 {
 			methodName = ids[len(ids)-1].GetText()
-
-			obj, okP := GetPropValue(baseVar, props).(*Variable).Value.(*ObjectV)
-
-			if !okP {
-				v.NewError(ObjectNotFound, ctx.GetStart())
-				return nil
-			}
-
-			object = obj
 		}
 
 		// Check if is a native function
@@ -455,7 +437,7 @@ func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
 	return args
 }
 
-func (v *Visitor) LookUpObject(id string, ctx *parser.FunctionCallContext) (*Variable, bool) {
+func (v *Visitor) LookUpObject(id string, props []string, ctx *parser.FunctionCallContext) (*ObjectV, bool) {
 	variable, ok := v.Env.GetVariable(id).(*Variable)
 
 	if !ok {
@@ -463,5 +445,22 @@ func (v *Visitor) LookUpObject(id string, ctx *parser.FunctionCallContext) (*Var
 		return nil, false
 	}
 
-	return variable, true
+	object, ok := variable.Value.(*ObjectV)
+
+	// If there are props, then get the object
+	if len(props) > 0 {
+		object, ok = GetPropValue(variable, props).(*Variable).Value.(*ObjectV)
+
+		if !ok {
+			v.NewError(ObjectNotFound, ctx.GetStart())
+			return nil, false
+		}
+	}
+
+	if !ok {
+		v.NewError(ObjectNotFound, ctx.GetStart())
+		return nil, false
+	}
+
+	return object, true
 }

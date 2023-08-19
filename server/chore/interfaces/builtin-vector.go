@@ -11,9 +11,7 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	id, _ := v.GetIds(ctx)
 
 	// Get the vector
-	baseVar, _ := v.LookUpObject(id, ctx)
-
-	vectorObj := baseVar.Value.(*ObjectV)
+	vectorObj, _ := v.LookUpObject(id, nil, ctx)
 
 	if vectorObj.GetType() != V.VectorType {
 		v.NewError(InvalidParameter, ctx.GetStart())
