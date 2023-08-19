@@ -207,7 +207,15 @@ print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:"
 
 
 persona.vec1.append(50) // Error
-vec1.append(50, 60)
+vec1.append(50)
+
+print("\n")
+while vec1.count > 0 {
+    print("vec1 tiene", vec1.count, "elementos")
+    vec1.removeLast()
+}
+print("\n")
+
 
 print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 
