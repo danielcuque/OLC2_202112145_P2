@@ -28,7 +28,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 	}
 
 	// Get line, column and scope
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 
 	newVariable := NewVariable(id, isConstant == "let", value, value.GetType(), line, column, scope)
 
@@ -69,7 +69,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	}
 
 	// Get line, column and scope
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 
 	newVariable := NewVariable(id, isConstant, value, valueType, line, column, scope)
 
@@ -98,7 +98,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	}
 
 	// Get line, column and scope
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 	newVariable := NewVariable(id, isConstant, V.NewNilValue(nil), valueType, line, column, scope)
 
 	v.Env.AddVariable(id, newVariable)
@@ -107,7 +107,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 
 }
 
-func GetVariableAttr(v *Visitor, lc antlr.Token) (int, int, *EnvNode) {
+func (v *Visitor) GetVariableAttr(lc antlr.Token) (int, int, *EnvNode) {
 	line := lc.GetLine()
 	column := lc.GetColumn()
 	scope := v.Env.GetCurrentScope()
@@ -125,7 +125,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 		return nil
 	}
 
-	id := ctx.ID().GetText() // a
+	id := ctx.ID().GetText()
 
 	_, ok := v.Env.GetVariable(id).(Variable)
 
@@ -134,7 +134,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 		return nil
 	}
 
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 
 	isConstant := ctx.GetVarType().GetText() == "const" // let | var
 

@@ -15,14 +15,14 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 
 	if vectorObj.GetType() != V.VectorType {
 		v.NewError(InvalidParameter, ctx.GetStart())
-		return nil
+		return V.NewNilValue(nil)
 	}
 
 	args := v.GetArgs(ctx)
 
 	if len(args) > 1 {
 		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
-		return nil
+		return V.NewNilValue(nil)
 	}
 
 	// Change object props as isEmpty and count

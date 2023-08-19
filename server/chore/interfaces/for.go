@@ -59,7 +59,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 }
 
 func NewForVariable(v *Visitor, id string, value V.IValue, valueType string, ctx *parser.ForStatementContext) {
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 	newVariable := NewVariable(id, true, value, valueType, line, column, scope)
 	v.Env.AddVariable(id, newVariable)
 }

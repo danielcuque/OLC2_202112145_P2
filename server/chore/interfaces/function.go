@@ -300,7 +300,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	))
 
 	// Now, initialize the parameters into a new Scope
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 
 	for i, arg := range args {
 		var param Parameter

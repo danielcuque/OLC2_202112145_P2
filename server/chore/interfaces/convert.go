@@ -11,7 +11,8 @@ func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		return v.handleInvalidParameter(ctx)
+		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		return V.NewNilValue(nil)
 	}
 
 	value := args[0].Value
@@ -34,7 +35,8 @@ func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		return v.handleInvalidParameter(ctx)
+		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		return V.NewNilValue(nil)
 	}
 
 	value := args[0].Value
@@ -57,7 +59,8 @@ func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		return v.handleInvalidParameter(ctx)
+		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		return V.NewNilValue(nil)
 	}
 
 	value := args[0].Value
