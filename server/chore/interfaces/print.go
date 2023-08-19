@@ -10,12 +10,7 @@ import (
 // We extends the visitor to add the print function, create PrintContext and add it to the scope
 
 func Print(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
-	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
-
-	if !ok {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return nil
-	}
+	args := v.GetArgs(ctx)
 
 	var log string
 

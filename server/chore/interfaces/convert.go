@@ -8,98 +8,56 @@ import (
 )
 
 func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
-
-	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
-
-	if !ok {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return nil
-	}
+	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return V.NewNilValue(nil)
-
+		return v.handleInvalidParameter(ctx)
 	}
 
 	value := args[0].Value
 
 	switch value.GetType() {
 	case V.StringType:
-		stringValue := value.GetValue().(string)
-
-		// Intentar convertir a float primero y luego a int
-		floatValue, err := strconv.ParseFloat(stringValue, 64)
+		floatValue, err := strconv.ParseFloat(value.GetValue().(string), 64)
 		if err == nil {
 			return V.NewIntValue(int(math.Trunc(floatValue)))
-		} else {
-			v.NewError(InvalidParameter, ctx.GetStart())
-			return V.NewNilValue(nil)
 		}
 
 	case V.FloatType:
 		return V.NewIntValue(int(math.Trunc(value.GetValue().(float64))))
-
-	default:
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return V.NewNilValue(nil)
 	}
+
+	return v.handleInvalidParameter(ctx)
 }
 
 func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
-
-	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
-
-	if !ok {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return nil
-	}
+	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return V.NewNilValue(nil)
-
+		return v.handleInvalidParameter(ctx)
 	}
 
 	value := args[0].Value
 
 	switch value.GetType() {
 	case V.StringType:
-		stringValue := value.GetValue().(string)
-
-		// Intentar convertir a float primero y luego a int
-		floatValue, err := strconv.ParseFloat(stringValue, 64)
+		floatValue, err := strconv.ParseFloat(value.GetValue().(string), 64)
 		if err == nil {
 			return V.NewFloatValue(floatValue)
-		} else {
-			v.NewError(InvalidParameter, ctx.GetStart())
-			return V.NewNilValue(nil)
 		}
 
 	case V.IntType:
 		return V.NewFloatValue(float64(value.GetValue().(int)))
-
-	default:
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return V.NewNilValue(nil)
 	}
+
+	return v.handleInvalidParameter(ctx)
 }
 
 func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
-	/*
-		Esta función es la contraparte de las dos anteriores, es decir, toma como parámetro un valor numérico y retorna una cadena de tipo String. Además sí recibe un valor Bool lo convierte en "true" o "false". Para valores tipo Float la cantidad de números después del punto decimal queda a discreción del estudiante.
-	*/
-
-	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
-
-	if !ok {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return nil
-	}
+	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return V.NewNilValue(nil)
+		return v.handleInvalidParameter(ctx)
 	}
 
 	value := args[0].Value
@@ -117,9 +75,12 @@ func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		} else {
 			return V.NewStringValue("false")
 		}
-
-	default:
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return V.NewNilValue(nil)
 	}
+
+	return v.handleInvalidParameter(ctx)
+}
+
+func (v *Visitor) handleInvalidParameter(ctx *parser.FunctionCallContext) V.IValue {
+	v.NewError(InvalidParameter, ctx.GetStart())
+	return V.NewNilValue(nil)
 }

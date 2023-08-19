@@ -197,6 +197,7 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
 	id, ids := v.GetIds(ctx)
 
+	// First check if is a native function, as print, etc
 	function := GetInternalBuiltinFunctions(id)
 
 	if function != nil {
@@ -277,12 +278,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	}
 
 	// Get the arguments
-	args := make([]Argument, 0)
-
-	// Check if arguments are nil
-	if ctx.FunctionCallArguments() != nil {
-		args = v.Visit(ctx.FunctionCallArguments()).([]Argument)
-	}
+	args := v.GetArgs(ctx)
 
 	// Verify if the number of parameters is the same
 	if len(args) != len(fn.Parameters) {
@@ -447,4 +443,14 @@ func (v *Visitor) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.Termi
 	}
 
 	return id, ids
+}
+
+func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
+	args := make([]Argument, 0)
+
+	if ctx.FunctionCallArguments() != nil {
+		args = v.Visit(ctx.FunctionCallArguments()).([]Argument)
+	}
+
+	return args
 }

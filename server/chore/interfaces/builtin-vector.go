@@ -25,14 +25,7 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		return nil
 	}
 
-	// Get the value to append
-
-	args, ok := v.Visit(ctx.FunctionCallArguments()).([]Argument)
-
-	if !ok {
-		v.NewError(InvalidParameter, ctx.GetStart())
-		return nil
-	}
+	args := v.GetArgs(ctx)
 
 	if len(args) > 1 {
 		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
