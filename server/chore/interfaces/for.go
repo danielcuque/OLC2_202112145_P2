@@ -10,16 +10,6 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	// Get the for loop variables
 	id := ctx.ID().GetText()
 
-	// Create a new scope
-	v.Env.PushEnv(IfSEnv)
-
-	v.Stack.Push(
-		NewStackItem(
-			"For",
-			V.NewNilValue(nil),
-			[]StackItemType{BreakType, ContinueType},
-		))
-
 	// Now get the value to iterate
 	argIterator, ok := v.Visit(ctx.Expr()).(V.IValue)
 
@@ -46,6 +36,16 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 		v.NewError(fmt.Sprintf("No se puede iterar un objeto de tipo %s", iteratorType), ctx.GetStart())
 		return nil
 	}
+
+	// Create a new scope
+	v.Env.PushEnv(IfSEnv)
+
+	v.Stack.Push(
+		NewStackItem(
+			"For",
+			V.NewNilValue(nil),
+			[]StackItemType{BreakType, ContinueType},
+		))
 
 	NewForVariable(v, id, valuesToIterate[0], iteratorType, ctx)
 

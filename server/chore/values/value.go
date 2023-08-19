@@ -29,6 +29,10 @@ func (a *RangeV) GetType() string {
 	return IntType
 }
 
+func (a *RangeV) String() string {
+	return ""
+}
+
 func NewRangeValue(value []IValue) *RangeV {
 	return &RangeV{Value: value}
 }

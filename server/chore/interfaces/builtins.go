@@ -15,6 +15,7 @@ func GetInternalBuiltinFunctions(name string) func(v *Visitor, ctx *parser.Funct
 			"String":     String,
 			"append":     Append,
 			"removeLast": RemoveLast,
+			"remove":     Remove,
 		}
 	}
 	return internalFunction[name]

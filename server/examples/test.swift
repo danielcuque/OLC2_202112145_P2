@@ -141,8 +141,7 @@
 // var testFor = 0
 
 // for i in 6...10 {
-//     testFor += i
-//     break
+//     print(i)
 // }
 
 // print(testFor, "testFor")
@@ -195,7 +194,7 @@ print("cadena1 \"cadena2\" cadena3")
 //vector con valores
 var vec1: [Int] = [20, 30, 40] 
 //vector vacío
-var vec2: [Float] = [1.1]
+var vec2: [Float] = [1.1, 2.2, 3.3]
 //vector vacío
 var vec3: [String] = []
 
@@ -215,6 +214,9 @@ while vec1.count > 0 {
     vec1.removeLast()
 }
 print("\n")
+
+vec2.remove(at: 3) // Error
+vec2.remove(at: 2)
 
 
 print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
