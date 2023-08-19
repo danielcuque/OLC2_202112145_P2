@@ -195,15 +195,7 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 }
 
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
-	var id string
-	var ids []antlr.TerminalNode
-
-	if ctx.IdChain() != nil {
-		ids = v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
-		id = ids[0].GetText()
-	} else {
-		id = v.Visit(ctx.VariableType()).(string)
-	}
+	id, ids := v.GetIds(ctx)
 
 	function := GetInternalBuiltinFunctions(id)
 
@@ -441,4 +433,18 @@ func (v *Visitor) VisitNamedArguments(ctx *parser.NamedArgumentsContext) interfa
 
 func (v *Visitor) VisitIDChain(ctx *parser.IDChainContext) interface{} {
 	return ctx.AllID()
+}
+
+func (v *Visitor) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.TerminalNode) {
+	var id string
+	var ids []antlr.TerminalNode
+
+	if ctx.IdChain() != nil {
+		ids = v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
+		id = ids[0].GetText()
+	} else {
+		id = v.Visit(ctx.VariableType()).(string)
+	}
+
+	return id, ids
 }
