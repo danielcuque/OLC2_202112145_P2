@@ -201,13 +201,16 @@ var vec3: [String] = []
 
 var copiaVec: [Int] = vec1
 
-print("La cantidad de objetos en el vector es de:", vec1.count, "está vacío:", vec1.isEmpty)
-print("La cantidad de objetos en el vector es de:", vec2.count, "está vacío:", vec2.isEmpty)
-print("La cantidad de objetos en el vector es de:", vec3.count, "está vacío:", vec3.isEmpty)
+print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
+print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
+print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
 
 persona.vec1.append(50) // Error
 vec1.append(50)
+
+print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
+
 
 func fibonacci(_ n: Int) -> Int {
     if n > 1 {

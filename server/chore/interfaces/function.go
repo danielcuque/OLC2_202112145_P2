@@ -219,10 +219,10 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		fn = fnt
 	} else {
 		// Get the baseVar
-		baseVar, okV := v.Env.GetVariable(id).(*Variable)
+
+		baseVar, okV := v.LookUpObject(id, ctx)
 
 		if !okV {
-			v.NewError(ObjectNotFound, ctx.GetStart())
 			return nil
 		}
 
@@ -453,4 +453,15 @@ func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
 	}
 
 	return args
+}
+
+func (v *Visitor) LookUpObject(id string, ctx *parser.FunctionCallContext) (*Variable, bool) {
+	variable, ok := v.Env.GetVariable(id).(*Variable)
+
+	if !ok {
+		v.NewError(ObjectNotFound, ctx.GetStart())
+		return nil, false
+	}
+
+	return variable, true
 }

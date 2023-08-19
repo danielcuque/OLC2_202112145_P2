@@ -80,8 +80,3 @@ func (v *VectorV) IsEmpty() bool {
 func (v *VectorV) Count() int {
 	return len(v.Body)
 }
-
-// func CountBuiltin(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
-// 	fmt.Println("Count")
-// 	return V.NewNilValue(nil)
-// }

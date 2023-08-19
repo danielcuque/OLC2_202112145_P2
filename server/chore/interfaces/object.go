@@ -36,6 +36,10 @@ func (o *ObjectV) GetMethod(name string) interface{} {
 	return o.Method[name]
 }
 
+func (o *ObjectV) SetPropValue(name string, value V.IValue) {
+	o.Props[name].SetValue(value)
+}
+
 func (o *ObjectV) GetType() string {
 	return o.Type
 }

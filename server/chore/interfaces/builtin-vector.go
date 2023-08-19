@@ -11,16 +11,11 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	id, _ := v.GetIds(ctx)
 
 	// Get the vector
-	baseVar, okV := v.Env.GetVariable(id).(*Variable)
+	baseVar, _ := v.LookUpObject(id, ctx)
 
-	if !okV {
-		v.NewError(ObjectNotFound, ctx.GetStart())
-		return nil
-	}
+	vectorObj := baseVar.Value.(*ObjectV)
 
-	vector, ok := baseVar.Value.(*ObjectV)
-
-	if !ok || vector.GetType() != V.VectorType {
+	if vectorObj.GetType() != V.VectorType {
 		v.NewError(InvalidParameter, ctx.GetStart())
 		return nil
 	}
@@ -31,6 +26,16 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
 		return nil
 	}
+
+	// Change object props as isEmpty and count
+
+	vector := vectorObj.GetValue().(*VectorV)
+
+	vector.Append(args[0].Value)
+
+	// Change props
+	vectorObj.SetPropValue("isEmpty", V.NewBooleanValue(vector.IsEmpty()))
+	vectorObj.SetPropValue("count", V.NewIntValue(vector.Count()))
 
 	return V.NewNilValue(nil)
 }
