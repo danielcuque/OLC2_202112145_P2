@@ -377,8 +377,19 @@ func (v *Visitor) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} {
 
 // Not operator
 func (v *Visitor) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
-	value := v.Visit(ctx.GetRight()).(V.IValue).GetValue().(bool)
-	return V.NewBooleanValue(!value)
+	value, ok := v.Visit(ctx.Expr()).(V.IValue)
+
+	if !ok {
+		v.NewError("No se puede aplicar el operador not", ctx.GetStart())
+		return nil
+	}
+
+	if value.GetType() != V.BooleanType {
+		v.NewError("No se puede aplicar el operador not a "+value.GetType(), ctx.GetStart())
+		return nil
+	}
+
+	return V.NewBooleanValue(!value.GetValue().(bool))
 }
 
 // Range operator

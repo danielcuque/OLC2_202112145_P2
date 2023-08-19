@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	content := U.ReadFile("./examples/recursivas.swift")
+	content := U.ReadFile("./examples/test.swift")
 
 	result := I.NewEvaluator(content)
 
