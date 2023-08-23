@@ -124,6 +124,14 @@ func (v *BaseSwiftVisitor) VisitVectorValues(ctx *VectorValuesContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitVectorAccess(ctx *VectorAccessContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorAssignment(ctx *VectorAssignmentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -149,6 +157,10 @@ func (v *BaseSwiftVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitCharExpr(ctx *CharExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitVectorAccessExpr(ctx *VectorAccessExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

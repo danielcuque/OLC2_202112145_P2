@@ -219,18 +219,10 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		fn = fnt
 	} else {
 		// Get props if there are
-		props := make([]string, 0)
+		props := v.GetProps(ids)
 
-		if len(ids) > 2 {
-			props = make([]string, len(ids)-2)
-
-			for i, id := range ids[1 : len(ids)-1] {
-				props[i] = id.GetText()
-			}
-		}
-
-		// Get the baseVar
-		object, okV := v.LookUpObject(id, props, ctx)
+		// Get the object
+		object, okV := v.LookUpObject(id, props, ctx.GetStart())
 
 		if !okV {
 			return nil
@@ -387,7 +379,7 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 
 		if !ok {
 			v.NewError(InvalidArgument, ctx.GetStart())
-			return nil
+			return make([]Argument, 0)
 		}
 
 		args = append(args, Argument{Value: value, Name: ""})
@@ -437,11 +429,11 @@ func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
 	return args
 }
 
-func (v *Visitor) LookUpObject(id string, props []string, ctx *parser.FunctionCallContext) (*ObjectV, bool) {
+func (v *Visitor) LookUpObject(id string, props []string, lc antlr.Token) (*ObjectV, bool) {
 	variable, ok := v.Env.GetVariable(id).(*Variable)
 
 	if !ok {
-		v.NewError(ObjectNotFound, ctx.GetStart())
+		v.NewError(ObjectNotFound, lc)
 		return nil, false
 	}
 
@@ -452,15 +444,29 @@ func (v *Visitor) LookUpObject(id string, props []string, ctx *parser.FunctionCa
 		object, ok = GetPropValue(variable, props).(*Variable).Value.(*ObjectV)
 
 		if !ok {
-			v.NewError(ObjectNotFound, ctx.GetStart())
+			v.NewError(ObjectNotFound, lc)
 			return nil, false
 		}
 	}
 
 	if !ok {
-		v.NewError(ObjectNotFound, ctx.GetStart())
+		v.NewError(ObjectNotFound, lc)
 		return nil, false
 	}
 
 	return object, true
+}
+
+func (v *Visitor) GetProps(ids []antlr.TerminalNode) []string {
+	props := make([]string, 0)
+
+	if len(ids) > 2 {
+		props = make([]string, len(ids)-2)
+
+		for i, id := range ids[1 : len(ids)-1] {
+			props[i] = id.GetText()
+		}
+	}
+
+	return props
 }

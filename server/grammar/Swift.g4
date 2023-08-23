@@ -22,8 +22,8 @@ statement:
 	| controlFlowStatement
 	| functionDeclarationStatement
 	| functionCall
-	// | methodCall
-	| vectorDeclaration;
+	| vectorDeclaration
+	| vectorAssignment;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -97,12 +97,19 @@ vectorDefinition:
 
 vectorValues: expr (COMMA expr)*;
 
-// Call methods methodCall: idChain LPAREN functionCallArguments? RPAREN;
+vectorAccess: idChain LBRACKET expr RBRACKET;
+
+vectorAssignment:
+	vectorAccess op = (
+		Op_ASSIGN
+		| Op_PLUS_ASSIGN
+		| Op_MINUS_ASSIGN
+	) expr;
 
 // Expressions
 expr:
-	functionCall # FunctionCallExpr
-	// | methodCall													# MethodCallExpr
+	functionCall													# FunctionCallExpr
+	| vectorAccess													# VectorAccessExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr

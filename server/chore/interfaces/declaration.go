@@ -213,3 +213,82 @@ func (v *Visitor) VisitVectorValues(ctx *parser.VectorValuesContext) interface{}
 
 	return values
 }
+
+func (v *Visitor) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{} {
+
+	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
+	id := ids[0].GetText()
+
+	props := v.GetProps(ids)
+
+	object, okV := v.LookUpObject(id, props, ctx.GetStart())
+
+	if !okV {
+		return nil
+	}
+
+	// Check if the object is a vector
+	if object.GetType() != V.VectorType {
+		v.NewError(fmt.Sprintf("El objeto %s no es un vector", id), ctx.GetStart())
+		return nil
+	}
+
+	// Get the index
+	index := v.Visit(ctx.Expr()).(V.IValue)
+
+	// Check if the index is an integer
+	if index.GetType() != V.IntType {
+		v.NewError("El indice debe ser un entero", ctx.GetStart())
+		return nil
+	}
+
+	// Get the value
+	value := object.GetValue().(*VectorV).Get(index.GetValue().(int))
+
+	if value == nil {
+		v.NewError("El índice esta fuera de rango", ctx.GetStart())
+		return nil
+	}
+	// Return vector, index and value, then, handle when is called as expression, all this as dictionary
+
+	dict := map[string]interface{}{
+		"vector": object,
+		"index":  index.GetValue().(int),
+		"value":  value,
+	}
+
+	return dict
+}
+
+func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) interface{} {
+	// Get the vector, then, get the index and the value
+	values, ok := v.Visit(ctx.VectorAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError(InvalidVectorValue, ctx.GetStart())
+		return nil
+	}
+
+	vector := values["vector"].(*ObjectV)
+
+	expr := v.Visit(ctx.Expr()).(V.IValue)
+
+	// Check is not necessary, because the index is checked in the vector access
+
+	// Check if the value type is the same as the vector type
+	if expr.GetType() != vector.GetValue().(*VectorV).GetType() {
+		v.NewError(fmt.Sprintf("El tipo de dato del vector debe ser %s", vector.GetValue().(*VectorV).GetType()), ctx.GetStart())
+		return nil
+	}
+	index := values["index"].(int)
+	vectorValue := vector.GetValue().(*VectorV).Get(index)
+	op := ctx.GetOp().GetText()
+
+	if op != "=" {
+		vector.GetValue().(*VectorV).Set(index, v.arithmeticOp(vectorValue, expr, string(op[0]), ctx.GetStart()).(V.IValue))
+	} else {
+		vector.GetValue().(*VectorV).Set(index, expr)
+	}
+
+	return nil
+}

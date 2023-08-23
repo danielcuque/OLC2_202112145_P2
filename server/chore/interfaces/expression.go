@@ -438,6 +438,13 @@ func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) int
 	return v.Visit(ctx.FunctionCall())
 }
 
-// func (v *Visitor) VisitMethodCallExpr(ctx *parser.MethodCallExprContext) interface{} {
-// 	return v.Visit(ctx.MethodCall())
-// }
+func (v *Visitor) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) interface{} {
+	dict, ok := v.Visit(ctx.VectorAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError("No se puede acceder al vector", ctx.GetStart())
+		return nil
+	}
+
+	return dict["value"]
+}

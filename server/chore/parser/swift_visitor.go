@@ -95,6 +95,12 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#vectorValues.
 	VisitVectorValues(ctx *VectorValuesContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#vectorAccess.
+	VisitVectorAccess(ctx *VectorAccessContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#vectorAssignment.
+	VisitVectorAssignment(ctx *VectorAssignmentContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 
@@ -115,6 +121,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#CharExpr.
 	VisitCharExpr(ctx *CharExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#VectorAccessExpr.
+	VisitVectorAccessExpr(ctx *VectorAccessExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#FunctionCallExpr.
 	VisitFunctionCallExpr(ctx *FunctionCallExprContext) interface{}

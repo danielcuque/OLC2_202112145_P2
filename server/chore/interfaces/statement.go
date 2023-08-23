@@ -46,5 +46,9 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.VectorDeclaration())
 	}
 
+	if ctx.VectorAssignment() != nil {
+		return v.Visit(ctx.VectorAssignment())
+	}
+
 	return nil
 }

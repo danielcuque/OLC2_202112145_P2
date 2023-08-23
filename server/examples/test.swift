@@ -173,21 +173,21 @@
 
 // print(testGuard, "|", num)
 
-print(Int("10"))
-print(Int("12.001"))
-print(Int(10.9999))
-print(Int("Q10"))
+// print(Int("10"))
+// print(Int("12.001"))
+// print(Int(10.9999))
+// print(Int("Q10"))
 
-print(Float("10"))
-print(Float("10.001"))
-print(Float("Q10.00"))
+// print(Float("10"))
+// print(Float("10.001"))
+// print(Float("Q10.00"))
 
-print(1.0001)
-print(true)
-print(nil)
-print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
-// Test double quote
-print("cadena1 \"cadena2\" cadena3")
+// print(1.0001)
+// print(true)
+// print(nil)
+// print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+// // Test double quote
+// print("cadena1 \"cadena2\" cadena3")
 
 // Vectors
 
@@ -200,18 +200,24 @@ var vec3: [String] = []
 
 var copiaVec: [Int] = vec1
 
-var counter = 0
-for i in vec1 {
-    print("vec1[", counter, "] =", i)
-    counter += 1
-}
+// print("La posicion 1 de vec1 es ->", vec1[0])
+
+let number = vec1[0]
+let number2: String = vec1[0] // Error
+let number3: Int = vec1[1]
+
+print("La posicion 0 de vec1 es ->", number)
+print("La posicion 1 de vec1 es ->", number3)
+
+vec1[0] = 10 + number
+print("El nuevo valor de la posicion 0 de vec1 es ->", vec1[0]) // Debería ser 30
 
 print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
 print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
 
-persona.vec1.append(50) // Error
+// persona.vec1.append(50) // Error
 vec1.append(50)
 
 print("\n")
@@ -221,7 +227,7 @@ while vec1.count > 0 {
 }
 print("\n")
 
-vec2.remove(at: 3) // Error
+// vec2.remove(at: 3) // Error
 vec2.remove(asds: 2)
 
 

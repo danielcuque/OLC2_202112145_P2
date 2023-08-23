@@ -11,7 +11,7 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	id, _ := v.GetIds(ctx)
 
 	// Get the vector
-	vectorObj, _ := v.LookUpObject(id, nil, ctx)
+	vectorObj, _ := v.LookUpObject(id, nil, ctx.GetStart())
 
 	if vectorObj.GetType() != V.VectorType {
 		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())
@@ -41,7 +41,7 @@ func RemoveLast(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	id, _ := v.GetIds(ctx)
 
 	// Get the vector
-	vectorObj, _ := v.LookUpObject(id, nil, ctx)
+	vectorObj, _ := v.LookUpObject(id, nil, ctx.GetStart())
 
 	if vectorObj.GetType() != V.VectorType {
 		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())
@@ -77,7 +77,7 @@ func Remove(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	id, _ := v.GetIds(ctx)
 
 	// Get the vector
-	vectorObj, _ := v.LookUpObject(id, nil, ctx)
+	vectorObj, _ := v.LookUpObject(id, nil, ctx.GetStart())
 
 	if vectorObj.GetType() != V.VectorType {
 		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())

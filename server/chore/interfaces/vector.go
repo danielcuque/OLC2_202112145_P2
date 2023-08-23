@@ -80,3 +80,19 @@ func (v *VectorV) IsEmpty() bool {
 func (v *VectorV) Count() int {
 	return len(v.Body)
 }
+
+// Get
+func (v *VectorV) Get(index int) V.IValue {
+	if index >= 0 && index < v.Count() {
+		return v.Body[index]
+	}
+
+	return nil
+}
+
+// Set
+func (v *VectorV) Set(index int, value V.IValue) {
+	if index >= 0 && index < v.Count() {
+		v.Body[index] = value
+	}
+}
