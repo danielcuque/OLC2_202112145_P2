@@ -24,7 +24,8 @@ statement:
 	| functionCall
 	| vectorDeclaration
 	| vectorAssignment
-	| matrixDeclaration;
+	| matrixDeclaration
+	| structDeclaration;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -127,6 +128,16 @@ matrixRepeatingDefinition:
 	matrixType LPAREN ID COLON matrixRepeatingDefinition COMMA ID COLON expr RPAREN #
 		MatrixRepeatingDefinitionNested
 	| matrixType LPAREN ID COLON expr COMMA ID COLON expr RPAREN # MatrixRepeatingDefinitionSingle;
+
+// Structs
+
+structDeclaration: Kw_STRUCT ID LBRACE structBody RBRACE;
+
+structBody: structProperty*;
+
+structProperty:
+	variableDeclaration
+	| Kw_MUTATING? functionDeclarationStatement;
 
 // Expressions
 expr:

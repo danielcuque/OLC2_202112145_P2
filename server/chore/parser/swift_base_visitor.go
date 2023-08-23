@@ -164,6 +164,18 @@ func (v *BaseSwiftVisitor) VisitMatrixRepeatingDefinitionSingle(ctx *MatrixRepea
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitStructDeclaration(ctx *StructDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitStructBody(ctx *StructBodyContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitStructProperty(ctx *StructPropertyContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

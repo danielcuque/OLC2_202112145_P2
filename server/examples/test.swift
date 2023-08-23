@@ -289,3 +289,32 @@ var mtx2 : [[[Int]]] = [[[1,2,3],[4,5,6],[7,8,9]],
 var matrix : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repeating: 0, count:2), count:3), count:4)
 
 var matrix0 : [[[String]]] = [[[String]]] (repeating: [[String]] (repeating: [String] (repeating:"OLC2", count:2), count:1), count:3)
+
+
+
+// Structs
+
+struct Persona{
+    var Nombre: String?
+    var edad = 0
+}
+
+// struct con funciones 
+struct Avion {
+    var pasajeros = 0 
+    var velocidad = 100
+    var nombre: String?
+    // var piloto: Persona
+
+    // metodo dentro de struct 
+
+    mutating func frenar(){
+        print("Frenando")
+        //al ser mutable sí afecta al struct self.velocidad = 0
+    }
+        
+    // funcion inmutable 
+    func mostrarVelocidad(){
+        print("Velocidad",self.velocidad) 
+    }
+}

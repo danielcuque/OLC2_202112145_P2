@@ -11,6 +11,7 @@ Kw_LET: 'let';
 Kw_VAR: 'var';
 Kw_FUNC: 'func';
 Kw_STRUCT: 'struct';
+Kw_MUTATING: 'mutating';
 
 // Keywords used in control flow
 Kw_IF: 'if';

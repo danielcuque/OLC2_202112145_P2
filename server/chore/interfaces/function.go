@@ -14,6 +14,7 @@ type IFunction interface {
 }
 
 type Function struct {
+	IsMutating     bool
 	Name           string
 	ReturnDataType string
 	Parameters     []Parameter

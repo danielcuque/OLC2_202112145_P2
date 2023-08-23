@@ -125,6 +125,15 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#MatrixRepeatingDefinitionSingle.
 	VisitMatrixRepeatingDefinitionSingle(ctx *MatrixRepeatingDefinitionSingleContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#structDeclaration.
+	VisitStructDeclaration(ctx *StructDeclarationContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#structBody.
+	VisitStructBody(ctx *StructBodyContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#structProperty.
+	VisitStructProperty(ctx *StructPropertyContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#BoolExpr.
 	VisitBoolExpr(ctx *BoolExprContext) interface{}
 

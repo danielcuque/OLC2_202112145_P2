@@ -344,3 +344,18 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeati
 func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeatingDefinitionSingleContext) interface{} {
 	return nil
 }
+
+// Structs
+
+func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) interface{} {
+	fmt.Println("VisitStructDeclaration")
+	return nil
+}
+
+func (v *Visitor) VisitStructBody(ctx *parser.StructBodyContext) interface{} {
+	return nil
+}
+
+func (v *Visitor) VisitStructProperty(ctx *parser.StructPropertyContext) interface{} {
+	return nil
+}

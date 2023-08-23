@@ -54,5 +54,9 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.MatrixDeclaration())
 	}
 
+	if ctx.StructDeclaration() != nil {
+		return v.Visit(ctx.StructDeclaration())
+	}
+
 	return nil
 }
