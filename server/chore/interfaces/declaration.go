@@ -292,3 +292,44 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 
 	return nil
 }
+
+// Matrix
+
+/*
+Consideraciones:
+- La declaración del tamaño puede ser explícita o en base a se definición.
+- Si la declaración es explícita pero su definición no es acorde a esta declaración se
+debe marcar como un error. Por lo tanto se deben verificar que la cantidad de
+dimensiones sea acorde a la definida.
+- La asignación y lectura valores se realizará con la notación [ ]
+- Los índices de declaración comienzan a partir de 1
+- Los índices de acceso comienzan a partir de 0
+- Las matrices no van a cambiar su tamaño durante la ejecución.
+- Si se hace un acceso con índices en fuera de rango se devuelve nil y se debe
+notificar como un error.
+- Si se declara una matriz con índices negativos o 0, será considerado un error
+- El atributo count solo recibirá número enteros en forma de literales, no podrán ser
+asignadas ni variables ni elementos de otras estructuras a este atributo.
+*/
+
+func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
+	fmt.Println("Matrix declaration")
+	return nil
+}
+
+func (v *Visitor) VisitMatrixTypeNested(ctx *parser.MatrixTypeNestedContext) interface{} {
+	fmt.Println("Matrix type nested")
+	return nil
+}
+
+func (v *Visitor) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) interface{} {
+	return nil
+}
+
+func (v *Visitor) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
+	return nil
+}

@@ -132,6 +132,26 @@ func (v *BaseSwiftVisitor) VisitVectorAssignment(ctx *VectorAssignmentContext) i
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitMatrixDeclaration(ctx *MatrixDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitMatrixTypeNested(ctx *MatrixTypeNestedContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitMatrixTypeSingle(ctx *MatrixTypeSingleContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitMatrixDefinition(ctx *MatrixDefinitionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitMatrixValues(ctx *MatrixValuesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitBoolExpr(ctx *BoolExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

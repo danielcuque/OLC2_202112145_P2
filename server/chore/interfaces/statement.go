@@ -50,5 +50,9 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.VectorAssignment())
 	}
 
+	if ctx.MatrixDeclaration() != nil {
+		return v.Visit(ctx.MatrixDeclaration())
+	}
+
 	return nil
 }

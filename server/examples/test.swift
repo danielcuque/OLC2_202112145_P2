@@ -274,3 +274,8 @@ func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
 }
 
 Hanoi(3, 1, 2, 3)
+
+
+// Matrix declaration
+
+var matrix: [[Int]] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]

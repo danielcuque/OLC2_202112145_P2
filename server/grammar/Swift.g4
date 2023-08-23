@@ -23,7 +23,8 @@ statement:
 	| functionDeclarationStatement
 	| functionCall
 	| vectorDeclaration
-	| vectorAssignment;
+	| vectorAssignment
+	| matrixDeclaration;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -105,6 +106,19 @@ vectorAssignment:
 		| Op_PLUS_ASSIGN
 		| Op_MINUS_ASSIGN
 	) expr;
+
+// Matrix declarations
+
+matrixDeclaration:
+	varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN matrixDefinition;
+
+matrixType:
+	LBRACKET matrixType RBRACKET		# MatrixTypeNested
+	| LBRACKET variableType RBRACKET	# MatrixTypeSingle;
+
+matrixDefinition: LBRACKET matrixValues? RBRACKET | expr;
+
+matrixValues: matrixDefinition (COMMA matrixDefinition)*;
 
 // Expressions
 expr:
