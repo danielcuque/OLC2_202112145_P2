@@ -110,7 +110,10 @@ vectorAssignment:
 // Matrix declarations
 
 matrixDeclaration:
-	varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN matrixDefinition;
+	varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN matrixDefinition #
+		MatrixListDeclaration
+	| varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN matrixRepeatingDefinition #
+		MatrixRepeatingDeclaration;
 
 matrixType:
 	LBRACKET matrixType RBRACKET		# MatrixTypeNested
@@ -119,6 +122,11 @@ matrixType:
 matrixDefinition: LBRACKET matrixValues? RBRACKET | expr;
 
 matrixValues: matrixDefinition (COMMA matrixDefinition)*;
+
+matrixRepeatingDefinition:
+	matrixType LPAREN ID COLON matrixRepeatingDefinition COMMA ID COLON expr RPAREN #
+		MatrixRepeatingDefinitionNested
+	| matrixType LPAREN ID COLON expr COMMA ID COLON expr RPAREN # MatrixRepeatingDefinitionSingle;
 
 // Expressions
 expr:

@@ -311,14 +311,17 @@ notificar como un error.
 - El atributo count solo recibirá número enteros en forma de literales, no podrán ser
 asignadas ni variables ni elementos de otras estructuras a este atributo.
 */
+func (v *Visitor) VisitMatrixListDeclaration(ctx *parser.MatrixListDeclarationContext) interface{} {
+	fmt.Println("VisitMatrixListDeclaration")
+	return nil
+}
 
-func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
-	fmt.Println("Matrix declaration")
+func (v *Visitor) VisitMatrixRepeatingDeclaration(ctx *parser.MatrixRepeatingDeclarationContext) interface{} {
+	fmt.Println("VisitMatrixRepeatingDeclaration")
 	return nil
 }
 
 func (v *Visitor) VisitMatrixTypeNested(ctx *parser.MatrixTypeNestedContext) interface{} {
-	fmt.Println("Matrix type nested")
 	return nil
 }
 
@@ -327,9 +330,17 @@ func (v *Visitor) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) int
 }
 
 func (v *Visitor) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) interface{} {
-	return v.VisitChildren(ctx)
+	return nil
 }
 
 func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
+	return nil
+}
+
+func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
+	return nil
+}
+
+func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeatingDefinitionSingleContext) interface{} {
 	return nil
 }

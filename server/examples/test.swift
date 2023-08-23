@@ -279,3 +279,13 @@ Hanoi(3, 1, 2, 3)
 // Matrix declaration
 
 var matrix: [[Int]] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+var mtx2 : [[[Int]]] = [[[1,2,3],[4,5,6],[7,8,9]], 
+                        [[10,11,12],[13,14,15],[16,17,18]], 
+                        [[19,20,21],[22,23,24],[25,26,27]]]
+
+// Using repeating
+
+var matrix : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repeating: 0, count:2), count:3), count:4)
+
+var matrix0 : [[[String]]] = [[[String]]] (repeating: [[String]] (repeating: [String] (repeating:"OLC2", count:2), count:1), count:3)
