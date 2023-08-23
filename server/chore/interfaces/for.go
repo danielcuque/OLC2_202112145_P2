@@ -32,6 +32,8 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 		for i, char := range argIterator.GetValue().(string) {
 			valuesToIterate[i] = V.NewCharValue(char)
 		}
+	case V.VectorType:
+		valuesToIterate = argIterator.GetValue().(*VectorV).Body
 	default:
 		v.NewError(fmt.Sprintf("No se puede iterar un objeto de tipo %s", iteratorType), ctx.GetStart())
 		return nil
@@ -47,10 +49,12 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 			[]StackItemType{BreakType, ContinueType},
 		))
 
-	NewForVariable(v, id, valuesToIterate[0], iteratorType, ctx)
+	if len(valuesToIterate) != 0 {
+		v.NewForVariable(id, valuesToIterate[0], iteratorType, ctx)
 
-	// Execute the for loop
-	v.ExecuteFor(id, valuesToIterate, ctx)
+		// Execute the for loop
+		v.ExecuteFor(id, valuesToIterate, ctx)
+	}
 
 	// Pop the scope
 	v.Env.PopEnv()
@@ -58,7 +62,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	return nil
 }
 
-func NewForVariable(v *Visitor, id string, value V.IValue, valueType string, ctx *parser.ForStatementContext) {
+func (v *Visitor) NewForVariable(id string, value V.IValue, valueType string, ctx *parser.ForStatementContext) {
 	line, column, scope := v.GetVariableAttr(ctx.GetStart())
 	newVariable := NewVariable(id, true, value, valueType, line, column, scope)
 	v.Env.AddVariable(id, newVariable)

@@ -200,6 +200,12 @@ var vec3: [String] = []
 
 var copiaVec: [Int] = vec1
 
+var counter = 0
+for i in vec1 {
+    print("vec1[", counter, "] =", i)
+    counter += 1
+}
+
 print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
 print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
