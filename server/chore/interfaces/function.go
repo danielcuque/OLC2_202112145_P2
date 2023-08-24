@@ -411,9 +411,10 @@ func (v *Visitor) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.Termi
 	if ctx.IdChain() != nil {
 		ids = v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
 		id = ids[0].GetText()
-	} else {
-		id = v.Visit(ctx.VariableType()).(string)
+		return id, ids
 	}
+
+	id = v.Visit(ctx.VariableType()).(string)
 
 	return id, ids
 }

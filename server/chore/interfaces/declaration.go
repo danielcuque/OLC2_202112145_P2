@@ -280,7 +280,6 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 
 /*
 Consideraciones:
-- La declaración del tamaño puede ser explícita o en base a se definición.
 
 - La asignación y lectura valores se realizará con la notación [ ]
 - Los índices de declaración comienzan a partir de 1
@@ -306,7 +305,11 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 	// Get matrixType
 
 	matrixType := v.Visit(ctx.MatrixType()).(string)
-	body := v.GetMatrixBody(ctx)
+	body, ok := v.GetMatrixBody(ctx).(*MatrixNode)
+
+	if !ok {
+		return nil
+	}
 
 	matrixTypeDimensions := v.GetMatrixTypeDimensions(ctx.MatrixType().GetText())
 	bodyDimension := v.GetMatrixDimensions(body, 0)
@@ -343,11 +346,7 @@ func (v *Visitor) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) int
 		return v.Visit(ctx.MatrixValues())
 	}
 
-	if ctx.Expr() != nil {
-		return v.Visit(ctx.Expr())
-	}
-
-	return nil
+	return v.Visit(ctx.Expr())
 }
 
 func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
@@ -385,26 +384,89 @@ func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{}
 }
 
 func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
-	fmt.Println(ctx.GetText())
-	return NewMatrixNode("", nil)
+	matrixNode, ok := v.Visit(ctx.MatrixRepeatingDefinition()).(*MatrixNode)
+
+	if !ok {
+		return nil
+	}
+
+	matrixType := v.Visit(ctx.MatrixType()).(string)
+
+	if matrixNode.DataType != matrixType {
+		v.NewError(fmt.Sprintf("El tipo de dato del vector debe ser %s", matrixType), ctx.GetStart())
+		return nil
+	}
+
+	repeatingTimes := v.Visit(ctx.Expr()).(V.IValue)
+
+	// Check if the repeating times is an integer
+	if repeatingTimes.GetType() != V.IntType {
+		v.NewError("El número de repeticiones debe ser un entero", ctx.GetStart())
+		return nil
+	}
+
+	// Create a new matrix node
+	body := make([]V.IValue, repeatingTimes.GetValue().(int))
+
+	for i := 0; i < repeatingTimes.GetValue().(int); i++ {
+		body[i] = matrixNode
+	}
+
+	return NewMatrixNode(matrixType, body)
 }
 
 func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeatingDefinitionSingleContext) interface{} {
-	return nil
+	// Get the value
+	matrixType := v.Visit(ctx.MatrixType()).(string)
+
+	repeatingValue := v.Visit(ctx.Expr(0)).(V.IValue)
+	repeatingTimes := v.Visit(ctx.Expr(1)).(V.IValue)
+
+	// Check if the repeating times is an integer
+	if repeatingTimes.GetType() != V.IntType {
+		v.NewError("El número de repeticiones debe ser un entero", ctx.GetStart())
+		return nil
+	}
+
+	// Check if the repeating value is the same type as the matrix type
+	if repeatingValue.GetType() != matrixType {
+		v.NewError(fmt.Sprintf("El tipo de dato del vector debe ser %s", matrixType), ctx.GetStart())
+		return nil
+	}
+
+	// Create a new matrix node
+	body := make([]V.IValue, repeatingTimes.GetValue().(int))
+
+	for i := 0; i < repeatingTimes.GetValue().(int); i++ {
+		body[i] = repeatingValue
+	}
+
+	return NewMatrixNode(matrixType, body)
 }
 
 // This function should return an array of n-dimensional arrays
-func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) *MatrixNode {
+func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{} {
 	// The body can be defined explicitly or implicitly
 	// Explicitly: [[1,2,3],[4,5,6]]
 
+	var body interface{}
+
 	if ctx.MatrixDefinition() != nil {
 		// Convert node to array
-		return v.Visit(ctx.MatrixDefinition()).(*MatrixNode)
+		body = v.Visit(ctx.MatrixDefinition())
+	} else {
+		body = v.Visit(ctx.MatrixRepeatingDefinition())
 	}
 
-	return v.Visit(ctx.MatrixRepeatingDefinition()).(*MatrixNode)
+	// Check if the body is a matrixNode
+	matrixNode, ok := body.(*MatrixNode)
 
+	if !ok {
+		v.NewError(InvalidMatrixValue, ctx.GetStart())
+		return nil
+	}
+
+	return matrixNode
 }
 
 func (v *Visitor) GetMatrixDimensions(node interface{}, counter int) int {
