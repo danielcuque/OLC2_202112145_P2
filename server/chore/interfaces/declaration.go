@@ -295,8 +295,6 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 
 // Matrix
 
-var MatrixTypeConext string
-
 /*
 Consideraciones:
 - La declaración del tamaño puede ser explícita o en base a se definición.
@@ -326,13 +324,28 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 	// Get matrixType
 
 	matrixType := v.Visit(ctx.MatrixType()).(string)
-
-	MatrixTypeConext = matrixType
-
-	// Get the matrix body
 	body := v.GetMatrixBody(ctx)
 
-	fmt.Println(body)
+	matrixTypeDimensions := v.GetMatrixTypeDimensions(ctx.MatrixType().GetText())
+	bodyDimension := v.GetMatrixDimensions(body, 0)
+
+	if matrixTypeDimensions != bodyDimension {
+		v.NewError(fmt.Sprintf("La cantidad de dimensiones de la matriz %s no coincide con la definición", id), ctx.GetStart())
+		return nil
+	}
+
+	// Get line, column and scope
+	line, column, scope := v.GetVariableAttr(ctx.GetStart())
+
+	// Create a new generic object
+
+	newObj := NewObjectV(V.MatrixType, body)
+
+	// This is a matrix, so, matrix does not have native properties
+
+	v.Env.AddVariable(id,
+		NewVariable(id, true, newObj, matrixType, line, column, scope),
+	)
 
 	return nil
 }
@@ -405,7 +418,7 @@ func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) *MatrixNod
 	// The body can be defined explicitly or implicitly
 	// Explicitly: [[1,2,3],[4,5,6]]
 
-	var node *MatrixNode
+	node := NewMatrixNode("", nil)
 
 	if ctx.MatrixDefinition() != nil {
 		// Convert node to array
@@ -416,6 +429,34 @@ func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) *MatrixNod
 	}
 
 	return node
+}
+
+func (v *Visitor) GetMatrixDimensions(node interface{}, counter int) int {
+	// Recursive
+	nd, ok := node.(*MatrixNode)
+
+	if !ok {
+		return counter
+	}
+
+	if len(nd.Body) == 0 {
+		return counter
+	}
+
+	counter++
+
+	return v.GetMatrixDimensions(nd.Body[0], counter)
+}
+
+func (v *Visitor) GetMatrixTypeDimensions(ctx string) int {
+	var counter int
+	for _, dim := range ctx {
+		if dim == '[' {
+			counter++
+		}
+	}
+
+	return counter
 }
 
 // Structs
