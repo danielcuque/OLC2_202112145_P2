@@ -295,6 +295,8 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 
 // Matrix
 
+var MatrixTypeConext string
+
 /*
 Consideraciones:
 - La declaración del tamaño puede ser explícita o en base a se definición.
@@ -321,18 +323,26 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 		return nil
 	}
 
+	// Get matrixType
+
+	matrixType := v.Visit(ctx.MatrixType()).(string)
+
+	MatrixTypeConext = matrixType
+
 	// Get the matrix body
-	v.GetMatrixBody(ctx)
+	body := v.GetMatrixBody(ctx)
+
+	fmt.Println(body)
 
 	return nil
 }
 
 func (v *Visitor) VisitMatrixTypeNested(ctx *parser.MatrixTypeNestedContext) interface{} {
-	return nil
+	return v.Visit(ctx.MatrixType())
 }
 
 func (v *Visitor) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) interface{} {
-	return nil
+	return v.Visit(ctx.VariableType())
 }
 
 // Returns Ivalues but MatrixNode structs
@@ -358,7 +368,7 @@ func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{}
 	expr, ok := v.Visit(ctx.MatrixDefinition(0)).(V.IValue)
 
 	if !ok {
-		return expr
+		return expr // If is not ok, then is a matrixNode
 	}
 
 	baseNode := NewMatrixNode(expr.GetType(), []V.IValue{expr})
@@ -391,12 +401,14 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeati
 }
 
 // This function should return an array of n-dimensional arrays
-func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{} {
+func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) *MatrixNode {
 	// The body can be defined explicitly or implicitly
 	// Explicitly: [[1,2,3],[4,5,6]]
+
 	var node *MatrixNode
 
 	if ctx.MatrixDefinition() != nil {
+		// Convert node to array
 		node = v.Visit(ctx.MatrixDefinition()).(*MatrixNode)
 	} else {
 		fmt.Println("Implicit")

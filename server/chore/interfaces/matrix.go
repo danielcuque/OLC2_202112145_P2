@@ -31,11 +31,11 @@ func (m *MatrixNode) GetType() string {
 
 type MatrixV struct {
 	DataType   string
-	Body       V.IValue
+	Body       *MatrixNode
 	Dimensions int // 2 to n
 }
 
-func NewMatrix(Type string, body V.IValue) *MatrixV {
+func NewMatrix(Type string, body *MatrixNode) *MatrixV {
 	return &MatrixV{
 		DataType: Type,
 		Body:     body,
