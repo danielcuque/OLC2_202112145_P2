@@ -393,7 +393,7 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeati
 	matrixType := v.Visit(ctx.MatrixType()).(string)
 
 	if matrixNode.DataType != matrixType {
-		v.NewError(fmt.Sprintf("El tipo de dato del vector debe ser %s", matrixType), ctx.GetStart())
+		v.NewError(fmt.Sprintf("Se esperaba un valor de tipo %s", matrixType), ctx.GetStart())
 		return nil
 	}
 
@@ -430,7 +430,7 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeati
 
 	// Check if the repeating value is the same type as the matrix type
 	if repeatingValue.GetType() != matrixType {
-		v.NewError(fmt.Sprintf("El tipo de dato del vector debe ser %s", matrixType), ctx.GetStart())
+		v.NewError(fmt.Sprintf("Se esperaba un valor de tipo %s, se obtuvo %s", matrixType, repeatingValue.GetType()), ctx.GetStart())
 		return nil
 	}
 
