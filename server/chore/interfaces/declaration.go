@@ -11,7 +11,7 @@ import (
 // Variables
 
 func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
-	isConstant := ctx.GetVarType().GetText()
+	isConstant := ctx.GetVarType().GetText() == "let"
 	id := ctx.ID().GetText()
 	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
@@ -27,10 +27,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 		return false
 	}
 
-	// Get line, column and scope
-	line, column, scope := v.GetVariableAttr(ctx.GetStart())
-
-	newVariable := NewVariable(id, isConstant == "let", value, value.GetType(), line, column, scope)
+	newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
 
 	v.Env.AddVariable(id, newVariable)
 
@@ -68,10 +65,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 
 	}
 
-	// Get line, column and scope
-	line, column, scope := v.GetVariableAttr(ctx.GetStart())
-
-	newVariable := NewVariable(id, isConstant, value, valueType, line, column, scope)
+	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
 
 	v.Env.AddVariable(id, newVariable)
 
@@ -97,21 +91,12 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 		return false
 	}
 
-	// Get line, column and scope
-	line, column, scope := v.GetVariableAttr(ctx.GetStart())
-	newVariable := NewVariable(id, isConstant, V.NewNilValue(nil), valueType, line, column, scope)
+	newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
 
 	v.Env.AddVariable(id, newVariable)
 
 	return true
 
-}
-
-func (v *Visitor) GetVariableAttr(lc antlr.Token) (int, int, *EnvNode) {
-	line := lc.GetLine()
-	column := lc.GetColumn()
-	scope := v.Env.GetCurrentScope()
-	return line, column, scope
 }
 
 // Vectors
@@ -134,8 +119,6 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 		return nil
 	}
 
-	line, column, scope := v.GetVariableAttr(ctx.GetStart())
-
 	isConstant := ctx.GetVarType().GetText() == "const" // let | var
 
 	valueType := v.Visit(ctx.VariableType()).(string) // Id: int | float | string
@@ -154,14 +137,14 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	newObj := NewObjectV(V.VectorType, newVector)
 
 	// Add native properties
-	count := NewVariable("count", true, V.NewIntValue(len(dataList)), V.IntType, line, column, scope)
-	isEmpty := NewVariable("isEmpty", true, V.NewBooleanValue(len(dataList) == 0), V.BooleanType, line, column, scope)
+	count := NewVariable(v, "count", true, V.NewIntValue(len(dataList)), V.IntType, ctx.GetStart())
+	isEmpty := NewVariable(v, "isEmpty", true, V.NewBooleanValue(len(dataList) == 0), V.BooleanType, ctx.GetStart())
 
 	newObj.AddProp("count", count)
 	newObj.AddProp("isEmpty", isEmpty)
 
 	v.Env.AddVariable(id,
-		NewVariable(id, isConstant, newObj, valueType, line, column, scope),
+		NewVariable(v, id, isConstant, newObj, valueType, ctx.GetStart()),
 	)
 
 	return nil
@@ -298,12 +281,11 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 /*
 Consideraciones:
 - La declaración del tamaño puede ser explícita o en base a se definición.
-- Si la declaración es explícita pero su definición no es acorde a esta declaración se
-debe marcar como un error. Por lo tanto se deben verificar que la cantidad de
-dimensiones sea acorde a la definida.
+
 - La asignación y lectura valores se realizará con la notación [ ]
 - Los índices de declaración comienzan a partir de 1
 - Los índices de acceso comienzan a partir de 0
+
 - Las matrices no van a cambiar su tamaño durante la ejecución.
 - Si se hace un acceso con índices en fuera de rango se devuelve nil y se debe
 notificar como un error.
@@ -334,9 +316,6 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 		return nil
 	}
 
-	// Get line, column and scope
-	line, column, scope := v.GetVariableAttr(ctx.GetStart())
-
 	// Create a new generic object
 
 	newObj := NewObjectV(V.MatrixType, body)
@@ -344,7 +323,7 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 	// This is a matrix, so, matrix does not have native properties
 
 	v.Env.AddVariable(id,
-		NewVariable(id, true, newObj, matrixType, line, column, scope),
+		NewVariable(v, id, true, newObj, matrixType, ctx.GetStart()),
 	)
 
 	return nil
@@ -406,7 +385,8 @@ func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{}
 }
 
 func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
-	return nil
+	fmt.Println(ctx.GetText())
+	return NewMatrixNode("", nil)
 }
 
 func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeatingDefinitionSingleContext) interface{} {
@@ -418,17 +398,13 @@ func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) *MatrixNod
 	// The body can be defined explicitly or implicitly
 	// Explicitly: [[1,2,3],[4,5,6]]
 
-	node := NewMatrixNode("", nil)
-
 	if ctx.MatrixDefinition() != nil {
 		// Convert node to array
-		node = v.Visit(ctx.MatrixDefinition()).(*MatrixNode)
-	} else {
-		fmt.Println("Implicit")
-		// body = v.Visit(ctx.MatrixRepeatingDefinition()).([]V.IValue)
+		return v.Visit(ctx.MatrixDefinition()).(*MatrixNode)
 	}
 
-	return node
+	return v.Visit(ctx.MatrixRepeatingDefinition()).(*MatrixNode)
+
 }
 
 func (v *Visitor) GetMatrixDimensions(node interface{}, counter int) int {

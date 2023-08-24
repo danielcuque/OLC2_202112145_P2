@@ -50,9 +50,8 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 		))
 
 	if len(valuesToIterate) != 0 {
-		v.NewForVariable(id, valuesToIterate[0], iteratorType, ctx)
+		v.Env.AddVariable(id, NewVariable(v, id, true, valuesToIterate[0], iteratorType, ctx.GetStart()))
 
-		// Execute the for loop
 		v.ExecuteFor(id, valuesToIterate, ctx)
 	}
 
@@ -60,12 +59,6 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	v.Env.PopEnv()
 
 	return nil
-}
-
-func (v *Visitor) NewForVariable(id string, value V.IValue, valueType string, ctx *parser.ForStatementContext) {
-	line, column, scope := v.GetVariableAttr(ctx.GetStart())
-	newVariable := NewVariable(id, true, value, valueType, line, column, scope)
-	v.Env.AddVariable(id, newVariable)
 }
 
 func (v *Visitor) ExecuteFor(id string, valuesToIterate []V.IValue, ctx *parser.ForStatementContext) {
