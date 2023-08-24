@@ -9,6 +9,7 @@ const (
 	NilType     = "nil"
 
 	VectorType = "Vector"
+	MatrixType = "Matrix"
 )
 
 type IValue interface {

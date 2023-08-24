@@ -132,11 +132,7 @@ func (v *BaseSwiftVisitor) VisitVectorAssignment(ctx *VectorAssignmentContext) i
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSwiftVisitor) VisitMatrixListDeclaration(ctx *MatrixListDeclarationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitMatrixRepeatingDeclaration(ctx *MatrixRepeatingDeclarationContext) interface{} {
+func (v *BaseSwiftVisitor) VisitMatrixDeclaration(ctx *MatrixDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

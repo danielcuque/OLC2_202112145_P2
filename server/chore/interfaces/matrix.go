@@ -5,13 +5,37 @@ import (
 	"fmt"
 )
 
-type MatrixV struct {
-	DataType   string
-	Body       []V.IValue
-	Dimentions int // 2 to n
+type MatrixNode struct {
+	DataType string
+	Body     []V.IValue
 }
 
-func NewMatrix(Type string, body []V.IValue) *MatrixV {
+func NewMatrixNode(Type string, body []V.IValue) *MatrixNode {
+	return &MatrixNode{
+		DataType: Type,
+		Body:     body,
+	}
+}
+
+func (m *MatrixNode) GetValue() interface{} {
+	return m.Body
+}
+
+func (m *MatrixNode) String() string {
+	return fmt.Sprintf("%v", m.Body)
+}
+
+func (m *MatrixNode) GetType() string {
+	return m.DataType
+}
+
+type MatrixV struct {
+	DataType   string
+	Body       V.IValue
+	Dimensions int // 2 to n
+}
+
+func NewMatrix(Type string, body V.IValue) *MatrixV {
 	return &MatrixV{
 		DataType: Type,
 		Body:     body,
@@ -23,15 +47,7 @@ func (m *MatrixV) GetValue() interface{} {
 }
 
 func (m *MatrixV) String() string {
-	str := ""
-	// Add comma except for last element
-	for i, value := range m.Body {
-		str += fmt.Sprintf("%v", value)
-		if i != len(m.Body)-1 {
-			str += ", "
-		}
-	}
-	return str
+	return fmt.Sprintf("%v", m.Body)
 }
 
 func (m *MatrixV) GetType() string {

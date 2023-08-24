@@ -111,10 +111,10 @@ vectorAssignment:
 // Matrix declarations
 
 matrixDeclaration:
-	varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN matrixDefinition #
-		MatrixListDeclaration
-	| varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN matrixRepeatingDefinition #
-		MatrixRepeatingDeclaration;
+	varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN (
+		matrixRepeatingDefinition
+		| matrixDefinition
+	);
 
 matrixType:
 	LBRACKET matrixType RBRACKET		# MatrixTypeNested

@@ -101,11 +101,8 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#vectorAssignment.
 	VisitVectorAssignment(ctx *VectorAssignmentContext) interface{}
 
-	// Visit a parse tree produced by SwiftParser#MatrixListDeclaration.
-	VisitMatrixListDeclaration(ctx *MatrixListDeclarationContext) interface{}
-
-	// Visit a parse tree produced by SwiftParser#MatrixRepeatingDeclaration.
-	VisitMatrixRepeatingDeclaration(ctx *MatrixRepeatingDeclarationContext) interface{}
+	// Visit a parse tree produced by SwiftParser#matrixDeclaration.
+	VisitMatrixDeclaration(ctx *MatrixDeclarationContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#MatrixTypeNested.
 	VisitMatrixTypeNested(ctx *MatrixTypeNestedContext) interface{}

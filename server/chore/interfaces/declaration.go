@@ -118,19 +118,19 @@ func (v *Visitor) GetVariableAttr(lc antlr.Token) (int, int, *EnvNode) {
 
 func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) interface{} {
 
-	dataList, okVal := v.Visit(ctx.VectorDefinition()).([]V.IValue) // [1,2,3]
-
-	if !okVal {
-		v.NewError(InvalidVectorValue, ctx.GetStart())
-		return nil
-	}
-
 	id := ctx.ID().GetText()
 
 	_, ok := v.Env.GetVariable(id).(Variable)
 
 	if ok {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return nil
+	}
+
+	dataList, okVal := v.Visit(ctx.VectorDefinition()).([]V.IValue) // [1,2,3]
+
+	if !okVal {
+		v.NewError(InvalidVectorValue, ctx.GetStart())
 		return nil
 	}
 
@@ -311,13 +311,19 @@ notificar como un error.
 - El atributo count solo recibirá número enteros en forma de literales, no podrán ser
 asignadas ni variables ni elementos de otras estructuras a este atributo.
 */
-func (v *Visitor) VisitMatrixListDeclaration(ctx *parser.MatrixListDeclarationContext) interface{} {
-	fmt.Println("VisitMatrixListDeclaration")
-	return nil
-}
+func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
+	id := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)[0].GetText()
 
-func (v *Visitor) VisitMatrixRepeatingDeclaration(ctx *parser.MatrixRepeatingDeclarationContext) interface{} {
-	fmt.Println("VisitMatrixRepeatingDeclaration")
+	_, ok := v.Env.GetVariable(id).(Variable)
+
+	if ok {
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return nil
+	}
+
+	// Get the matrix body
+	v.GetMatrixBody(ctx)
+
 	return nil
 }
 
@@ -329,12 +335,51 @@ func (v *Visitor) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) int
 	return nil
 }
 
+// Returns Ivalues but MatrixNode structs
 func (v *Visitor) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) interface{} {
+	if ctx.MatrixValues() != nil {
+		return v.Visit(ctx.MatrixValues())
+	}
+
+	if ctx.Expr() != nil {
+		return v.Visit(ctx.Expr())
+	}
+
 	return nil
 }
 
 func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
-	return nil
+
+	// There are two cases, when matrix values are other matrix values or when they are expressions
+
+	// Get the first matrix definition
+
+	// Check if is matrixNode or expression, if is expr then, the matrix value ends
+	expr, ok := v.Visit(ctx.MatrixDefinition(0)).(V.IValue)
+
+	if !ok {
+		return expr
+	}
+
+	baseNode := NewMatrixNode(expr.GetType(), []V.IValue{expr})
+
+	// Get the rest of the matrix definitions
+	for _, matrixDef := range ctx.AllMatrixDefinition()[1:] {
+		matrixDef, ok := v.Visit(matrixDef).(V.IValue)
+
+		if !ok {
+			return expr
+		}
+
+		if matrixDef.GetType() != baseNode.DataType {
+			v.NewError("Todos los valores de la matriz deben ser del mismo tipo", ctx.GetStart())
+			return nil
+		}
+
+		baseNode.Body = append(baseNode.Body, matrixDef)
+	}
+
+	return baseNode
 }
 
 func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
@@ -345,10 +390,25 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeati
 	return nil
 }
 
+// This function should return an array of n-dimensional arrays
+func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{} {
+	// The body can be defined explicitly or implicitly
+	// Explicitly: [[1,2,3],[4,5,6]]
+	var node *MatrixNode
+
+	if ctx.MatrixDefinition() != nil {
+		node = v.Visit(ctx.MatrixDefinition()).(*MatrixNode)
+	} else {
+		fmt.Println("Implicit")
+		// body = v.Visit(ctx.MatrixRepeatingDefinition()).([]V.IValue)
+	}
+
+	return node
+}
+
 // Structs
 
 func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) interface{} {
-	fmt.Println("VisitStructDeclaration")
 	return nil
 }
 

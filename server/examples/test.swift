@@ -203,35 +203,35 @@ var copiaVec: [Int] = vec1
 // print("La posicion 1 de vec1 es ->", vec1[0])
 
 let number = vec1[0]
-let number2: String = vec1[0] // Error
+// let number2: String = vec1[0] // Error
 let number3: Int = vec1[1]
 
-print("La posicion 0 de vec1 es ->", number)
-print("La posicion 1 de vec1 es ->", number3)
+// print("La posicion 0 de vec1 es ->", number)
+// print("La posicion 1 de vec1 es ->", number3)
 
 vec1[0] = 10 + number
-print("El nuevo valor de la posicion 0 de vec1 es ->", vec1[0]) // Debería ser 30
+// print("El nuevo valor de la posicion 0 de vec1 es ->", vec1[0]) // Debería ser 30
 
-print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
-print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
-print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
+// print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
+// print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
+// print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
 
 // persona.vec1.append(50) // Error
 vec1.append(50)
 
-print("\n")
-while vec1.count > 0 {
-    print("vec1 tiene", vec1.count, "elementos")
-    vec1.removeLast()
-}
-print("\n")
+// print("\n")
+// while vec1.count > 0 {
+//     print("vec1 tiene", vec1.count, "elementos")
+//     vec1.removeLast()
+// }
+// print("\n")
 
 // vec2.remove(at: 3) // Error
-vec2.remove(asds: 2)
+// vec2.remove(asds: 2)
 
 
-print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
+// print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 
 
 func fibonacci(_ n: Int) -> Int {
@@ -247,8 +247,8 @@ func fibonacci(_ n: Int) -> Int {
     }
 }
 
-print("Debería ser 55")
-print(fibonacci(10)) 
+// print("Debería ser 55")
+// print(fibonacci(10)) 
 
 func ackerman(_ m: Int, _ n: Int) -> Int {
     if m == 0 {
@@ -260,8 +260,8 @@ func ackerman(_ m: Int, _ n: Int) -> Int {
     }
 }
 
-print("Debería ser 125")
-print(ackerman(3,4))
+// print("Debería ser 125")
+// print(ackerman(3,4))
 
 func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
     if discos == 1 {
@@ -273,12 +273,12 @@ func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
     }
 }
 
-Hanoi(3, 1, 2, 3)
+// Hanoi(3, 1, 2, 3)
 
 
 // Matrix declaration
 
-var matrix: [[Int]] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+var matrix1: [[Int]] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
 var mtx2 : [[[Int]]] = [[[1,2,3],[4,5,6],[7,8,9]], 
                         [[10,11,12],[13,14,15],[16,17,18]], 
@@ -286,7 +286,7 @@ var mtx2 : [[[Int]]] = [[[1,2,3],[4,5,6],[7,8,9]],
 
 // Using repeating
 
-var matrix : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repeating: 0, count:2), count:3), count:4)
+var matrix2 : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repeating: 0, count:2), count:3), count:4)
 
 var matrix0 : [[[String]]] = [[[String]]] (repeating: [[String]] (repeating: [String] (repeating:"OLC2", count:2), count:1), count:3)
 
@@ -310,11 +310,12 @@ struct Avion {
 
     mutating func frenar(){
         print("Frenando")
-        //al ser mutable sí afecta al struct self.velocidad = 0
+        //al ser mutable sí afecta al struct 
+        // self.velocidad = 0
     }
         
     // funcion inmutable 
     func mostrarVelocidad(){
-        print("Velocidad",self.velocidad) 
+        print("Velocidad", self.velocidad) 
     }
 }
