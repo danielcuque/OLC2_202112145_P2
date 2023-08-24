@@ -122,6 +122,12 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by SwiftParser#MatrixRepeatingDefinitionSingle.
 	VisitMatrixRepeatingDefinitionSingle(ctx *MatrixRepeatingDefinitionSingleContext) interface{}
 
+	// Visit a parse tree produced by SwiftParser#matrixAccess.
+	VisitMatrixAccess(ctx *MatrixAccessContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#matrixAssignment.
+	VisitMatrixAssignment(ctx *MatrixAssignmentContext) interface{}
+
 	// Visit a parse tree produced by SwiftParser#structDeclaration.
 	VisitStructDeclaration(ctx *StructDeclarationContext) interface{}
 
@@ -181,6 +187,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by SwiftParser#TernaryExpr.
 	VisitTernaryExpr(ctx *TernaryExprContext) interface{}
+
+	// Visit a parse tree produced by SwiftParser#MatrixAccessExpr.
+	VisitMatrixAccessExpr(ctx *MatrixAccessExprContext) interface{}
 
 	// Visit a parse tree produced by SwiftParser#ControlBreak.
 	VisitControlBreak(ctx *ControlBreakContext) interface{}

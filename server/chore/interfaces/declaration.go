@@ -288,7 +288,6 @@ Consideraciones:
 - Las matrices no van a cambiar su tamaño durante la ejecución.
 - Si se hace un acceso con índices en fuera de rango se devuelve nil y se debe
 notificar como un error.
-- Si se declara una matriz con índices negativos o 0, será considerado un error
 - El atributo count solo recibirá número enteros en forma de literales, no podrán ser
 asignadas ni variables ni elementos de otras estructuras a este atributo.
 */
@@ -405,6 +404,11 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeati
 		return nil
 	}
 
+	if repeatingTimes.GetValue().(int) < 0 {
+		v.NewError("El número de repeticiones debe ser mayor o igual a 0", ctx.GetStart())
+		return nil
+	}
+
 	// Create a new matrix node
 	body := make([]V.IValue, repeatingTimes.GetValue().(int))
 
@@ -425,6 +429,11 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeati
 	// Check if the repeating times is an integer
 	if repeatingTimes.GetType() != V.IntType {
 		v.NewError("El número de repeticiones debe ser un entero", ctx.GetStart())
+		return nil
+	}
+
+	if repeatingTimes.GetValue().(int) < 0 {
+		v.NewError("El número de repeticiones debe ser mayor o igual a 0", ctx.GetStart())
 		return nil
 	}
 
@@ -495,6 +504,131 @@ func (v *Visitor) GetMatrixTypeDimensions(ctx string) int {
 	}
 
 	return counter
+}
+
+func (v *Visitor) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{} {
+	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
+	id := ids[0].GetText()
+
+	props := v.GetProps(ids)
+
+	object, okV := v.LookUpObject(id, props, ctx.GetStart())
+
+	if !okV {
+		return nil
+	}
+
+	// Check if the object is a matrix
+	if object.GetType() != V.MatrixType {
+		v.NewError(fmt.Sprintf("El objeto %s no es una matriz", id), ctx.GetStart())
+		return nil
+	}
+
+	// Get the all the indexes
+
+	indexes := make([]V.IValue, 0)
+
+	for _, index := range ctx.AllExpr() {
+		index, ok := v.Visit(index).(V.IValue)
+
+		if !ok || index.GetType() != V.IntType {
+			v.NewError("El indice debe ser un entero", ctx.GetStart())
+			return nil
+		}
+
+		if index.GetValue().(int) < 0 {
+			v.NewError("El indice debe ser mayor o igual a 0", ctx.GetStart())
+			return nil
+		}
+
+		indexes = append(indexes, index)
+	}
+
+	// Check if the indexes are in range
+
+	value := v.CheckMatrixIndexes(object.GetValue().(*MatrixNode), indexes, ctx.GetStart())
+
+	if value == nil {
+		return nil
+	}
+
+	// Return matrix, indexes and value, then, handle when is called as expression, all this as dictionary
+
+	dict := map[string]interface{}{
+		"matrix":  object,
+		"indexes": indexes,
+		"value":   value,
+	}
+
+	return dict
+}
+
+func (v *Visitor) CheckMatrixIndexes(matrix interface{}, indexes []V.IValue, start antlr.Token) V.IValue {
+	// Recursive function
+	// Check if the matrix is a matrixNode or a value
+	nd, ok := matrix.(*MatrixNode)
+
+	if !ok {
+		if len(indexes) == 0 {
+			// Devolver el IValue si es un nodo hoja y no quedan más índices
+			return matrix.(V.IValue)
+		}
+		v.NewError("No se puede acceder a un valor no matriz con índices", start)
+		return nil
+	}
+
+	// Check if the indexes are in range
+	if len(indexes) == 0 {
+		return nd
+	}
+
+	if len(nd.Body) <= indexes[0].GetValue().(int) {
+		v.NewError("El índice está fuera de rango", start)
+		return nil
+	}
+
+	return v.CheckMatrixIndexes(nd.Body[indexes[0].GetValue().(int)], indexes[1:], start)
+}
+
+func (v *Visitor) VisitMatrixAssignment(ctx *parser.MatrixAssignmentContext) interface{} {
+	// Get the matrix, then, get the indexes and the value
+	values, ok := v.Visit(ctx.MatrixAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError(InvalidMatrixValue, ctx.GetStart())
+		return nil
+	}
+
+	matrix := values["matrix"].(*ObjectV)
+
+	expr := v.Visit(ctx.Expr()).(V.IValue)
+
+	// Check is not necessary, because the indexes are checked in the matrix access
+
+	// Check if the value type is the same as the matrix type
+	if expr.GetType() != matrix.GetValue().(*MatrixNode).DataType {
+		v.NewError(fmt.Sprintf("El tipo de dato de la matriz debe ser %s", matrix.GetValue().(*MatrixNode).DataType), ctx.GetStart())
+		return nil
+	}
+
+	indexes := values["indexes"].([]V.IValue)
+
+	// Replace the value
+	v.ReplaceMatrixValue(matrix.GetValue().(*MatrixNode), indexes, expr)
+
+	return nil
+}
+
+func (v *Visitor) ReplaceMatrixValue(matrix *MatrixNode, indexes []V.IValue, value V.IValue) {
+	// Check if childrens are matrixNodes or values
+
+	if len(indexes) == 1 {
+		matrix.Body[indexes[0].GetValue().(int)] = value
+		return
+	}
+
+	// Recursive
+	v.ReplaceMatrixValue(matrix.Body[indexes[0].GetValue().(int)].(*MatrixNode), indexes[1:], value)
 }
 
 // Structs

@@ -448,3 +448,14 @@ func (v *Visitor) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) int
 
 	return dict["value"]
 }
+
+func (v *Visitor) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) interface{} {
+	dict, ok := v.Visit(ctx.MatrixAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError("No se puede acceder a la matriz", ctx.GetStart())
+		return nil
+	}
+
+	return dict["value"]
+}

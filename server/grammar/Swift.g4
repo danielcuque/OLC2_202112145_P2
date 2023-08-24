@@ -25,6 +25,7 @@ statement:
 	| vectorDeclaration
 	| vectorAssignment
 	| matrixDeclaration
+	| matrixAssignment
 	| structDeclaration;
 
 // Variable types
@@ -129,6 +130,17 @@ matrixRepeatingDefinition:
 		MatrixRepeatingDefinitionNested
 	| matrixType LPAREN ID COLON expr COMMA ID COLON expr RPAREN # MatrixRepeatingDefinitionSingle;
 
+// Matrix access can be matrix1[0][1]...[n]
+matrixAccess:
+	idChain LBRACKET expr RBRACKET (LBRACKET expr RBRACKET)*;
+
+matrixAssignment:
+	matrixAccess op = (
+		Op_ASSIGN
+		| Op_PLUS_ASSIGN
+		| Op_MINUS_ASSIGN
+	) expr;
+
 // Structs
 
 structDeclaration: Kw_STRUCT ID LBRACE structBody RBRACE;
@@ -143,6 +155,7 @@ structProperty:
 expr:
 	functionCall													# FunctionCallExpr
 	| vectorAccess													# VectorAccessExpr
+	| matrixAccess													# MatrixAccessExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
