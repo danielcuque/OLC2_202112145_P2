@@ -44,8 +44,9 @@ func (f *Function) GetBody() *parser.BlockContext {
 	return f.Body
 }
 
-func NewFunction(name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
+func NewFunction(IsMutating bool, name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
 	return &Function{
+		IsMutating:     IsMutating,
 		Name:           name,
 		ReturnDataType: returnDataType,
 		Parameters:     parameters,
@@ -98,12 +99,9 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 		returnType = v.Visit(ctx.FunctionReturnType()).(string)
 	}
 
-	// if !ok {
-	// 	v.NewError("No se pudo obtener el tipo de valor de retorno", ctx.GetStart())
-	// 	return nil
-	// }
+	isMutating := ctx.Kw_MUTATING() != nil
 
-	v.Env.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
+	v.Env.AddFunction(id, NewFunction(isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
 
 	return nil
 }

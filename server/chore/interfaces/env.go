@@ -42,6 +42,7 @@ type EnvNode struct {
 	ScopeType string
 	Variables map[string]*Variable
 	Functions map[string]*Function
+	Structs   map[string]*ObjectV
 }
 
 func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
@@ -52,6 +53,7 @@ func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
 		ScopeType: envType,
 		Variables: make(map[string]*Variable),
 		Functions: make(map[string]*Function),
+		Structs:   make(map[string]*ObjectV),
 	}
 }
 

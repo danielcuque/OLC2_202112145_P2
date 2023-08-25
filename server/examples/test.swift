@@ -1,16 +1,17 @@
-// // let a = true
-// // let aa = false
-// // var b =  2
-// // var c = 1.1 + 2
-// // var d = -c * -1
-// // var e = false + 1.1 // Error
-// // var f = m + 1 // Error
-// // var evalWhile = 10
-// // var num: Float = 1
-// // var num3: Int = 10.1
-// // var num2: Int = false
-// // evalWhile = 5
-// // evalWhile = false // Error
+let a = true
+let aa = false
+var b =  2
+var c = 1.1 + 2
+var d = -c * -1
+var e = false + 1.1 // Error
+var f = m + 1 // Error
+var evalWhile = 10
+var num: Float = 1
+var num3: Int = 10.1
+var num2: Int = false
+evalWhile = 5
+evalWhile = false // Error
+
 
 
 // // var g = 1 > 1.1
@@ -247,8 +248,8 @@ func fibonacci(_ n: Int) -> Int {
     }
 }
 
-// print("Debería ser 55")
-// print(fibonacci(10)) 
+print("Debería ser 55")
+print(fibonacci(10)) 
 
 func ackerman(_ m: Int, _ n: Int) -> Int {
     if m == 0 {
@@ -260,8 +261,8 @@ func ackerman(_ m: Int, _ n: Int) -> Int {
     }
 }
 
-// print("Debería ser 125")
-// print(ackerman(3,4))
+print("Debería ser 125")
+print(ackerman(3,4))
 
 func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
     if discos == 1 {
@@ -291,20 +292,20 @@ var matrix2 : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repea
 var matrix0 : [[[String]]] = [[[String]]] (repeating: [[String]] (repeating: [String] (repeating:"OLC2", count:2), count:1), count:3)
 
 
-print(vec1[0], "======") //imprime 20
-vec1[0] = mtx1[0][0] //cambia 20 por 1
+// print(vec1[0], "======") //imprime 20
+// vec1[0] = mtx1[0][0] //cambia 20 por 1
 
-print(vec1[0], "======") //imprime 1
+// print(vec1[0], "======") //imprime 1
 
-print(mtx1[1][1], "^^^^") //imprime 5
-mtx1[1][1] = 10 //cambia 5 por 10 
-print(mtx1[1][1], "^^^^") //imprime 10
+// print(mtx1[1][1], "^^^^") //imprime 5
+// mtx1[1][1] = 10 //cambia 5 por 10 
+// print(mtx1[1][1], "^^^^") //imprime 10
 
-print(mtx1[0][0]) //imprime 1 
+// print(mtx1[0][0]) //imprime 1 
 
-print(mtx2[0][1][2], "-----") //imprime 6
-mtx2[0][1][2] = 10 //cambia 6 por 10
-print(mtx2[0][1][2], "-----") //imprime 10
+// print(mtx2[0][1][2], "-----") //imprime 6
+// mtx2[0][1][2] = 10 //cambia 6 por 10
+// print(mtx2[0][1][2], "-----") //imprime 10
 
 //error indices fuera de rango - error
 // mtx1[100][100] = 10

@@ -634,6 +634,20 @@ func (v *Visitor) ReplaceMatrixValue(matrix *MatrixNode, indexes []V.IValue, val
 // Structs
 
 func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) interface{} {
+	if v.Env.GetCurrentScope().ScopeType != RootEnv {
+		v.NewError("Las estructuras solo pueden ser declaradas en el scope global", ctx.GetStart())
+		return nil
+	}
+
+	id := ctx.ID().GetText()
+
+	_, ok := v.Env.GetVariable(id).(Variable)
+
+	if ok {
+		v.NewError(fmt.Sprintf("La estructura %s ya existe", id), ctx.GetStart())
+		return nil
+	}
+
 	return nil
 }
 

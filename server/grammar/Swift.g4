@@ -44,7 +44,8 @@ variableDeclaration:
 
 // Function declaration
 functionDeclarationStatement:
-	Kw_FUNC ID LPAREN functionParameters? RPAREN functionReturnType? LBRACE block RBRACE;
+	Kw_MUTATING? Kw_FUNC ID LPAREN functionParameters? RPAREN functionReturnType? LBRACE block
+		RBRACE;
 
 functionParameters:
 	functionParameter (COMMA functionParameter)*;
@@ -149,7 +150,7 @@ structBody: structProperty*;
 
 structProperty:
 	variableDeclaration
-	| Kw_MUTATING? functionDeclarationStatement;
+	| functionDeclarationStatement;
 
 // Expressions
 expr:
