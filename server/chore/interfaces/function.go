@@ -74,9 +74,9 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	id := ctx.ID().GetText()
 
 	// Verify if the function already exists
-	_, ok := v.Env.GetFunction(id).(*Function)
+	function := v.Env.GetFunction(id)
 
-	if ok {
+	if function != nil {
 		v.NewError(FunctionAlreadyExists, ctx.GetStart())
 		return nil
 	}
@@ -209,9 +209,9 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 	if len(ids) == 1 {
 		// Assert that the function exists
-		fnt, ok := v.Env.GetFunction(id).(*Function)
+		fnt := v.Env.GetFunction(id)
 
-		if !ok {
+		if fnt == nil {
 			v.NewError(FunctionNotFound, ctx.GetStart())
 			return nil
 		}
@@ -428,9 +428,9 @@ func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
 }
 
 func (v *Visitor) LookUpObject(id string, props []string, lc antlr.Token) (*ObjectV, bool) {
-	variable, ok := v.Env.GetVariable(id).(*Variable)
+	variable := v.Env.GetVariable(id)
 
-	if !ok {
+	if variable == nil {
 		v.NewError(ObjectNotFound, lc)
 		return nil, false
 	}

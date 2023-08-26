@@ -20,9 +20,9 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 		return false
 	}
 
-	variable, ok := v.Env.GetVariable(id).(*Variable) // Pointer to Variable
+	variable := v.Env.GetVariable(id)
 
-	if !ok {
+	if variable == nil {
 		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
 		return false
 	}

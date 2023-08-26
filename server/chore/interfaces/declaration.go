@@ -20,9 +20,9 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 		return nil
 	}
 
-	_, ok := v.Env.GetVariable(id).(Variable)
+	variable := v.Env.GetVariable(id)
 
-	if ok {
+	if variable != nil {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return false
 	}
@@ -45,9 +45,9 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 		return nil
 	}
 
-	_, ok := v.Env.GetVariable(id).(Variable)
+	variable := v.Env.GetVariable(id)
 
-	if ok {
+	if variable != nil {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return false
 	}
@@ -79,9 +79,9 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	id := ctx.ID().GetText()
 	valueType := v.Visit(ctx.VariableType()).(string)
 
-	_, ok := v.Env.GetVariable(id).(Variable)
+	variable := v.Env.GetVariable(id)
 
-	if ok {
+	if variable != nil {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return false
 	}
@@ -105,9 +105,9 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	id := ctx.ID().GetText()
 
-	_, ok := v.Env.GetVariable(id).(Variable)
+	variable := v.Env.GetVariable(id)
 
-	if ok {
+	if variable != nil {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return nil
 	}
@@ -281,9 +281,9 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
 	id := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)[0].GetText()
 
-	_, ok := v.Env.GetVariable(id).(Variable)
+	variable := v.Env.GetVariable(id)
 
-	if ok {
+	if variable != nil {
 		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
 		return nil
 	}
@@ -628,9 +628,9 @@ func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) i
 
 	id := ctx.ID().GetText()
 
-	_, ok := v.Env.GetVariable(id).(Variable)
+	variable := v.Env.GetVariable(id)
 
-	if ok {
+	if variable != nil {
 		v.NewError(fmt.Sprintf("La estructura %s ya existe", id), ctx.GetStart())
 		return nil
 	}

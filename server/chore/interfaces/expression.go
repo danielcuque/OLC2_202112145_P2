@@ -53,13 +53,11 @@ func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
 }
 
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
-	// variableName :=
-
 	expr := strings.Split(ctx.IdChain().GetText(), ".")
 
-	variable, ok := v.Env.GetVariable(expr[0]).(*Variable)
+	variable := v.Env.GetVariable(expr[0])
 
-	if !ok {
+	if variable == nil {
 		v.NewError(fmt.Sprintf("La variable %s no existe", expr[0]), ctx.GetStart())
 		return nil
 	}

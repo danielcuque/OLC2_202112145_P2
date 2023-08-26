@@ -112,15 +112,13 @@ func (s *EnvTree) AddVariable(name string, value *Variable) {
 	s.Current.AddVariable(name, value)
 }
 
-func (s *EnvTree) GetVariable(name string) interface{} {
-	// Check if var exists in current scope
-	// if not, check in parent scope until root
-
+func (s *EnvTree) GetVariable(name string) *Variable {
 	for node := s.Current; node != nil; node = node.Parent {
 		if val, ok := node.Variables[name]; ok {
 			return val
 		}
 	}
+
 	return nil
 }
 
@@ -132,10 +130,7 @@ func (s *EnvTree) AddFunction(name string, value *Function) {
 	s.Current.Functions[name] = value
 }
 
-func (s *EnvTree) GetFunction(name string) interface{} {
-	// Check if function exists in current scope
-	// if not, check in parent scope until root
-
+func (s *EnvTree) GetFunction(name string) *Function {
 	for node := s.Current; node != nil; node = node.Parent {
 		if _, ok := node.Functions[name]; ok {
 			return node.Functions[name]
