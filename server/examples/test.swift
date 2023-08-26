@@ -1,16 +1,16 @@
-let a = true
-let aa = false
-var b =  2
-var c = 1.1 + 2
-var d = -c * -1
-var e = false + 1.1 // Error
-var f = m + 1 // Error
-var evalWhile = 10
-var num: Float = 1
-var num3: Int = 10.1
-var num2: Int = false
-evalWhile = 5
-evalWhile = false // Error
+// let a = true
+// let aa = false
+// var b =  2
+// var c = 1.1 + 2
+// var d = -c * -1
+// var e = false + 1.1 // Error
+// var f = m + 1 // Error
+// var evalWhile = 10
+// var num: Float = 1
+// var num3: Int = 10.1
+// var num2: Int = false
+// evalWhile = 5
+// evalWhile = false // Error
 
 
 
@@ -274,7 +274,7 @@ func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
     }
 }
 
-// Hanoi(3, 1, 2, 3)
+Hanoi(3, 1, 2, 3)
 
 
 // Matrix declaration

@@ -4,10 +4,15 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+
+	"github.com/antlr4-go/antlr/v4"
 )
 
 func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
-	id := ctx.ID().GetText()
+	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
+	id := ids[0].GetText()
+
+	// TODO: verify if declaration is in struct
 	value, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {

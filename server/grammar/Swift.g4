@@ -64,7 +64,7 @@ functionCallArguments:
 
 // Variable assignment
 variableAssignment:
-	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
+	idChain op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
 // If statement 
 ifStatement: ifTail (Kw_ELSE ifTail)* elseStatement?;

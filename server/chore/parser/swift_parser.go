@@ -182,7 +182,7 @@ func swiftParserInit() {
 		204, 3, 74, 37, 0, 203, 199, 1, 0, 0, 0, 204, 207, 1, 0, 0, 0, 205, 203,
 		1, 0, 0, 0, 205, 206, 1, 0, 0, 0, 206, 209, 1, 0, 0, 0, 207, 205, 1, 0,
 		0, 0, 208, 188, 1, 0, 0, 0, 208, 196, 1, 0, 0, 0, 209, 23, 1, 0, 0, 0,
-		210, 211, 5, 36, 0, 0, 211, 212, 7, 2, 0, 0, 212, 213, 3, 74, 37, 0, 213,
+		210, 211, 3, 0, 0, 0, 211, 212, 7, 2, 0, 0, 212, 213, 3, 74, 37, 0, 213,
 		25, 1, 0, 0, 0, 214, 219, 3, 28, 14, 0, 215, 216, 5, 10, 0, 0, 216, 218,
 		3, 28, 14, 0, 217, 215, 1, 0, 0, 0, 218, 221, 1, 0, 0, 0, 219, 217, 1,
 		0, 0, 0, 219, 220, 1, 0, 0, 0, 220, 223, 1, 0, 0, 0, 221, 219, 1, 0, 0,
@@ -3244,7 +3244,7 @@ type IVariableAssignmentContext interface {
 	SetOp(antlr.Token)
 
 	// Getter signatures
-	ID() antlr.TerminalNode
+	IdChain() IIdChainContext
 	Expr() IExprContext
 	Op_ASSIGN() antlr.TerminalNode
 	Op_PLUS_ASSIGN() antlr.TerminalNode
@@ -3291,8 +3291,20 @@ func (s *VariableAssignmentContext) GetOp() antlr.Token { return s.op }
 
 func (s *VariableAssignmentContext) SetOp(v antlr.Token) { s.op = v }
 
-func (s *VariableAssignmentContext) ID() antlr.TerminalNode {
-	return s.GetToken(SwiftParserID, 0)
+func (s *VariableAssignmentContext) IdChain() IIdChainContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IIdChainContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IIdChainContext)
 }
 
 func (s *VariableAssignmentContext) Expr() IExprContext {
@@ -3349,11 +3361,7 @@ func (p *SwiftParser) VariableAssignment() (localctx IVariableAssignmentContext)
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(210)
-		p.Match(SwiftParserID)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
-		}
+		p.IdChain()
 	}
 	{
 		p.SetState(211)

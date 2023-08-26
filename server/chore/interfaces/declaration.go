@@ -278,19 +278,6 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 
 // Matrix
 
-/*
-Consideraciones:
-
-- La asignación y lectura valores se realizará con la notación [ ]
-- Los índices de declaración comienzan a partir de 1
-- Los índices de acceso comienzan a partir de 0
-
-- Las matrices no van a cambiar su tamaño durante la ejecución.
-- Si se hace un acceso con índices en fuera de rango se devuelve nil y se debe
-notificar como un error.
-- El atributo count solo recibirá número enteros en forma de literales, no podrán ser
-asignadas ni variables ni elementos de otras estructuras a este atributo.
-*/
 func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
 	id := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)[0].GetText()
 
