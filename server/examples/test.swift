@@ -232,7 +232,7 @@ var vec1: [Int] = [20, 30, 40]
 // vec2.remove(asds: 2) // Error
 
 
-// print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
+print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 
 
 func fibonacci(_ n: Int) -> Int {
@@ -311,14 +311,27 @@ print(mtx2[0][1][2], "-----") //imprime 10
 // mtx1[100][100] = 10
 
 
-func duplicar(_ x: inout Int){ 
-    x += x
+func negar(_ x: inout Int){ 
+    x = -x
 }
 
 let numero1 = 10
 
-duplicar(&numero1)
-print("numero2:", numero1) 
+negar(&numero1)
+print("numero1:", numero1) // imprime -10
+
+let numero2 = 20
+let numero3 = 30
+
+func sumar(x: Int, y: Int) -> Int{
+    x += 100
+    return x + y
+}
+
+print("suma:", sumar(x: numero2, y: numero3)) // imprime 50
+
+print("numero2:", numero2) // imprime 20
+print("numero3:", numero3) // imprime 30
 
 
 

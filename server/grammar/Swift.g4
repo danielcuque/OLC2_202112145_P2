@@ -171,7 +171,7 @@ expr:
 	| left = expr Kw_RANGE right = expr								# RangeExpr
 	| LPAREN expr RPAREN											# ParExpr
 	| INT															# IntExpr
-	| idChain														# IdExpr
+	| Kw_AMPER? idChain												# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
 	| NIL															# NilExpr

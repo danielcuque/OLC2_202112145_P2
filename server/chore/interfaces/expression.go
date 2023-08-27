@@ -52,6 +52,7 @@ func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
 	return V.NewNilValue(nil)
 }
 
+// Returns pointer or value, if amper is true returns pointer
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	expr := strings.Split(ctx.IdChain().GetText(), ".")
 
@@ -62,7 +63,12 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		return nil
 	}
 
+	amper := ctx.Kw_AMPER() != nil
+
 	if len(expr) == 1 {
+		if amper {
+			return variable
+		}
 		return variable.Value
 	}
 
@@ -77,6 +83,10 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		return V.NewNilValue(nil)
 	}
 
+	if amper {
+		return prop
+	}
+
 	return prop.Value
 }
 
@@ -85,15 +95,24 @@ func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 }
 
 func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
-	op := v.Visit(ctx.Expr()).(V.IValue)
-	value := op.GetValue()
-	opType := op.GetType()
+	expr := v.Visit(ctx.Expr()).(V.IValue)
+	value := expr.GetValue()
+	opType := expr.GetType()
+
+	// Check if is pointer, if is pointer, change variable
 
 	if opType == V.IntType {
+		if CheckIsPointer(expr) {
+			expr.(*Variable).SetValue(V.NewIntValue(-value.(int)))
+		}
 		return V.NewIntValue(-value.(int))
 	} else if opType == V.FloatType {
+		if CheckIsPointer(expr) {
+			expr.(*Variable).SetValue(V.NewFloatValue(-value.(float64)))
+		}
 		return V.NewFloatValue(-value.(float64))
 	}
+
 	v.NewError("No se puede aplicar el operador unario - a "+opType, ctx.GetStart())
 	return nil
 }
@@ -118,7 +137,6 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 
 	switch op {
 	case "+":
-
 		if leftT == V.IntType && rightT == V.IntType {
 			return V.NewIntValue(l.(int) + r.(int))
 		}

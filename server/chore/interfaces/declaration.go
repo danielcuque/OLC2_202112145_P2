@@ -633,9 +633,9 @@ func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) i
 	}
 
 	// Check struct body
-	structBody := v.Visit(ctx.StructBody())
+	v.Visit(ctx.StructBody())
 
-	fmt.Println(structBody)
+	// fmt.Println(structBody)
 
 	return nil
 }

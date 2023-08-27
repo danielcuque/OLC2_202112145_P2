@@ -37,6 +37,10 @@ func (v *Variable) GetValue() interface{} {
 	return v.Value.GetValue()
 }
 
+func (v *Variable) String() string {
+	return v.Value.String()
+}
+
 func (v *Variable) SetValue(value V.IValue) {
 	v.Value = value
 }

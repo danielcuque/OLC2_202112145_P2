@@ -4,6 +4,7 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+	"reflect"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -62,8 +63,9 @@ type Parameter struct {
 }
 
 type Argument struct {
-	Name  string
-	Value V.IValue
+	Name      string
+	Value     V.IValue
+	IsPointer bool
 }
 
 // Visit methods
@@ -303,11 +305,25 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 		if param.Value == nil {
 			v.NewError(fmt.Sprintf("El parámetro '%s' no existe", param.InternalName), ctx.GetStart())
+			v.Env.PopEnv()
+			return false
+		}
+
+		if param.IsINOUT && !CheckIsPointer(arg.Value) {
+			v.NewError(fmt.Sprintf("El parámetro '%s' es de tipo INOUT, por lo tanto debe ser un puntero", param.InternalName), ctx.GetStart())
+			v.Env.PopEnv()
+			return false
+		}
+
+		if !param.IsINOUT && CheckIsPointer(arg.Value) {
+			v.NewError(fmt.Sprintf("El parámetro '%s' no es de tipo INOUT, por lo tanto no debe ser un puntero", param.InternalName), ctx.GetStart())
+			v.Env.PopEnv()
 			return false
 		}
 
 		if arg.Value.GetType() != param.Value.GetType() {
 			v.NewError(fmt.Sprintf("El parámetro '%s' no es del tipo '%s'", param.InternalName, param.Value.GetType()), ctx.GetStart())
+			v.Env.PopEnv()
 			return false
 		}
 
@@ -379,7 +395,9 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 			return make([]Argument, 0)
 		}
 
-		args = append(args, Argument{Value: value, Name: ""})
+		// Reflect if is *Variable or *Int or *Float, etc, if is *Variable, then get the value
+
+		args = append(args, Argument{Value: value, Name: "", IsPointer: CheckIsPointer(value)})
 	}
 
 	return args
@@ -467,4 +485,8 @@ func (v *Visitor) GetProps(ids []antlr.TerminalNode) []string {
 	}
 
 	return props
+}
+
+func CheckIsPointer(value interface{}) bool {
+	return reflect.TypeOf(value) == reflect.TypeOf(&Variable{})
 }
