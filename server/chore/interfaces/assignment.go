@@ -41,6 +41,10 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 		}
 	}
 
+	if CheckIsPointer(variable.Value) {
+		variable = variable.Value.(*Variable)
+	}
+
 	// Check the operator assignment (= += -=)
 	op := ctx.GetOp().GetText()
 	switch op {

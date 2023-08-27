@@ -312,7 +312,9 @@ print(mtx2[0][1][2], "-----") //imprime 10
 
 
 func negar(_ x: inout Int){ 
-    x = -x
+    let a = -x
+    print("negado:",a)
+    // x = -x
 }
 
 let numero1 = 10
@@ -334,6 +336,16 @@ print("numero2:", numero2) // imprime 20
 print("numero3:", numero3) // imprime 30
 
 
+// func duplicarA (_ array: inout [Int] ) {
+//     var i = 0
+//     while (i < array.count ) {
+//         array[i] += array[i]
+//         i += 1
+//         }
+// }
+
+// var array = [1,2,3,4,5,6]
+// duplicarA(&array)
 
 // Structs
 
