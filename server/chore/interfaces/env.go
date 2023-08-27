@@ -139,6 +139,19 @@ func (s *EnvTree) GetFunction(name string) *Function {
 	return nil
 }
 
+func (s *EnvTree) AddStruct(name string, value *ObjectV) {
+	s.Current.Structs[name] = value
+}
+
+func (s *EnvTree) GetStruct(name string) *ObjectV {
+	for node := s.Current; node != nil; node = node.Parent {
+		if _, ok := node.Structs[name]; ok {
+			return node.Structs[name]
+		}
+	}
+	return nil
+}
+
 func (s *EnvTree) PushEnv(scopeType string) *EnvNode {
 	node := NewEnvNode(s.Current, scopeType, s.Current.Level+1)
 	s.Current.Child = append(s.Current.Child, node)

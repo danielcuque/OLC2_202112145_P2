@@ -130,11 +130,13 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 		return nil
 	}
 
+	newEnv := NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1)
+
 	// New Vector Variable
 	newVector := NewVector(valueType, dataList)
 
 	// Create a new generic object
-	newObj := NewObjectV(V.VectorType, newVector)
+	newObj := NewObjectV(V.VectorType, newVector, newEnv)
 
 	// Add native properties
 	count := NewVariable(v, "count", true, V.NewIntValue(len(dataList)), V.IntType, ctx.GetStart())
@@ -307,7 +309,9 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 
 	// Create a new generic object
 
-	newObj := NewObjectV(V.MatrixType, body)
+	newBodyProps := NewEnvNode(v.Env.GetCurrentScope(), V.MatrixType, v.Env.GetCurrentScope().Level+1)
+
+	newObj := NewObjectV(V.MatrixType, body, newBodyProps)
 
 	// This is a matrix, so, matrix does not have native properties
 
@@ -628,17 +632,29 @@ func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) i
 
 	id := ctx.ID().GetText()
 
-	variable := v.Env.GetVariable(id)
+	variable := v.Env.GetStruct(id)
 
 	if variable != nil {
 		v.NewError(fmt.Sprintf("La estructura %s ya existe", id), ctx.GetStart())
 		return nil
 	}
 
+	// Check struct body
+	structBody := v.Visit(ctx.StructBody())
+
+	fmt.Println(structBody)
+
 	return nil
 }
 
 func (v *Visitor) VisitStructBody(ctx *parser.StructBodyContext) interface{} {
+	// Check if the struct body is empty
+	allStructProperty := ctx.AllStructProperty()
+
+	if len(allStructProperty) == 0 {
+		return nil
+	}
+
 	return nil
 }
 

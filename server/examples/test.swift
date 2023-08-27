@@ -229,7 +229,7 @@ var vec1: [Int] = [20, 30, 40]
 // print("\n")
 
 // vec2.remove(at: 3) // Error
-// vec2.remove(asds: 2)
+// vec2.remove(asds: 2) // Error
 
 
 // print("La nueva cantidad de vec1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
@@ -292,22 +292,22 @@ var matrix2 : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repea
 var matrix0 : [[[String]]] = [[[String]]] (repeating: [[String]] (repeating: [String] (repeating:"OLC2", count:2), count:1), count:3)
 
 
-// print(vec1[0], "======") //imprime 20
-// vec1[0] = mtx1[0][0] //cambia 20 por 1
+print(vec1[0], "======") //imprime 20
+vec1[0] = mtx1[0][0] //cambia 20 por 1
 
-// print(vec1[0], "======") //imprime 1
+print(vec1[0], "======") //imprime 1
 
-// print(mtx1[1][1], "^^^^") //imprime 5
-// mtx1[1][1] = 10 //cambia 5 por 10 
-// print(mtx1[1][1], "^^^^") //imprime 10
+print(mtx1[1][1], "^^^^") //imprime 5
+mtx1[1][1] = 10 //cambia 5 por 10 
+print(mtx1[1][1], "^^^^") //imprime 10
 
-// print(mtx1[0][0]) //imprime 1 
+print(mtx1[0][0]) //imprime 1 
 
-// print(mtx2[0][1][2], "-----") //imprime 6
-// mtx2[0][1][2] = 10 //cambia 6 por 10
-// print(mtx2[0][1][2], "-----") //imprime 10
+print(mtx2[0][1][2], "-----") //imprime 6
+mtx2[0][1][2] = 10 //cambia 6 por 10
+print(mtx2[0][1][2], "-----") //imprime 10
 
-//error indices fuera de rango - error
+// error indices fuera de rango - error
 // mtx1[100][100] = 10
 
 
