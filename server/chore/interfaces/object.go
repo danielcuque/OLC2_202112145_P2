@@ -11,6 +11,7 @@ type ObjectV struct {
 }
 
 func NewObjectV(Type string, body V.IValue, Env *EnvNode) *ObjectV {
+
 	return &ObjectV{
 		Type: Type,
 		Body: body,

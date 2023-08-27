@@ -130,13 +130,11 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 		return nil
 	}
 
-	newEnv := NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1)
-
 	// New Vector Variable
 	newVector := NewVector(valueType, dataList)
 
 	// Create a new generic object
-	newObj := NewObjectV(V.VectorType, newVector, newEnv)
+	newObj := NewObjectV(V.VectorType, newVector, NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1))
 
 	// Add native properties
 	count := NewVariable(v, "count", true, V.NewIntValue(len(dataList)), V.IntType, ctx.GetStart())
@@ -308,12 +306,7 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 	}
 
 	// Create a new generic object
-
-	newBodyProps := NewEnvNode(v.Env.GetCurrentScope(), V.MatrixType, v.Env.GetCurrentScope().Level+1)
-
-	newObj := NewObjectV(V.MatrixType, body, newBodyProps)
-
-	// This is a matrix, so, matrix does not have native properties
+	newObj := NewObjectV(V.MatrixType, body, NewEnvNode(v.Env.GetCurrentScope(), V.MatrixType, v.Env.GetCurrentScope().Level+1))
 
 	v.Env.AddVariable(id,
 		NewVariable(v, id, true, newObj, matrixType, ctx.GetStart()),

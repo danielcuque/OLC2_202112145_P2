@@ -311,6 +311,16 @@ print(mtx2[0][1][2], "-----") //imprime 10
 // mtx1[100][100] = 10
 
 
+func duplicar(_ x: inout Int){ 
+    x += x
+}
+
+let numero1 = 10
+
+duplicar(&numero1)
+print("numero2:", numero1) 
+
+
 
 // Structs
 
