@@ -194,7 +194,7 @@ type ApiVariable struct {
 }
 
 func (s *EnvNode) GetAllVariables() []ApiVariable {
-	var allVariables []ApiVariable
+	allVariables := make([]ApiVariable, 0)
 	s.collectVariables(&allVariables)
 	return allVariables
 }

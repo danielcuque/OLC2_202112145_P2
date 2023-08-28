@@ -16,13 +16,13 @@ export const RunButton = ({ tab }: RunButtonProps) => {
     try {
       const result = await fetchAPI(tab.code)
       if (result)
-        console.log(result)
-      setParserAttributes(
-        result.symbols,
-        result.errors,
-        result.logs,
-        result.cst,
-      );
+
+        setParserAttributes(
+          result.symbols,
+          result.errors,
+          result.logs,
+          result.cst,
+        );
       if (result.errors.length > 0) {
         toast.error("Error al compilar");
       } else {
