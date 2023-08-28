@@ -1,6 +1,6 @@
 import { TabI } from "../../context";
 import { CustomModal } from "../modal";
-import { Graphviz } from "graphviz-react";
+import { SvgRender } from "./SvgRender";
 
 interface ASTContainerProps {
   tab: TabI | undefined;
@@ -23,14 +23,10 @@ export const CSTContainer = ({ tab }: ASTContainerProps) => {
         title="CST"
       >
         {tab?.parser?.cst ? (
-          <div>
-            <Graphviz
-              dot={tab.parser?.cst}
-              options={{
-                zoom: true,
-              }}
-            />
-          </div>
+          <SvgRender
+            svg={tab?.parser?.cst}
+          />
+
         ) : (
           <div>
             <p>No se ha generado CST</p>

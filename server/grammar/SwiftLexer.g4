@@ -2,7 +2,7 @@ lexer grammar SwiftLexer;
 
 // Skip comments
 
-WHITESPACE: [ \\\r\n\t]+ -> skip;
+WHITESPACE: [ \t\n\r\f]+ -> skip;
 COMMENT: '//' ~[\r\n]* -> skip;
 BLOCK_COMMENT: '/*' .*? '*/' -> skip;
 

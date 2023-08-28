@@ -1,4 +1,4 @@
-grammar Swift;
+parser grammar Swift;
 
 options {
 	tokenVocab = SwiftLexer;

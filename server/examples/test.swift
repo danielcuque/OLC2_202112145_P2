@@ -174,21 +174,21 @@
 
 // print(testGuard, "|", num)
 
-print(Int("10"))
-print(Int("12.001"))
-print(Int(10.9999))
+// print(Int("10"))
+// print(Int("12.001"))
+// print(Int(10.9999))
 // print(Int("Q10"))
 
-print(Float("10"))
-print(Float("10.001"))
+// print(Float("10"))
+// print(Float("10.001"))
 // print(Float("Q10.00"))
 
-print(1.0001)
-print(true)
-print(nil)
-print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
-// // Test double quote
-print("cadena1 \"cadena2\" cadena3")
+// print(1.0001)
+// print(true)
+// print(nil)
+// print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+// Test double quote
+// print("cadena1 \"cadena2\" cadena3")
 
 // Vectors
 
@@ -394,29 +394,35 @@ struct Persona{
     var Nombre: String
     var edad = 0
     var apellido = "García"
+
 }
 
 var persona1 = Persona(Nombre:"Daniel", edad: 21, apellido: "Cuque")
 
 print("Mi nombre es", persona1.Nombre, persona1.apellido, "y tengo", persona1.edad, "años")
 
+
 // struct con funciones 
-// struct Avion {
-//     var pasajeros = 0 
-//     var velocidad = 100
-//     var nombre: String?
-//     // var piloto: Persona
+struct Avion {
+    var pasajeros = 0 
+    var velocidad = 100
+    var nombre: String?
+    // var piloto: Persona
 
-//     // metodo dentro de struct 
+    // metodo dentro de struct 
 
-//     mutating func frenar(){
-//         print("Frenando")
-//         //al ser mutable sí afecta al struct 
-//         // self.velocidad = 0
-//     }
+    mutating func frenar(){
+        print("Frenando")
+        //al ser mutable sí afecta al struct 
+        // self.velocidad = 0
+    }
         
-//     // funcion inmutable 
-//     func mostrarVelocidad(){
-//         print("Velocidad", self.velocidad) 
-//     }
-// }
+    // funcion inmutable 
+    func mostrarVelocidad(){
+        print("Velocidad", self.velocidad) 
+    }
+}
+
+var avion1 = Avion(pasajeros: 100, velocidad: 1000, nombre: "Avion1")
+
+avion1.mostrarVelocidad()
