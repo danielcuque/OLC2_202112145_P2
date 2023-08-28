@@ -75,6 +75,13 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
 	// Declaration without value
 
+	// Check if '?' is used outside struct env
+
+	if ctx.Op_TERNARY() == nil && v.Env.GetCurrentScope().ScopeType != StructEnv {
+		v.NewError("El operador ternario solo puede ser usado dentro de un struct", ctx.GetStart())
+		return nil
+	}
+
 	isConstant := ctx.GetVarType().GetText() == "let"
 	id := ctx.ID().GetText()
 	valueType := v.Visit(ctx.VariableType()).(string)

@@ -38,7 +38,7 @@ variableDeclaration:
 		SEMICOLON
 	)?																# TypeValueDeclaration
 	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?	# ValueDeclaration
-	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY (
+	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY? (
 		SEMICOLON
 	)? # TypeDeclaration;
 

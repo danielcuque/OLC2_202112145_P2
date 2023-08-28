@@ -11,7 +11,12 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	id, _ := v.GetIds(ctx)
 
 	// Get the vector
-	vectorObj, _ := v.LookUpObject(id, nil, ctx.GetStart())
+	vectorObj, ok := v.LookUpObject(id, nil, ctx.GetStart())
+
+	if !ok {
+		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
 
 	if vectorObj.GetType() != V.VectorType {
 		v.NewError("La función append solo se puede usar con vectores", ctx.GetStart())

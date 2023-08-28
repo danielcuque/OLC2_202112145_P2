@@ -13,6 +13,7 @@ const (
 	IfEnv     = "If"
 	ElseEnv   = "Else"
 	SwitchEnv = "Switch"
+	StructEnv = "Struct"
 )
 
 type TokenSymbol struct {

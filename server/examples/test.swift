@@ -368,27 +368,29 @@ duplicarA(&array)
 // Structs
 
 struct Persona{
-    var Nombre: String?
+    var Nombre: String
     var edad = 0
 }
 
+// var persona1 = Persona(Nombre: "Juan", edad: 20)
+
 // struct con funciones 
-struct Avion {
-    var pasajeros = 0 
-    var velocidad = 100
-    var nombre: String?
-    // var piloto: Persona
+// struct Avion {
+//     var pasajeros = 0 
+//     var velocidad = 100
+//     var nombre: String?
+//     // var piloto: Persona
 
-    // metodo dentro de struct 
+//     // metodo dentro de struct 
 
-    mutating func frenar(){
-        print("Frenando")
-        //al ser mutable sí afecta al struct 
-        // self.velocidad = 0
-    }
+//     mutating func frenar(){
+//         print("Frenando")
+//         //al ser mutable sí afecta al struct 
+//         // self.velocidad = 0
+//     }
         
-    // funcion inmutable 
-    func mostrarVelocidad(){
-        print("Velocidad", self.velocidad) 
-    }
-}
+//     // funcion inmutable 
+//     func mostrarVelocidad(){
+//         print("Velocidad", self.velocidad) 
+//     }
+// }
