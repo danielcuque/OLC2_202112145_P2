@@ -40,7 +40,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	}
 
 	// Create a new scope
-	v.Env.PushEnv(IfSEnv)
+	v.Env.PushEnv(ForEnv)
 
 	v.Stack.Push(
 		NewStackItem(

@@ -10,7 +10,7 @@ const (
 	FuncEnv   = "Func"
 	WhileEnv  = "While"
 	ForEnv    = "For"
-	IfSEnv    = "If"
+	IfEnv     = "If"
 	ElseEnv   = "Else"
 	SwitchEnv = "Switch"
 )

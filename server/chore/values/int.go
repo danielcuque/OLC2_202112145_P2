@@ -21,3 +21,7 @@ func (i *IntV) String() string {
 func NewIntValue(value int) *IntV {
 	return &IntV{Value: value}
 }
+
+func (i *IntV) Copy() IValue {
+	return NewIntValue(i.Value)
+}

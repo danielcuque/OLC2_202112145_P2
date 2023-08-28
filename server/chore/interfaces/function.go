@@ -172,8 +172,14 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 		param = V.NewBooleanValue(false)
 	case "Char":
 		param = V.NewCharValue(' ')
+	case "Nil":
+		param = V.NewNilValue(nil)
 	default:
 		param = V.NewNilValue(nil)
+	}
+
+	if ctx.LBRACKET() != nil {
+		param = NewObjectV(V.VectorType, &VectorV{}, &EnvNode{})
 	}
 
 	return Parameter{
@@ -255,6 +261,14 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	// Get the arguments
 	args := v.GetArgs(ctx)
 
+	/*
+		[]Argument{
+			Value: *Object
+			Name: ""
+			IsPointer: false
+		}
+	*/
+
 	// Verify if the number of parameters is the same
 	if len(args) != len(fn.Parameters) {
 		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
@@ -286,6 +300,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 	// Create a new scope
 	fnScope := v.Env.PushEnv(id)
+
 	v.Stack.Push(NewStackItem(
 		id,
 		V.NewNilValue(nil),
@@ -327,14 +342,21 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 			return false
 		}
 
+		newValue := arg.Value
+
+		if !param.IsINOUT {
+			newValue = arg.Value.Copy()
+		}
+
 		v.Env.AddVariable(param.InternalName, NewVariable(
 			v,
 			param.InternalName,
 			false,
-			arg.Value,
-			arg.Value.GetType(),
+			newValue,
+			param.Value.GetType(),
 			ctx.GetStart(),
 		))
+
 	}
 
 	// Execute the function
@@ -395,8 +417,6 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 			return make([]Argument, 0)
 		}
 
-		// Reflect if is *Variable or *Int or *Float, etc, if is *Variable, then get the value
-
 		args = append(args, Argument{Value: value, Name: "", IsPointer: CheckIsPointer(value)})
 	}
 
@@ -453,7 +473,7 @@ func (v *Visitor) LookUpObject(id string, props []string, lc antlr.Token) (*Obje
 		return nil, false
 	}
 
-	object, ok := variable.Value.(*ObjectV)
+	object, ok := GetObject(variable).(*ObjectV)
 
 	// If there are props, then get the object
 	if len(props) > 0 {

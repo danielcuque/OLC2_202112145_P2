@@ -96,3 +96,13 @@ func (v *VectorV) Set(index int, value V.IValue) {
 		v.Body[index] = value
 	}
 }
+
+func (v *VectorV) Copy() V.IValue {
+	body := make([]V.IValue, len(v.Body))
+
+	for i, value := range v.Body {
+		body[i] = value.Copy()
+	}
+
+	return NewVector(v.DataType, body)
+}

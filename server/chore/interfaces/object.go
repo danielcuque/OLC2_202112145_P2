@@ -56,7 +56,7 @@ func (o *ObjectV) String() string {
 func GetPropValue(variable *Variable, props []string) interface{} {
 	// There are two cases, variable can store another object, or not
 
-	obj, ok := variable.Value.(*ObjectV)
+	obj, ok := GetObject(variable).(*ObjectV)
 
 	if !ok {
 		return nil
@@ -67,4 +67,18 @@ func GetPropValue(variable *Variable, props []string) interface{} {
 	}
 
 	return GetPropValue(obj.GetProp(props[0]).(*Variable), props[1:])
+}
+
+// Recursive until get the value of the object, then return the value
+func GetObject(variable *Variable) interface{} {
+	if CheckIsPointer(variable.Value) {
+		return GetObject(variable.Value.(*Variable))
+	}
+	return variable.Value
+}
+
+func (o *ObjectV) Copy() V.IValue {
+	body := o.Body.Copy()
+
+	return NewObjectV(o.Type, body, o.Env)
 }

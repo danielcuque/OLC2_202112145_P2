@@ -19,3 +19,7 @@ func (s *StringV) String() string {
 func NewStringValue(value string) *StringV {
 	return &StringV{Value: value}
 }
+
+func (s *StringV) Copy() IValue {
+	return NewStringValue(s.Value)
+}

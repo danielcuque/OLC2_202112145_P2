@@ -16,6 +16,7 @@ type IValue interface {
 	GetValue() interface{}
 	GetType() string
 	String() string
+	Copy() IValue
 }
 
 type RangeV struct {
@@ -32,6 +33,10 @@ func (a *RangeV) GetType() string {
 
 func (a *RangeV) String() string {
 	return ""
+}
+
+func (a *RangeV) Copy() IValue {
+	return NewRangeValue(a.Value)
 }
 
 func NewRangeValue(value []IValue) *RangeV {

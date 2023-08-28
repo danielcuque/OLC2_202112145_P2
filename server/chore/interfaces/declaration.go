@@ -144,7 +144,7 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	newObj.AddProp("isEmpty", isEmpty)
 
 	v.Env.AddVariable(id,
-		NewVariable(v, id, isConstant, newObj, valueType, ctx.GetStart()),
+		NewVariable(v, id, isConstant, newObj, V.VectorType, ctx.GetStart()),
 	)
 
 	return nil

@@ -40,7 +40,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 
 	if condition.(*V.BooleanV).Value {
 
-		v.Env.PushEnv(IfSEnv)
+		v.Env.PushEnv(IfEnv)
 
 		v.Visit(ctx.Block())
 

@@ -213,7 +213,7 @@ var vec1: [Int] = [20, 30, 40]
 // vec1[0] = 10 + number
 // print("El nuevo valor de la posicion 0 de vec1 es ->", vec1[0]) // Debería ser 30
 
-// print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
+print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 // print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
 // print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
 
@@ -248,8 +248,16 @@ func fibonacci(_ n: Int) -> Int {
     }
 }
 
+func sumar2 (_ a: inout Int, _ b: inout Int) {
+    a = a + b
+}
+
+let fibonacci5 = 5
+sumar2(&fibonacci5, &fibonacci5)
+
 print("Debería ser 55")
-print(fibonacci(10)) 
+print(fibonacci(fibonacci5)) 
+print("El valor de fibonacci10 es", fibonacci5)
 
 func ackerman(_ m: Int, _ n: Int) -> Int {
     if m == 0 {
@@ -336,16 +344,26 @@ print("numero2:", numero2) // imprime 20
 print("numero3:", numero3) // imprime 30
 
 
-// func duplicarA (_ array: inout [Int] ) {
-//     var i = 0
-//     while (i < array.count ) {
-//         array[i] += array[i]
-//         i += 1
-//         }
-// }
+func imprimirArray (_ array: [Int] ) {
+    for i in 0...array.count - 1 {
+        print(array[i])
+    }
+}
 
-// var array = [1,2,3,4,5,6]
-// duplicarA(&array)
+func duplicarA (_ array: inout [Int] ) {
+    duplicarB(&array)
+}
+
+func duplicarB (_ array: inout [Int]  ) {
+    var i = 0
+    while (i < array.count ) {
+        array[i] += array[i]
+        i += 1
+    }
+}
+
+var array: [Int] = [1,2,3,4,5,6]
+duplicarA(&array)
 
 // Structs
 

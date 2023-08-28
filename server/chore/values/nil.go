@@ -19,3 +19,7 @@ func (n *NilV) String() string {
 func NewNilValue(value interface{}) *NilV {
 	return &NilV{Value: value}
 }
+
+func (n *NilV) Copy() IValue {
+	return NewNilValue(n.Value)
+}

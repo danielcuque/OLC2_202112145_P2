@@ -50,7 +50,12 @@ functionDeclarationStatement:
 functionParameters:
 	functionParameter (COMMA functionParameter)*;
 
-functionParameter: ID? ID COLON Kw_INOUT? variableType;
+// Change to accept vectors 
+functionParameter:
+	ID? ID COLON Kw_INOUT? (
+		variableType
+		| LBRACKET variableType RBRACKET
+	);
 
 functionReturnType: Op_ARROW variableType;
 

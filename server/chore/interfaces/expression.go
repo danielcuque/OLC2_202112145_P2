@@ -68,8 +68,16 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	if len(expr) == 1 {
 		if amper {
 			return variable
+			/*
+				*Variable {
+					Value: *Object
+				}
+			*/
 		}
 		return variable.Value
+		/*
+		*Object
+		 */
 	}
 
 	// Check if there is more than one id

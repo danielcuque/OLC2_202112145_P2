@@ -65,6 +65,10 @@ func (v *Variable) GetColumn() int {
 	return v.Column
 }
 
+func (v *Variable) Copy() V.IValue {
+	return v.Value.Copy()
+}
+
 func (v *Variable) GetScopeName() string {
 	return v.Env.GetType()
 }
