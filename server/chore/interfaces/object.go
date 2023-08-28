@@ -78,7 +78,5 @@ func GetObject(variable *Variable) interface{} {
 }
 
 func (o *ObjectV) Copy() V.IValue {
-	body := o.Body.Copy()
-
-	return NewObjectV(o.Type, body, o.Env)
+	return NewObjectV(o.Type, o.Body.Copy(), o.Env)
 }

@@ -174,21 +174,21 @@
 
 // print(testGuard, "|", num)
 
-// print(Int("10"))
-// print(Int("12.001"))
-// print(Int(10.9999))
+print(Int("10"))
+print(Int("12.001"))
+print(Int(10.9999))
 // print(Int("Q10"))
 
-// print(Float("10"))
-// print(Float("10.001"))
+print(Float("10"))
+print(Float("10.001"))
 // print(Float("Q10.00"))
 
-// print(1.0001)
-// print(true)
-// print(nil)
-// print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
+print(1.0001)
+print(true)
+print(nil)
+print("\tcadena1 \ncadena2") // mostraría cadena1 y cadena2 en líneas separadas
 // // Test double quote
-// print("cadena1 \"cadena2\" cadena3")
+print("cadena1 \"cadena2\" cadena3")
 
 // Vectors
 
@@ -344,35 +344,61 @@ print("numero2:", numero2) // imprime 20
 print("numero3:", numero3) // imprime 30
 
 
-func imprimirArray (_ array: [Int] ) {
-    for i in 0...array.count - 1 {
-        print(array[i])
+// Vector por referencia
+
+func imprimirArray (_ simpleArray: [Int] ) {
+    for i in 0...simpleArray.count - 1 {
+        print(simpleArray[i])
     }
 }
 
-func duplicarA (_ array: inout [Int] ) {
-    duplicarB(&array)
-}
-
-func duplicarB (_ array: inout [Int]  ) {
+func duplicarConPuntero1 (_ array1: inout [Int] ) {
     var i = 0
-    while (i < array.count ) {
-        array[i] += array[i]
+    while (i < array1.count ) {
+        array1[i] += array1[i]
         i += 1
     }
 }
 
+func duplicarConPuntero2 (_ array2: inout [Int] ) {
+    duplicarConPuntero1(&array2)
+}
+
+func duplicarSinPuntero (_ arrayS: [Int] ) {
+    for i in 0...arrayS.count - 1 {
+        arrayS[i] += arrayS[i]
+    }
+}
+
+
 var array: [Int] = [1,2,3,4,5,6]
-duplicarA(&array)
+
+print("Array original")
+imprimirArray(array)
+
+print("Array sin puntero")
+duplicarSinPuntero(array)
+imprimirArray(array)
+
+print("Array con puntero")
+duplicarConPuntero1(&array)
+imprimirArray(array)
+
+print("Array con puntero doble")
+duplicarConPuntero2(&array)
+imprimirArray(array)
 
 // Structs
 
 struct Persona{
     var Nombre: String
     var edad = 0
+    var apellido = "García"
 }
 
-// var persona1 = Persona(Nombre: "Juan", edad: 20)
+var persona1 = Persona(Nombre:"Daniel", edad: 21, apellido: "Cuque")
+
+print("Mi nombre es", persona1.Nombre, persona1.apellido, "y tengo", persona1.edad, "años")
 
 // struct con funciones 
 // struct Avion {

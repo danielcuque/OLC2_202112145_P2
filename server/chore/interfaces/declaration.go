@@ -29,9 +29,11 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 
 	newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
 
-	v.Env.AddVariable(id, newVariable)
+	if !isDeclaringStruct {
+		v.Env.AddVariable(id, newVariable)
+	}
 
-	return true
+	return newVariable
 }
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
@@ -67,9 +69,11 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 
 	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
 
-	v.Env.AddVariable(id, newVariable)
+	if !isDeclaringStruct {
+		v.Env.AddVariable(id, newVariable)
+	}
 
-	return true
+	return newVariable
 }
 
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
@@ -77,7 +81,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 
 	// Check if '?' is used outside struct env
 
-	if ctx.Op_TERNARY() == nil && v.Env.GetCurrentScope().ScopeType != StructEnv {
+	if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
 		v.NewError("El operador ternario solo puede ser usado dentro de un struct", ctx.GetStart())
 		return nil
 	}
@@ -100,9 +104,12 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 
 	newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
 
-	v.Env.AddVariable(id, newVariable)
+	if !isDeclaringStruct {
+		v.Env.AddVariable(id, newVariable)
+		return true
+	}
 
-	return true
+	return newVariable
 
 }
 
@@ -639,25 +646,75 @@ func (v *Visitor) VisitStructDeclaration(ctx *parser.StructDeclarationContext) i
 		return nil
 	}
 
+	isDeclaringStruct = true
+
 	// Check struct body
-	v.Visit(ctx.StructBody())
+	body, ok := v.Visit(ctx.StructBody()).(map[string]interface{})
 
-	// fmt.Println(structBody)
+	if !ok {
+		isDeclaringStruct = false
+		return nil
+	}
 
+	// Create a new generic object
+	newObj := NewObjectV(id, V.NewNilValue(nil), NewEnvNode(v.Env.GetCurrentScope(), StructEnv, v.Env.GetCurrentScope().Level+1))
+
+	// Add native properties
+	variables := body["variables"].([]*Variable)
+
+	for _, variable := range variables {
+		newObj.AddProp(variable.Name, variable)
+	}
+
+	functions := body["functions"].([]*Function)
+
+	for _, function := range functions {
+		newObj.AddMethod(function.Name, function)
+	}
+
+	v.Env.AddStruct(id, newObj)
+
+	isDeclaringStruct = false
 	return nil
 }
 
 func (v *Visitor) VisitStructBody(ctx *parser.StructBodyContext) interface{} {
 	// Check if the struct body is empty
+
 	allStructProperty := ctx.AllStructProperty()
 
 	if len(allStructProperty) == 0 {
 		return nil
 	}
 
-	return nil
-}
+	// Get the struct properties
+	variables := make([]*Variable, 0)
+	functions := make([]*Function, 0)
 
-func (v *Visitor) VisitStructProperty(ctx *parser.StructPropertyContext) interface{} {
-	return nil
+	for _, structProperty := range allStructProperty {
+		if structProperty.VariableDeclaration() != nil {
+			variable, ok := v.Visit(structProperty.VariableDeclaration()).(*Variable)
+
+			if !ok {
+				return nil
+			}
+
+			variables = append(variables, variable)
+		}
+
+		if structProperty.FunctionDeclarationStatement() != nil {
+			function, ok := v.Visit(structProperty.FunctionDeclarationStatement()).(*Function)
+
+			if !ok {
+				return nil
+			}
+
+			functions = append(functions, function)
+		}
+	}
+
+	return map[string]interface{}{
+		"variables": variables,
+		"functions": functions,
+	}
 }

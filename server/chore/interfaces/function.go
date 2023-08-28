@@ -103,9 +103,19 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 
 	isMutating := ctx.Kw_MUTATING() != nil
 
-	v.Env.AddFunction(id, NewFunction(isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
+	if isMutating && !isDeclaringStruct {
+		v.NewError("No se puede definir una función mutante fuera de un struct", ctx.GetStart())
+		return nil
+	}
 
-	return nil
+	newFunction := NewFunction(isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext))
+
+	if !isDeclaringStruct {
+		v.Env.AddFunction(id, newFunction)
+		return nil
+	}
+
+	return newFunction
 }
 
 func (v *Visitor) VisitFunctionParameters(ctx *parser.FunctionParametersContext) interface{} {
@@ -220,6 +230,12 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		fnt := v.Env.GetFunction(id)
 
 		if fnt == nil {
+			objectStruct := v.Env.GetStruct(id)
+
+			if objectStruct != nil {
+				return v.HandleStructConstructor(ctx, objectStruct)
+			}
+
 			v.NewError(FunctionNotFound, ctx.GetStart())
 			return nil
 		}

@@ -68,16 +68,8 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	if len(expr) == 1 {
 		if amper {
 			return variable
-			/*
-				*Variable {
-					Value: *Object
-				}
-			*/
 		}
 		return variable.Value
-		/*
-		*Object
-		 */
 	}
 
 	// Check if there is more than one id
@@ -85,6 +77,11 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	params := expr[1:]
 
 	prop, okP := GetPropValue(variable, params).(*Variable)
+
+	if prop == nil {
+		v.NewError(fmt.Sprint("La propiedad ", params[len(params)-1], " no existe"), ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
 
 	if !okP {
 		v.NewError(fmt.Sprint("La propiedad ", params[len(params)-1], " no existe"), ctx.GetStart())
