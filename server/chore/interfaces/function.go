@@ -234,10 +234,10 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		fnt := v.Env.GetFunction(id)
 
 		if fnt == nil {
-			objectStruct := v.Env.GetStruct(id)
+			objStruct := v.Env.GetStruct(id)
 
-			if objectStruct != nil {
-				return v.HandleStructConstructor(ctx, objectStruct)
+			if objStruct != nil {
+				return v.HandleStructConstructor(ctx, objStruct)
 			}
 
 			v.NewError(FunctionNotFound, ctx.GetStart())

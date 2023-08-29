@@ -95,6 +95,23 @@ func (s *EnvNode) String() string {
 	return result
 }
 
+func (s *EnvNode) Copy() *EnvNode {
+	newNode := NewEnvNode(nil, s.ScopeType, s.Level)
+	for _, child := range s.Child {
+		newNode.Child = append(newNode.Child, child.Copy())
+	}
+	for key, variable := range s.Variables {
+		newNode.Variables[key] = variable.CopyVar()
+	}
+	for key, function := range s.Functions {
+		newNode.Functions[key] = function
+	}
+	for key, object := range s.Structs {
+		newNode.Structs[key] = object.Copy().(*ObjectV)
+	}
+	return newNode
+}
+
 // EnvTree is a nary tree to represent scopes
 type EnvTree struct {
 	Root    *EnvNode

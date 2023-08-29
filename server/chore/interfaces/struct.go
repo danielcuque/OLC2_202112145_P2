@@ -9,8 +9,10 @@ import (
 
 var isDeclaringStruct bool
 
-func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objectStruct *ObjectV) interface{} {
+func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objStruct *ObjectV) *ObjectV {
 	// Here we can get struct parameters
+
+	objStruct = objStruct.Copy().(*ObjectV)
 
 	args := v.GetArgs(ctx)
 
@@ -23,10 +25,10 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 
 	// Check if all parameters are declared
 	for _, arg := range args {
-		variable := objectStruct.Env.Variables[arg.Name]
+		variable := objStruct.Env.Variables[arg.Name]
 
 		if variable == nil {
-			v.NewError(fmt.Sprintf("El parámetro '%s' no existe en el struct '%s'", arg.Name, objectStruct.Type), ctx.GetStart())
+			v.NewError(fmt.Sprintf("El parámetro '%s' no existe en el struct '%s'", arg.Name, objStruct.Type), ctx.GetStart())
 			return nil
 		}
 
@@ -41,7 +43,7 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 	}
 
 	// Check if all attributes are declared
-	for _, attr := range objectStruct.Env.Variables {
+	for _, attr := range objStruct.Env.Variables {
 		if attr.Value.GetValue() == nil && attr.Type != V.NilType {
 			v.NewError("El atributo "+attr.Name+" no tiene un valor por defecto", ctx.GetStart())
 			return nil
@@ -49,7 +51,7 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 	}
 
 	// Return a copy of the object
-	return objectStruct.Copy()
+	return objStruct
 }
 
 func (v *Visitor) HandleVisitIdStruct(ctx *parser.IdExprContext) interface{} {

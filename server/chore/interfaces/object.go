@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	V "OLC2/chore/values"
+	"fmt"
 )
 
 type ObjectV struct {
@@ -48,7 +49,7 @@ func (o *ObjectV) GetValue() interface{} {
 }
 
 func (o *ObjectV) String() string {
-	return o.Body.String()
+	return fmt.Sprint(o.Env.Variables, &o)
 }
 
 // Recursive function to get the value of a property
@@ -78,5 +79,5 @@ func GetObject(variable *Variable) interface{} {
 }
 
 func (o *ObjectV) Copy() V.IValue {
-	return NewObjectV(o.Type, o.Body.Copy(), o.Env)
+	return NewObjectV(o.Type, o.Body.Copy(), o.Env.Copy())
 }

@@ -450,3 +450,20 @@ print(avion1.getVelocidad())
 persona1.Nombre = "Daniel2"
 persona1.mostrarNombre()
 avion1.piloto.mostrarNombre()
+
+struct Distro {
+    var Nombre: String?
+    var Version: String? 
+}
+
+var Distros: [Distro] = [
+    Distro(Nombre: "Fedora", Version: "38"),
+    Distro(Nombre: "Ubuntu", Version: "22.04"),
+    Distro(Nombre: "OpenSUSE", Version: "Leap 15")
+]
+
+for distro in Distros {
+    print(distro.Nombre, distro.Version)
+}
+
+var numeros: [Int] = [1,2,3,4,5,6,7,8,9,10]
