@@ -84,10 +84,8 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
 	// Declaration without value
 
-	// Check if '?' is used outside struct env
-
 	if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
-		v.NewError("El operador ternario solo puede ser usado dentro de un struct", ctx.GetStart())
+		v.NewError("El operador '?' solo puede ser usado dentro de un struct", ctx.GetStart())
 		return nil
 	}
 
@@ -107,8 +105,8 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 		return false
 	}
 
-	if isConstant {
-		v.NewError(fmt.Sprintf("La variable %s debe ser inicializada", id), ctx.GetStart())
+	if isConstant && !isDeclaringStruct {
+		v.NewError(fmt.Sprintf("La variable '%s' debe ser inicializada", id), ctx.GetStart())
 		return false
 	}
 
