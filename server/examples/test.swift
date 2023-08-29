@@ -203,23 +203,23 @@ var vec1: [Int] = [20, 30, 40]
 
 // print("La posicion 1 de vec1 es ->", vec1[0])
 
-// let number = vec1[0]
+let number = vec1[0]
 // // let number2: String = vec1[0] // Error
 // let number3: Int = vec1[1]
 
 // print("La posicion 0 de vec1 es ->", number)
 // print("La posicion 1 de vec1 es ->", number3)
 
-// vec1[0] = 10 + number
+vec1[0] = 10 + number
 // print("El nuevo valor de la posicion 0 de vec1 es ->", vec1[0]) // Debería ser 30
-
 print("La cantidad de objetos en el vector1 es de:", vec1.count, "está vacío:", vec1.isEmpty)
 // print("La cantidad de objetos en el vector2 es de:", vec2.count, "está vacío:", vec2.isEmpty)
 // print("La cantidad de objetos en el vector3 es de:", vec3.count, "está vacío:", vec3.isEmpty)
+vec1.append(50)
 
 
 // // persona.vec1.append(50) // Error
-// vec1.append(50)
+
 
 // print("\n")
 // while vec1.count > 0 {
@@ -395,6 +395,10 @@ struct Persona{
     var edad = 0
     var apellido = "García"
 
+    func mostrarNombre(){
+        print("Mi nombre es", self.Nombre, self.apellido)
+    }
+
 }
 
 var persona1 = Persona(Nombre:"Daniel", edad: 21, apellido: "Cuque")
@@ -408,7 +412,7 @@ struct Avion {
     var pasajeros = 0 
     var velocidad = 100
     var nombre: String?
-    // var piloto: Persona
+    var piloto: Persona
 
     // metodo dentro de struct 
 
@@ -423,11 +427,26 @@ struct Avion {
         print("La velocidad actual es", self.velocidad) 
         print("La nueva velocidad es", velocidad)
     }
+
+    func getVelocidad() -> Int {
+        return self.velocidad
+    }
+
+    func PrintPiloto() {
+        print("El piloto es", self.piloto.Nombre, self.piloto.apellido)
+    }
 }
 
-var avion1 = Avion(pasajeros: 100, velocidad: 1000, nombre: "Avion1")
+var avion1 = Avion(pasajeros: 100, velocidad: 1000, nombre: "Avion1", piloto: persona1)
 
 print("El avion", avion1.nombre, "tiene", avion1.pasajeros, "pasajeros y va a", avion1.velocidad, "km/h")
 
 avion1.mostrarVelocidad(velocidad: 2000)
 avion1.frenar()
+
+print(avion1.getVelocidad())
+
+
+persona1.Nombre = "Daniel2"
+persona1.mostrarNombre()
+avion1.piloto.mostrarNombre()

@@ -38,9 +38,23 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
 	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID().GetText()
+	id := ctx.ID(0).GetText()
 	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
-	valueType := v.Visit(ctx.VariableType()).(string)
+
+	valueType := ""
+
+	if ctx.VariableType() != nil {
+		valueType = v.Visit(ctx.VariableType()).(string)
+	} else {
+		objStruct := v.Env.GetStruct(ctx.ID(1).GetText())
+
+		if objStruct == nil {
+			v.NewError(fmt.Sprintf("La estructura %s no existe", ctx.ID(1).GetText()), ctx.GetStart())
+			return nil
+		}
+
+		valueType = objStruct.GetType()
+	}
 
 	if !okVal {
 		v.NewError(InvalidExpression, ctx.GetStart())
@@ -87,8 +101,22 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	}
 
 	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID().GetText()
-	valueType := v.Visit(ctx.VariableType()).(string)
+	id := ctx.ID(0).GetText()
+
+	valueType := ""
+
+	if ctx.VariableType() != nil {
+		valueType = v.Visit(ctx.VariableType()).(string)
+	} else {
+		objStruct := v.Env.GetStruct(ctx.ID(1).GetText())
+
+		if objStruct == nil {
+			v.NewError(fmt.Sprintf("La estructura %s no existe", ctx.ID(1).GetText()), ctx.GetStart())
+			return nil
+		}
+
+		valueType = objStruct.GetType()
+	}
 
 	variable := v.Env.GetVariable(id)
 
@@ -216,9 +244,7 @@ func (v *Visitor) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{}
 	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
 	id := ids[0].GetText()
 
-	props := v.GetProps(ids)
-
-	object, okV := v.LookUpObject(id, props, ctx.GetStart())
+	object, okV := v.LookUpObject(id, ids, ctx.GetStart())
 
 	if !okV {
 		return nil
@@ -268,7 +294,12 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 
 	vector := values["vector"].(*ObjectV)
 
-	expr := v.Visit(ctx.Expr()).(V.IValue)
+	expr, ok := v.Visit(ctx.Expr()).(V.IValue)
+
+	if !ok {
+		v.NewError(InvalidExpression, ctx.GetStart())
+		return nil
+	}
 
 	// Check is not necessary, because the index is checked in the vector access
 
@@ -508,9 +539,7 @@ func (v *Visitor) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{}
 	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
 	id := ids[0].GetText()
 
-	props := v.GetProps(ids)
-
-	object, okV := v.LookUpObject(id, props, ctx.GetStart())
+	object, okV := v.LookUpObject(id, ids, ctx.GetStart())
 
 	if !okV {
 		return nil

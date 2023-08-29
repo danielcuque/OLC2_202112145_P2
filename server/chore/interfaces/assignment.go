@@ -36,6 +36,28 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 		return false
 	}
 
+	if len(ids) > 1 && ids[0].GetText() != "self" {
+		props := []string{ids[1].GetText()}
+
+		if len(ids) > 2 {
+			props = v.GetProps(ids)
+		}
+
+		prop, ok := GetPropValue(variable, props).(*Variable)
+
+		if !ok {
+			v.NewError(fmt.Sprintf("La variable %s no es un objeto", id), ctx.GetStart())
+			return false
+		}
+
+		if prop == nil {
+			v.NewError(fmt.Sprintf("La propiedad %s no existe en %s", ids[1].GetText(), id), ctx.GetStart())
+			return false
+		}
+
+		variable = prop
+	}
+
 	if variable.IsConstant() {
 		v.NewError(fmt.Sprintf("La variable %s es constante", id), ctx.GetStart())
 		return false

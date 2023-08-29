@@ -28,7 +28,7 @@ func NewVisitor() *Visitor {
 func NewEvaluator(input string) *Visitor {
 	lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
 	stream := antlr.NewCommonTokenStream(lexer, 0)
-	parser := parser.NewSwiftParser(stream)
+	parser := parser.NewSwift(stream)
 
 	parser.BuildParseTrees = true
 

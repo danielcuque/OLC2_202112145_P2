@@ -245,11 +245,9 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		}
 		fn = fnt
 	} else {
-		// Get props if there are
-		props := v.GetProps(ids)
 
 		// Get the object
-		object, okV := v.LookUpObject(id, props, ctx.GetStart())
+		object, okV := v.LookUpObject(id, ids, ctx.GetStart())
 
 		if !okV {
 			return nil
@@ -484,7 +482,7 @@ func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
 	return args
 }
 
-func (v *Visitor) LookUpObject(id string, props []string, lc antlr.Token) (*ObjectV, bool) {
+func (v *Visitor) LookUpObject(id string, tokenProps []antlr.TerminalNode, lc antlr.Token) (*ObjectV, bool) {
 	variable := v.Env.GetVariable(id)
 
 	if variable == nil {
@@ -494,7 +492,8 @@ func (v *Visitor) LookUpObject(id string, props []string, lc antlr.Token) (*Obje
 
 	object, ok := GetObject(variable).(*ObjectV)
 
-	// If there are props, then get the object
+	props := v.GetProps(tokenProps)
+
 	if len(props) > 0 {
 		object, ok = GetPropValue(variable, props).(*Variable).Value.(*ObjectV)
 
@@ -513,6 +512,7 @@ func (v *Visitor) LookUpObject(id string, props []string, lc antlr.Token) (*Obje
 }
 
 func (v *Visitor) GetProps(ids []antlr.TerminalNode) []string {
+
 	props := make([]string, 0)
 
 	if len(ids) > 2 {
@@ -524,6 +524,7 @@ func (v *Visitor) GetProps(ids []antlr.TerminalNode) []string {
 	}
 
 	return props
+
 }
 
 func CheckIsPointer(value interface{}) bool {
