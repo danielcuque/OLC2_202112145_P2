@@ -72,6 +72,10 @@ func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContex
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitVariableAssignmentObject(ctx *VariableAssignmentObjectContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }

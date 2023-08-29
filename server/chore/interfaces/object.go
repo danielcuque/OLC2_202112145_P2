@@ -75,7 +75,7 @@ func GetObjectPropValue(object *ObjectV, props []string) interface{} {
 		return object.GetProp(props[0])
 	}
 
-	return GetObjectPropValue(object.GetProp(props[0]).(*ObjectV), props[1:])
+	return GetPropValue(object.GetProp(props[0]).(*Variable), props[1:])
 }
 
 // Recursive until get the value of the object, then return the value

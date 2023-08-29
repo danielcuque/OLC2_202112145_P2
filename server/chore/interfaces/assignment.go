@@ -4,6 +4,7 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+	"reflect"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -92,4 +93,52 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 
 	return nil
 
+}
+
+func (v *Visitor) VisitVariableAssignmentObject(ctx *parser.VariableAssignmentObjectContext) interface{} {
+
+	variable := v.Visit(ctx.ObjectChain()).(map[string]interface{})["originalValue"].(*Variable)
+
+	value, ok := v.Visit(ctx.Expr()).(V.IValue)
+
+	if !ok {
+		v.NewError(InvalidExpression, ctx.GetStart())
+		return false
+	}
+
+	if variable == nil {
+		v.NewError("No se puede asignar a un objeto nulo", ctx.GetStart())
+		return false
+	}
+
+	if variable.GetType() != value.GetType() {
+		if variable.GetType() == V.FloatType && value.GetType() == V.IntType {
+			value = V.NewFloatValue(float64(value.GetValue().(int)))
+		} else {
+			v.NewError(fmt.Sprintf("El tipo del objeto no coincide con el valor asignado, se esperaba %s y se obtuvo %s", variable.GetType(), value.GetType()), ctx.GetStart())
+			return false
+		}
+	}
+
+	fmt.Println(reflect.TypeOf(variable))
+
+	// Check the operator assignment (= += -=)
+	var newValue V.IValue
+
+	op := ctx.GetOp().GetText()
+	switch op {
+	case "=":
+		newValue = value.Copy()
+	case "+=":
+		newValue = v.arithmeticOp(variable.Value, value, "+", ctx.GetStart()).(V.IValue)
+	case "-=":
+		newValue = v.arithmeticOp(variable.Value, value, "-", ctx.GetStart()).(V.IValue)
+	default:
+		v.NewError(fmt.Sprintf("No se puede aplicar el operador %s a %s", op, variable.GetType()), ctx.GetStart())
+		return false
+	}
+
+	variable.SetValue(newValue)
+
+	return nil
 }

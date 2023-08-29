@@ -56,6 +56,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by Swift#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}
 
+	// Visit a parse tree produced by Swift#variableAssignmentObject.
+	VisitVariableAssignmentObject(ctx *VariableAssignmentObjectContext) interface{}
+
 	// Visit a parse tree produced by Swift#ifStatement.
 	VisitIfStatement(ctx *IfStatementContext) interface{}
 

@@ -65,7 +65,8 @@ persona1.Nombre = "Nancy"
 print("Debería ser Nancy", persona1.Nombre) //imprime Nancy 
 print("Debería ser Celeste", personas[0].Nombre) //imprime Celeste 
 
-// personas[1].edad = 26 // se modifica un array
+personas[1].edad = 26 // se modifica un array
+print("Debería ser 26", personas[1].edad) //imprime 26
 
 
 struct Distro {

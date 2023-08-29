@@ -466,4 +466,3 @@ for distro in Distros {
     print(distro.Nombre, distro.Version)
 }
 
-var numeros: [Int] = [1,2,3,4,5,6,7,8,9,10]

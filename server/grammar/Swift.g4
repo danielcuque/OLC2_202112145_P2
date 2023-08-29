@@ -14,6 +14,7 @@ block: (statement)*;
 statement:
 	variableAssignment
 	| variableDeclaration
+	| variableAssignmentObject
 	| ifStatement
 	| whileStatement
 	| switchStatement
@@ -76,6 +77,13 @@ functionCallArguments:
 // Variable assignment
 variableAssignment:
 	idChain op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
+
+variableAssignmentObject:
+	objectChain op = (
+		Op_ASSIGN
+		| Op_PLUS_ASSIGN
+		| Op_MINUS_ASSIGN
+	) expr;
 
 // If statement 
 ifStatement: ifTail (Kw_ELSE ifTail)* elseStatement?;
