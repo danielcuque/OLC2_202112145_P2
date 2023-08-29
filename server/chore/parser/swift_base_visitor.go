@@ -124,6 +124,10 @@ func (v *BaseSwiftVisitor) VisitVectorValues(ctx *VectorValuesContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitObjectChain(ctx *ObjectChainContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitVectorAccess(ctx *VectorAccessContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -245,6 +249,10 @@ func (v *BaseSwiftVisitor) VisitLogicalExpr(ctx *LogicalExprContext) interface{}
 }
 
 func (v *BaseSwiftVisitor) VisitTernaryExpr(ctx *TernaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitObjectChainExpr(ctx *ObjectChainExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

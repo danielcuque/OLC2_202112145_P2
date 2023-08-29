@@ -443,6 +443,7 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 }
 
 func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {
+
 	switch ctx.GetText() {
 	case "Int":
 		return V.IntType
@@ -491,4 +492,42 @@ func (v *Visitor) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) int
 	}
 
 	return dict["value"]
+}
+
+func (v *Visitor) VisitObjectChain(ctx *parser.ObjectChainContext) interface{} {
+	dict, ok := v.Visit(ctx.VectorAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError("No se puede acceder al objeto", ctx.GetStart())
+		return nil
+	}
+
+	/*
+			dict := map[string]interface{}{
+			"vector": object,
+			"index":  index.GetValue().(int),
+			"value":  value,
+		}
+	*/
+
+	value := dict["value"].(*ObjectV)
+
+	props := make([]string, 0)
+
+	for _, prop := range ctx.AllID() {
+		props = append(props, prop.GetText())
+	}
+
+	prop, ok := GetObjectPropValue(value, props).(*Variable)
+
+	if !ok {
+		v.NewError("No se puede acceder a la propiedad", ctx.GetStart())
+		return nil
+	}
+
+	return prop.Value
+}
+
+func (v *Visitor) VisitObjectChainExpr(ctx *parser.ObjectChainExprContext) interface{} {
+	return v.Visit(ctx.ObjectChain())
 }

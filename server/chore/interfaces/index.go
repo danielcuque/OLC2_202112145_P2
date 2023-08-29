@@ -21,7 +21,15 @@ func (v *Visitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 }
 
 func (v *Visitor) VisitBlock(ctx *parser.BlockContext) interface{} {
-	// First we visit the function declarations
+
+	// First we visit structs declarations
+	for i := 0; ctx.Statement(i) != nil; i++ {
+		if ctx.Statement(i).(*parser.StatementContext).StructDeclaration() != nil {
+			v.Visit(ctx.Statement(i))
+		}
+	}
+
+	// Second we visit the function declarations
 
 	for i := 0; ctx.Statement(i) != nil; i++ {
 		if ctx.Statement(i).(*parser.StatementContext).FunctionDeclarationStatement() != nil {
@@ -31,7 +39,7 @@ func (v *Visitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 
 	// Then we visit the statements
 	for i := 0; ctx.Statement(i) != nil; i++ {
-		if ctx.Statement(i).(*parser.StatementContext).FunctionDeclarationStatement() == nil {
+		if ctx.Statement(i).(*parser.StatementContext).FunctionDeclarationStatement() == nil && ctx.Statement(i).(*parser.StatementContext).StructDeclaration() == nil {
 			v.Visit(ctx.Statement(i))
 		}
 	}

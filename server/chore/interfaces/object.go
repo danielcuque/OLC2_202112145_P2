@@ -70,6 +70,14 @@ func GetPropValue(variable *Variable, props []string) interface{} {
 	return GetPropValue(obj.GetProp(props[0]).(*Variable), props[1:])
 }
 
+func GetObjectPropValue(object *ObjectV, props []string) interface{} {
+	if len(props) == 1 {
+		return object.GetProp(props[0])
+	}
+
+	return GetObjectPropValue(object.GetProp(props[0]).(*ObjectV), props[1:])
+}
+
 // Recursive until get the value of the object, then return the value
 func GetObject(variable *Variable) interface{} {
 	if CheckIsPointer(variable.Value) {

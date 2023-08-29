@@ -20,11 +20,11 @@ struct Avion {
 
 var avioneta = Avion(nombre: "78496", piloto: Persona(Nombre: "Joel", edad: 43 ))
 
-print(avioneta.pasajeros)
+print("Pasajeros", avioneta.pasajeros)
 // modificion de un atributo
 avioneta.pasajeros = 5
 
-print("Velocidad", avioneta.pasajeros)
+print("Nuevos pasajeros", avioneta.pasajeros)
 
 avioneta.mostrarVelocidad()
 // copia de structs por valor
@@ -53,7 +53,7 @@ struct Person {
     var age: Int
 }
 
-var personas = [Persona]()
+var personas: [Persona] = []
 
 personas.append(Persona(Nombre: "Celeste", edad: 23)) 
 personas.append(Persona(Nombre: "Roel", edad: 32)) 
@@ -62,16 +62,18 @@ personas.append(Persona(Nombre: "Flor", edad: 17))
 var persona1 = personas[0] 
 persona1.Nombre = "Nancy"
 
-print(persona1.Nombre) //imprime Nancy 
-print(personas[0].Nombre) //imprime Celeste // se modifica un array
-personas[1].edad = 26
+print("Debería ser Nancy", persona1.Nombre) //imprime Nancy 
+print("Debería ser Celeste", personas[0].Nombre) //imprime Celeste 
+
+// personas[1].edad = 26 // se modifica un array
+
 
 struct Distro {
     var Nombre: String
     var Version: String 
 }
 
-var Distros = [
+var Distros: [Distro] = [
     Distro(Nombre: "Ubuntu", Version: "22.04"), 
     Distro(Nombre: "Fedora", Version: "38"), 
     Distro(Nombre: "OpenSUSE", Version: "Leap 15")
@@ -88,4 +90,6 @@ func crearVerdura( precioV: Int, nombreV: String ) -> Verdura {
     return Verdura( nombre: nombreV, precio: precioV ) 
 }
 
-var verdura:Verdura = crearVerdura( precioV: 10, nombreV: "Apio")
+var apio:Verdura = crearVerdura( precioV: 10, nombreV: "Apio")
+
+print(apio.nombre, apio.precio)

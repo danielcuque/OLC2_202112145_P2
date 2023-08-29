@@ -98,7 +98,14 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 
 	// Check if return type is nil
 	if ctx.FunctionReturnType() != nil {
-		returnType = v.Visit(ctx.FunctionReturnType()).(string)
+		RT, ok := v.Visit(ctx.FunctionReturnType()).(string)
+
+		if !ok {
+			v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
+			return nil
+		}
+
+		returnType = RT
 	}
 
 	isMutating := ctx.Kw_MUTATING() != nil

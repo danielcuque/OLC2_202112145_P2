@@ -112,6 +112,8 @@ vectorDefinition:
 
 vectorValues: expr (COMMA expr)*;
 
+objectChain: vectorAccess (DOT ID)+;
+
 vectorAccess: idChain LBRACKET expr RBRACKET;
 
 vectorAssignment:
@@ -165,7 +167,8 @@ structProperty:
 
 // Expressions
 expr:
-	functionCall													# FunctionCallExpr
+	objectChain														# ObjectChainExpr
+	| functionCall													# FunctionCallExpr
 	| vectorAccess													# VectorAccessExpr
 	| matrixAccess													# MatrixAccessExpr
 	| Op_MINUS expr													# UnaryExpr
