@@ -257,7 +257,7 @@ func (v *Visitor) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{}
 	dict := map[string]interface{}{
 		"vector": object,
 		"index":  index.GetValue().(int),
-		"value":  value,
+		"value":  value.Copy(),
 	}
 
 	return dict
