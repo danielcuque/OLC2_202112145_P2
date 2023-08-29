@@ -1,4 +1,4 @@
-grammar Swift;
+parser grammar Swift;
 
 options {
 	tokenVocab = SwiftLexer;
@@ -22,8 +22,11 @@ statement:
 	| controlFlowStatement
 	| functionDeclarationStatement
 	| functionCall
-	// | methodCall
-	| vectorDeclaration;
+	| vectorDeclaration
+	| vectorAssignment
+	| matrixDeclaration
+	| matrixAssignment
+	| structDeclaration;
 
 // Variable types
 variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
@@ -31,22 +34,28 @@ variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
 // Variable declaration
 
 variableDeclaration:
-	varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_ASSIGN expr (
+	varType = (Kw_LET | Kw_VAR) ID COLON (variableType | ID) Op_ASSIGN expr (
 		SEMICOLON
 	)?																# TypeValueDeclaration
 	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?	# ValueDeclaration
-	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY (
+	| varType = (Kw_LET | Kw_VAR) ID COLON (variableType | ID) Op_TERNARY? (
 		SEMICOLON
 	)? # TypeDeclaration;
 
 // Function declaration
 functionDeclarationStatement:
-	Kw_FUNC ID LPAREN functionParameters? RPAREN functionReturnType? LBRACE block RBRACE;
+	Kw_MUTATING? Kw_FUNC ID LPAREN functionParameters? RPAREN functionReturnType? LBRACE block
+		RBRACE;
 
 functionParameters:
 	functionParameter (COMMA functionParameter)*;
 
-functionParameter: ID? ID COLON Kw_INOUT? variableType;
+// Change to accept vectors 
+functionParameter:
+	ID? ID COLON Kw_INOUT? (
+		variableType
+		| LBRACKET variableType RBRACKET
+	);
 
 functionReturnType: Op_ARROW variableType;
 
@@ -60,7 +69,7 @@ functionCallArguments:
 
 // Variable assignment
 variableAssignment:
-	ID op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
+	idChain op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
 
 // If statement 
 ifStatement: ifTail (Kw_ELSE ifTail)* elseStatement?;
@@ -97,12 +106,62 @@ vectorDefinition:
 
 vectorValues: expr (COMMA expr)*;
 
-// Call methods methodCall: idChain LPAREN functionCallArguments? RPAREN;
+vectorAccess: idChain LBRACKET expr RBRACKET;
+
+vectorAssignment:
+	vectorAccess op = (
+		Op_ASSIGN
+		| Op_PLUS_ASSIGN
+		| Op_MINUS_ASSIGN
+	) expr;
+
+// Matrix declarations
+
+matrixDeclaration:
+	varType = (Kw_LET | Kw_VAR) idChain COLON matrixType Op_ASSIGN (
+		matrixRepeatingDefinition
+		| matrixDefinition
+	);
+
+matrixType:
+	LBRACKET matrixType RBRACKET		# MatrixTypeNested
+	| LBRACKET variableType RBRACKET	# MatrixTypeSingle;
+
+matrixDefinition: LBRACKET matrixValues? RBRACKET | expr;
+
+matrixValues: matrixDefinition (COMMA matrixDefinition)*;
+
+matrixRepeatingDefinition:
+	matrixType LPAREN ID COLON matrixRepeatingDefinition COMMA ID COLON expr RPAREN #
+		MatrixRepeatingDefinitionNested
+	| matrixType LPAREN ID COLON expr COMMA ID COLON expr RPAREN # MatrixRepeatingDefinitionSingle;
+
+// Matrix access can be matrix1[0][1]...[n]
+matrixAccess:
+	idChain LBRACKET expr RBRACKET (LBRACKET expr RBRACKET)*;
+
+matrixAssignment:
+	matrixAccess op = (
+		Op_ASSIGN
+		| Op_PLUS_ASSIGN
+		| Op_MINUS_ASSIGN
+	) expr;
+
+// Structs
+
+structDeclaration: Kw_STRUCT ID LBRACE structBody RBRACE;
+
+structBody: structProperty*;
+
+structProperty:
+	variableDeclaration
+	| functionDeclarationStatement;
 
 // Expressions
 expr:
-	functionCall # FunctionCallExpr
-	// | methodCall													# MethodCallExpr
+	functionCall													# FunctionCallExpr
+	| vectorAccess													# VectorAccessExpr
+	| matrixAccess													# MatrixAccessExpr
 	| Op_MINUS expr													# UnaryExpr
 	| Op_NOT right = expr											# NotExpr
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
@@ -117,7 +176,7 @@ expr:
 	| left = expr Kw_RANGE right = expr								# RangeExpr
 	| LPAREN expr RPAREN											# ParExpr
 	| INT															# IntExpr
-	| idChain														# IdExpr
+	| Kw_AMPER? idChain												# IdExpr
 	| FLOAT															# FloatExpr
 	| STRING														# StrExpr
 	| NIL															# NilExpr

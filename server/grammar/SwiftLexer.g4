@@ -2,7 +2,7 @@ lexer grammar SwiftLexer;
 
 // Skip comments
 
-WHITESPACE: [ \\\r\n\t]+ -> skip;
+WHITESPACE: [ \t\n\r\f]+ -> skip;
 COMMENT: '//' ~[\r\n]* -> skip;
 BLOCK_COMMENT: '/*' .*? '*/' -> skip;
 
@@ -11,6 +11,8 @@ Kw_LET: 'let';
 Kw_VAR: 'var';
 Kw_FUNC: 'func';
 Kw_STRUCT: 'struct';
+Kw_MUTATING: 'mutating';
+Kw_AMPER: '&';
 
 // Keywords used in control flow
 Kw_IF: 'if';

@@ -22,3 +22,7 @@ func (f *FloatV) String() string {
 func NewFloatValue(value float64) *FloatV {
 	return &FloatV{Value: value}
 }
+
+func (f *FloatV) Copy() IValue {
+	return NewFloatValue(f.Value)
+}

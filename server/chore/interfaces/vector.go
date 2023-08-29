@@ -81,7 +81,28 @@ func (v *VectorV) Count() int {
 	return len(v.Body)
 }
 
-// func CountBuiltin(v *Visitor, ctx *parser.CallPropertiesContext) interface{} {
-// 	fmt.Println("Count")
-// 	return V.NewNilValue(nil)
-// }
+// Get
+func (v *VectorV) Get(index int) V.IValue {
+	if index >= 0 && index < v.Count() {
+		return v.Body[index]
+	}
+
+	return nil
+}
+
+// Set
+func (v *VectorV) Set(index int, value V.IValue) {
+	if index >= 0 && index < v.Count() {
+		v.Body[index] = value
+	}
+}
+
+func (v *VectorV) Copy() V.IValue {
+	body := make([]V.IValue, len(v.Body))
+
+	for i, value := range v.Body {
+		body[i] = value.Copy()
+	}
+
+	return NewVector(v.DataType, body)
+}

@@ -9,12 +9,14 @@ const (
 	NilType     = "nil"
 
 	VectorType = "Vector"
+	MatrixType = "Matrix"
 )
 
 type IValue interface {
 	GetValue() interface{}
 	GetType() string
 	String() string
+	Copy() IValue
 }
 
 type RangeV struct {
@@ -27,6 +29,14 @@ func (a *RangeV) GetValue() interface{} {
 
 func (a *RangeV) GetType() string {
 	return IntType
+}
+
+func (a *RangeV) String() string {
+	return ""
+}
+
+func (a *RangeV) Copy() IValue {
+	return NewRangeValue(a.Value)
 }
 
 func NewRangeValue(value []IValue) *RangeV {

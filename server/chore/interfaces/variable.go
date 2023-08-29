@@ -1,6 +1,10 @@
 package interfaces
 
-import V "OLC2/chore/values"
+import (
+	V "OLC2/chore/values"
+
+	"github.com/antlr4-go/antlr/v4"
+)
 
 // Create struct to handle Variables
 
@@ -14,7 +18,10 @@ type Variable struct {
 	Env     *EnvNode
 }
 
-func NewVariable(name string, isConst bool, value V.IValue, typeVar string, line, column int, scope *EnvNode) *Variable {
+func NewVariable(v *Visitor, name string, isConst bool, value V.IValue, typeVar string, lc antlr.Token) *Variable {
+	line := lc.GetLine()
+	column := lc.GetColumn()
+
 	return &Variable{
 		Name:    name,
 		IsConst: isConst,
@@ -22,12 +29,16 @@ func NewVariable(name string, isConst bool, value V.IValue, typeVar string, line
 		Type:    typeVar,
 		Line:    line,
 		Column:  column,
-		Env:     scope,
+		Env:     v.Env.GetCurrentScope(),
 	}
 }
 
 func (v *Variable) GetValue() interface{} {
 	return v.Value.GetValue()
+}
+
+func (v *Variable) String() string {
+	return v.Value.String()
 }
 
 func (v *Variable) SetValue(value V.IValue) {
@@ -52,6 +63,10 @@ func (v *Variable) GetLine() int {
 
 func (v *Variable) GetColumn() int {
 	return v.Column
+}
+
+func (v *Variable) Copy() V.IValue {
+	return v.Value.Copy()
 }
 
 func (v *Variable) GetScopeName() string {

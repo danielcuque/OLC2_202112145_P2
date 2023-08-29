@@ -52,19 +52,27 @@ func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
 	return V.NewNilValue(nil)
 }
 
+// Returns pointer or value, if amper is true returns pointer
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
-	// variableName :=
-
 	expr := strings.Split(ctx.IdChain().GetText(), ".")
 
-	variable, ok := v.Env.GetVariable(expr[0]).(*Variable)
+	if IsStructMethodRunning && expr[0] == "self" {
+		return v.HandleVisitIdStruct(ctx)
+	}
 
-	if !ok {
+	variable := v.Env.GetVariable(expr[0])
+
+	if variable == nil {
 		v.NewError(fmt.Sprintf("La variable %s no existe", expr[0]), ctx.GetStart())
 		return nil
 	}
 
+	amper := ctx.Kw_AMPER() != nil
+
 	if len(expr) == 1 {
+		if amper {
+			return variable
+		}
 		return variable.Value
 	}
 
@@ -74,11 +82,19 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	prop, okP := GetPropValue(variable, params).(*Variable)
 
+	if prop == nil {
+		v.NewError(fmt.Sprint("La propiedad ", params[len(params)-1], " no existe"), ctx.GetStart())
+		return V.NewNilValue(nil)
+	}
+
 	if !okP {
 		v.NewError(fmt.Sprint("La propiedad ", params[len(params)-1], " no existe"), ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
+	if amper {
+		return prop
+	}
 	return prop.Value
 }
 
@@ -87,15 +103,25 @@ func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 }
 
 func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
-	op := v.Visit(ctx.Expr()).(V.IValue)
-	value := op.GetValue()
-	opType := op.GetType()
+	expr := v.Visit(ctx.Expr()).(V.IValue)
+	/*
+		*Variable {
+			Value: *IntValue {
+				Value: 5
+			},
+			Type: Int
+		}
+	*/
+
+	value := expr.GetValue()
+	opType := expr.GetType()
 
 	if opType == V.IntType {
 		return V.NewIntValue(-value.(int))
 	} else if opType == V.FloatType {
 		return V.NewFloatValue(-value.(float64))
 	}
+
 	v.NewError("No se puede aplicar el operador unario - a "+opType, ctx.GetStart())
 	return nil
 }
@@ -120,7 +146,6 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 
 	switch op {
 	case "+":
-
 		if leftT == V.IntType && rightT == V.IntType {
 			return V.NewIntValue(l.(int) + r.(int))
 		}
@@ -377,8 +402,19 @@ func (v *Visitor) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} {
 
 // Not operator
 func (v *Visitor) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
-	value := v.Visit(ctx.GetRight()).(V.IValue).GetValue().(bool)
-	return V.NewBooleanValue(!value)
+	value, ok := v.Visit(ctx.Expr()).(V.IValue)
+
+	if !ok {
+		v.NewError("No se puede aplicar el operador not", ctx.GetStart())
+		return nil
+	}
+
+	if value.GetType() != V.BooleanType {
+		v.NewError("No se puede aplicar el operador not a "+value.GetType(), ctx.GetStart())
+		return nil
+	}
+
+	return V.NewBooleanValue(!value.GetValue().(bool))
 }
 
 // Range operator
@@ -427,6 +463,24 @@ func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) int
 	return v.Visit(ctx.FunctionCall())
 }
 
-// func (v *Visitor) VisitMethodCallExpr(ctx *parser.MethodCallExprContext) interface{} {
-// 	return v.Visit(ctx.MethodCall())
-// }
+func (v *Visitor) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) interface{} {
+	dict, ok := v.Visit(ctx.VectorAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError("No se puede acceder al vector", ctx.GetStart())
+		return nil
+	}
+
+	return dict["value"]
+}
+
+func (v *Visitor) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) interface{} {
+	dict, ok := v.Visit(ctx.MatrixAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError("No se puede acceder a la matriz", ctx.GetStart())
+		return nil
+	}
+
+	return dict["value"]
+}

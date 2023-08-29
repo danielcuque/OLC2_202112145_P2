@@ -14,7 +14,6 @@ export const fetchAPI = async (code: string) => {
 
     // Return symbols, errors, logs and cst
     const data: CompileResponse = await res.json();
-    console.log(data);
 
     return data;
 }

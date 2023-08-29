@@ -10,9 +10,10 @@ const (
 	FuncEnv   = "Func"
 	WhileEnv  = "While"
 	ForEnv    = "For"
-	IfSEnv    = "If"
+	IfEnv     = "If"
 	ElseEnv   = "Else"
 	SwitchEnv = "Switch"
+	StructEnv = "Struct"
 )
 
 type TokenSymbol struct {
@@ -42,6 +43,7 @@ type EnvNode struct {
 	ScopeType string
 	Variables map[string]*Variable
 	Functions map[string]*Function
+	Structs   map[string]*ObjectV
 }
 
 func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
@@ -52,6 +54,7 @@ func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
 		ScopeType: envType,
 		Variables: make(map[string]*Variable),
 		Functions: make(map[string]*Function),
+		Structs:   make(map[string]*ObjectV),
 	}
 }
 
@@ -59,7 +62,7 @@ func (s *EnvNode) AddVariable(name string, value *Variable) {
 	s.Variables[name] = value
 }
 
-func (s *EnvNode) GetVariable(name string) interface{} {
+func (s *EnvNode) GetVariable(name string) *Variable {
 	if val, ok := s.Variables[name]; ok {
 		return val
 	}
@@ -110,15 +113,13 @@ func (s *EnvTree) AddVariable(name string, value *Variable) {
 	s.Current.AddVariable(name, value)
 }
 
-func (s *EnvTree) GetVariable(name string) interface{} {
-	// Check if var exists in current scope
-	// if not, check in parent scope until root
-
+func (s *EnvTree) GetVariable(name string) *Variable {
 	for node := s.Current; node != nil; node = node.Parent {
 		if val, ok := node.Variables[name]; ok {
 			return val
 		}
 	}
+
 	return nil
 }
 
@@ -130,13 +131,23 @@ func (s *EnvTree) AddFunction(name string, value *Function) {
 	s.Current.Functions[name] = value
 }
 
-func (s *EnvTree) GetFunction(name string) interface{} {
-	// Check if function exists in current scope
-	// if not, check in parent scope until root
-
+func (s *EnvTree) GetFunction(name string) *Function {
 	for node := s.Current; node != nil; node = node.Parent {
 		if _, ok := node.Functions[name]; ok {
 			return node.Functions[name]
+		}
+	}
+	return nil
+}
+
+func (s *EnvTree) AddStruct(name string, value *ObjectV) {
+	s.Current.Structs[name] = value
+}
+
+func (s *EnvTree) GetStruct(name string) *ObjectV {
+	for node := s.Current; node != nil; node = node.Parent {
+		if _, ok := node.Structs[name]; ok {
+			return node.Structs[name]
 		}
 	}
 	return nil
@@ -183,7 +194,7 @@ type ApiVariable struct {
 }
 
 func (s *EnvNode) GetAllVariables() []ApiVariable {
-	var allVariables []ApiVariable
+	allVariables := make([]ApiVariable, 0)
 	s.collectVariables(&allVariables)
 	return allVariables
 }
@@ -193,7 +204,7 @@ func (s *EnvNode) collectVariables(allVariables *[]ApiVariable) {
 		apiVar := ApiVariable{
 			Name:    variable.GetName(),
 			IsConst: variable.IsConstant(),
-			Value:   variable.GetValue(), // Puedes decidir cómo manejar el valor aquí
+			Value:   variable.GetValue(),
 			Type:    variable.GetType(),
 			Line:    variable.GetLine(),
 			Column:  variable.GetColumn(),

@@ -5,35 +5,38 @@ import (
 )
 
 type ObjectV struct {
-	Type   string
-	Body   V.IValue
-	Props  map[string]*Variable
-	Method map[string]interface{}
+	Type string
+	Body V.IValue
+	Env  *EnvNode
 }
 
-func NewObjectV(Type string, body V.IValue) *ObjectV {
+func NewObjectV(Type string, body V.IValue, Env *EnvNode) *ObjectV {
+
 	return &ObjectV{
-		Type:   Type,
-		Body:   body,
-		Props:  make(map[string]*Variable),
-		Method: make(map[string]interface{}),
+		Type: Type,
+		Body: body,
+		Env:  Env,
 	}
 }
 
 func (o *ObjectV) AddProp(name string, value *Variable) {
-	o.Props[name] = value
+	o.Env.Variables[name] = value
 }
 
 func (o *ObjectV) AddMethod(name string, value interface{}) {
-	o.Method[name] = value
+	o.Env.Functions[name] = value.(*Function)
 }
 
 func (o *ObjectV) GetProp(name string) interface{} {
-	return o.Props[name]
+	return o.Env.Variables[name]
 }
 
 func (o *ObjectV) GetMethod(name string) interface{} {
-	return o.Method[name]
+	return o.Env.Functions[name]
+}
+
+func (o *ObjectV) SetPropValue(name string, value V.IValue) {
+	o.Env.Variables[name].SetValue(value)
 }
 
 func (o *ObjectV) GetType() string {
@@ -53,7 +56,7 @@ func (o *ObjectV) String() string {
 func GetPropValue(variable *Variable, props []string) interface{} {
 	// There are two cases, variable can store another object, or not
 
-	obj, ok := variable.Value.(*ObjectV)
+	obj, ok := GetObject(variable).(*ObjectV)
 
 	if !ok {
 		return nil
@@ -64,4 +67,16 @@ func GetPropValue(variable *Variable, props []string) interface{} {
 	}
 
 	return GetPropValue(obj.GetProp(props[0]).(*Variable), props[1:])
+}
+
+// Recursive until get the value of the object, then return the value
+func GetObject(variable *Variable) interface{} {
+	if CheckIsPointer(variable.Value) {
+		return GetObject(variable.Value.(*Variable))
+	}
+	return variable.Value
+}
+
+func (o *ObjectV) Copy() V.IValue {
+	return NewObjectV(o.Type, o.Body.Copy(), o.Env)
 }

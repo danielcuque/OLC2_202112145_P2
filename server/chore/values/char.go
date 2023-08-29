@@ -19,3 +19,7 @@ func (c *CharV) String() string {
 func NewCharValue(value rune) *CharV {
 	return &CharV{Value: value}
 }
+
+func (c *CharV) Copy() IValue {
+	return NewCharValue(c.Value)
+}

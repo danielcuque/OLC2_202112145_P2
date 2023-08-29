@@ -4,6 +4,7 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+	"reflect"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -14,6 +15,8 @@ type IFunction interface {
 }
 
 type Function struct {
+	IsMutating     bool
+	IsStructMethod bool
 	Name           string
 	ReturnDataType string
 	Parameters     []Parameter
@@ -43,8 +46,10 @@ func (f *Function) GetBody() *parser.BlockContext {
 	return f.Body
 }
 
-func NewFunction(name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
+func NewFunction(IsStructMethod, IsMutating bool, name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
 	return &Function{
+		IsStructMethod: IsStructMethod,
+		IsMutating:     IsMutating,
 		Name:           name,
 		ReturnDataType: returnDataType,
 		Parameters:     parameters,
@@ -60,8 +65,9 @@ type Parameter struct {
 }
 
 type Argument struct {
-	Name  string
-	Value V.IValue
+	Name      string
+	Value     V.IValue
+	IsPointer bool
 }
 
 // Visit methods
@@ -72,21 +78,19 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	id := ctx.ID().GetText()
 
 	// Verify if the function already exists
-	_, ok := v.Env.GetFunction(id).(*Function)
+	function := v.Env.GetFunction(id)
 
-	if ok {
+	if function != nil {
 		v.NewError(FunctionAlreadyExists, ctx.GetStart())
 		return nil
 	}
 
 	// Get the function parameters
-	var parameters []Parameter
+	parameters := make([]Parameter, 0)
 
 	// Check if parameters are nil
 	if ctx.FunctionParameters() != nil {
 		parameters = v.Visit(ctx.FunctionParameters()).([]Parameter)
-	} else {
-		parameters = make([]Parameter, 0)
 	}
 
 	// Get the function return type
@@ -97,14 +101,21 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 		returnType = v.Visit(ctx.FunctionReturnType()).(string)
 	}
 
-	// if !ok {
-	// 	v.NewError("No se pudo obtener el tipo de valor de retorno", ctx.GetStart())
-	// 	return nil
-	// }
+	isMutating := ctx.Kw_MUTATING() != nil
 
-	v.Env.AddFunction(id, NewFunction(id, returnType, parameters, ctx.Block().(*parser.BlockContext)))
+	if isMutating && !isDeclaringStruct {
+		v.NewError("No se puede definir una función mutante fuera de un struct", ctx.GetStart())
+		return nil
+	}
 
-	return nil
+	newFunction := NewFunction(isDeclaringStruct, isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext))
+
+	if !isDeclaringStruct {
+		v.Env.AddFunction(id, newFunction)
+		return nil
+	}
+
+	return newFunction
 }
 
 func (v *Visitor) VisitFunctionParameters(ctx *parser.FunctionParametersContext) interface{} {
@@ -171,8 +182,14 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 		param = V.NewBooleanValue(false)
 	case "Char":
 		param = V.NewCharValue(' ')
+	case "Nil":
+		param = V.NewNilValue(nil)
 	default:
 		param = V.NewNilValue(nil)
+	}
+
+	if ctx.LBRACKET() != nil {
+		param = NewObjectV(V.VectorType, &VectorV{}, &EnvNode{})
 	}
 
 	return Parameter{
@@ -194,17 +211,14 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 	return returnType
 }
 
+var IsStructMethodRunning bool
+var IsStructMethodMutating bool
+var objectStruct *ObjectV
+
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
-	var id string
-	var ids []antlr.TerminalNode
+	id, ids := v.GetIds(ctx)
 
-	if ctx.IdChain() != nil {
-		ids = v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
-		id = ids[0].GetText()
-	} else {
-		id = v.Visit(ctx.VariableType()).(string)
-	}
-
+	// First check if is a native function, as print, etc
 	function := GetInternalBuiltinFunctions(id)
 
 	if function != nil {
@@ -217,54 +231,32 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 	if len(ids) == 1 {
 		// Assert that the function exists
-		fnt, ok := v.Env.GetFunction(id).(*Function)
+		fnt := v.Env.GetFunction(id)
 
-		if !ok {
+		if fnt == nil {
+			objectStruct := v.Env.GetStruct(id)
+
+			if objectStruct != nil {
+				return v.HandleStructConstructor(ctx, objectStruct)
+			}
+
 			v.NewError(FunctionNotFound, ctx.GetStart())
 			return nil
 		}
 		fn = fnt
 	} else {
-		// Get the baseVar
-		baseVar, okV := v.Env.GetVariable(id).(*Variable)
+
+		// Get the object
+		object, okV := v.LookUpObject(id, ids, ctx.GetStart())
 
 		if !okV {
-			v.NewError(ObjectNotFound, ctx.GetStart())
 			return nil
 		}
 
-		var props []string
-		var methodName string
-		var object *ObjectV
+		methodName := ids[1].GetText()
 
-		// Check if there are not properties
-
-		// If there are just two ids, means that second id is the method
-		if len(ids) == 2 {
-			// Get object
-			obj, okP := baseVar.Value.(*ObjectV)
-
-			if !okP {
-				v.NewError(ObjectNotFound, ctx.GetStart())
-				return nil
-			}
-
-			object = obj
-			methodName = ids[1].GetText()
-		} else {
-			for _, id := range ids[1 : len(ids)-1] {
-				props = append(props, id.GetText())
-			}
+		if len(ids) > 2 {
 			methodName = ids[len(ids)-1].GetText()
-
-			obj, okP := GetPropValue(baseVar, props).(*Variable).Value.(*ObjectV)
-
-			if !okP {
-				v.NewError(ObjectNotFound, ctx.GetStart())
-				return nil
-			}
-
-			object = obj
 		}
 
 		// Check if is a native function
@@ -276,23 +268,25 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 		objFn, okObjFn := object.GetMethod(methodName).(*Function)
 
-		if !okObjFn {
-			v.NewError(MethodNotFound, ctx.GetStart())
+		if !okObjFn || objFn == nil {
+			v.NewError(fmt.Sprintf(`%s: '%s'`, MethodNotFound, methodName), ctx.GetStart())
 			return nil
 		}
 
 		fn = objFn
+
+		if fn.IsStructMethod {
+			IsStructMethodRunning = true
+			IsStructMethodMutating = fn.IsMutating
+			objectStruct = object
+		}
 	}
 
 	// Get the arguments
-	args := make([]Argument, 0)
-
-	// Check if arguments are nil
-	if ctx.FunctionCallArguments() != nil {
-		args = v.Visit(ctx.FunctionCallArguments()).([]Argument)
-	}
+	args := v.GetArgs(ctx)
 
 	// Verify if the number of parameters is the same
+
 	if len(args) != len(fn.Parameters) {
 		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
 		return nil
@@ -323,6 +317,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 	// Create a new scope
 	fnScope := v.Env.PushEnv(id)
+
 	v.Stack.Push(NewStackItem(
 		id,
 		V.NewNilValue(nil),
@@ -330,7 +325,6 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	))
 
 	// Now, initialize the parameters into a new Scope
-	line, column, scope := GetVariableAttr(v, ctx.GetStart())
 
 	for i, arg := range args {
 		var param Parameter
@@ -343,23 +337,43 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 		if param.Value == nil {
 			v.NewError(fmt.Sprintf("El parámetro '%s' no existe", param.InternalName), ctx.GetStart())
+			v.Env.PopEnv()
+			return false
+		}
+
+		if param.IsINOUT && !CheckIsPointer(arg.Value) {
+			v.NewError(fmt.Sprintf("El parámetro '%s' es de tipo INOUT, por lo tanto debe ser un puntero", param.InternalName), ctx.GetStart())
+			v.Env.PopEnv()
+			return false
+		}
+
+		if !param.IsINOUT && CheckIsPointer(arg.Value) {
+			v.NewError(fmt.Sprintf("El parámetro '%s' no es de tipo INOUT, por lo tanto no debe ser un puntero", param.InternalName), ctx.GetStart())
+			v.Env.PopEnv()
 			return false
 		}
 
 		if arg.Value.GetType() != param.Value.GetType() {
 			v.NewError(fmt.Sprintf("El parámetro '%s' no es del tipo '%s'", param.InternalName, param.Value.GetType()), ctx.GetStart())
+			v.Env.PopEnv()
 			return false
 		}
 
+		newValue := arg.Value
+
+		if !param.IsINOUT {
+			newValue = arg.Value.Copy()
+		}
+
 		v.Env.AddVariable(param.InternalName, NewVariable(
+			v,
 			param.InternalName,
 			false,
-			arg.Value,
-			arg.Value.GetType(),
-			line,
-			column,
-			scope,
+			newValue,
+			param.Value.GetType(),
+			ctx.GetStart(),
 		))
+
 	}
 
 	// Execute the function
@@ -417,10 +431,10 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 
 		if !ok {
 			v.NewError(InvalidArgument, ctx.GetStart())
-			return nil
+			return make([]Argument, 0)
 		}
 
-		args = append(args, Argument{Value: value, Name: ""})
+		args = append(args, Argument{Value: value, Name: "", IsPointer: CheckIsPointer(value)})
 	}
 
 	return args
@@ -441,4 +455,78 @@ func (v *Visitor) VisitNamedArguments(ctx *parser.NamedArgumentsContext) interfa
 
 func (v *Visitor) VisitIDChain(ctx *parser.IDChainContext) interface{} {
 	return ctx.AllID()
+}
+
+func (v *Visitor) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.TerminalNode) {
+	var id string
+	var ids []antlr.TerminalNode
+
+	if ctx.IdChain() != nil {
+		ids = v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
+		id = ids[0].GetText()
+		return id, ids
+	}
+
+	id = v.Visit(ctx.VariableType()).(string)
+
+	return id, ids
+}
+
+func (v *Visitor) GetArgs(ctx *parser.FunctionCallContext) []Argument {
+	args := make([]Argument, 0)
+
+	if ctx.FunctionCallArguments() != nil {
+		args = v.Visit(ctx.FunctionCallArguments()).([]Argument)
+	}
+
+	return args
+}
+
+func (v *Visitor) LookUpObject(id string, tokenProps []antlr.TerminalNode, lc antlr.Token) (*ObjectV, bool) {
+	variable := v.Env.GetVariable(id)
+
+	if variable == nil {
+		v.NewError(ObjectNotFound, lc)
+		return nil, false
+	}
+
+	object, ok := GetObject(variable).(*ObjectV)
+
+	props := v.GetProps(tokenProps)
+
+	if len(props) > 0 {
+		object, ok = GetPropValue(variable, props).(*Variable).Value.(*ObjectV)
+
+		if !ok {
+			v.NewError(ObjectNotFound, lc)
+			return nil, false
+		}
+	}
+
+	if !ok {
+		v.NewError(ObjectNotFound, lc)
+		return nil, false
+	}
+
+	return object, true
+}
+
+func (v *Visitor) GetProps(ids []antlr.TerminalNode) []string {
+
+	props := make([]string, 0)
+
+	if len(ids) > 2 {
+		props = make([]string, len(ids)-2)
+
+		for i, id := range ids[1 : len(ids)-1] {
+			props[i] = id.GetText()
+		}
+	}
+
+	return props
+
+}
+
+func CheckIsPointer(value interface{}) bool {
+	return reflect.TypeOf(value) == reflect.TypeOf(&Variable{})
 }

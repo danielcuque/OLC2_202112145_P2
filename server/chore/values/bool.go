@@ -21,3 +21,7 @@ func (b *BooleanV) String() string {
 func NewBooleanValue(value bool) *BooleanV {
 	return &BooleanV{Value: value}
 }
+
+func (b *BooleanV) Copy() IValue {
+	return NewBooleanValue(b.Value)
+}
