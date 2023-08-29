@@ -9,16 +9,6 @@ import (
 
 var isDeclaringStruct bool
 
-/*
-- Si un atributo no posee un valor por defecto, entonces se debe establecer dicho
-valor de forma obligatoria en el constructor, en caso contrario será un error ya que
-no será posible que hayan atributos sin valor.
-- Los atributos pueden ser mutables (var) o inmutables(let), si un atributo es inmutable
-sólo se podrá asignarle un valor de alguna de las siguientes formas:
-- En la declaración del atributo
-- En el constructor
-*/
-
 func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objectStruct *ObjectV) interface{} {
 	// Here we can get struct parameters
 
@@ -36,7 +26,7 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 		variable := objectStruct.Env.Variables[arg.Name]
 
 		if variable == nil {
-			v.NewError(fmt.Sprintf("El parámetro '%s' no existe en este struct", arg.Name), ctx.GetStart())
+			v.NewError(fmt.Sprintf("El parámetro '%s' no existe en el struct '%s'", arg.Name, objectStruct.Type), ctx.GetStart())
 			return nil
 		}
 

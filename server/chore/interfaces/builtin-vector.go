@@ -34,7 +34,9 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 
 	vector := vectorObj.GetValue().(*VectorV)
 
-	vector.Append(args[0].Value)
+	if len(args) != 0 {
+		vector.Append(args[0].Value)
+	}
 
 	// Change props
 	changeVectorProps(vectorObj)

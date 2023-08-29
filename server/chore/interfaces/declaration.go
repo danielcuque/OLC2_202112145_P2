@@ -38,26 +38,17 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
 	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID(0).GetText()
+	id := ctx.ID().GetText()
 	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
-
-	valueType := ""
-
-	if ctx.VariableType() != nil {
-		valueType = v.Visit(ctx.VariableType()).(string)
-	} else {
-		objStruct := v.Env.GetStruct(ctx.ID(1).GetText())
-
-		if objStruct == nil {
-			v.NewError(fmt.Sprintf("La estructura %s no existe", ctx.ID(1).GetText()), ctx.GetStart())
-			return nil
-		}
-
-		valueType = objStruct.GetType()
-	}
 
 	if !okVal {
 		v.NewError(InvalidExpression, ctx.GetStart())
+		return nil
+	}
+
+	valueType, ok := v.Visit(ctx.VariableType()).(string)
+
+	if !ok {
 		return nil
 	}
 
@@ -101,21 +92,12 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	}
 
 	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID(0).GetText()
+	id := ctx.ID().GetText()
 
-	valueType := ""
+	valueType, ok := v.Visit(ctx.VariableType()).(string)
 
-	if ctx.VariableType() != nil {
-		valueType = v.Visit(ctx.VariableType()).(string)
-	} else {
-		objStruct := v.Env.GetStruct(ctx.ID(1).GetText())
-
-		if objStruct == nil {
-			v.NewError(fmt.Sprintf("La estructura %s no existe", ctx.ID(1).GetText()), ctx.GetStart())
-			return nil
-		}
-
-		valueType = objStruct.GetType()
+	if !ok {
+		return nil
 	}
 
 	variable := v.Env.GetVariable(id)

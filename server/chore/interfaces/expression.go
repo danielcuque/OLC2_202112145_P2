@@ -454,9 +454,17 @@ func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{}
 		return V.CharType
 	case "Bool":
 		return V.BooleanType
-	default:
+	case "nil":
 		return V.NilType
 	}
+
+	// Check if is a struct
+	if structType := v.Env.GetStruct(ctx.GetText()); structType != nil {
+		return structType.GetType()
+	}
+
+	v.NewError(fmt.Sprintf("El tipo %s no existe", ctx.GetText()), ctx.GetStart())
+	return nil
 }
 
 func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {

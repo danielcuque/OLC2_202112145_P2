@@ -29,16 +29,22 @@ statement:
 	| structDeclaration;
 
 // Variable types
-variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
+variableType:
+	Kw_INT
+	| Kw_FLOAT
+	| Kw_BOOL
+	| Kw_STRING
+	| Kw_CHAR
+	| ID;
 
 // Variable declaration
 
 variableDeclaration:
-	varType = (Kw_LET | Kw_VAR) ID COLON (variableType | ID) Op_ASSIGN expr (
+	varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_ASSIGN expr (
 		SEMICOLON
 	)?																# TypeValueDeclaration
 	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?	# ValueDeclaration
-	| varType = (Kw_LET | Kw_VAR) ID COLON (variableType | ID) Op_TERNARY? (
+	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY? (
 		SEMICOLON
 	)? # TypeDeclaration;
 
