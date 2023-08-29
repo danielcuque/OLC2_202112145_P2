@@ -402,6 +402,7 @@ var persona1 = Persona(Nombre:"Daniel", edad: 21, apellido: "Cuque")
 print("Mi nombre es", persona1.Nombre, persona1.apellido, "y tengo", persona1.edad, "años")
 
 
+let pruebaGlobal = 10
 // struct con funciones 
 struct Avion {
     var pasajeros = 0 
@@ -412,17 +413,21 @@ struct Avion {
     // metodo dentro de struct 
 
     mutating func frenar(){
-        print("Frenando")
-        //al ser mutable sí afecta al struct 
-        // self.velocidad = 0
+        print("El avion", self.nombre, "esta frenando", "velocidad actual", self.velocidad)
+        self.velocidad = pruebaGlobal
+        print("La nueva velocidad es de:", self.velocidad)
     }
         
     // funcion inmutable 
-    func mostrarVelocidad(){
-        print("Velocidad", self.velocidad) 
+    func mostrarVelocidad(velocidad: Int){
+        print("La velocidad actual es", self.velocidad) 
+        print("La nueva velocidad es", velocidad)
     }
 }
 
 var avion1 = Avion(pasajeros: 100, velocidad: 1000, nombre: "Avion1")
 
-avion1.mostrarVelocidad()
+print("El avion", avion1.nombre, "tiene", avion1.pasajeros, "pasajeros y va a", avion1.velocidad, "km/h")
+
+avion1.mostrarVelocidad(velocidad: 2000)
+avion1.frenar()

@@ -12,6 +12,11 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
 	id := ids[0].GetText()
 
+	if IsStructMethodRunning && !IsStructMethodMutating && id == "self" {
+		v.NewError("No se puede modificar un struct desde un método que no sea mutante", ctx.GetStart())
+		return false
+	}
+
 	// TODO: verify if declaration is in struct
 	value, ok := v.Visit(ctx.Expr()).(V.IValue)
 
@@ -21,6 +26,10 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 	}
 
 	variable := v.Env.GetVariable(id)
+
+	if IsStructMethodRunning && id == "self" {
+		variable = objectStruct.Env.Variables[ids[1].GetText()]
+	}
 
 	if variable == nil {
 		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())

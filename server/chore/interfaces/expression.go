@@ -56,6 +56,10 @@ func (v *Visitor) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
 func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	expr := strings.Split(ctx.IdChain().GetText(), ".")
 
+	if IsStructMethodRunning && expr[0] == "self" {
+		return v.HandleVisitIdStruct(ctx)
+	}
+
 	variable := v.Env.GetVariable(expr[0])
 
 	if variable == nil {
@@ -91,7 +95,6 @@ func (v *Visitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	if amper {
 		return prop
 	}
-
 	return prop.Value
 }
 

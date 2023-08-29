@@ -62,7 +62,7 @@ func (s *EnvNode) AddVariable(name string, value *Variable) {
 	s.Variables[name] = value
 }
 
-func (s *EnvNode) GetVariable(name string) interface{} {
+func (s *EnvNode) GetVariable(name string) *Variable {
 	if val, ok := s.Variables[name]; ok {
 		return val
 	}
@@ -204,7 +204,7 @@ func (s *EnvNode) collectVariables(allVariables *[]ApiVariable) {
 		apiVar := ApiVariable{
 			Name:    variable.GetName(),
 			IsConst: variable.IsConstant(),
-			Value:   variable.GetValue(), // Puedes decidir cómo manejar el valor aquí
+			Value:   variable.GetValue(),
 			Type:    variable.GetType(),
 			Line:    variable.GetLine(),
 			Column:  variable.GetColumn(),

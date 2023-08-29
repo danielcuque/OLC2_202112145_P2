@@ -19,26 +19,18 @@ func ReadFile(filename string) string {
 }
 
 func GetLexer() string {
-	lexer, err := json.Marshal(ReadFile("grammar/SwiftLexer.g4"))
-	if err != nil {
-		fmt.Println("Error marshalling lexer:", err)
-		return ""
-	}
-
-	return string(lexer)
+	return ParseToJSON(ReadFile("grammar/SwiftLexer.g4"))
 }
 
 func GetParser() string {
-	parser, err := json.Marshal(ReadFile("grammar/Swift.g4"))
-	if err != nil {
-		fmt.Println("Error marshalling parser:", err)
-		return ""
-	}
-
-	return string(parser)
+	return ParseToJSON(ReadFile("grammar/SwiftParser.g4"))
 }
 
 func FormatInput(input string) string {
+	return ParseToJSON(input)
+}
+
+func ParseToJSON(input string) string {
 	formatted, err := json.Marshal(input)
 
 	if err != nil {

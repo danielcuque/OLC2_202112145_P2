@@ -16,6 +16,7 @@ type IFunction interface {
 
 type Function struct {
 	IsMutating     bool
+	IsStructMethod bool
 	Name           string
 	ReturnDataType string
 	Parameters     []Parameter
@@ -45,8 +46,9 @@ func (f *Function) GetBody() *parser.BlockContext {
 	return f.Body
 }
 
-func NewFunction(IsMutating bool, name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
+func NewFunction(IsStructMethod, IsMutating bool, name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
 	return &Function{
+		IsStructMethod: IsStructMethod,
 		IsMutating:     IsMutating,
 		Name:           name,
 		ReturnDataType: returnDataType,
@@ -84,13 +86,11 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	}
 
 	// Get the function parameters
-	var parameters []Parameter
+	parameters := make([]Parameter, 0)
 
 	// Check if parameters are nil
 	if ctx.FunctionParameters() != nil {
 		parameters = v.Visit(ctx.FunctionParameters()).([]Parameter)
-	} else {
-		parameters = make([]Parameter, 0)
 	}
 
 	// Get the function return type
@@ -108,7 +108,7 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 		return nil
 	}
 
-	newFunction := NewFunction(isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext))
+	newFunction := NewFunction(isDeclaringStruct, isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext))
 
 	if !isDeclaringStruct {
 		v.Env.AddFunction(id, newFunction)
@@ -211,6 +211,10 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 	return returnType
 }
 
+var IsStructMethodRunning bool
+var IsStructMethodMutating bool
+var objectStruct *ObjectV
+
 func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
 	id, ids := v.GetIds(ctx)
 
@@ -266,26 +270,25 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 
 		objFn, okObjFn := object.GetMethod(methodName).(*Function)
 
-		if !okObjFn {
-			v.NewError(MethodNotFound, ctx.GetStart())
+		if !okObjFn || objFn == nil {
+			v.NewError(fmt.Sprintf(`%s: '%s'`, MethodNotFound, methodName), ctx.GetStart())
 			return nil
 		}
 
 		fn = objFn
+
+		if fn.IsStructMethod {
+			IsStructMethodRunning = true
+			IsStructMethodMutating = fn.IsMutating
+			objectStruct = object
+		}
 	}
 
 	// Get the arguments
 	args := v.GetArgs(ctx)
 
-	/*
-		[]Argument{
-			Value: *Object
-			Name: ""
-			IsPointer: false
-		}
-	*/
-
 	// Verify if the number of parameters is the same
+
 	if len(args) != len(fn.Parameters) {
 		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
 		return nil
