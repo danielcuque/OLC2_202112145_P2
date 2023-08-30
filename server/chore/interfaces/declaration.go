@@ -254,14 +254,11 @@ func (v *Visitor) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{}
 	}
 	// Return vector, index and value, then, handle when is called as expression, all this as dictionary
 
-	dict := map[string]interface{}{
-		"vector":        object,
-		"index":         index.GetValue().(int),
-		"value":         value.Copy(),
-		"originalValue": value,
+	return map[string]interface{}{
+		"vector": object,
+		"index":  index.GetValue().(int),
+		"value":  value,
 	}
-
-	return dict
 }
 
 func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) interface{} {

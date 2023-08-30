@@ -2,7 +2,6 @@ package interfaces
 
 import (
 	"fmt"
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -481,7 +480,7 @@ func (v *Visitor) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) int
 		return nil
 	}
 
-	return dict["value"]
+	return dict["value"].(V.IValue).Copy()
 }
 
 func (v *Visitor) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) interface{} {
@@ -512,21 +511,15 @@ func (v *Visitor) VisitObjectChain(ctx *parser.ObjectChainContext) interface{} {
 	}
 
 	prop, okP := GetObjectPropValue(value, props).(*Variable)
-	originalProp, okOP := GetObjectPropValue(dict["originalValue"].(*ObjectV), props).(*Variable)
 
-	fmt.Println(reflect.TypeOf(prop), prop.Name, ok)
-
-	if !okP || !okOP {
+	if !okP {
 		v.NewError("No se puede acceder a la propiedad", ctx.GetStart())
 		return nil
 	}
 
-	return map[string]interface{}{
-		"value":         prop,
-		"originalValue": originalProp,
-	}
+	return prop
 }
 
 func (v *Visitor) VisitObjectChainExpr(ctx *parser.ObjectChainExprContext) interface{} {
-	return v.Visit(ctx.ObjectChain()).(map[string]interface{})["value"]
+	return v.Visit(ctx.ObjectChain()).(V.IValue).Copy()
 }
