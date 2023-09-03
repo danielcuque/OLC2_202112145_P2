@@ -443,6 +443,7 @@ func (v *Visitor) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 }
 
 func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {
+
 	switch ctx.GetText() {
 	case "Int":
 		return V.IntType
@@ -454,9 +455,17 @@ func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{}
 		return V.CharType
 	case "Bool":
 		return V.BooleanType
-	default:
+	case "nil":
 		return V.NilType
 	}
+
+	// Check if is a struct
+	if structType := v.Env.GetStruct(ctx.GetText()); structType != nil {
+		return structType.GetType()
+	}
+
+	v.NewError(fmt.Sprintf("El tipo %s no existe", ctx.GetText()), ctx.GetStart())
+	return nil
 }
 
 func (v *Visitor) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {
@@ -471,7 +480,7 @@ func (v *Visitor) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) int
 		return nil
 	}
 
-	return dict["value"]
+	return dict["value"].(V.IValue).Copy()
 }
 
 func (v *Visitor) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) interface{} {
@@ -483,4 +492,34 @@ func (v *Visitor) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) int
 	}
 
 	return dict["value"]
+}
+
+func (v *Visitor) VisitObjectChain(ctx *parser.ObjectChainContext) interface{} {
+	dict, ok := v.Visit(ctx.VectorAccess()).(map[string]interface{})
+
+	if !ok {
+		v.NewError("No se puede acceder al objeto", ctx.GetStart())
+		return nil
+	}
+
+	value := dict["value"].(*ObjectV)
+
+	props := make([]string, 0)
+
+	for _, prop := range ctx.AllID() {
+		props = append(props, prop.GetText())
+	}
+
+	prop, okP := GetObjectPropValue(value, props).(*Variable)
+
+	if !okP {
+		v.NewError("No se puede acceder a la propiedad", ctx.GetStart())
+		return nil
+	}
+
+	return prop
+}
+
+func (v *Visitor) VisitObjectChainExpr(ctx *parser.ObjectChainExprContext) interface{} {
+	return v.Visit(ctx.ObjectChain()).(V.IValue).Copy()
 }

@@ -300,7 +300,7 @@ var matrix2 : [[[Int]]] = [[[Int]]] (repeating: [[Int]] (repeating: [Int] (repea
 var matrix0 : [[[String]]] = [[[String]]] (repeating: [[String]] (repeating: [String] (repeating:"OLC2", count:2), count:1), count:3)
 
 
-print(vec1[0], "======") //imprime 20
+print(vec1[0], "======") //imprime 30
 vec1[0] = mtx1[0][0] //cambia 20 por 1
 
 print(vec1[0], "======") //imprime 1
@@ -450,3 +450,19 @@ print(avion1.getVelocidad())
 persona1.Nombre = "Daniel2"
 persona1.mostrarNombre()
 avion1.piloto.mostrarNombre()
+
+struct Distro {
+    var Nombre: String?
+    var Version: String? 
+}
+
+var Distros: [Distro] = [
+    Distro(Nombre: "Fedora", Version: "38"),
+    Distro(Nombre: "Ubuntu", Version: "22.04"),
+    Distro(Nombre: "OpenSUSE", Version: "Leap 15")
+]
+
+for distro in Distros {
+    print(distro.Nombre, distro.Version)
+}
+

@@ -8,21 +8,51 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 )
 
+func (v *Visitor) handleVariableAssignment(ctx antlr.ParserRuleContext, variable *Variable, value V.IValue, op string) interface{} {
+	if variable == nil {
+		v.NewError("No se puede asignar a un objeto nulo", ctx.GetStart())
+		return nil
+	}
+
+	if variable.GetType() != value.GetType() {
+		if variable.GetType() == V.FloatType && value.GetType() == V.IntType {
+			value = V.NewFloatValue(float64(value.GetValue().(int)))
+		} else {
+			v.NewError(fmt.Sprintf("El tipo del objeto no coincide con el valor asignado, se esperaba %s y se obtuvo %s", variable.GetType(), value.GetType()), ctx.GetStart())
+			return nil
+		}
+	}
+
+	var newValue V.IValue
+	switch op {
+	case "=":
+		newValue = value.Copy()
+	case "+=":
+		newValue = v.arithmeticOp(variable.Value, value, "+", ctx.GetStart()).(V.IValue)
+	case "-=":
+		newValue = v.arithmeticOp(variable.Value, value, "-", ctx.GetStart()).(V.IValue)
+	default:
+		v.NewError(fmt.Sprintf("No se puede aplicar el operador %s a %s", op, variable.GetType()), ctx.GetStart())
+		return nil
+	}
+
+	variable.SetValue(newValue)
+	return nil
+}
+
 func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
 	ids := v.Visit(ctx.IdChain()).([]antlr.TerminalNode)
 	id := ids[0].GetText()
 
 	if IsStructMethodRunning && !IsStructMethodMutating && id == "self" {
 		v.NewError("No se puede modificar un struct desde un método que no sea mutante", ctx.GetStart())
-		return false
+		return nil
 	}
 
-	// TODO: verify if declaration is in struct
 	value, ok := v.Visit(ctx.Expr()).(V.IValue)
-
 	if !ok {
 		v.NewError(InvalidExpression, ctx.GetStart())
-		return false
+		return nil
 	}
 
 	variable := v.Env.GetVariable(id)
@@ -33,7 +63,7 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 
 	if variable == nil {
 		v.NewError(fmt.Sprintf("La variable %s no existe", id), ctx.GetStart())
-		return false
+		return nil
 	}
 
 	if len(ids) > 1 && ids[0].GetText() != "self" {
@@ -47,12 +77,12 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 
 		if !ok {
 			v.NewError(fmt.Sprintf("La variable %s no es un objeto", id), ctx.GetStart())
-			return false
+			return nil
 		}
 
 		if prop == nil {
 			v.NewError(fmt.Sprintf("La propiedad %s no existe en %s", ids[1].GetText(), id), ctx.GetStart())
-			return false
+			return nil
 		}
 
 		variable = prop
@@ -60,36 +90,26 @@ func (v *Visitor) VisitVariableAssignment(ctx *parser.VariableAssignmentContext)
 
 	if variable.IsConstant() {
 		v.NewError(fmt.Sprintf("La variable %s es constante", id), ctx.GetStart())
-		return false
-	}
-
-	if variable.GetType() != value.GetType() {
-		if variable.GetType() == V.FloatType && value.GetType() == V.IntType {
-			value = V.NewFloatValue(float64(value.GetValue().(int)))
-		} else {
-			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, variable.GetType(), value.GetType()), ctx.GetStart())
-			return false
-		}
+		return nil
 	}
 
 	if CheckIsPointer(variable.Value) {
 		variable = variable.Value.(*Variable)
 	}
 
-	// Check the operator assignment (= += -=)
 	op := ctx.GetOp().GetText()
-	switch op {
-	case "=":
-		variable.SetValue(value)
-	case "+=":
-		variable.SetValue(v.arithmeticOp(variable.Value, value, "+", ctx.GetStart()).(V.IValue))
-	case "-=":
-		variable.SetValue(v.arithmeticOp(variable.Value, value, "-", ctx.GetStart()).(V.IValue))
-	default:
-		v.NewError(fmt.Sprintf("No se puede aplicar el operador %s a %s", op, variable.GetType()), ctx.GetStart())
-		return false
+	return v.handleVariableAssignment(ctx, variable, value, op)
+}
+
+func (v *Visitor) VisitVariableAssignmentObject(ctx *parser.VariableAssignmentObjectContext) interface{} {
+	variable := v.Visit(ctx.ObjectChain()).(*Variable)
+
+	value, ok := v.Visit(ctx.Expr()).(V.IValue)
+	if !ok {
+		v.NewError(InvalidExpression, ctx.GetStart())
+		return nil
 	}
 
-	return nil
-
+	op := ctx.GetOp().GetText()
+	return v.handleVariableAssignment(ctx, variable, value, op)
 }

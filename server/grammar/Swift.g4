@@ -14,6 +14,7 @@ block: (statement)*;
 statement:
 	variableAssignment
 	| variableDeclaration
+	| variableAssignmentObject
 	| ifStatement
 	| whileStatement
 	| switchStatement
@@ -29,16 +30,22 @@ statement:
 	| structDeclaration;
 
 // Variable types
-variableType: Kw_INT | Kw_FLOAT | Kw_BOOL | Kw_STRING | Kw_CHAR;
+variableType:
+	Kw_INT
+	| Kw_FLOAT
+	| Kw_BOOL
+	| Kw_STRING
+	| Kw_CHAR
+	| ID;
 
 // Variable declaration
 
 variableDeclaration:
-	varType = (Kw_LET | Kw_VAR) ID COLON (variableType | ID) Op_ASSIGN expr (
+	varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_ASSIGN expr (
 		SEMICOLON
 	)?																# TypeValueDeclaration
 	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?	# ValueDeclaration
-	| varType = (Kw_LET | Kw_VAR) ID COLON (variableType | ID) Op_TERNARY? (
+	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY? (
 		SEMICOLON
 	)? # TypeDeclaration;
 
@@ -70,6 +77,13 @@ functionCallArguments:
 // Variable assignment
 variableAssignment:
 	idChain op = (Op_ASSIGN | Op_PLUS_ASSIGN | Op_MINUS_ASSIGN) expr;
+
+variableAssignmentObject:
+	objectChain op = (
+		Op_ASSIGN
+		| Op_PLUS_ASSIGN
+		| Op_MINUS_ASSIGN
+	) expr;
 
 // If statement 
 ifStatement: ifTail (Kw_ELSE ifTail)* elseStatement?;
@@ -105,6 +119,8 @@ vectorDefinition:
 	| expr							# VectorSingleValue;
 
 vectorValues: expr (COMMA expr)*;
+
+objectChain: vectorAccess (DOT ID)+;
 
 vectorAccess: idChain LBRACKET expr RBRACKET;
 
@@ -159,7 +175,8 @@ structProperty:
 
 // Expressions
 expr:
-	functionCall													# FunctionCallExpr
+	objectChain														# ObjectChainExpr
+	| functionCall													# FunctionCallExpr
 	| vectorAccess													# VectorAccessExpr
 	| matrixAccess													# MatrixAccessExpr
 	| Op_MINUS expr													# UnaryExpr
