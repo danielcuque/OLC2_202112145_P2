@@ -56,6 +56,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by Swift#variableAssignment.
 	VisitVariableAssignment(ctx *VariableAssignmentContext) interface{}
 
+	// Visit a parse tree produced by Swift#variableAssignmentObject.
+	VisitVariableAssignmentObject(ctx *VariableAssignmentObjectContext) interface{}
+
 	// Visit a parse tree produced by Swift#ifStatement.
 	VisitIfStatement(ctx *IfStatementContext) interface{}
 
@@ -94,6 +97,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by Swift#vectorValues.
 	VisitVectorValues(ctx *VectorValuesContext) interface{}
+
+	// Visit a parse tree produced by Swift#objectChain.
+	VisitObjectChain(ctx *ObjectChainContext) interface{}
 
 	// Visit a parse tree produced by Swift#vectorAccess.
 	VisitVectorAccess(ctx *VectorAccessContext) interface{}
@@ -187,6 +193,9 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by Swift#TernaryExpr.
 	VisitTernaryExpr(ctx *TernaryExprContext) interface{}
+
+	// Visit a parse tree produced by Swift#ObjectChainExpr.
+	VisitObjectChainExpr(ctx *ObjectChainExprContext) interface{}
 
 	// Visit a parse tree produced by Swift#MatrixAccessExpr.
 	VisitMatrixAccessExpr(ctx *MatrixAccessExprContext) interface{}

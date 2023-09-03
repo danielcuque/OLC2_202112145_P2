@@ -98,7 +98,14 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 
 	// Check if return type is nil
 	if ctx.FunctionReturnType() != nil {
-		returnType = v.Visit(ctx.FunctionReturnType()).(string)
+		RT, ok := v.Visit(ctx.FunctionReturnType()).(string)
+
+		if !ok {
+			v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
+			return nil
+		}
+
+		returnType = RT
 	}
 
 	isMutating := ctx.Kw_MUTATING() != nil
@@ -234,10 +241,10 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		fnt := v.Env.GetFunction(id)
 
 		if fnt == nil {
-			objectStruct := v.Env.GetStruct(id)
+			objStruct := v.Env.GetStruct(id)
 
-			if objectStruct != nil {
-				return v.HandleStructConstructor(ctx, objectStruct)
+			if objStruct != nil {
+				return v.HandleStructConstructor(ctx, objStruct)
 			}
 
 			v.NewError(FunctionNotFound, ctx.GetStart())

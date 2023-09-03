@@ -38,26 +38,17 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
 	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID(0).GetText()
+	id := ctx.ID().GetText()
 	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
-
-	valueType := ""
-
-	if ctx.VariableType() != nil {
-		valueType = v.Visit(ctx.VariableType()).(string)
-	} else {
-		objStruct := v.Env.GetStruct(ctx.ID(1).GetText())
-
-		if objStruct == nil {
-			v.NewError(fmt.Sprintf("La estructura %s no existe", ctx.ID(1).GetText()), ctx.GetStart())
-			return nil
-		}
-
-		valueType = objStruct.GetType()
-	}
 
 	if !okVal {
 		v.NewError(InvalidExpression, ctx.GetStart())
+		return nil
+	}
+
+	valueType, ok := v.Visit(ctx.VariableType()).(string)
+
+	if !ok {
 		return nil
 	}
 
@@ -93,29 +84,18 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
 	// Declaration without value
 
-	// Check if '?' is used outside struct env
-
 	if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
-		v.NewError("El operador ternario solo puede ser usado dentro de un struct", ctx.GetStart())
+		v.NewError("El operador '?' solo puede ser usado dentro de un struct", ctx.GetStart())
 		return nil
 	}
 
 	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID(0).GetText()
+	id := ctx.ID().GetText()
 
-	valueType := ""
+	valueType, ok := v.Visit(ctx.VariableType()).(string)
 
-	if ctx.VariableType() != nil {
-		valueType = v.Visit(ctx.VariableType()).(string)
-	} else {
-		objStruct := v.Env.GetStruct(ctx.ID(1).GetText())
-
-		if objStruct == nil {
-			v.NewError(fmt.Sprintf("La estructura %s no existe", ctx.ID(1).GetText()), ctx.GetStart())
-			return nil
-		}
-
-		valueType = objStruct.GetType()
+	if !ok {
+		return nil
 	}
 
 	variable := v.Env.GetVariable(id)
@@ -125,8 +105,8 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 		return false
 	}
 
-	if isConstant {
-		v.NewError(fmt.Sprintf("La variable %s debe ser inicializada", id), ctx.GetStart())
+	if isConstant && !isDeclaringStruct {
+		v.NewError(fmt.Sprintf("La variable '%s' debe ser inicializada", id), ctx.GetStart())
 		return false
 	}
 
@@ -274,13 +254,11 @@ func (v *Visitor) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{}
 	}
 	// Return vector, index and value, then, handle when is called as expression, all this as dictionary
 
-	dict := map[string]interface{}{
+	return map[string]interface{}{
 		"vector": object,
 		"index":  index.GetValue().(int),
 		"value":  value,
 	}
-
-	return dict
 }
 
 func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) interface{} {

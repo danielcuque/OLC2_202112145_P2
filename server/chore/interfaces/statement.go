@@ -10,6 +10,10 @@ func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return v.Visit(ctx.VariableDeclaration())
 	}
 
+	if ctx.VariableAssignmentObject() != nil {
+		return v.Visit(ctx.VariableAssignmentObject())
+	}
+
 	if ctx.IfStatement() != nil {
 		return v.Visit(ctx.IfStatement())
 	}

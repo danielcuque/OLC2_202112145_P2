@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	content := U.ReadFile("./examples/test.swift")
+	content := U.ReadFile("./examples/structs.swift")
 
 	result := I.NewEvaluator(content)
 

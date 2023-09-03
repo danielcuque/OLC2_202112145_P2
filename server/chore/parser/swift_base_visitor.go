@@ -72,6 +72,10 @@ func (v *BaseSwiftVisitor) VisitVariableAssignment(ctx *VariableAssignmentContex
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitVariableAssignmentObject(ctx *VariableAssignmentObjectContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -121,6 +125,10 @@ func (v *BaseSwiftVisitor) VisitVectorSingleValue(ctx *VectorSingleValueContext)
 }
 
 func (v *BaseSwiftVisitor) VisitVectorValues(ctx *VectorValuesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitObjectChain(ctx *ObjectChainContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -245,6 +253,10 @@ func (v *BaseSwiftVisitor) VisitLogicalExpr(ctx *LogicalExprContext) interface{}
 }
 
 func (v *BaseSwiftVisitor) VisitTernaryExpr(ctx *TernaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitObjectChainExpr(ctx *ObjectChainExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

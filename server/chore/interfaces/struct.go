@@ -9,18 +9,10 @@ import (
 
 var isDeclaringStruct bool
 
-/*
-- Si un atributo no posee un valor por defecto, entonces se debe establecer dicho
-valor de forma obligatoria en el constructor, en caso contrario será un error ya que
-no será posible que hayan atributos sin valor.
-- Los atributos pueden ser mutables (var) o inmutables(let), si un atributo es inmutable
-sólo se podrá asignarle un valor de alguna de las siguientes formas:
-- En la declaración del atributo
-- En el constructor
-*/
-
-func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objectStruct *ObjectV) interface{} {
+func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objStruct *ObjectV) *ObjectV {
 	// Here we can get struct parameters
+
+	objStruct = objStruct.Copy().(*ObjectV)
 
 	args := v.GetArgs(ctx)
 
@@ -33,10 +25,10 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 
 	// Check if all parameters are declared
 	for _, arg := range args {
-		variable := objectStruct.Env.Variables[arg.Name]
+		variable := objStruct.Env.Variables[arg.Name]
 
 		if variable == nil {
-			v.NewError(fmt.Sprintf("El parámetro '%s' no existe en este struct", arg.Name), ctx.GetStart())
+			v.NewError(fmt.Sprintf("El parámetro '%s' no existe en el struct '%s'", arg.Name, objStruct.Type), ctx.GetStart())
 			return nil
 		}
 
@@ -51,7 +43,7 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 	}
 
 	// Check if all attributes are declared
-	for _, attr := range objectStruct.Env.Variables {
+	for _, attr := range objStruct.Env.Variables {
 		if attr.Value.GetValue() == nil && attr.Type != V.NilType {
 			v.NewError("El atributo "+attr.Name+" no tiene un valor por defecto", ctx.GetStart())
 			return nil
@@ -59,7 +51,7 @@ func (v *Visitor) HandleStructConstructor(ctx *parser.FunctionCallContext, objec
 	}
 
 	// Return a copy of the object
-	return objectStruct.Copy()
+	return objStruct
 }
 
 func (v *Visitor) HandleVisitIdStruct(ctx *parser.IdExprContext) interface{} {

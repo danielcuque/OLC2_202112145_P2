@@ -69,6 +69,18 @@ func (v *Variable) Copy() V.IValue {
 	return v.Value.Copy()
 }
 
+func (v *Variable) CopyVar() *Variable {
+	return &Variable{
+		Name:    v.Name,
+		IsConst: v.IsConst,
+		Value:   v.Value.Copy(),
+		Type:    v.Type,
+		Line:    v.Line,
+		Column:  v.Column,
+		Env:     v.Env,
+	}
+}
+
 func (v *Variable) GetScopeName() string {
 	return v.Env.GetType()
 }
