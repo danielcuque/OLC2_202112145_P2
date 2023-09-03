@@ -12,9 +12,9 @@ block: (statement)*;
 
 // Statements
 statement:
-	variableAssignment
-	| variableDeclaration
-	| variableAssignmentObject
+	variableAssignment SEMICOLON?
+	| variableDeclaration SEMICOLON?
+	| variableAssignmentObject SEMICOLON?
 	| ifStatement
 	| whileStatement
 	| switchStatement
@@ -22,11 +22,11 @@ statement:
 	| guardStatement
 	| controlFlowStatement
 	| functionDeclarationStatement
-	| functionCall
+	| functionCall SEMICOLON?
 	| vectorDeclaration
-	| vectorAssignment
+	| vectorAssignment SEMICOLON?
 	| matrixDeclaration
-	| matrixAssignment
+	| matrixAssignment SEMICOLON?
 	| structDeclaration;
 
 // Variable types
