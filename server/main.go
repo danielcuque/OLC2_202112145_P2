@@ -1,22 +1,18 @@
 package main
 
-import (
-	I "OLC2/chore/interfaces"
-	U "OLC2/chore/utils"
-	"fmt"
-)
+import "OLC2/api"
 
 func main() {
 
-	content := U.ReadFile("./examples/test.swift")
+	// content := U.ReadFile("./examples/test.swift")
 
-	result := I.NewEvaluator(content)
+	// result := I.NewEvaluator(content)
 
-	for _, err := range result.Errors {
-		fmt.Println(err.Error())
-	}
+	// for _, err := range result.Errors {
+	// 	fmt.Println(err.Error())
+	// }
 
-	fmt.Println(result.GetLogs())
+	// fmt.Println(result.GetLogs())
 
-	// api.Init()
+	api.Init()
 }

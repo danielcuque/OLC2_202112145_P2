@@ -16,7 +16,7 @@ export const useFileUpload = () => {
       reader.readAsText(file, "UTF-8");
       reader.onload = () => {
         if (validateFilename(file.name) === false) {
-          toast.error("El archivo no tiene la extensión .tw");
+          toast.error("El archivo no tiene la extensión .swift");
         } else {
           const code = reader.result ? reader.result : "";
           addFile(code as string, file.name);

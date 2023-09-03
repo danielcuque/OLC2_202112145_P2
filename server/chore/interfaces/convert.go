@@ -3,6 +3,7 @@ package interfaces
 import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
+	"fmt"
 	"math"
 	"strconv"
 )
@@ -23,12 +24,11 @@ func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		if err == nil {
 			return V.NewIntValue(int(math.Trunc(floatValue)))
 		}
-
 	case V.FloatType:
 		return V.NewIntValue(int(math.Trunc(value.GetValue().(float64))))
 	}
 
-	return v.handleInvalidParameter(ctx)
+	return v.handleInvalidParameter(value.GetType(), "Int", ctx)
 }
 
 func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
@@ -52,7 +52,7 @@ func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		return V.NewFloatValue(float64(value.GetValue().(int)))
 	}
 
-	return v.handleInvalidParameter(ctx)
+	return v.handleInvalidParameter(value.GetType(), "Float", ctx)
 }
 
 func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
@@ -80,10 +80,10 @@ func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 		}
 	}
 
-	return v.handleInvalidParameter(ctx)
+	return v.handleInvalidParameter(value.GetType(), "String", ctx)
 }
 
-func (v *Visitor) handleInvalidParameter(ctx *parser.FunctionCallContext) V.IValue {
-	v.NewError(InvalidParameter, ctx.GetStart())
+func (v *Visitor) handleInvalidParameter(erroType, expectedType string, ctx *parser.FunctionCallContext) V.IValue {
+	v.NewError(fmt.Sprintf("No se puede convertir un objeto de tipo %s a %s", erroType, expectedType), ctx.GetStart())
 	return V.NewNilValue(nil)
 }
