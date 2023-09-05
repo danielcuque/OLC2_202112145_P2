@@ -23,9 +23,9 @@ statement:
 	| controlFlowStatement
 	| functionDeclarationStatement
 	| functionCall SEMICOLON?
-	| vectorDeclaration
+	| vectorDeclaration SEMICOLON?
 	| vectorAssignment SEMICOLON?
-	| matrixDeclaration
+	| matrixDeclaration SEMICOLON?
 	| matrixAssignment SEMICOLON?
 	| structDeclaration;
 
@@ -41,13 +41,9 @@ variableType:
 // Variable declaration
 
 variableDeclaration:
-	varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_ASSIGN expr (
-		SEMICOLON
-	)?																# TypeValueDeclaration
-	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr (SEMICOLON)?	# ValueDeclaration
-	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY? (
-		SEMICOLON
-	)? # TypeDeclaration;
+	varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_ASSIGN expr 	# TypeValueDeclaration
+	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN expr 	# ValueDeclaration
+	| varType = (Kw_LET | Kw_VAR) ID COLON variableType Op_TERNARY?  # TypeDeclaration;
 
 // Function declaration
 functionDeclarationStatement:
@@ -112,7 +108,8 @@ guardStatement: Kw_GUARD expr Kw_ELSE LBRACE block RBRACE;
 // Vector declarations
 
 vectorDeclaration:
-	varType = (Kw_LET | Kw_VAR) ID COLON LBRACKET variableType RBRACKET Op_ASSIGN vectorDefinition;
+	varType = (Kw_LET | Kw_VAR) ID COLON LBRACKET variableType RBRACKET Op_ASSIGN vectorDefinition # VectorTypeValue
+	| varType = (Kw_LET | Kw_VAR) ID Op_ASSIGN LBRACKET ID RBRACKET LPAREN RPAREN # VectorStructValue;
 
 vectorDefinition:
 	LBRACKET vectorValues? RBRACKET	# VectorListValue

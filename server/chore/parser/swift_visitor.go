@@ -86,8 +86,11 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by Swift#guardStatement.
 	VisitGuardStatement(ctx *GuardStatementContext) interface{}
 
-	// Visit a parse tree produced by Swift#vectorDeclaration.
-	VisitVectorDeclaration(ctx *VectorDeclarationContext) interface{}
+	// Visit a parse tree produced by Swift#VectorTypeValue.
+	VisitVectorTypeValue(ctx *VectorTypeValueContext) interface{}
+
+	// Visit a parse tree produced by Swift#VectorStructValue.
+	VisitVectorStructValue(ctx *VectorStructValueContext) interface{}
 
 	// Visit a parse tree produced by Swift#VectorListValue.
 	VisitVectorListValue(ctx *VectorListValueContext) interface{}

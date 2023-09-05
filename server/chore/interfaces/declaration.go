@@ -59,17 +59,13 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 		return false
 	}
 
-	// Check if the explicit type is the same as the value type, except if explicit type is Float and value type is Int
 	if valueType != value.GetType() {
-		// Check if the explicit type is Float and the value type is Int
-		// Change the value type to Float
 		if valueType == V.FloatType && value.GetType() == V.IntType {
 			value = V.NewFloatValue(float64(value.GetValue().(int)))
 		} else {
 			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
 			return false
 		}
-
 	}
 
 	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
@@ -123,7 +119,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 
 // Vectors
 
-func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) interface{} {
+func (v *Visitor) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) interface{} {
 
 	id := ctx.ID().GetText()
 
@@ -144,6 +140,13 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	isConstant := ctx.GetVarType().GetText() == "const" // let | var
 
 	valueType := v.Visit(ctx.VariableType()).(string) // Id: int | float | string
+
+	// Check if is base type
+
+	if !V.IsBaseTypeString(valueType) {
+		v.NewError("El tipo de dato debe ser primitivo", ctx.GetStart())
+		return nil
+	}
 
 	// Verify that dataList is not empty
 
@@ -167,6 +170,51 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	v.Env.AddVariable(id,
 		NewVariable(v, id, isConstant, newObj, V.VectorType, ctx.GetStart()),
+	)
+
+	return nil
+}
+
+func (v *Visitor) VisitVectorStructValue(ctx *parser.VectorStructValueContext) interface{} {
+
+	fmt.Println("VectorStructValue")
+
+	id := ctx.ID(0).GetText()
+
+	variable := v.Env.GetVariable(id)
+
+	if variable != nil {
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return nil
+	}
+
+	isConstant := ctx.GetVarType().GetText() == "const" // let | var
+
+	valueType := ctx.ID(1).GetText() // Check if struct exists
+
+	structObj := v.Env.GetStruct(valueType)
+
+	if structObj == nil {
+		v.NewError(fmt.Sprintf("La estructura %s no existe", valueType), ctx.GetStart())
+		return nil
+	}
+
+	newVector := NewVector(valueType, make([]V.IValue, 0))
+
+	// Create a new generic object
+	newObj := NewObjectV(V.VectorType, newVector, NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1))
+
+	// Add native properties
+
+	count := NewVariable(v, "count", true, V.NewIntValue(0), V.IntType, ctx.GetStart())
+
+	isEmpty := NewVariable(v, "isEmpty", true, V.NewBooleanValue(true), V.BooleanType, ctx.GetStart())
+
+	newObj.AddProp("count", count)
+	newObj.AddProp("isEmpty", isEmpty)
+
+	v.Env.AddVariable(id,
+		NewVariable(v, id, isConstant, newObj, valueType, ctx.GetStart()),
 	)
 
 	return nil
