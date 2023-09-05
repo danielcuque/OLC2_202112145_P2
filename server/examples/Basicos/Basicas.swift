@@ -1,11 +1,12 @@
 print("----------------------")
 print("----ARCHIVO BASICO----")
 print("----------------------")
+~
 
 var bol = false
 var bol2 = !bol
 var cad1 = "imprimir"
-var cad2 = "cadena valida"
+var cad2 = "cadena valida";;
 
 var val1 = 7 - (5 + 10 * (2 + 4 * (5 + 2 * 3)) - 8 * 3 * 3) + 50 * (6 * 2)
 var val2 = (2 * 2 * 2 * 2) - 9 - (8 - 6 + (3 * 3 - 6 * 5 - 7 - (9 + 7 * 7 * 7) + 10) - 5) + 8 - (6 - 5 * (2 * 3))

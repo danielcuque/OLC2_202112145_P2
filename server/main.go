@@ -1,15 +1,13 @@
 package main
 
-import (
-	"fmt"
+import "OLC2/api"
 
-	I "OLC2/chore/interfaces"
-	U "OLC2/chore/utils"
-)
+// I "OLC2/chore/interfaces"
+// U "OLC2/chore/utils"
 
 func main() {
 
-	content := U.ReadFile("./examples/Struct/Struct1.swift")
+	// content := U.ReadFile("./examples/Struct/Struct1.swift")
 	// content := U.ReadFile("./examples/Struct/Struct2.swift")
 	// content := U.ReadFile("./examples/Basicos/Basicas.swift")
 	// content := U.ReadFile("./examples/Basicos/Intermedias.swift")
@@ -19,13 +17,13 @@ func main() {
 	// content := U.ReadFile("./examples/Arreglos/Vectores.swift")
 	// content := U.ReadFile("./examples/Arreglos/Matrices.swift")
 
-	result := I.NewEvaluator(content)
+	// result := I.NewEvaluator(content)
 
-	for _, err := range result.Errors {
-		fmt.Println(err.Error())
-	}
+	// for _, err := range result.Errors {
+	// 	fmt.Println(err.Error())
+	// }
 
-	fmt.Println(result.GetLogs())
+	// fmt.Println(result.GetLogs())
 
-	// api.Init()
+	api.Init()
 }

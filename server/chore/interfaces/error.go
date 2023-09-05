@@ -5,9 +5,9 @@ type TypeError string
 // Lexical | Syntactic | Semantic
 
 const (
-	Lexical   TypeError = "Lexical"
-	Syntactic TypeError = "Syntactic"
-	Semantic  TypeError = "Semantic"
+	Lexical   TypeError = "Léxico"
+	Syntactic TypeError = "Sintáctico"
+	Semantic  TypeError = "Semántico"
 )
 
 type VisitorError struct {
@@ -29,11 +29,12 @@ func (e *VisitorError) GetColumn() int {
 	return e.Column
 }
 
-func NewVisitorError(line int, column int, msg string) *VisitorError {
+func NewVisitorError(line int, column int, msg string, typeError TypeError) *VisitorError {
 	return &VisitorError{
 		Line:   line,
 		Column: column,
 		Msg:    msg,
+		Type:   typeError,
 	}
 }
 
