@@ -208,11 +208,13 @@ type ApiVariable struct {
 	Line    int
 	Column  int
 	Scope   string
+	Params  string
 }
 
 func (s *EnvNode) GetAllVariables() []ApiVariable {
 	allVariables := make([]ApiVariable, 0)
 	s.collectVariables(&allVariables)
+	s.collectFunctions(&allVariables)
 	return allVariables
 }
 
@@ -221,15 +223,35 @@ func (s *EnvNode) collectVariables(allVariables *[]ApiVariable) {
 		apiVar := ApiVariable{
 			Name:    variable.GetName(),
 			IsConst: variable.IsConstant(),
-			Value:   variable.GetValue(),
+			Value:   variable.String(),
 			Type:    variable.GetType(),
 			Line:    variable.GetLine(),
 			Column:  variable.GetColumn(),
 			Scope:   s.GetType(),
+			Params:  "...",
 		}
 		*allVariables = append(*allVariables, apiVar)
 	}
 	for _, child := range s.Child {
 		child.collectVariables(allVariables)
+	}
+}
+
+func (s *EnvNode) collectFunctions(allFunctions *[]ApiVariable) {
+	for _, function := range s.Functions {
+		apiVar := ApiVariable{
+			Name:    function.GetName(),
+			IsConst: false,
+			Value:   "...",
+			Type:    "Function",
+			Line:    function.Line,
+			Column:  function.Column,
+			Scope:   "...",
+			Params:  function.GetParamsString(),
+		}
+		*allFunctions = append(*allFunctions, apiVar)
+	}
+	for _, child := range s.Child {
+		child.collectFunctions(allFunctions)
 	}
 }

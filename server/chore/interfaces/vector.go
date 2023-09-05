@@ -22,15 +22,15 @@ func (v *VectorV) GetValue() interface{} {
 }
 
 func (v *VectorV) String() string {
-	str := ""
-	// Add comma except for last element
+	str := "["
+
 	for i, value := range v.Body {
 		str += fmt.Sprintf("%v", value)
 		if i != len(v.Body)-1 {
 			str += ", "
 		}
 	}
-	return str
+	return str + "]"
 }
 
 func (v *VectorV) GetType() string {

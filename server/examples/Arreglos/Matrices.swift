@@ -12,7 +12,7 @@ func printArrayStr(_ arr: [String]) {
 }
 
 func printArrayInt(_ arr: [Int]) {
-    var out = "["
+    var out = " ["
     for i in 0...4 {
         if i == 4 {
             out += String(arr[i])
@@ -20,7 +20,7 @@ func printArrayInt(_ arr: [Int]) {
             out += String(arr[i]) + ", "
         }
     }
-    out += "]"
+    out += "] "
     print(out)
 }
 

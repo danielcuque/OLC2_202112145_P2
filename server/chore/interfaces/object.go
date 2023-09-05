@@ -49,7 +49,7 @@ func (o *ObjectV) GetValue() interface{} {
 }
 
 func (o *ObjectV) String() string {
-	return fmt.Sprint(o.Env.Variables, &o)
+	return fmt.Sprintf("%v", o.Body)
 }
 
 // Recursive function to get the value of a property

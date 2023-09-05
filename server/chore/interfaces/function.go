@@ -22,6 +22,8 @@ type Function struct {
 	Parameters     []Parameter
 	Body           *parser.BlockContext
 	ReturnValue    V.IValue
+	Line           int
+	Column         int
 }
 
 func (f *Function) GetName() string {
@@ -42,11 +44,25 @@ func (f *Function) GetParameter(name string) Parameter {
 	return Parameter{}
 }
 
+func (f *Function) GetParamsString() string {
+	str := ""
+
+	for i, param := range f.Parameters {
+		str += param.String()
+
+		if i != len(f.Parameters)-1 {
+			str += ", "
+		}
+	}
+
+	return str
+}
+
 func (f *Function) GetBody() *parser.BlockContext {
 	return f.Body
 }
 
-func NewFunction(IsStructMethod, IsMutating bool, name string, returnDataType string, parameters []Parameter, body *parser.BlockContext) *Function {
+func NewFunction(IsStructMethod, IsMutating bool, name string, returnDataType string, parameters []Parameter, body *parser.BlockContext, lc antlr.Token) *Function {
 	return &Function{
 		IsStructMethod: IsStructMethod,
 		IsMutating:     IsMutating,
@@ -54,6 +70,8 @@ func NewFunction(IsStructMethod, IsMutating bool, name string, returnDataType st
 		ReturnDataType: returnDataType,
 		Parameters:     parameters,
 		Body:           body,
+		Line:           lc.GetLine(),
+		Column:         lc.GetColumn(),
 	}
 }
 
@@ -62,6 +80,10 @@ type Parameter struct {
 	InternalName string
 	Value        V.IValue
 	IsINOUT      bool
+}
+
+func (p *Parameter) String() string {
+	return fmt.Sprintf("%s", p.InternalName)
 }
 
 type Argument struct {
@@ -115,7 +137,7 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 		return nil
 	}
 
-	newFunction := NewFunction(isDeclaringStruct, isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext))
+	newFunction := NewFunction(isDeclaringStruct, isMutating, id, returnType, parameters, ctx.Block().(*parser.BlockContext), ctx.GetStart())
 
 	if !isDeclaringStruct {
 		v.Env.AddFunction(id, newFunction)

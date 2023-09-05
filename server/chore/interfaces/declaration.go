@@ -4,6 +4,7 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+	"reflect"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -176,8 +177,6 @@ func (v *Visitor) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inter
 }
 
 func (v *Visitor) VisitVectorStructValue(ctx *parser.VectorStructValueContext) interface{} {
-
-	fmt.Println("VectorStructValue")
 
 	id := ctx.ID(0).GetText()
 
@@ -404,16 +403,10 @@ func (v *Visitor) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) int
 }
 
 func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
-
-	// There are two cases, when matrix values are other matrix values or when they are expressions
-
-	// Get the first matrix definition
-
-	// Check if is matrixNode or expression, if is expr then, the matrix value ends
 	expr, ok := v.Visit(ctx.MatrixDefinition(0)).(V.IValue)
 
 	if !ok {
-		return expr // If is not ok, then is a matrixNode
+		return expr
 	}
 
 	baseNode := NewMatrixNode(expr.GetType(), []V.IValue{expr})
@@ -511,7 +504,6 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeati
 // This function should return an array of n-dimensional arrays
 func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{} {
 	// The body can be defined explicitly or implicitly
-	// Explicitly: [[1,2,3],[4,5,6]]
 
 	var body interface{}
 
@@ -601,11 +593,31 @@ func (v *Visitor) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{}
 
 	value := v.CheckMatrixIndexes(object.GetValue().(*MatrixNode), indexes, ctx.GetStart())
 
+	if reflect.TypeOf(value) == reflect.TypeOf(&MatrixNode{}) {
+		if len(value.(*MatrixNode).Body) > 1 && reflect.TypeOf(value.(*MatrixNode).Body[0]) != reflect.TypeOf(&MatrixNode{}) {
+			newVetor := NewVector(value.(*MatrixNode).DataType, value.(*MatrixNode).Body)
+
+			// Create a new generic object
+			object = NewObjectV(V.VectorType, newVetor, NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1))
+
+			// Add native properties
+
+			count := NewVariable(v, "count", true, V.NewIntValue(len(value.(*MatrixNode).Body)), V.IntType, ctx.GetStart())
+			isEmpty := NewVariable(v, "isEmpty", true, V.NewBooleanValue(len(value.(*MatrixNode).Body) == 0), V.BooleanType, ctx.GetStart())
+
+			object.AddProp("count", count)
+			object.AddProp("isEmpty", isEmpty)
+
+			value = object
+
+		}
+	}
+
 	if value == nil {
 		return nil
 	}
 
-	// Return matrix, indexes and value, then, handle when is called as expression, all this as dictionary
+	// If matrixNode body is a value, return a new vector, if not, return the matrixNode
 
 	dict := map[string]interface{}{
 		"matrix":  object,
