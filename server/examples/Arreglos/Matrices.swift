@@ -1,5 +1,5 @@
 func printArrayStr(_ arr: [String]) {
-    var out = "["
+    var out = " ["
     for i in 0...4 {
         if i == (4) {
             out += arr[i]
@@ -7,7 +7,7 @@ func printArrayStr(_ arr: [String]) {
             out += arr[i] + ", "
         }
     }
-    out += "]"
+    out += "] "
     print(out)
 }
 
@@ -25,7 +25,7 @@ func printArrayInt(_ arr: [Int]) {
 }
 
 func imprimirPunteo(_ ests: [String], _ cursos: [String], _ notas: [[[Int]]]) {
-    let ponderacion = ["1er parcial", "2do parcial", "3er parcial", "Lab", "Examen final"]
+    let ponderacion: [String] = ["1er parcial", "2do parcial", "3er parcial", "Lab", "Examen final"]
     printArrayStr(ponderacion)
     print("")
     for i in 0...3 {
@@ -65,8 +65,8 @@ func imprimirNotaFinal(_ ests: [String], _ cursos: [String], _ notas: [[[Int]]])
     }
 }
 
-let estudiantes = ["Lorenza", "Rosendo", "Fermina", "Markel"]
-let cursos = ["Arqui1", "Archivos", "Compi2"]
+let estudiantes: [String] = ["Lorenza", "Rosendo", "Fermina", "Markel"]
+let cursos: [String] = ["Arqui1", "Archivos", "Compi2"]
 
 let notasBuenas: [[Int]] = [
     [53, 88, 95, 89, 75],

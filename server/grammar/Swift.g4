@@ -57,8 +57,12 @@ functionParameters:
 functionParameter:
 	ID? ID COLON Kw_INOUT? (
 		variableType
-		| LBRACKET variableType RBRACKET
+		| matrixType
 	);
+
+functionParameterCompound:
+	LBRACKET functionParameterCompound RBRACKET	# FunctionParameterCompoundNested
+	| LBRACKET variableType RBRACKET		# FunctionParameterCompoundSingle;
 
 functionReturnType: Op_ARROW variableType;
 

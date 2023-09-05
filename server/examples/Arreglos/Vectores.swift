@@ -48,7 +48,7 @@ func ordSeleccion(_ arr: inout [Int]) {
 
 // Función para imprimir un arreglo
 func printArray(_ msg: String, _ arr: [Int]) {
-    var out = "["
+    var out = " ["
     for i in 0...arr.count-1 {
         if i == arr.count - 1 {
             out += String(arr[i])
@@ -56,7 +56,7 @@ func printArray(_ msg: String, _ arr: [Int]) {
             out += String(arr[i]) + ", "
         }
     }
-    out += "]"
+    out += "] "
     print(msg + out)
 }
 

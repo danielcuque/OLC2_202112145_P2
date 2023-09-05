@@ -41,6 +41,12 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by Swift#functionParameter.
 	VisitFunctionParameter(ctx *FunctionParameterContext) interface{}
 
+	// Visit a parse tree produced by Swift#FunctionParameterCompoundNested.
+	VisitFunctionParameterCompoundNested(ctx *FunctionParameterCompoundNestedContext) interface{}
+
+	// Visit a parse tree produced by Swift#FunctionParameterCompoundSingle.
+	VisitFunctionParameterCompoundSingle(ctx *FunctionParameterCompoundSingleContext) interface{}
+
 	// Visit a parse tree produced by Swift#functionReturnType.
 	VisitFunctionReturnType(ctx *FunctionReturnTypeContext) interface{}
 

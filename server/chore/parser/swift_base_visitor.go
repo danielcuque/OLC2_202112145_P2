@@ -52,6 +52,14 @@ func (v *BaseSwiftVisitor) VisitFunctionParameter(ctx *FunctionParameterContext)
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitFunctionParameterCompoundNested(ctx *FunctionParameterCompoundNestedContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSwiftVisitor) VisitFunctionParameterCompoundSingle(ctx *FunctionParameterCompoundSingleContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitFunctionReturnType(ctx *FunctionReturnTypeContext) interface{} {
 	return v.VisitChildren(ctx)
 }

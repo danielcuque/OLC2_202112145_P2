@@ -167,12 +167,10 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 
 	isINOUT := ctx.Kw_INOUT() != nil
 
-	// Get the parameter type
-	dataType, ok := v.Visit(ctx.VariableType()).(string)
+	dataType := V.NilType
 
-	if !ok {
-		v.NewError(InvalidParameterType, ctx.GetStart())
-		return nil
+	if ctx.VariableType() != nil {
+		dataType = v.Visit(ctx.VariableType()).(string)
 	}
 
 	var param V.IValue
@@ -189,14 +187,16 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 		param = V.NewBooleanValue(false)
 	case "Char":
 		param = V.NewCharValue(' ')
-	case "Nil":
-		param = V.NewNilValue(nil)
 	default:
 		param = V.NewNilValue(nil)
 	}
 
-	if ctx.LBRACKET() != nil {
-		param = NewObjectV(V.VectorType, &VectorV{}, &EnvNode{})
+	if ctx.MatrixType() != nil {
+		if ctx.MatrixType().GetText()[1] == '[' {
+			param = NewMatrix(V.MatrixType, NewMatrixNode(v.Visit(ctx.MatrixType()).(string), []V.IValue{}))
+		} else {
+			param = NewVector(V.VectorType, []V.IValue{})
+		}
 	}
 
 	return Parameter{
@@ -205,6 +205,10 @@ func (v *Visitor) VisitFunctionParameter(ctx *parser.FunctionParameterContext) i
 		Value:        param,
 		IsINOUT:      isINOUT,
 	}
+}
+
+func (v *Visitor) VisitFunctionParameterCompoundSingle(ctx *parser.FunctionParameterCompoundSingleContext) interface{} {
+	return v.VisitChildren(ctx)
 }
 
 func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext) interface{} {

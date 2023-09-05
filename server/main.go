@@ -9,11 +9,15 @@ import (
 
 func main() {
 
-	// content := U.ReadFile("./examples/Struct/Struct1.swift")
+	content := U.ReadFile("./examples/Struct/Struct1.swift")
 	// content := U.ReadFile("./examples/Struct/Struct2.swift")
 	// content := U.ReadFile("./examples/Basicos/Basicas.swift")
 	// content := U.ReadFile("./examples/Basicos/Intermedias.swift")
-	content := U.ReadFile("./examples/Basicos/Intermedias.swift")
+	// content := U.ReadFile("./examples/Funciones/Embebidas.swift")
+	// content := U.ReadFile("./examples/Funciones/Recursivas.swift")
+
+	// content := U.ReadFile("./examples/Arreglos/Vectores.swift")
+	// content := U.ReadFile("./examples/Arreglos/Matrices.swift")
 
 	result := I.NewEvaluator(content)
 
