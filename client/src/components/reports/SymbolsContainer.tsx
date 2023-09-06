@@ -24,25 +24,25 @@ export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
       >
         <div className="overflow-auto ">
           <div className="bg-blue-600 w-full flex flex-row rounded-t-lg">
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Entorno
             </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Nombre
             </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Tipo
             </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Valor
             </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Parámetros
             </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Línea
             </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Columna
             </div>
             

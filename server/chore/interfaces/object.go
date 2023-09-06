@@ -49,7 +49,19 @@ func (o *ObjectV) GetValue() interface{} {
 }
 
 func (o *ObjectV) String() string {
-	return fmt.Sprintf("%v", o.Body)
+	if o.Body.GetValue() != nil {
+		return fmt.Sprintf("%v", o.Body)
+	}
+
+	// if Body is nil, means that objects is an struct, so, return props
+
+	str := ""
+
+	for k, v := range o.Env.Variables {
+		str += fmt.Sprintf("%s: %v\n", k, v)
+	}
+
+	return str
 }
 
 // Recursive function to get the value of a property
