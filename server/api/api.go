@@ -74,7 +74,7 @@ func GetCST(input string) string {
 
 // Response will have symbols, errors, logs and cst
 type Resp struct {
-	Symbols []I.ApiVariable   `json:"symbols"`
+	Symbols []I.ApiObject     `json:"symbols"`
 	Errors  []*I.VisitorError `json:"errors"`
 	Logs    []string          `json:"logs"`
 	Cst     string            `json:"cst"`

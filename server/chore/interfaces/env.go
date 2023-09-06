@@ -181,7 +181,7 @@ func (s *EnvTree) PopEnv() {
 	s.Current = s.Current.Parent
 }
 
-func (s *EnvTree) GetSymbolTable() []ApiVariable {
+func (s *EnvTree) GetSymbolTable() []ApiObject {
 	// Traverse tree to get symbol table
 	return s.Root.GetAllVariables()
 }
@@ -199,59 +199,67 @@ func (s *EnvTree) String() string {
 	return s.Root.String()
 }
 
-// ApiVariable is a struct to represent variables in api
-type ApiVariable struct {
-	Name    string
-	IsConst bool
-	Value   interface{}
-	Type    string
-	Line    int
-	Column  int
-	Scope   string
-	Params  string
+// ApiObject is a struct to represent variables in api
+type ApiObject struct {
+	Name       string
+	Value      interface{}
+	Type       string
+	Line       int
+	Column     int
+	Scope      string
+	Params     string
+	ReturnType string
 }
 
-func (s *EnvNode) GetAllVariables() []ApiVariable {
-	allVariables := make([]ApiVariable, 0)
-	s.collectVariables(&allVariables)
-	s.collectFunctions(&allVariables)
+func NewApiObject(name string, value interface{}, tokenType string, line, column int, scope string, params string, returnType string) ApiObject {
+	return ApiObject{
+		Name:       name,
+		Value:      value,
+		Type:       tokenType,
+		Line:       line,
+		Column:     column,
+		Scope:      scope,
+		Params:     params,
+		ReturnType: returnType,
+	}
+}
+
+func (s *EnvNode) GetAllVariables() []ApiObject {
+	allVariables := make([]ApiObject, 0)
+	s.collectObjects(&allVariables)
 	return allVariables
 }
 
-func (s *EnvNode) collectVariables(allVariables *[]ApiVariable) {
+func (s *EnvNode) collectObjects(allVariables *[]ApiObject) {
 	for _, variable := range s.Variables {
-		apiVar := ApiVariable{
-			Name:    variable.GetName(),
-			IsConst: variable.IsConstant(),
-			Value:   variable.String(),
-			Type:    variable.GetType(),
-			Line:    variable.GetLine(),
-			Column:  variable.GetColumn(),
-			Scope:   s.GetType(),
-			Params:  "...",
-		}
+		apiVar := NewApiObject(
+			variable.GetName(),
+			variable.String(),
+			variable.GetType(),
+			variable.GetLine(),
+			variable.GetColumn(),
+			s.GetType(),
+			"...",
+			"...",
+		)
 		*allVariables = append(*allVariables, apiVar)
 	}
-	for _, child := range s.Child {
-		child.collectVariables(allVariables)
-	}
-}
 
-func (s *EnvNode) collectFunctions(allFunctions *[]ApiVariable) {
 	for _, function := range s.Functions {
-		apiVar := ApiVariable{
-			Name:    function.GetName(),
-			IsConst: false,
-			Value:   "...",
-			Type:    "Function",
-			Line:    function.Line,
-			Column:  function.Column,
-			Scope:   "...",
-			Params:  function.GetParamsString(),
-		}
-		*allFunctions = append(*allFunctions, apiVar)
+		apiVar := NewApiObject(
+			function.GetName(),
+			"...",
+			"Function",
+			function.Line,
+			function.Column,
+			"...",
+			function.GetParamsString(),
+			function.ReturnDataType,
+		)
+		*allVariables = append(*allVariables, apiVar)
 	}
+
 	for _, child := range s.Child {
-		child.collectFunctions(allFunctions)
+		child.collectObjects(allVariables)
 	}
 }

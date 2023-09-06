@@ -26,18 +26,18 @@ export const ErrorContainer = ({ tab }: ErrorContainerProps) => {
         }
         title="Tabla de errores"
       >
-        <div className="overflow-x-auto overflow-y-hidden w-full">
+        <div className="w-full">
           <div className="bg-blue-600 w-full flex flex-row rounded-t-lg">
-            <div className="w-1/4 text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Tipo
             </div>
-            <div className="w-1/3 text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Mensaje
             </div>
-            <div className="w-1/5 text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Fila
             </div>
-            <div className="w-1/5 text-center p-4 text-white font-semibold text-lg">
+            <div className="w-full text-center p-4 text-white font-semibold text-lg">
               Columna
             </div>
           </div>
@@ -48,10 +48,10 @@ export const ErrorContainer = ({ tab }: ErrorContainerProps) => {
                   key={index}
                   className="w-full flex flex-row py-6 border border-gray-300"
                 >
-                  <div className="w-1/4 text-center">{Type}</div>
-                  <div className="w-1/3 text-center"> {Msg}</div>
-                  <div className="w-1/5 text-center"> {Line}</div>
-                  <div className="w-1/5 text-center"> {Column}</div>
+                  <div className="w-full text-center">{Type}</div>
+                  <div className="w-full text-center"> {Msg}</div>
+                  <div className="w-full text-center"> {Line}</div>
+                  <div className="w-full text-center"> {Column}</div>
                 </div>
               ))
             ) : (

@@ -22,13 +22,10 @@ export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
         }
         title="Tabla de simbolos"
       >
-        <div className="overflow-x-auto overflow-y-hidden w-fit">
+        <div className="overflow-auto ">
           <div className="bg-blue-600 w-full flex flex-row rounded-t-lg">
             <div className=" text-center p-4 text-white font-semibold text-lg">
               Entorno
-            </div>
-            <div className=" text-center p-4 text-white font-semibold text-lg">
-              Rol
             </div>
             <div className=" text-center p-4 text-white font-semibold text-lg">
               Nombre
@@ -42,8 +39,15 @@ export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
             <div className=" text-center p-4 text-white font-semibold text-lg">
               Parámetros
             </div>
+            <div className=" text-center p-4 text-white font-semibold text-lg">
+              Línea
+            </div>
+            <div className=" text-center p-4 text-white font-semibold text-lg">
+              Columna
+            </div>
+            
           </div>
-          <div className="h-full max-h-[30rem] w-full overflow-y-auto [&>*:nth-child(odd)]:bg-gray-100 [&>*:nth-child(even)]:bg-white">
+          <div className="h-full max-h-[30rem] w-full overflow-auto [&>*:nth-child(odd)]:bg-gray-100 [&>*:nth-child(even)]:bg-white">
             {symbols.length > 0 ? (
               symbols.map(
                 ({ Column, Line, Name, Scope, Type, Value, Params }, index) => (
@@ -51,12 +55,13 @@ export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
                     key={index}
                     className="w-full flex flex-row py-6 border border-gray-300"
                   >
-                    <div className="w-1/3 text-center">{Scope}</div>
-                    <div className="w-1/3 text-center">{Type}</div>
-                    <div className="w-1/3 text-center"> {Name}</div>
-                    <div className="w-1/3 text-center">{Type}</div>
-                    <div className="w-1/3 text-center">{Value}</div>
-                    <div className="w-1/3 text-center">{Params}</div>
+                    <div className="w-full text-center">{Scope}</div>
+                    <div className="w-full text-center"> {Name}</div>
+                    <div className="w-full text-center">{Type}</div>
+                    <div className="w-full text-center">{Value}</div>
+                    <div className="w-full text-center">{Params}</div>
+                    <div className="w-full text-center">{Line}</div>
+                    <div className="w-full text-center">{Column}</div>
                   </div>
                 )
               )
