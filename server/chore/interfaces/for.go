@@ -40,6 +40,7 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 	}
 
 	// Create a new scope
+	mainForScope := v.Env.PushEnv(ForEnv)
 	v.Env.PushEnv(ForEnv)
 
 	v.Stack.Push(
@@ -50,18 +51,19 @@ func (v *Visitor) VisitForStatement(ctx *parser.ForStatementContext) interface{}
 		))
 
 	if len(valuesToIterate) != 0 {
-		v.Env.AddVariable(id, NewVariable(v, id, true, valuesToIterate[0], iteratorType, ctx.GetStart()))
+		mainForScope.AddVariable(id, NewVariable(v, id, true, valuesToIterate[0], iteratorType, ctx.GetStart()))
 
-		v.ExecuteFor(id, valuesToIterate, ctx)
+		v.ExecuteFor(id, mainForScope, valuesToIterate, ctx)
 	}
 
 	// Pop the scope
+	v.Env.PopEnv()
 	v.Env.PopEnv()
 
 	return nil
 }
 
-func (v *Visitor) ExecuteFor(id string, valuesToIterate []V.IValue, ctx *parser.ForStatementContext) {
+func (v *Visitor) ExecuteFor(id string, mainForScope *EnvNode, valuesToIterate []V.IValue, ctx *parser.ForStatementContext) {
 	defer func() {
 		peek, ok := recover().(*StackItem)
 
@@ -78,15 +80,13 @@ func (v *Visitor) ExecuteFor(id string, valuesToIterate []V.IValue, ctx *parser.
 		}
 
 		if peek.Trigger == ContinueType {
-			v.ExecuteFor(id, valuesToIterate, ctx)
+			v.ExecuteFor(id, mainForScope, valuesToIterate, ctx)
 		}
 	}()
 
 	for _, value := range valuesToIterate {
-		// Assign the value to the variable
-		v.Env.SetVariable(id, value)
-
-		// Visit the for loop
+		v.Env.ResetEnv()
+		mainForScope.SetVariable(id, value)
 		v.Visit(ctx.Block())
 	}
 }

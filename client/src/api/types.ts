@@ -17,5 +17,5 @@ export interface TokenSymbol {
     Scope: string
     Type: string
     Value: string
-
+    Params: string
 }

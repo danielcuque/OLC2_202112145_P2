@@ -4,6 +4,7 @@ import (
 	"OLC2/chore/parser"
 	V "OLC2/chore/values"
 	"fmt"
+	"reflect"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -59,17 +60,13 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 		return false
 	}
 
-	// Check if the explicit type is the same as the value type, except if explicit type is Float and value type is Int
 	if valueType != value.GetType() {
-		// Check if the explicit type is Float and the value type is Int
-		// Change the value type to Float
 		if valueType == V.FloatType && value.GetType() == V.IntType {
 			value = V.NewFloatValue(float64(value.GetValue().(int)))
 		} else {
 			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
 			return false
 		}
-
 	}
 
 	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
@@ -123,7 +120,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 
 // Vectors
 
-func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) interface{} {
+func (v *Visitor) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) interface{} {
 
 	id := ctx.ID().GetText()
 
@@ -144,6 +141,13 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 	isConstant := ctx.GetVarType().GetText() == "const" // let | var
 
 	valueType := v.Visit(ctx.VariableType()).(string) // Id: int | float | string
+
+	// Check if is base type
+
+	if !V.IsBaseTypeString(valueType) {
+		v.NewError("El tipo de dato debe ser primitivo", ctx.GetStart())
+		return nil
+	}
 
 	// Verify that dataList is not empty
 
@@ -167,6 +171,49 @@ func (v *Visitor) VisitVectorDeclaration(ctx *parser.VectorDeclarationContext) i
 
 	v.Env.AddVariable(id,
 		NewVariable(v, id, isConstant, newObj, V.VectorType, ctx.GetStart()),
+	)
+
+	return nil
+}
+
+func (v *Visitor) VisitVectorStructValue(ctx *parser.VectorStructValueContext) interface{} {
+
+	id := ctx.ID(0).GetText()
+
+	variable := v.Env.GetVariable(id)
+
+	if variable != nil {
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return nil
+	}
+
+	isConstant := ctx.GetVarType().GetText() == "const" // let | var
+
+	valueType := ctx.ID(1).GetText() // Check if struct exists
+
+	structObj := v.Env.GetStruct(valueType)
+
+	if structObj == nil {
+		v.NewError(fmt.Sprintf("La estructura %s no existe", valueType), ctx.GetStart())
+		return nil
+	}
+
+	newVector := NewVector(valueType, make([]V.IValue, 0))
+
+	// Create a new generic object
+	newObj := NewObjectV(V.VectorType, newVector, NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1))
+
+	// Add native properties
+
+	count := NewVariable(v, "count", true, V.NewIntValue(0), V.IntType, ctx.GetStart())
+
+	isEmpty := NewVariable(v, "isEmpty", true, V.NewBooleanValue(true), V.BooleanType, ctx.GetStart())
+
+	newObj.AddProp("count", count)
+	newObj.AddProp("isEmpty", isEmpty)
+
+	v.Env.AddVariable(id,
+		NewVariable(v, id, isConstant, newObj, valueType, ctx.GetStart()),
 	)
 
 	return nil
@@ -356,16 +403,10 @@ func (v *Visitor) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) int
 }
 
 func (v *Visitor) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
-
-	// There are two cases, when matrix values are other matrix values or when they are expressions
-
-	// Get the first matrix definition
-
-	// Check if is matrixNode or expression, if is expr then, the matrix value ends
 	expr, ok := v.Visit(ctx.MatrixDefinition(0)).(V.IValue)
 
 	if !ok {
-		return expr // If is not ok, then is a matrixNode
+		return expr
 	}
 
 	baseNode := NewMatrixNode(expr.GetType(), []V.IValue{expr})
@@ -463,7 +504,6 @@ func (v *Visitor) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeati
 // This function should return an array of n-dimensional arrays
 func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{} {
 	// The body can be defined explicitly or implicitly
-	// Explicitly: [[1,2,3],[4,5,6]]
 
 	var body interface{}
 
@@ -553,11 +593,31 @@ func (v *Visitor) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{}
 
 	value := v.CheckMatrixIndexes(object.GetValue().(*MatrixNode), indexes, ctx.GetStart())
 
+	if reflect.TypeOf(value) == reflect.TypeOf(&MatrixNode{}) {
+		if len(value.(*MatrixNode).Body) > 1 && reflect.TypeOf(value.(*MatrixNode).Body[0]) != reflect.TypeOf(&MatrixNode{}) {
+			newVetor := NewVector(value.(*MatrixNode).DataType, value.(*MatrixNode).Body)
+
+			// Create a new generic object
+			object = NewObjectV(V.VectorType, newVetor, NewEnvNode(v.Env.GetCurrentScope(), V.VectorType, v.Env.GetCurrentScope().Level+1))
+
+			// Add native properties
+
+			count := NewVariable(v, "count", true, V.NewIntValue(len(value.(*MatrixNode).Body)), V.IntType, ctx.GetStart())
+			isEmpty := NewVariable(v, "isEmpty", true, V.NewBooleanValue(len(value.(*MatrixNode).Body) == 0), V.BooleanType, ctx.GetStart())
+
+			object.AddProp("count", count)
+			object.AddProp("isEmpty", isEmpty)
+
+			value = object
+
+		}
+	}
+
 	if value == nil {
 		return nil
 	}
 
-	// Return matrix, indexes and value, then, handle when is called as expression, all this as dictionary
+	// If matrixNode body is a value, return a new vector, if not, return the matrixNode
 
 	dict := map[string]interface{}{
 		"matrix":  object,

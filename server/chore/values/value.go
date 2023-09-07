@@ -61,3 +61,22 @@ func IsBaseType(value IValue) bool {
 		return false
 	}
 }
+
+func IsBaseTypeString(value string) bool {
+	switch value {
+	case StringType:
+		return true
+	case IntType:
+		return true
+	case FloatType:
+		return true
+	case BooleanType:
+		return true
+	case CharType:
+		return true
+	case NilType:
+		return true
+	default:
+		return false
+	}
+}

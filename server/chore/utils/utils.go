@@ -23,7 +23,7 @@ func GetLexer() string {
 }
 
 func GetParser() string {
-	return ParseToJSON(ReadFile("grammar/SwiftParser.g4"))
+	return ParseToJSON(ReadFile("grammar/Swift.g4"))
 }
 
 func FormatInput(input string) string {
