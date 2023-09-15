@@ -1,4 +1,4 @@
-# Proyecto 1 - Intérprete T-Swift
+# Proyecto 2 - T-Swift Compiler
 
 ## Índice
 
