@@ -9,9 +9,10 @@ export interface FileI {
 export interface TabI extends FileI {
   parser?: {
     errors: ParserError[];
-    cst: string;
     symbols: TokenSymbol[];
     logs: unknown[];
+    compiled: string;
+    optimized: string;
   };
 }
 

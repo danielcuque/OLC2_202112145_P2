@@ -46,8 +46,17 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
             theme="vs-dark"
             defaultLanguage="c"
             language="c"
-            value={"printf(\"Hello World\");"}
-            // Disable write in the editor
+            value={
+              tab.parser?.compiled ||
+              `#include <stdio.h>
+              
+int main() {
+  const char* hola = "Hola";
+  const char* mundo = "Mundo";
+  printf("%s %s", hola, mundo);
+  return 0;
+}`
+            }
             options={{ readOnly: true }}
           />
 

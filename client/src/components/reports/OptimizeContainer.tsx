@@ -18,11 +18,8 @@ export const OptimizeContainer = ({ tab }: ItemsProps) => {
         }
         title="Optimizaciones"
       >
-        {tab?.parser?.cst ? (
-          <SvgRender
-            svg={tab?.parser?.cst}
-          />
-
+        {tab?.parser?.optimized ? (
+          <div></div>
         ) : (
           <div>
             <p>No se ha optimizado el código</p>
