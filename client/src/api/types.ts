@@ -5,9 +5,6 @@ export interface ParserError {
     Type: string
 }
 
-// export interface TokenSymbol {
-//     name: string;
-// }
 
 export interface TokenSymbol {
     Column: number

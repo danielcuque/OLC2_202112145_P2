@@ -1,13 +1,12 @@
 import { useContext } from "react";
-import { TabContext, TabI } from "../../context";
 import toast from "react-hot-toast";
+
 import { fetchAPI } from "../../api";
+import { TabContext } from "../../context";
+import { ItemsProps } from "../../utils";
 
-interface RunButtonProps {
-  tab: TabI | undefined;
-}
 
-export const RunButton = ({ tab }: RunButtonProps) => {
+export const RunButton = ({ tab }: ItemsProps) => {
 
   const { setParserAttributes } = useContext(TabContext);
 

@@ -1,11 +1,17 @@
-import { TabI } from "../../context";
+import { ItemsProps } from "../../utils";
 import { CustomModal } from "../modal";
 
-interface SymbolsContainerProps {
-  tab: TabI | undefined;
-}
+const fields = [
+  "Entorno",
+  "Nombre",
+  "Tipo",
+  "Valor",
+  "Parámetros",
+  "Línea",
+  "Columna",
+]
 
-export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
+export const SymbolsContainer = ({ tab }: ItemsProps) => {
   const symbols = tab?.parser?.symbols || [];
   return (
     <>
@@ -24,28 +30,13 @@ export const SymbolsContainer = ({ tab }: SymbolsContainerProps) => {
       >
         <div className="overflow-auto ">
           <div className="bg-blue-600 w-full flex flex-row rounded-t-lg">
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Entorno
-            </div>
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Nombre
-            </div>
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Tipo
-            </div>
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Valor
-            </div>
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Parámetros
-            </div>
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Línea
-            </div>
-            <div className="w-full text-center p-4 text-white font-semibold text-lg">
-              Columna
-            </div>
-            
+            {
+              fields.map((field) => (
+                <div key={field} className="w-full text-center p-4 text-white font-semibold text-lg">
+                  {field}
+                </div>
+              ))
+            }  
           </div>
           <div className="h-full max-h-[30rem] w-full overflow-auto [&>*:nth-child(odd)]:bg-gray-100 [&>*:nth-child(even)]:bg-white">
             {symbols.length > 0 ? (

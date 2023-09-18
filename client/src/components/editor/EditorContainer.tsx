@@ -29,9 +29,10 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
   return (
     <>
       <div className="w-full h-full">
-        <div className="h-[500px] w-full">
+        <div className="flex h-[500px] w-full">
           <Editor
             height="100%"
+            width="50%"
             theme="vs-dark"
             defaultLanguage="swift"
             language="swift"
@@ -39,6 +40,18 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
             onChange={onChange}
             onMount={handleEditorDidMount}
           />
+          <Editor
+            height="100%"
+            width="50%"
+            theme="vs-dark"
+            defaultLanguage="c"
+            language="c"
+            value={"printf(\"Hello World\");"}
+            // Disable write in the editor
+            options={{ readOnly: true }}
+          />
+
+          
         </div>
         <div className="w-full h-[calc(100vh-560px)]">
           <div className="flex gap-2 text-gray-7 font-semibold px-2 items-center">

@@ -1,11 +1,7 @@
-import { TabI } from "../../context";
+import { ItemsProps } from "../../utils";
 import { CustomModal } from "../modal";
 
-interface ErrorContainerProps {
-  tab: TabI | undefined;
-}
-
-export const ErrorContainer = ({ tab }: ErrorContainerProps) => {
+export const ErrorContainer = ({ tab }: ItemsProps) => {
   const errors = tab?.parser?.errors || [];
   return (
     <>
