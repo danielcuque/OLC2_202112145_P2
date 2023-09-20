@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"OLC2/chore/parser"
+	"OLC2/core/parser"
 )
 
 var internalFunction map[string]func(v *Visitor, ctx *parser.FunctionCallContext) interface{}

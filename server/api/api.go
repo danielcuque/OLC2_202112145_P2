@@ -1,7 +1,7 @@
 package api
 
 import (
-	I "OLC2/chore/interfaces"
+	I "OLC2/core/interfaces"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

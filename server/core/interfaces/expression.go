@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"OLC2/chore/parser"
-	V "OLC2/chore/values"
+	"OLC2/core/parser"
+	V "OLC2/core/values"
 
 	"github.com/antlr4-go/antlr/v4"
 )

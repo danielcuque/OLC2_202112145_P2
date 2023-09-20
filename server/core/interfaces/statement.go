@@ -1,6 +1,6 @@
 package interfaces
 
-import "OLC2/chore/parser"
+import "OLC2/core/parser"
 
 func (v *Visitor) VisitStatement(ctx *parser.StatementContext) interface{} {
 	if ctx.VariableAssignment() != nil {

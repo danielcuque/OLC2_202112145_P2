@@ -3,8 +3,8 @@ package interfaces
 import (
 	"fmt"
 
-	"OLC2/chore/parser"
-	V "OLC2/chore/values"
+	"OLC2/core/parser"
+	V "OLC2/core/values"
 )
 
 // We extends the visitor to add the print function, create PrintContext and add it to the scope

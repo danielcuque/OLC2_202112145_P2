@@ -3,7 +3,7 @@ package interfaces
 import (
 	"fmt"
 
-	"OLC2/chore/parser"
+	"OLC2/core/parser"
 
 	"github.com/antlr4-go/antlr/v4"
 )

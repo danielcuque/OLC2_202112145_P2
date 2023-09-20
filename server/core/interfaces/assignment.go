@@ -1,8 +1,8 @@
 package interfaces
 
 import (
-	"OLC2/chore/parser"
-	V "OLC2/chore/values"
+	"OLC2/core/parser"
+	V "OLC2/core/values"
 	"fmt"
 
 	"github.com/antlr4-go/antlr/v4"

@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	V "OLC2/chore/values"
+	V "OLC2/core/values"
 	"fmt"
 )
 

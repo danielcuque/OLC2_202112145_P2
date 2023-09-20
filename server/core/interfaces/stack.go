@@ -1,6 +1,6 @@
 package interfaces
 
-import V "OLC2/chore/values"
+import V "OLC2/core/values"
 
 // This struct will handle when program founds a return, break or continue
 

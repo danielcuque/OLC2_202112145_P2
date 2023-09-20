@@ -168,7 +168,7 @@ Para el manejo de los objetos dentro del intérprete, se utiliza la estructura O
 package interfaces
 
 import (
-	V "OLC2/chore/values"
+	V "OLC2/core/values"
 	"fmt"
 )
 
