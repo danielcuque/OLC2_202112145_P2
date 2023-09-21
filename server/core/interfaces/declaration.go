@@ -29,6 +29,7 @@ func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) int
 	}
 
 	newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
+	v.Temp++
 
 	if !isDeclaringStruct {
 		v.Env.AddVariable(id, newVariable)
@@ -70,6 +71,7 @@ func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCont
 	}
 
 	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
+	v.Temp++
 
 	if !isDeclaringStruct {
 		v.Env.AddVariable(id, newVariable)
@@ -108,6 +110,7 @@ func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inter
 	}
 
 	newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
+	v.Temp++
 
 	if !isDeclaringStruct {
 		v.Env.AddVariable(id, newVariable)
