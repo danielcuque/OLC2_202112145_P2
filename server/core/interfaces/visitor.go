@@ -3,7 +3,6 @@ package interfaces
 import (
 	"fmt"
 
-	C "OLC2/core/c3d"
 	"OLC2/core/parser"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -42,7 +41,7 @@ func NewVisitor() *Visitor {
 		Errors: make([]*VisitorError, 0),
 		Logs:   make([]string, 0),
 		Env:    NewEnvTree(),
-		C3D:    C.GetHeader(),
+		C3D:    GetHeader(),
 		Stack:  NewStack(),
 	}
 }
@@ -98,7 +97,11 @@ func (v *Visitor) GetLogs() string {
 
 func (v *Visitor) GetC3D() string {
 	c3d := fmt.Sprintf("%s\n", v.C3D)
-	c3d += fmt.Sprintf("%s\n", C.GetTemps(v.Temp))
+	c3d += fmt.Sprintf("%s\n", GetTemps(v.Temp))
 
 	return c3d
+}
+
+func (v *Visitor) GetOptimized() string {
+	return v.Optimized
 }

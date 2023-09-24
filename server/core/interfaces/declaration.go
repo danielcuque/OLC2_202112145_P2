@@ -12,112 +12,113 @@ import (
 // Variables
 
 func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
-	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID().GetText()
-	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
+	// isConstant := ctx.GetVarType().GetText() == "let"
+	// id := ctx.ID().GetText()
+	// value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
-	if !okVal {
-		v.NewError(InvalidExpression, ctx.GetStart())
-		return nil
-	}
+	return nil
+	// id := ctx.ID().GetText()
+	// value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
-	variable := v.Env.GetVariable(id)
+	// if !okVal {
+	// 	v.NewError(InvalidExpression, ctx.GetStart())
+	// 	return nil
+	// }
 
-	if variable != nil {
-		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
-		return false
-	}
+	// variable := v.Env.GetVariable(id)
 
-	newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
-	v.Temp++
+	// if variable != nil {
+	// 	v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+	// 	return false
+	// }
 
-	if !isDeclaringStruct {
-		v.Env.AddVariable(id, newVariable)
-	}
+	// newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
 
-	return newVariable
+	// if !isDeclaringStruct {
+	// 	v.Env.AddVariable(id, newVariable)
+	// }
+
+	// return newVariable
 }
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
-	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID().GetText()
-	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
+	return nil
+	// isConstant := ctx.GetVarType().GetText() == "let"
+	// id := ctx.ID().GetText()
+	// value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
-	if !okVal {
-		v.NewError(InvalidExpression, ctx.GetStart())
-		return nil
-	}
+	// if !okVal {
+	// 	v.NewError(InvalidExpression, ctx.GetStart())
+	// 	return nil
+	// }
 
-	valueType, ok := v.Visit(ctx.VariableType()).(string)
+	// valueType, ok := v.Visit(ctx.VariableType()).(string)
 
-	if !ok {
-		return nil
-	}
+	// if !ok {
+	// 	return nil
+	// }
 
-	variable := v.Env.GetVariable(id)
+	// variable := v.Env.GetVariable(id)
 
-	if variable != nil {
-		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
-		return false
-	}
+	// if variable != nil {
+	// 	v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+	// 	return false
+	// }
 
-	if valueType != value.GetType() {
-		if valueType == V.FloatType && value.GetType() == V.IntType {
-			value = V.NewFloatValue(float64(value.GetValue().(int)))
-		} else {
-			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
-			return false
-		}
-	}
+	// if valueType != value.GetType() {
+	// 	if valueType == V.FloatType && value.GetType() == V.IntType {
+	// 		value = V.NewFloatValue(float64(value.GetValue().(int)))
+	// 	} else {
+	// 		v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
+	// 		return false
+	// 	}
+	// }
 
-	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
-	v.Temp++
+	// newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
 
-	if !isDeclaringStruct {
-		v.Env.AddVariable(id, newVariable)
-	}
+	// if !isDeclaringStruct {
+	// 	v.Env.AddVariable(id, newVariable)
+	// }
 
-	return newVariable
+	// return newVariable
 }
 
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
-	// Declaration without value
+	return nil
+	// if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
+	// 	v.NewError("El operador '?' solo puede ser usado dentro de un struct", ctx.GetStart())
+	// 	return nil
+	// }
 
-	if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
-		v.NewError("El operador '?' solo puede ser usado dentro de un struct", ctx.GetStart())
-		return nil
-	}
+	// isConstant := ctx.GetVarType().GetText() == "let"
+	// id := ctx.ID().GetText()
 
-	isConstant := ctx.GetVarType().GetText() == "let"
-	id := ctx.ID().GetText()
+	// valueType, ok := v.Visit(ctx.VariableType()).(string)
 
-	valueType, ok := v.Visit(ctx.VariableType()).(string)
+	// if !ok {
+	// 	return nil
+	// }
 
-	if !ok {
-		return nil
-	}
+	// variable := v.Env.GetVariable(id)
 
-	variable := v.Env.GetVariable(id)
+	// if variable != nil {
+	// 	v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+	// 	return false
+	// }
 
-	if variable != nil {
-		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
-		return false
-	}
+	// if isConstant && !isDeclaringStruct {
+	// 	v.NewError(fmt.Sprintf("La variable '%s' debe ser inicializada", id), ctx.GetStart())
+	// 	return false
+	// }
 
-	if isConstant && !isDeclaringStruct {
-		v.NewError(fmt.Sprintf("La variable '%s' debe ser inicializada", id), ctx.GetStart())
-		return false
-	}
+	// newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
 
-	newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
-	v.Temp++
+	// if !isDeclaringStruct {
+	// 	v.Env.AddVariable(id, newVariable)
+	// 	return true
+	// }
 
-	if !isDeclaringStruct {
-		v.Env.AddVariable(id, newVariable)
-		return true
-	}
-
-	return newVariable
+	// return newVariable
 
 }
 

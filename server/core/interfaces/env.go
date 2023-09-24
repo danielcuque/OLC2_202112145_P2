@@ -44,6 +44,7 @@ type EnvNode struct {
 	Variables map[string]*Variable
 	Functions map[string]*Function
 	Structs   map[string]*ObjectV
+	C3D       string
 }
 
 func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {

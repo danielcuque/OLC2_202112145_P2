@@ -1,16 +1,8 @@
-package c3d
+package interfaces
 
-import "fmt"
-
-// Generate code like this
-
-/*
-#include <stdio.h>
-float stack[100000];
-float heap[100000];
-float P;
-float H;
-*/
+import (
+	"fmt"
+)
 
 func GetHeader() string {
 	return `
@@ -23,6 +15,10 @@ float H;
 }
 
 func GetTemps(n int) string {
+	if n == 0 {
+		return ""
+	}
+
 	temps := "float "
 
 	for i := 0; i < n; i++ {
@@ -34,3 +30,13 @@ func GetTemps(n int) string {
 
 	return temps
 }
+
+// Todo:
+
+/*
+	printString
+	castIntToFloat
+	castFloatToInt
+	castIntToString
+	castFloatToString
+*/
