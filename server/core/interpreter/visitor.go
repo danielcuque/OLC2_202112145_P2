@@ -18,23 +18,6 @@ type Visitor struct {
 	Stack  *Stack
 }
 
-type ErrorListener struct {
-	*antlr.DefaultErrorListener
-	Errors    []*E.VisitorError
-	TypeError E.TypeError
-}
-
-func (e *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e2 antlr.RecognitionException) {
-	errorMsg := fmt.Sprintf("Error(%d:%d): %s ", line, column, msg)
-	e.Errors = append(e.Errors, E.NewVisitorError(line, column, errorMsg, e.TypeError))
-}
-
-func NewErrorListener() *ErrorListener {
-	return &ErrorListener{
-		Errors: make([]*E.VisitorError, 0),
-	}
-}
-
 func NewVisitor() *Visitor {
 	return &Visitor{
 		Errors: make([]*E.VisitorError, 0),
@@ -45,7 +28,7 @@ func NewVisitor() *Visitor {
 }
 
 func NewEvaluator(input string) *C.Compiler {
-	errorListener := NewErrorListener()
+	errorListener := E.NewErrorListener()
 	errorListener.TypeError = E.Lexical
 
 	lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
