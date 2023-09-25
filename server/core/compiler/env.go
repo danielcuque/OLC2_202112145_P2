@@ -1,4 +1,4 @@
-package c3d
+package compiler
 
 import (
 	"fmt"
@@ -15,45 +15,25 @@ const (
 	StructEnv = "Struct"
 )
 
-type TokenSymbol struct {
-	Env      string
-	Type     string
-	Name     string
-	DataType string
-	Value    string
-	Params   []string
-}
-
-func NewTokenSymbol(env, tokenType, name, dataType, value string, params []string) *TokenSymbol {
-	return &TokenSymbol{
-		Env:      env,
-		Type:     tokenType,
-		Name:     name,
-		DataType: dataType,
-		Value:    value,
-		Params:   params,
-	}
-}
-
 type EnvNode struct {
-	Parent    *EnvNode
-	Child     []*EnvNode
-	Level     int
-	ScopeType string
-	Values    map[string]interface{}
+	Parent  *EnvNode
+	Child   []*EnvNode
+	Level   int
+	EnvType string
+	Values  map[string]*Value
 }
 
 func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
 	return &EnvNode{
-		Parent:    parent,
-		Child:     make([]*EnvNode, 0),
-		Level:     Level,
-		ScopeType: envType,
+		Parent:  parent,
+		Child:   make([]*EnvNode, 0),
+		Level:   Level,
+		EnvType: envType,
 	}
 }
 
 func (s *EnvNode) GetType() string {
-	return string(s.ScopeType)
+	return string(s.EnvType)
 }
 
 func (s *EnvNode) String() string {
@@ -61,7 +41,7 @@ func (s *EnvNode) String() string {
 	for i := 0; i < s.Level; i++ {
 		result += "\t"
 	}
-	result += fmt.Sprintf("%s\n", s.ScopeType)
+	result += fmt.Sprintf("%s\n", s.EnvType)
 	for _, v := range s.Child {
 		result += v.String()
 	}
@@ -69,7 +49,7 @@ func (s *EnvNode) String() string {
 }
 
 func (s *EnvNode) Copy() *EnvNode {
-	newNode := NewEnvNode(nil, s.ScopeType, s.Level)
+	newNode := NewEnvNode(nil, s.EnvType, s.Level)
 	for _, child := range s.Child {
 		newNode.Child = append(newNode.Child, child.Copy())
 	}
@@ -102,7 +82,6 @@ func (s *EnvTree) PopEnv() {
 }
 
 func (s *EnvTree) GetSymbolTable() []ApiObject {
-	// Traverse tree to get symbol table
 	return s.Root.GetAllVariables()
 }
 
@@ -114,33 +93,6 @@ func (s *EnvTree) String() string {
 	return s.Root.String()
 }
 
-// ApiObject is a struct to represent variables in api
-type ApiObject struct {
-	Name       string
-	Value      interface{}
-	Type       string
-	Line       int
-	Column     int
-	Scope      string
-	Params     string
-	ReturnType string
-}
-
-func NewApiObject(name string, value interface{}, tokenType string, line, column int, scope string, params string, returnType string) ApiObject {
-	return ApiObject{
-		Name:       name,
-		Value:      value,
-		Type:       tokenType,
-		Line:       line,
-		Column:     column,
-		Scope:      scope,
-		Params:     params,
-		ReturnType: returnType,
-	}
-}
-
-func (s *EnvNode) GetAllVariables() []ApiObject {
-	allVariables := make([]ApiObject, 0)
-	// s.collectObjects(&allVariables)
-	return allVariables
+func (s *EnvTree) GetMain() string {
+	return ""
 }

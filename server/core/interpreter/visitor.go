@@ -57,6 +57,7 @@ func NewEvaluator(input string) *C.Compiler {
 	checker.Visit(tree)
 
 	compiler := C.NewCompiler()
+	compiler.Visit(tree)
 
 	return compiler
 }
