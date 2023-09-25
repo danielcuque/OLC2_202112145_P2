@@ -3,6 +3,8 @@ package interfaces
 import (
 	"fmt"
 
+	C "OLC2/core/compiler"
+	E "OLC2/core/error"
 	"OLC2/core/parser"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -10,45 +12,41 @@ import (
 
 type Visitor struct {
 	parser.BaseSwiftVisitor
-	Errors    []*VisitorError
-	Logs      []string
-	Env       *EnvTree
-	C3D       string
-	Optimized string
-	Temp      int
-	Stack     *Stack
+	Errors []*E.VisitorError
+	Logs   []string
+	Env    *EnvTree
+	Stack  *Stack
 }
 
 type ErrorListener struct {
 	*antlr.DefaultErrorListener
-	Errors    []*VisitorError
-	TypeError TypeError
+	Errors    []*E.VisitorError
+	TypeError E.TypeError
 }
 
 func (e *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e2 antlr.RecognitionException) {
 	errorMsg := fmt.Sprintf("Error(%d:%d): %s ", line, column, msg)
-	e.Errors = append(e.Errors, NewVisitorError(line, column, errorMsg, e.TypeError))
+	e.Errors = append(e.Errors, E.NewVisitorError(line, column, errorMsg, e.TypeError))
 }
 
 func NewErrorListener() *ErrorListener {
 	return &ErrorListener{
-		Errors: make([]*VisitorError, 0),
+		Errors: make([]*E.VisitorError, 0),
 	}
 }
 
 func NewVisitor() *Visitor {
 	return &Visitor{
-		Errors: make([]*VisitorError, 0),
+		Errors: make([]*E.VisitorError, 0),
 		Logs:   make([]string, 0),
 		Env:    NewEnvTree(),
-		C3D:    GetHeader(),
 		Stack:  NewStack(),
 	}
 }
 
-func NewEvaluator(input string) *Visitor {
+func NewEvaluator(input string) *C.Compiler {
 	errorListener := NewErrorListener()
-	errorListener.TypeError = Lexical
+	errorListener.TypeError = E.Lexical
 
 	lexer := parser.NewSwiftLexer(antlr.NewInputStream(input))
 
@@ -60,27 +58,29 @@ func NewEvaluator(input string) *Visitor {
 
 	parser.RemoveErrorListeners()
 	parser.AddErrorListener(errorListener)
-	errorListener.TypeError = Syntactic
+	errorListener.TypeError = E.Syntactic
 
 	parser.BuildParseTrees = true
 
 	tree := parser.Program()
 
 	if len(errorListener.Errors) > 0 {
-		errorVisitor := NewVisitor()
+		errorVisitor := C.NewCompiler()
 		errorVisitor.Errors = errorListener.Errors
 		return errorVisitor
 	}
 
-	visitor := NewVisitor()
-	visitor.Visit(tree)
+	checker := NewVisitor()
+	checker.Visit(tree)
 
-	return visitor
+	compiler := C.NewCompiler()
+
+	return compiler
 }
 
 func (v *Visitor) NewError(msg string, ctx antlr.Token) {
 	errorMsg := fmt.Sprintf("Error(%d:%d): %s ", ctx.GetLine(), ctx.GetColumn(), msg)
-	v.Errors = append(v.Errors, NewVisitorError(ctx.GetLine(), ctx.GetColumn(), errorMsg, Semantic))
+	v.Errors = append(v.Errors, E.NewVisitorError(ctx.GetLine(), ctx.GetColumn(), errorMsg, E.Semantic))
 }
 
 func (v *Visitor) NewLog(msg string) {
@@ -93,15 +93,4 @@ func (v *Visitor) GetLogs() string {
 		logs += log + "\n"
 	}
 	return logs
-}
-
-func (v *Visitor) GetC3D() string {
-	c3d := fmt.Sprintf("%s\n", v.C3D)
-	c3d += fmt.Sprintf("%s\n", GetTemps(v.Temp))
-
-	return c3d
-}
-
-func (v *Visitor) GetOptimized() string {
-	return v.Optimized
 }

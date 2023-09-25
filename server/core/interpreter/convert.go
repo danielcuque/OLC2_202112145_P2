@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	E "OLC2/core/error"
 	"OLC2/core/parser"
 	V "OLC2/core/values"
 	"fmt"
@@ -12,7 +13,7 @@ func Int(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -35,7 +36,7 @@ func Float(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -59,7 +60,7 @@ func String(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) != 1 {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 

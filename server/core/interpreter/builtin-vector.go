@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	E "OLC2/core/error"
 	"OLC2/core/parser"
 	V "OLC2/core/values"
 )
@@ -26,7 +27,7 @@ func Append(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) > 1 {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -58,7 +59,7 @@ func RemoveLast(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) > 0 {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
@@ -94,17 +95,17 @@ func Remove(v *Visitor, ctx *parser.FunctionCallContext) interface{} {
 	args := v.GetArgs(ctx)
 
 	if len(args) > 1 {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
 	if args[0].Name != "at" {
-		v.NewError(InvalidArgumentName, ctx.GetStart())
+		v.NewError(E.InvalidArgumentName, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 
 	if args[0].Value.GetType() != V.IntType {
-		v.NewError(InvalidParameterType, ctx.GetStart())
+		v.NewError(E.InvalidParameterType, ctx.GetStart())
 		return V.NewNilValue(nil)
 	}
 

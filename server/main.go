@@ -1,9 +1,8 @@
 package main
 
 import (
-	I "OLC2/core/interfaces"
+	I "OLC2/core/interpreter"
 	U "OLC2/core/utils"
-
 	"fmt"
 )
 
@@ -16,7 +15,5 @@ func main() {
 	for _, err := range result.Errors {
 		fmt.Println(err.Error())
 	}
-
-	fmt.Println(result.GetC3D())
 
 }

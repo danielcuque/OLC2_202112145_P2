@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	E "OLC2/core/error"
 	"OLC2/core/parser"
 	V "OLC2/core/values"
 )
@@ -29,7 +30,7 @@ func (v *Visitor) VisitIfTail(ctx *parser.IfTailContext) interface{} {
 	condition, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpression, ctx.GetStart())
+		v.NewError(E.InvalidExpression, ctx.GetStart())
 		return false
 	}
 

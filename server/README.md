@@ -1,3 +1,3 @@
-# Swift compiler
+# Swift Interpreter
 
-This is a Swift compiler written ANTLR4 and Go.
+This is a Swift interpreter written ANTLR4 and Go.

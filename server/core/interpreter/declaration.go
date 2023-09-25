@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	E "OLC2/core/error"
 	"OLC2/core/parser"
 	V "OLC2/core/values"
 	"fmt"
@@ -12,113 +13,109 @@ import (
 // Variables
 
 func (v *Visitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
-	// isConstant := ctx.GetVarType().GetText() == "let"
-	// id := ctx.ID().GetText()
-	// value, okVal := v.Visit(ctx.Expr()).(V.IValue)
+	isConstant := ctx.GetVarType().GetText() == "let"
+	id := ctx.ID().GetText()
+	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
-	return nil
-	// id := ctx.ID().GetText()
-	// value, okVal := v.Visit(ctx.Expr()).(V.IValue)
+	if !okVal {
+		v.NewError(E.InvalidExpression, ctx.GetStart())
+		return nil
+	}
 
-	// if !okVal {
-	// 	v.NewError(InvalidExpression, ctx.GetStart())
-	// 	return nil
-	// }
+	variable := v.Env.GetVariable(id)
 
-	// variable := v.Env.GetVariable(id)
+	if variable != nil {
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return false
+	}
 
-	// if variable != nil {
-	// 	v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
-	// 	return false
-	// }
+	newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
 
-	// newVariable := NewVariable(v, id, isConstant, value, value.GetType(), ctx.GetStart())
+	if !isDeclaringStruct {
+		v.Env.AddVariable(id, newVariable)
+	}
 
-	// if !isDeclaringStruct {
-	// 	v.Env.AddVariable(id, newVariable)
-	// }
-
-	// return newVariable
+	return newVariable
 }
 
 func (v *Visitor) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
-	return nil
-	// isConstant := ctx.GetVarType().GetText() == "let"
-	// id := ctx.ID().GetText()
-	// value, okVal := v.Visit(ctx.Expr()).(V.IValue)
+	isConstant := ctx.GetVarType().GetText() == "let"
+	id := ctx.ID().GetText()
+	value, okVal := v.Visit(ctx.Expr()).(V.IValue)
 
-	// if !okVal {
-	// 	v.NewError(InvalidExpression, ctx.GetStart())
-	// 	return nil
-	// }
+	if !okVal {
+		v.NewError(E.InvalidExpression, ctx.GetStart())
+		return nil
+	}
 
-	// valueType, ok := v.Visit(ctx.VariableType()).(string)
+	valueType, ok := v.Visit(ctx.VariableType()).(string)
 
-	// if !ok {
-	// 	return nil
-	// }
+	if !ok {
+		return nil
+	}
 
-	// variable := v.Env.GetVariable(id)
+	variable := v.Env.GetVariable(id)
 
-	// if variable != nil {
-	// 	v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
-	// 	return false
-	// }
+	if variable != nil {
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return false
+	}
 
-	// if valueType != value.GetType() {
-	// 	if valueType == V.FloatType && value.GetType() == V.IntType {
-	// 		value = V.NewFloatValue(float64(value.GetValue().(int)))
-	// 	} else {
-	// 		v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
-	// 		return false
-	// 	}
-	// }
+	if valueType != value.GetType() {
+		if valueType == V.FloatType && value.GetType() == V.IntType {
+			value = V.NewFloatValue(float64(value.GetValue().(int)))
+		} else {
+			v.NewError(fmt.Sprintf("El tipo de la variable %s no coincide con el valor asignado, se esperaba %s y se obtuvo %s", id, valueType, value.GetType()), ctx.GetStart())
+			return false
+		}
+	}
 
-	// newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
+	newVariable := NewVariable(v, id, isConstant, value, valueType, ctx.GetStart())
 
-	// if !isDeclaringStruct {
-	// 	v.Env.AddVariable(id, newVariable)
-	// }
+	if !isDeclaringStruct {
+		v.Env.AddVariable(id, newVariable)
+	}
 
-	// return newVariable
+	return newVariable
 }
 
 func (v *Visitor) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
-	return nil
-	// if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
-	// 	v.NewError("El operador '?' solo puede ser usado dentro de un struct", ctx.GetStart())
-	// 	return nil
-	// }
+	// Declaration without value
 
-	// isConstant := ctx.GetVarType().GetText() == "let"
-	// id := ctx.ID().GetText()
+	if ctx.Op_TERNARY() == nil && !isDeclaringStruct {
+		v.NewError("El operador '?' solo puede ser usado dentro de un struct", ctx.GetStart())
+		return nil
+	}
 
-	// valueType, ok := v.Visit(ctx.VariableType()).(string)
+	isConstant := ctx.GetVarType().GetText() == "let"
+	id := ctx.ID().GetText()
 
-	// if !ok {
-	// 	return nil
-	// }
+	valueType, ok := v.Visit(ctx.VariableType()).(string)
 
-	// variable := v.Env.GetVariable(id)
+	if !ok {
+		return nil
+	}
 
-	// if variable != nil {
-	// 	v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
-	// 	return false
-	// }
+	variable := v.Env.GetVariable(id)
 
-	// if isConstant && !isDeclaringStruct {
-	// 	v.NewError(fmt.Sprintf("La variable '%s' debe ser inicializada", id), ctx.GetStart())
-	// 	return false
-	// }
+	if variable != nil {
+		v.NewError(fmt.Sprintf("La variable %s ya existe", id), ctx.GetStart())
+		return false
+	}
 
-	// newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
+	if isConstant && !isDeclaringStruct {
+		v.NewError(fmt.Sprintf("La variable '%s' debe ser inicializada", id), ctx.GetStart())
+		return false
+	}
 
-	// if !isDeclaringStruct {
-	// 	v.Env.AddVariable(id, newVariable)
-	// 	return true
-	// }
+	newVariable := NewVariable(v, id, isConstant, V.NewNilValue(nil), valueType, ctx.GetStart())
 
-	// return newVariable
+	if !isDeclaringStruct {
+		v.Env.AddVariable(id, newVariable)
+		return true
+	}
+
+	return newVariable
 
 }
 
@@ -138,7 +135,7 @@ func (v *Visitor) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inter
 	dataList, okVal := v.Visit(ctx.VectorDefinition()).([]V.IValue) // [1,2,3]
 
 	if !okVal {
-		v.NewError(InvalidVectorValue, ctx.GetStart())
+		v.NewError(E.InvalidVectorValue, ctx.GetStart())
 		return nil
 	}
 
@@ -235,7 +232,7 @@ func (v *Visitor) VisitVectorSingleValue(ctx *parser.VectorSingleValueContext) i
 	value, ok := v.Visit(ctx.Expr()).(*ObjectV).GetValue().(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidVectorValue, ctx.GetStart())
+		v.NewError(E.InvalidVectorValue, ctx.GetStart())
 		return make([]V.IValue, 0)
 	}
 
@@ -252,7 +249,7 @@ func (v *Visitor) VisitVectorValues(ctx *parser.VectorValuesContext) interface{}
 		value, ok := v.Visit(value).(V.IValue)
 
 		if !ok {
-			v.NewError(InvalidVectorValue, ctx.GetStart())
+			v.NewError(E.InvalidVectorValue, ctx.GetStart())
 			return make([]V.IValue, 0)
 		}
 
@@ -317,7 +314,7 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 	values, ok := v.Visit(ctx.VectorAccess()).(map[string]interface{})
 
 	if !ok {
-		v.NewError(InvalidVectorValue, ctx.GetStart())
+		v.NewError(E.InvalidVectorValue, ctx.GetStart())
 		return nil
 	}
 
@@ -326,7 +323,7 @@ func (v *Visitor) VisitVectorAssignment(ctx *parser.VectorAssignmentContext) int
 	expr, ok := v.Visit(ctx.Expr()).(V.IValue)
 
 	if !ok {
-		v.NewError(InvalidExpression, ctx.GetStart())
+		v.NewError(E.InvalidExpression, ctx.GetStart())
 		return nil
 	}
 
@@ -522,7 +519,7 @@ func (v *Visitor) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{
 	matrixNode, ok := body.(*MatrixNode)
 
 	if !ok {
-		v.NewError(InvalidMatrixValue, ctx.GetStart())
+		v.NewError(E.InvalidMatrixValue, ctx.GetStart())
 		return nil
 	}
 
@@ -664,7 +661,7 @@ func (v *Visitor) VisitMatrixAssignment(ctx *parser.MatrixAssignmentContext) int
 	values, ok := v.Visit(ctx.MatrixAccess()).(map[string]interface{})
 
 	if !ok {
-		v.NewError(InvalidMatrixValue, ctx.GetStart())
+		v.NewError(E.InvalidMatrixValue, ctx.GetStart())
 		return nil
 	}
 

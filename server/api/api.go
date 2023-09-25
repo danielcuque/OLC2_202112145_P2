@@ -1,7 +1,8 @@
 package api
 
 import (
-	I "OLC2/core/interfaces"
+	E "OLC2/core/error"
+	I "OLC2/core/interpreter"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -9,7 +10,7 @@ import (
 
 // Response will have symbols, errors, logs and cst
 type Resp struct {
-	Errors    []*I.VisitorError `json:"errors"`
+	Errors    []*E.VisitorError `json:"errors"`
 	Symbols   []I.ApiObject     `json:"symbols"`
 	Logs      []string          `json:"logs"`
 	Compiled  string            `json:"compiled"`
@@ -25,9 +26,9 @@ func HandleVisitor(c *fiber.Ctx) error {
 	result := I.NewEvaluator(code)
 
 	response := Resp{
-		Symbols:   result.Env.GetSymbolTable(),
+		Symbols:   []I.ApiObject{},
 		Errors:    result.Errors,
-		Logs:      result.Logs,
+		Logs:      []string{},
 		Compiled:  "",
 		Optimized: "",
 	}

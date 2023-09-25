@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	E "OLC2/core/error"
 	"OLC2/core/parser"
 	V "OLC2/core/values"
 	"fmt"
@@ -103,7 +104,7 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 	function := v.Env.GetFunction(id)
 
 	if function != nil {
-		v.NewError(FunctionAlreadyExists, ctx.GetStart())
+		v.NewError(E.FunctionAlreadyExists, ctx.GetStart())
 		return nil
 	}
 
@@ -123,7 +124,7 @@ func (v *Visitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarat
 		RT, ok := v.Visit(ctx.FunctionReturnType()).(string)
 
 		if !ok {
-			v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
+			v.NewError(E.InvalidReturnTypeFunction, ctx.GetStart())
 			return nil
 		}
 
@@ -155,7 +156,7 @@ func (v *Visitor) VisitFunctionParameters(ctx *parser.FunctionParametersContext)
 		param, ok := v.Visit(param).(Parameter)
 
 		if !ok {
-			v.NewError(InvalidParameter, ctx.GetStart())
+			v.NewError(E.InvalidParameter, ctx.GetStart())
 			// Return empty array
 			return make([]Parameter, 0)
 		}
@@ -237,7 +238,7 @@ func (v *Visitor) VisitFunctionReturnType(ctx *parser.FunctionReturnTypeContext)
 	returnType, ok := v.Visit(ctx.VariableType()).(string)
 
 	if !ok {
-		v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
+		v.NewError(E.InvalidReturnTypeFunction, ctx.GetStart())
 		return nil
 	}
 
@@ -273,7 +274,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 				return v.HandleStructConstructor(ctx, objStruct)
 			}
 
-			v.NewError(FunctionNotFound, ctx.GetStart())
+			v.NewError(E.FunctionNotFound, ctx.GetStart())
 			return nil
 		}
 		fn = fnt
@@ -302,7 +303,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 		objFn, okObjFn := object.GetMethod(methodName).(*Function)
 
 		if !okObjFn || objFn == nil {
-			v.NewError(fmt.Sprintf(`%s: '%s'`, MethodNotFound, methodName), ctx.GetStart())
+			v.NewError(fmt.Sprintf(`%s: '%s'`, E.MethodNotFound, methodName), ctx.GetStart())
 			return nil
 		}
 
@@ -321,7 +322,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	// Verify if the number of parameters is the same
 
 	if len(args) != len(fn.Parameters) {
-		v.NewError(InvalidNumberOfParameters, ctx.GetStart())
+		v.NewError(E.InvalidNumberOfParameters, ctx.GetStart())
 		return nil
 	}
 
@@ -424,7 +425,7 @@ func (v *Visitor) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{}
 	v.Env.PopEnv()
 
 	if returnValue.GetType() != fn.ReturnDataType {
-		v.NewError(InvalidReturnTypeFunction, ctx.GetStart())
+		v.NewError(E.InvalidReturnTypeFunction, ctx.GetStart())
 	}
 
 	return returnValue
@@ -463,7 +464,7 @@ func (v *Visitor) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 		value, ok := v.Visit(expr).(V.IValue)
 
 		if !ok {
-			v.NewError(InvalidArgument, ctx.GetStart())
+			v.NewError(E.InvalidArgument, ctx.GetStart())
 			return make([]Argument, 0)
 		}
 
@@ -519,7 +520,7 @@ func (v *Visitor) LookUpObject(id string, tokenProps []antlr.TerminalNode, lc an
 	variable := v.Env.GetVariable(id)
 
 	if variable == nil {
-		v.NewError(ObjectNotFound, lc)
+		v.NewError(E.ObjectNotFound, lc)
 		return nil, false
 	}
 
@@ -531,13 +532,13 @@ func (v *Visitor) LookUpObject(id string, tokenProps []antlr.TerminalNode, lc an
 		object, ok = GetPropValue(variable, props).(*Variable).Value.(*ObjectV)
 
 		if !ok {
-			v.NewError(ObjectNotFound, lc)
+			v.NewError(E.ObjectNotFound, lc)
 			return nil, false
 		}
 	}
 
 	if !ok {
-		v.NewError(ObjectNotFound, lc)
+		v.NewError(E.ObjectNotFound, lc)
 		return nil, false
 	}
 

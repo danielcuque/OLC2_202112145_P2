@@ -4,7 +4,7 @@ package test
 // 	"fmt"
 // 	"testing"
 
-// 	I "OLC2/core/interfaces"
+// 	I "OLC2/chore/interfaces"
 // )
 
 // type expectedValue struct {

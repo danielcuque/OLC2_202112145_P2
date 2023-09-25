@@ -1,4 +1,4 @@
-package interfaces
+package error
 
 type TypeError string
 
