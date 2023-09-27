@@ -23,11 +23,11 @@ func HandleVisitor(c *fiber.Ctx) error {
 
 	code := c.FormValue("code")
 
-	result := I.NewEvaluator(code)
+	_, checker := I.NewEvaluator(code)
 
 	response := Resp{
-		Symbols:   []I.ApiObject{},
-		Errors:    result.Errors,
+		Symbols:   checker.Env.GetSymbolTable(),
+		Errors:    checker.Errors,
 		Logs:      []string{},
 		Compiled:  "",
 		Optimized: "",

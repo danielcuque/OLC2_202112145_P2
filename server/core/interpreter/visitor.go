@@ -27,7 +27,7 @@ func NewVisitor() *Visitor {
 	}
 }
 
-func NewEvaluator(input string) *C.Compiler {
+func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 	errorListener := E.NewErrorListener()
 	errorListener.TypeError = E.Lexical
 
@@ -48,24 +48,23 @@ func NewEvaluator(input string) *C.Compiler {
 	tree := parser.Program()
 
 	if len(errorListener.Errors) > 0 {
-		errorVisitor := C.NewCompiler()
-		errorVisitor.Errors = errorListener.Errors
-		return errorVisitor
+		semanticChecker := NewVisitor()
+		semanticChecker.Errors = errorListener.Errors
+		return nil, semanticChecker
 	}
 
 	checker := NewVisitor()
 	checker.Visit(tree)
 
 	if len(checker.Errors) > 0 {
-		errorVisitor := C.NewCompiler()
-		errorVisitor.Errors = checker.Errors
-		return errorVisitor
+		return nil, checker
 	}
 
 	compiler := C.NewCompiler()
 	compiler.Visit(tree)
 
-	return compiler
+	// The checker will return symbol table and compiler, the compiler will return the TAC
+	return compiler, checker
 }
 
 func (v *Visitor) NewError(msg string, ctx antlr.Token) {

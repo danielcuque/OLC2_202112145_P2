@@ -1,14 +1,12 @@
 package compiler
 
 import (
-	E "OLC2/core/error"
 	"OLC2/core/parser"
 	"fmt"
 )
 
 type Compiler struct {
 	parser.BaseSwiftVisitor
-	Errors       []*E.VisitorError
 	Env          *EnvTree
 	TAC          TAC
 	HeapPointer  Heap
@@ -17,8 +15,8 @@ type Compiler struct {
 
 func NewCompiler() *Compiler {
 	return &Compiler{
-		Errors: make([]*E.VisitorError, 0),
-		Env:    NewEnvTree(),
+		Env: NewEnvTree(),
+		TAC: *NewTAC(),
 	}
 }
 

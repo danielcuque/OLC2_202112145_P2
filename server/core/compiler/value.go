@@ -3,8 +3,15 @@ package compiler
 import "fmt"
 
 type Value struct {
-	Type  string
-	Value interface{}
+	Value        interface{}
+	StackAddress int
+}
+
+func NewValue(value interface{}, stackAddress int) *Value {
+	return &Value{
+		Value:        value,
+		StackAddress: stackAddress,
+	}
 }
 
 type ContextValue string

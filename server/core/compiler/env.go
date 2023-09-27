@@ -56,6 +56,13 @@ func (s *EnvNode) Copy() *EnvNode {
 	return newNode
 }
 
+func (s *EnvNode) AddValue(key string, value *Value) {
+	if s.Values == nil {
+		s.Values = make(map[string]*Value)
+	}
+	s.Values[key] = value
+}
+
 // EnvTree is a nary tree to represent scopes
 type EnvTree struct {
 	Root    *EnvNode

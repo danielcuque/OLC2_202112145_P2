@@ -10,12 +10,14 @@ func main() {
 
 	content := U.ReadFile("./examples/test.swift")
 
-	result := I.NewEvaluator(content)
+	compiler, checker := I.NewEvaluator(content)
 
-	for _, err := range result.Errors {
+	for _, err := range checker.Errors {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Println(result.GetTAC())
+	if compiler != nil {
+		fmt.Println(compiler.GetTAC())
+	}
 
 }

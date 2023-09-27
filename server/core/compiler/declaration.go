@@ -15,7 +15,7 @@ func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) in
 
 	c.TAC.AppendCode(
 		fmt.Sprintf("stack[(int)P] = %s", value.GetValue()),
-		fmt.Sprintf("Declaración de %s", id),
+		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 
 	c.TAC.AppendCode(

@@ -24,7 +24,7 @@ func (t *TAC) GetTemporalsHeader() string {
 
 	var code string
 	code += "float "
-	for i := 0; i < t.TemporalQuantity(); i++ {
+	for i := 1; i < t.TemporalQuantity(); i++ {
 		code += fmt.Sprintf("t%d", i)
 		if i != t.TemporalQuantity()-1 {
 			code += ", "
@@ -35,7 +35,7 @@ func (t *TAC) GetTemporalsHeader() string {
 }
 
 func (t *TAC) TemporalQuantity() int {
-	return len(t.temporals)
+	return len(t.temporals) + 1
 }
 
 func (t *TAC) AppendCode(code string, comment string) {
