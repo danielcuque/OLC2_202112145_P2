@@ -22,6 +22,10 @@ func NewTemporal(index int, Type TemporalCast) *Temporal {
 	}
 }
 
-func (t *Temporal) String() string {
+func (t *Temporal) Cast() string {
 	return fmt.Sprintf("(%s)t%d", t.Type, t.ID)
+}
+
+func (t *Temporal) String() string {
+	return fmt.Sprintf("t%d", t.ID)
 }

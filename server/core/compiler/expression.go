@@ -61,24 +61,33 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				ContextValue: TemporalType,
 			}
 		}
-		if leftT == V.FloatType && rightT == V.FloatType {
-			return V.NewFloatValue(l.(float64) + r.(float64))
+
+		if (leftT == V.IntType || leftT == V.FloatType) && (rightT == V.IntType || rightT == V.FloatType) {
+			response = &ValueResponse{
+				Type:         V.FloatType,
+				Value:        c.TAC.NewTemporal(fmt.Sprintf("%s + %s", l, r), FloatTemporal), // Temporal
+				ContextValue: TemporalType,
+			}
 		}
-		if leftT == V.FloatType && rightT == V.IntType {
-			return V.NewFloatValue(l.(float64) + float64(r.(int)))
-		}
-		if leftT == V.IntType && rightT == V.FloatType {
-			return V.NewFloatValue(float64(l.(int)) + r.(float64))
-		}
-		if leftT == V.StringType && rightT == V.StringType {
-			return V.NewStringValue(l.(string) + r.(string))
-		}
-		if leftT == V.StringType && rightT == V.CharType {
-			return V.NewStringValue(l.(string) + string(r.(rune)))
-		}
-		if leftT == V.CharType && rightT == V.StringType {
-			return V.NewStringValue(string(l.(rune)) + r.(string))
-		}
+
+		// if leftT == V.FloatType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(l.(float64) + r.(float64))
+		// }
+		// if leftT == V.FloatType && rightT == V.IntType {
+		// 	return V.NewFloatValue(l.(float64) + float64(r.(int)))
+		// }
+		// if leftT == V.IntType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(float64(l.(int)) + r.(float64))
+		// }
+		// if leftT == V.StringType && rightT == V.StringType {
+		// 	return V.NewStringValue(l.(string) + r.(string))
+		// }
+		// if leftT == V.StringType && rightT == V.CharType {
+		// 	return V.NewStringValue(l.(string) + string(r.(rune)))
+		// }
+		// if leftT == V.CharType && rightT == V.StringType {
+		// 	return V.NewStringValue(string(l.(rune)) + r.(string))
+		// }
 	case "-":
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
@@ -151,4 +160,61 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	c.TAC.AppendCode(fmt.Sprintf("%s = %s %s %s", response.GetValue(), l, op, r), fmt.Sprintf("Operación aritmética %s", op))
 	return response
+}
+
+func (c *Compiler) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
+	return &ValueResponse{
+		Type:         V.FloatType,
+		Value:        ctx.GetText(),
+		ContextValue: LiteralType,
+	}
+}
+
+func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
+	// Check if is posible char or string
+	s := strings.Trim(ctx.GetText(), "\"")
+
+	if len(s) == 1 {
+		return V.NewCharValue([]rune(s)[0])
+	}
+
+	// Replace scape characters: double quote, backslash, new line, carriage return, tab
+	s = strings.ReplaceAll(s, "\\\"", "\"")
+	s = strings.ReplaceAll(s, "\\\\", "\\")
+	s = strings.ReplaceAll(s, "\\n", "\n")
+	s = strings.ReplaceAll(s, "\\r", "\r")
+	s = strings.ReplaceAll(s, "\\t", "\t")
+
+	// Traverse string to insert chars in heap
+	initialPointer := c.HeapPointer.GetPointer()
+
+	c.TAC.AppendCode(
+		fmt.Sprintf("t%d = H", c.TAC.TemporalQuantity()),
+		"Obtención de la posición inicial del heap",
+	)
+
+	for _, char := range s {
+		c.TAC.AppendCode(
+			fmt.Sprintf("heap[(int)H] = %d", char),
+			fmt.Sprintf("Almacenamiento de caracter '%s' en el heap", string(char)),
+		)
+		c.HeapPointer.AddPointer()
+	}
+
+	// Add null character
+	c.TAC.AppendCode(
+		fmt.Sprintf("heap[(int)H] = %d", -1),
+		fmt.Sprintf("Almacenamiento de caracter '%d' en el heap", 0),
+	)
+
+	c.TAC.AppendCode(
+		fmt.Sprintf("H = H + 1"),
+		"",
+	)
+
+	return &ValueResponse{
+		Type:         V.StringType,
+		Value:        c.TAC.NewTemporal(fmt.Sprintf("%d", initialPointer), IntTemporal),
+		ContextValue: LiteralType,
+	}
 }

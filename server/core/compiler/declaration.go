@@ -19,7 +19,7 @@ func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) in
 		"",
 	)
 
-	newValue := NewValue(response.GetValue(), c.StackPointer.GetPointer())
+	newValue := NewValue(response.GetValue(), c.StackPointer.GetPointer(), TemporalCast(response.GetType()))
 
 	c.StackPointer.AddPointer()
 

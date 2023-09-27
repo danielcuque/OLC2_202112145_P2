@@ -1,16 +1,16 @@
 package compiler
 
-import "fmt"
-
 type Value struct {
 	Value        interface{}
 	StackAddress int
+	Type         TemporalCast
 }
 
-func NewValue(value interface{}, stackAddress int) *Value {
+func NewValue(value interface{}, stackAddress int, Type TemporalCast) *Value {
 	return &Value{
 		Value:        value,
 		StackAddress: stackAddress,
+		Type:         Type,
 	}
 }
 
@@ -37,9 +37,6 @@ type ValueResponse struct {
 }
 
 func (v *ValueResponse) GetValue() interface{} {
-	if v.ContextValue == TemporalType {
-		return fmt.Sprintf("t%d", v.Value.(*Temporal).ID)
-	}
 	return v.Value
 }
 
