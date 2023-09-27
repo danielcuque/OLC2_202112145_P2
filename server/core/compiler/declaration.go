@@ -7,14 +7,10 @@ import (
 
 func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
 	id := ctx.ID().GetText()
-	value := c.Visit(ctx.Expr()).(*ValueResponse)
-
-	if value == nil {
-		return nil
-	}
+	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
 	c.TAC.AppendCode(
-		fmt.Sprintf("stack[(int)P] = %s", value.GetValue()),
+		fmt.Sprintf("stack[(int)P] = %s", response.GetValue()),
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 
@@ -23,5 +19,11 @@ func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) in
 		"",
 	)
 
-	return nil
+	newValue := NewValue(response.GetValue(), c.StackPointer.GetPointer())
+
+	c.StackPointer.AddPointer()
+
+	c.Env.AddValue(id, newValue)
+
+	return newValue
 }

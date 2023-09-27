@@ -31,6 +31,6 @@ func (c *Compiler) GetMain() string {
 func (c *Compiler) GetTAC() string {
 	code := c.GetHeader()
 	code += c.TAC.GetTemporalsHeader()
-	code += fmt.Sprintf("\nvoid main(){\n%s\nreturn 0;\n}", c.TAC.GetCode())
+	code += fmt.Sprintf("\nint main(){\n%s\nreturn 0;\n}", c.TAC.GetCode())
 	return code
 }

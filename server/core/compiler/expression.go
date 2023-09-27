@@ -4,9 +4,29 @@ import (
 	"OLC2/core/parser"
 	V "OLC2/core/values"
 	"fmt"
+	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
 )
+
+func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
+	expr := strings.Split(ctx.IdChain().GetText(), ".")
+	id := expr[len(expr)-1]
+
+	value := c.Env.GetValue(id)
+
+	c.TAC.AppendCode(
+		fmt.Sprintf("t%d = stack[(int)%d]", c.TAC.TemporalQuantity(), value.GetAddress()),
+		fmt.Sprintf("Acceso a la variable '%s'", id),
+	)
+
+	return &ValueResponse{
+		Type:         V.IntType,
+		Value:        c.TAC.NewTemporal(fmt.Sprintf("stack[(int)P]"), IntTemporal),
+		ContextValue: TemporalType,
+	}
+
+}
 
 func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 	return &ValueResponse{
@@ -24,10 +44,6 @@ func (c *Compiler) VisitArithmeticExpr(ctx *parser.ArithmeticExprContext) interf
 }
 
 func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) interface{} {
-	if l == nil || r == nil {
-		return false
-	}
-
 	leftT := l.(*ValueResponse).GetType()
 	rightT := r.(*ValueResponse).GetType()
 

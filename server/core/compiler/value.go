@@ -14,6 +14,14 @@ func NewValue(value interface{}, stackAddress int) *Value {
 	}
 }
 
+func (v *Value) GetValue() interface{} {
+	return v.Value
+}
+
+func (v *Value) GetAddress() int {
+	return v.StackAddress
+}
+
 type ContextValue string
 
 const (
@@ -30,7 +38,7 @@ type ValueResponse struct {
 
 func (v *ValueResponse) GetValue() interface{} {
 	if v.ContextValue == TemporalType {
-		return fmt.Sprintf("t%d", v.Value.(*Temporal).Index)
+		return fmt.Sprintf("t%d", v.Value.(*Temporal).ID)
 	}
 	return v.Value
 }

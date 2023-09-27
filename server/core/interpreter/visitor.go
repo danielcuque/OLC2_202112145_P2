@@ -63,7 +63,6 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 	compiler := C.NewCompiler()
 	compiler.Visit(tree)
 
-	// The checker will return symbol table and compiler, the compiler will return the TAC
 	return compiler, checker
 }
 

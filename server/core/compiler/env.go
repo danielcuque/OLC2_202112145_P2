@@ -100,6 +100,19 @@ func (s *EnvTree) String() string {
 	return s.Root.String()
 }
 
+func (s *EnvTree) AddValue(key string, value *Value) {
+	s.Current.AddValue(key, value)
+}
+
+func (s *EnvTree) GetValue(key string) *Value {
+	for node := s.Current; node != nil; node = node.Parent {
+		if value, ok := node.Values[key]; ok {
+			return value
+		}
+	}
+	return nil
+}
+
 func (s *EnvTree) GetMain() string {
 	return ""
 }

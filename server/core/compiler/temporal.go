@@ -11,17 +11,17 @@ const (
 )
 
 type Temporal struct {
-	Index int
-	Type  TemporalCast
+	ID   int
+	Type TemporalCast
 }
 
 func NewTemporal(index int, Type TemporalCast) *Temporal {
 	return &Temporal{
-		Index: index,
-		Type:  Type,
+		ID:   index,
+		Type: Type,
 	}
 }
 
 func (t *Temporal) String() string {
-	return fmt.Sprintf("(%s)t%d", t.Type, t.Index)
+	return fmt.Sprintf("(%s)t%d", t.Type, t.ID)
 }
