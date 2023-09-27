@@ -1,4 +1,1 @@
-let a = 1
-let b = 2
-let c = a + b
-print(c)
+let a = 1 + 2 + 3 + 4 + 5 

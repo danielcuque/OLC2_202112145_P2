@@ -6,14 +6,22 @@ import (
 )
 
 func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
-	// First save variable in tac
-
 	id := ctx.ID().GetText()
+	value := c.Visit(ctx.Expr()).(*ValueResponse)
 
-	c.TAC.AppendNewTemporal(fmt.Sprintf("Declaracion de variable %s", id), NewTemporal())
+	if value == nil {
+		return nil
+	}
 
-	// Second, save value in tac
-	// value := c.Visit(ctx.Expr())
+	c.TAC.AppendCode(
+		fmt.Sprintf("stack[(int)P] = %s", value.GetValue()),
+		fmt.Sprintf("Declaración de %s", id),
+	)
+
+	c.TAC.AppendCode(
+		fmt.Sprintf("P = P + 1"),
+		"",
+	)
 
 	return nil
 }

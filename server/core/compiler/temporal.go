@@ -1,5 +1,7 @@
 package compiler
 
+import "fmt"
+
 type TemporalCast string
 
 const (
@@ -13,10 +15,13 @@ type Temporal struct {
 	Type  TemporalCast
 }
 
-func NewTemporal() *Temporal {
-	return &Temporal{}
+func NewTemporal(index int, Type TemporalCast) *Temporal {
+	return &Temporal{
+		Index: index,
+		Type:  Type,
+	}
 }
 
 func (t *Temporal) String() string {
-	return ""
+	return fmt.Sprintf("(%s)t%d", t.Type, t.Index)
 }

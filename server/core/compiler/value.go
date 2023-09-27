@@ -1,5 +1,7 @@
 package compiler
 
+import "fmt"
+
 type Value struct {
 	Type  string
 	Value interface{}
@@ -17,4 +19,15 @@ type ValueResponse struct {
 	Type         string
 	Value        interface{}
 	ContextValue ContextValue
+}
+
+func (v *ValueResponse) GetValue() interface{} {
+	if v.ContextValue == TemporalType {
+		return fmt.Sprintf("t%d", v.Value.(*Temporal).Index)
+	}
+	return v.Value
+}
+
+func (v *ValueResponse) GetType() string {
+	return v.Type
 }

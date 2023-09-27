@@ -8,9 +8,11 @@ import (
 
 type Compiler struct {
 	parser.BaseSwiftVisitor
-	Errors []*E.VisitorError
-	Env    *EnvTree
-	TAC    TAC
+	Errors       []*E.VisitorError
+	Env          *EnvTree
+	TAC          TAC
+	HeapPointer  Heap
+	StackPointer Stack
 }
 
 func NewCompiler() *Compiler {
@@ -31,7 +33,6 @@ func (c *Compiler) GetMain() string {
 func (c *Compiler) GetTAC() string {
 	code := c.GetHeader()
 	code += c.TAC.GetTemporalsHeader()
-	code += fmt.Sprintf("void main(){\n%s\nreturn 0;\n}", c.TAC.GetCode())
-	// code += c.TAC.GetCode()
+	code += fmt.Sprintf("\nvoid main(){\n%s\nreturn 0;\n}", c.TAC.GetCode())
 	return code
 }
