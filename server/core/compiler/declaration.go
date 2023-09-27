@@ -9,6 +9,29 @@ func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) in
 	id := ctx.ID().GetText()
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
+	return c.DeclareValue(id, response)
+}
+
+func (c *Compiler) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
+	id := ctx.ID().GetText()
+	response := c.Visit(ctx.Expr()).(*ValueResponse)
+
+	return c.DeclareValue(id, response)
+}
+
+func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
+
+	if response.GetContextValue() == LiteralType {
+
+		c.TAC.AppendCode(
+			// tn = literal
+			fmt.Sprintf("t%d = %s", c.TAC.TemporalQuantity(), response.GetValue()),
+			"",
+		)
+
+		response.SetValue(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()))
+	}
+
 	c.TAC.AppendCode(
 		fmt.Sprintf("stack[(int)P] = %s", response.GetValue()),
 		fmt.Sprintf("Declaración de la variable '%s'", id),

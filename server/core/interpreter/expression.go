@@ -451,7 +451,7 @@ func (v *Visitor) VisitVariableType(ctx *parser.VariableTypeContext) interface{}
 		return V.FloatType
 	case "String":
 		return V.StringType
-	case "Char":
+	case "Character":
 		return V.CharType
 	case "Bool":
 		return V.BooleanType

@@ -9,33 +9,6 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 )
 
-func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
-	expr := strings.Split(ctx.IdChain().GetText(), ".")
-	id := expr[len(expr)-1]
-
-	value := c.Env.GetValue(id)
-
-	c.TAC.AppendCode(
-		fmt.Sprintf("t%d = stack[(int)%d]", c.TAC.TemporalQuantity(), value.GetAddress()),
-		fmt.Sprintf("Acceso a la variable '%s'", id),
-	)
-
-	return &ValueResponse{
-		Type:         V.IntType,
-		Value:        c.TAC.NewTemporal(fmt.Sprintf("stack[(int)P]"), IntTemporal),
-		ContextValue: TemporalType,
-	}
-
-}
-
-func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
-	return &ValueResponse{
-		Type:         V.IntType,
-		Value:        ctx.GetText(),
-		ContextValue: LiteralType,
-	}
-}
-
 func (c *Compiler) VisitArithmeticExpr(ctx *parser.ArithmeticExprContext) interface{} {
 	l := c.Visit(ctx.GetLeft()).(*ValueResponse)
 	r := c.Visit(ctx.GetRight()).(*ValueResponse)
@@ -170,12 +143,57 @@ func (c *Compiler) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
 	}
 }
 
+func (c *Compiler) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
+	value := "1"
+
+	if ctx.GetText() == "false" {
+		value = "0"
+	}
+
+	return &ValueResponse{
+		Type:         V.BooleanType,
+		Value:        value,
+		ContextValue: LiteralType,
+	}
+}
+
+func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
+	expr := strings.Split(ctx.IdChain().GetText(), ".")
+	id := expr[len(expr)-1]
+
+	value := c.Env.GetValue(id)
+
+	c.TAC.AppendCode(
+		fmt.Sprintf("t%d = stack[(int)%d]", c.TAC.TemporalQuantity(), value.GetAddress()),
+		fmt.Sprintf("Acceso a la variable '%s'", id),
+	)
+
+	return &ValueResponse{
+		Type:         V.IntType,
+		Value:        c.TAC.NewTemporal(fmt.Sprintf("stack[(int)P]"), IntTemporal),
+		ContextValue: TemporalType,
+	}
+
+}
+
+func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
+	return &ValueResponse{
+		Type:         V.IntType,
+		Value:        ctx.GetText(),
+		ContextValue: LiteralType,
+	}
+}
+
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	// Check if is posible char or string
 	s := strings.Trim(ctx.GetText(), "\"")
 
 	if len(s) == 1 {
-		return V.NewCharValue([]rune(s)[0])
+		return &ValueResponse{
+			Type:         V.CharType,
+			Value:        fmt.Sprintf("%d", s[0]),
+			ContextValue: LiteralType,
+		}
 	}
 
 	// Replace scape characters: double quote, backslash, new line, carriage return, tab
@@ -198,13 +216,17 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 			fmt.Sprintf("heap[(int)H] = %d", char),
 			fmt.Sprintf("Almacenamiento de caracter '%s' en el heap", string(char)),
 		)
+		c.TAC.AppendCode(
+			fmt.Sprintf("H = H + 1"),
+			"",
+		)
 		c.HeapPointer.AddPointer()
 	}
 
 	// Add null character
 	c.TAC.AppendCode(
 		fmt.Sprintf("heap[(int)H] = %d", -1),
-		fmt.Sprintf("Almacenamiento de caracter '%d' en el heap", 0),
+		"Almacenamiento del caracter nulo en el heap",
 	)
 
 	c.TAC.AppendCode(
@@ -215,6 +237,6 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	return &ValueResponse{
 		Type:         V.StringType,
 		Value:        c.TAC.NewTemporal(fmt.Sprintf("%d", initialPointer), IntTemporal),
-		ContextValue: LiteralType,
+		ContextValue: TemporalType,
 	}
 }

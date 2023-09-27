@@ -1,5 +1,5 @@
-let a = 1 * 2 + 2 * 6
-let b = 1 + 2 * 3 / 4
-let c = a + b + 1.1
-
-let palabra = "hola"
+var bol = true
+var numInt: Int = 10
+var numFloat: Float = 10.0
+var varString = "COECYS"
+let varChar: Character = "a"

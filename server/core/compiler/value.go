@@ -40,6 +40,14 @@ func (v *ValueResponse) GetValue() interface{} {
 	return v.Value
 }
 
+func (v *ValueResponse) SetValue(value interface{}) {
+	v.Value = value
+}
+
+func (v *ValueResponse) GetContextValue() ContextValue {
+	return v.ContextValue
+}
+
 func (v *ValueResponse) GetType() string {
 	return v.Type
 }
