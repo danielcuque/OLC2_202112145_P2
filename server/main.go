@@ -18,6 +18,7 @@ func main() {
 
 	if compiler != nil {
 		fmt.Println(compiler.GetTAC())
+		// fmt.Println(len(compiler.TAC.GetTemporals()))
 	}
 
 }

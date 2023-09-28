@@ -38,12 +38,15 @@ func (t *TAC) TemporalQuantity() int {
 	return len(t.temporals) + 1
 }
 
-func (t *TAC) AppendCode(code string, comment string) {
-	//if comment is not empty
+func (t *TAC) AppendCode(instrucions []string, comment string) {
+
 	if comment != "" {
 		t.code += fmt.Sprintf("// %s\n", comment)
 	}
-	t.code += fmt.Sprintf("%s;\n", code)
+
+	for _, instruction := range instrucions {
+		t.code += fmt.Sprintf("%s;\n", instruction)
+	}
 }
 
 func (t *TAC) GetCode() string {
@@ -54,7 +57,7 @@ func (t *TAC) NewTemporal(value, castType interface{}) *Temporal {
 	temporal := NewTemporal(t.TemporalQuantity(), FloatTemporal)
 
 	if castType != nil {
-		temporal = NewTemporal(t.TemporalQuantity(), castType.(TemporalCast))
+		temporal.Type = castType.(TemporalCast)
 	}
 
 	t.temporals = append(t.temporals, temporal)

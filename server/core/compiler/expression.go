@@ -131,7 +131,11 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 		}
 	}
 
-	c.TAC.AppendCode(fmt.Sprintf("%s = %s %s %s", response.GetValue(), l, op, r), fmt.Sprintf("Operación aritmética %s", op))
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("%s = %s %s %s", response.GetValue(), l, op, r),
+		},
+		fmt.Sprintf("Operación aritmética %s", op))
 	return response
 }
 
@@ -157,6 +161,10 @@ func (c *Compiler) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 	}
 }
 
+func (c *Compiler) VisitIDChain(ctx *parser.IDChainContext) interface{} {
+	return ctx.AllID()
+}
+
 func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	expr := strings.Split(ctx.IdChain().GetText(), ".")
 	id := expr[len(expr)-1]
@@ -164,7 +172,9 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	value := c.Env.GetValue(id)
 
 	c.TAC.AppendCode(
-		fmt.Sprintf("t%d = stack[(int)%d]", c.TAC.TemporalQuantity(), value.GetAddress()),
+		[]string{
+			fmt.Sprintf("t%d = stack[(int)%d]", c.TAC.TemporalQuantity(), value.GetAddress()),
+		},
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
@@ -185,7 +195,6 @@ func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 }
 
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
-	// Check if is posible char or string
 	s := strings.Trim(ctx.GetText(), "\"")
 
 	if len(s) == 1 {
@@ -207,32 +216,31 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	initialPointer := c.HeapPointer.GetPointer()
 
 	c.TAC.AppendCode(
-		fmt.Sprintf("t%d = H", c.TAC.TemporalQuantity()),
+		[]string{
+			fmt.Sprintf("t%d = H", c.TAC.TemporalQuantity()),
+		},
 		"Obtención de la posición inicial del heap",
 	)
 
 	for _, char := range s {
 		c.TAC.AppendCode(
-			fmt.Sprintf("heap[(int)H] = %d", char),
+			[]string{
+				fmt.Sprintf("heap[(int)H] = %d", char),
+				fmt.Sprintf("H = H + 1"),
+			},
 			fmt.Sprintf("Almacenamiento de caracter '%s' en el heap", string(char)),
-		)
-		c.TAC.AppendCode(
-			fmt.Sprintf("H = H + 1"),
-			"",
 		)
 		c.HeapPointer.AddPointer()
 	}
 
-	// Add null character
 	c.TAC.AppendCode(
-		fmt.Sprintf("heap[(int)H] = %d", -1),
-		"Almacenamiento del caracter nulo en el heap",
+		[]string{
+			fmt.Sprintf("heap[(int)H] = %d", -1),
+			fmt.Sprintf("H = H + 1"),
+		},
+		fmt.Sprintf("Almacenamiento del caracter nulo en el heap"),
 	)
-
-	c.TAC.AppendCode(
-		fmt.Sprintf("H = H + 1"),
-		"",
-	)
+	c.HeapPointer.AddPointer()
 
 	return &ValueResponse{
 		Type:         V.StringType,

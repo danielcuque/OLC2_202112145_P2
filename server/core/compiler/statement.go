@@ -9,5 +9,9 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.VariableDeclaration())
 	}
 
+	if ctx.VariableAssignment() != nil {
+		return c.Visit(ctx.VariableAssignment())
+	}
+
 	return nil
 }
