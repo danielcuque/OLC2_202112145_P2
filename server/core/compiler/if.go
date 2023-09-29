@@ -2,10 +2,12 @@ package compiler
 
 import (
 	"OLC2/core/parser"
+	"fmt"
 )
 
 func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
 	// Change this code to generate TAC for if statements
+	fmt.Println("if statement")
 
 	executeElse := true
 

@@ -35,32 +35,14 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 			}
 		}
 
-		if (leftT == V.IntType || leftT == V.FloatType) && (rightT == V.IntType || rightT == V.FloatType) {
-			response = &ValueResponse{
-				Type:         V.FloatType,
-				Value:        c.TAC.NewTemporal(fmt.Sprintf("%s + %s", l, r), FloatTemporal), // Temporal
-				ContextValue: TemporalType,
-			}
+		// if (leftT == V.IntType || leftT == V.FloatType) && (rightT == V.IntType || rightT == V.FloatType) {
+		// }
+		response = &ValueResponse{
+			Type:         V.FloatType,
+			Value:        c.TAC.NewTemporal(fmt.Sprintf("%s + %s", l, r), FloatTemporal), // Temporal
+			ContextValue: TemporalType,
 		}
 
-		// if leftT == V.FloatType && rightT == V.FloatType {
-		// 	return V.NewFloatValue(l.(float64) + r.(float64))
-		// }
-		// if leftT == V.FloatType && rightT == V.IntType {
-		// 	return V.NewFloatValue(l.(float64) + float64(r.(int)))
-		// }
-		// if leftT == V.IntType && rightT == V.FloatType {
-		// 	return V.NewFloatValue(float64(l.(int)) + r.(float64))
-		// }
-		// if leftT == V.StringType && rightT == V.StringType {
-		// 	return V.NewStringValue(l.(string) + r.(string))
-		// }
-		// if leftT == V.StringType && rightT == V.CharType {
-		// 	return V.NewStringValue(l.(string) + string(r.(rune)))
-		// }
-		// if leftT == V.CharType && rightT == V.StringType {
-		// 	return V.NewStringValue(string(l.(rune)) + r.(string))
-		// }
 	case "-":
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
@@ -69,15 +51,21 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				ContextValue: TemporalType,
 			}
 		}
-		if leftT == V.FloatType && rightT == V.FloatType {
-			return V.NewFloatValue(l.(float64) - r.(float64))
+
+		response = &ValueResponse{
+			Type:         V.FloatType,
+			Value:        c.TAC.NewTemporal(fmt.Sprintf("%s - %s", l, r), FloatTemporal), // Temporal
+			ContextValue: TemporalType,
 		}
-		if leftT == V.FloatType && rightT == V.IntType {
-			return V.NewFloatValue(l.(float64) - float64(r.(int)))
-		}
-		if leftT == V.IntType && rightT == V.FloatType {
-			return V.NewFloatValue(float64(l.(int)) - r.(float64))
-		}
+		// if leftT == V.FloatType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(l.(float64) - r.(float64))
+		// }
+		// if leftT == V.FloatType && rightT == V.IntType {
+		// 	return V.NewFloatValue(l.(float64) - float64(r.(int)))
+		// }
+		// if leftT == V.IntType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(float64(l.(int)) - r.(float64))
+		// }
 	case "*":
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
@@ -86,15 +74,22 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				ContextValue: TemporalType,
 			}
 		}
-		if leftT == V.FloatType && rightT == V.FloatType {
-			return V.NewFloatValue(l.(float64) * r.(float64))
+		// if leftT == V.FloatType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(l.(float64) * r.(float64))
+		// }
+		// if leftT == V.FloatType && rightT == V.IntType {
+		// 	return V.NewFloatValue(l.(float64) * float64(r.(int)))
+		// }
+		// if leftT == V.IntType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(float64(l.(int)) * r.(float64))
+		// }
+
+		response = &ValueResponse{
+			Type:         V.FloatType,
+			Value:        c.TAC.NewTemporal(fmt.Sprintf("%s * %s", l, r), FloatTemporal), // Temporal
+			ContextValue: TemporalType,
 		}
-		if leftT == V.FloatType && rightT == V.IntType {
-			return V.NewFloatValue(l.(float64) * float64(r.(int)))
-		}
-		if leftT == V.IntType && rightT == V.FloatType {
-			return V.NewFloatValue(float64(l.(int)) * r.(float64))
-		}
+
 	case "/":
 		// TODO: macro to display error if division by zero
 
@@ -109,26 +104,33 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				ContextValue: TemporalType,
 			}
 		}
-		if leftT == V.FloatType && rightT == V.FloatType {
-			return V.NewFloatValue(l.(float64) / r.(float64))
+
+		response = &ValueResponse{
+			Type:         V.FloatType,
+			Value:        c.TAC.NewTemporal(fmt.Sprintf("%s / %s", l, r), FloatTemporal), // Temporal
+			ContextValue: TemporalType,
 		}
-		if leftT == V.FloatType && rightT == V.IntType {
-			return V.NewFloatValue(l.(float64) / float64(r.(int)))
-		}
-		if leftT == V.IntType && rightT == V.FloatType {
-			return V.NewFloatValue(float64(l.(int)) / r.(float64))
-		}
+		// if leftT == V.FloatType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(l.(float64) / r.(float64))
+		// }
+		// if leftT == V.FloatType && rightT == V.IntType {
+		// 	return V.NewFloatValue(l.(float64) / float64(r.(int)))
+		// }
+		// if leftT == V.IntType && rightT == V.FloatType {
+		// 	return V.NewFloatValue(float64(l.(int)) / r.(float64))
+		// }
 	case "%":
-		if rightT == V.IntType && r.(int) == 0 {
-			return nil
+		// if rightT == V.IntType && r.(int) == 0 {
+		// 	return nil
+		// }
+
+		// if leftT == V.IntType && rightT == V.IntType {
+		response = &ValueResponse{
+			Type:         V.IntType,
+			Value:        c.TAC.NewTemporal(fmt.Sprintf("%s %% %s", l, r), IntTemporal), // Temporal
+			ContextValue: TemporalType,
 		}
-		if leftT == V.IntType && rightT == V.IntType {
-			response = &ValueResponse{
-				Type:         V.IntType,
-				Value:        c.TAC.NewTemporal(fmt.Sprintf("%s %% %s", l, r), IntTemporal), // Temporal
-				ContextValue: TemporalType,
-			}
-		}
+		// }
 	}
 
 	c.TAC.AppendCode(
@@ -192,6 +194,10 @@ func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 		Value:        ctx.GetText(),
 		ContextValue: LiteralType,
 	}
+}
+
+func (c *Compiler) VisitParExpr(ctx *parser.ParExprContext) interface{} {
+	return c.Visit(ctx.Expr())
 }
 
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {

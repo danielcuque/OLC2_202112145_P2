@@ -4,12 +4,15 @@ import "fmt"
 
 type TAC struct {
 	temporals []*Temporal
+	labels    int
 	code      string
 }
 
 func NewTAC() *TAC {
 	return &TAC{
-		code: "",
+		code:      "",
+		temporals: make([]*Temporal, 0),
+		labels:    0,
 	}
 }
 
@@ -36,6 +39,11 @@ func (t *TAC) GetTemporalsHeader() string {
 
 func (t *TAC) TemporalQuantity() int {
 	return len(t.temporals) + 1
+}
+
+func (t *TAC) NewLabel() string {
+	t.labels++
+	return fmt.Sprintf("L%d", t.labels)
 }
 
 func (t *TAC) AppendCode(instrucions []string, comment string) {

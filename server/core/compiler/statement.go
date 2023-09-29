@@ -13,5 +13,9 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.VariableAssignment())
 	}
 
+	if ctx.IfStatement() != nil {
+		return c.Visit(ctx.IfStatement())
+	}
+
 	return nil
 }
