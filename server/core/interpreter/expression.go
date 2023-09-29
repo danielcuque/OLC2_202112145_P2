@@ -104,25 +104,16 @@ func (v *Visitor) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 
 func (v *Visitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	expr := v.Visit(ctx.Expr()).(V.IValue)
-	/*
-		*Variable {
-			Value: *IntValue {
-				Value: 5
-			},
-			Type: Int
-		}
-	*/
-
 	value := expr.GetValue()
-	opType := expr.GetType()
+	valueType := expr.GetType()
 
-	if opType == V.IntType {
+	if valueType == V.IntType {
 		return V.NewIntValue(-value.(int))
-	} else if opType == V.FloatType {
+	} else if valueType == V.FloatType {
 		return V.NewFloatValue(-value.(float64))
 	}
 
-	v.NewError("No se puede aplicar el operador unario - a "+opType, ctx.GetStart())
+	v.NewError("No se puede aplicar el operador unario - a "+valueType, ctx.GetStart())
 	return nil
 }
 
