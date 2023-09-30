@@ -4,7 +4,7 @@ import "fmt"
 
 type TAC struct {
 	temporals []*Temporal
-	labels    int
+	labels    []*Label
 	code      string
 }
 
@@ -12,7 +12,7 @@ func NewTAC() *TAC {
 	return &TAC{
 		code:      "",
 		temporals: make([]*Temporal, 0),
-		labels:    0,
+		labels:    make([]*Label, 0),
 	}
 }
 
@@ -24,11 +24,10 @@ func (t *TAC) GetTemporalsHeader() string {
 	if t.TemporalQuantity() == 0 {
 		return ""
 	}
-
 	var code string
 	code += "float "
-	for i := 1; i < t.TemporalQuantity(); i++ {
-		code += fmt.Sprintf("t%d", i)
+	for i := 0; i < t.TemporalQuantity(); i++ {
+		code += fmt.Sprintf("t%d", i+1)
 		if i != t.TemporalQuantity()-1 {
 			code += ", "
 		}
@@ -41,9 +40,16 @@ func (t *TAC) TemporalQuantity() int {
 	return len(t.temporals) + 1
 }
 
-func (t *TAC) NewLabel() string {
-	t.labels++
-	return fmt.Sprintf("L%d", t.labels)
+func (t *TAC) LabelQuantity() int {
+	return len(t.labels) + 1
+}
+
+func (t *TAC) NewLabel() *Label {
+	label := NewLabel(
+		t.LabelQuantity(),
+	)
+	t.labels = append(t.labels, label)
+	return label
 }
 
 func (t *TAC) AppendCode(instrucions []string, comment string) {
@@ -53,7 +59,7 @@ func (t *TAC) AppendCode(instrucions []string, comment string) {
 	}
 
 	for _, instruction := range instrucions {
-		t.code += fmt.Sprintf("%s;\n", instruction)
+		t.code += fmt.Sprintf("%s\n", instruction)
 	}
 }
 

@@ -4,6 +4,8 @@ import (
 	I "OLC2/core/interpreter"
 	U "OLC2/core/utils"
 	"fmt"
+	"os"
+	"os/exec"
 )
 
 func main() {
@@ -17,8 +19,29 @@ func main() {
 	}
 
 	if compiler != nil {
-		fmt.Println(compiler.GetTAC())
-		// fmt.Println(len(compiler.TAC.GetTemporals()))
+		tac := compiler.GetTAC()
+
+		fmt.Println(tac)
+		err := os.WriteFile(
+			"./out/main.c",
+			[]byte(tac),
+			os.ModePerm,
+		)
+
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		cmd := exec.Command("gcc", "./out/main.c", "-o", "./out/main")
+		out, err := cmd.CombinedOutput()
+
+		if err != nil {
+			fmt.Println(err.Error())
+			fmt.Println(string(out))
+		} else {
+			fmt.Println(string(out))
+		}
+
 	}
 
 }

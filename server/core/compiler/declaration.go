@@ -26,7 +26,7 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 		c.TAC.NewTemporal(response.GetValue(), nil)
 		c.TAC.AppendCode(
 			[]string{
-				fmt.Sprintf("t%d = %s", c.TAC.TemporalQuantity(), response.GetValue()),
+				fmt.Sprintf("t%d = %s;", c.TAC.TemporalQuantity(), response.GetValue()),
 			},
 			"",
 		)
@@ -36,8 +36,8 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("stack[(int)P] = %s", response.GetValue()),
-			fmt.Sprintf("P = P + 1"),
+			fmt.Sprintf("stack[(int)P] = %s;", response.GetValue()),
+			fmt.Sprintf("P = P + 1;"),
 		},
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)

@@ -95,7 +95,7 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("%s = %s %s %s", response.GetValue(), l, op, r),
+			fmt.Sprintf("%s = %s %s %s;", response.GetValue(), l, op, r),
 		},
 		fmt.Sprintf("Operación aritmética %s", op))
 	return response
@@ -127,9 +127,9 @@ func (c *Compiler) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = H", c.TAC.TemporalQuantity()),
-			fmt.Sprintf("heap[(int)H] = %d", ctx.GetText()[1]),
-			fmt.Sprintf("H = H + 1"),
+			fmt.Sprintf("t%d = H;", c.TAC.TemporalQuantity()),
+			fmt.Sprintf("heap[(int)H] = %d;", ctx.GetText()[1]),
+			fmt.Sprintf("H = H + 1;"),
 		},
 		fmt.Sprintf("Almacenamiento de caracter '%d' en el heap", ctx.GetText()[1]),
 	)
@@ -149,8 +149,24 @@ func (c *Compiler) VisitComparasionExpr(ctx *parser.ComparasionExprContext) inte
 
 	op := ctx.GetOp().GetText()
 
-	fmt.Println(left.GetValue(), right.GetValue(), op)
-	return nil
+	trueLabel := c.TAC.NewLabel()
+	falseLabel := c.TAC.NewLabel()
+
+	// Generate TAC
+
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("if (%s %s %s) goto %s;", left.GetValue(), op, right.GetValue(), trueLabel.String()),
+			falseLabel.String() + ":",
+		},
+		fmt.Sprintf("Operación %s %s %s", left.GetValue(), op, right.GetValue()),
+	)
+
+	return &ValueResponse{
+		Type:         V.NilType,
+		Value:        trueLabel,
+		ContextValue: LabelType,
+	}
 }
 
 func (c *Compiler) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
@@ -173,7 +189,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = stack[(int)%d]", c.TAC.TemporalQuantity(), value.GetAddress()),
+			fmt.Sprintf("t%d = stack[(int)%d];", c.TAC.TemporalQuantity(), value.GetAddress()),
 		},
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
@@ -242,8 +258,8 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	for _, char := range s {
 		c.TAC.AppendCode(
 			[]string{
-				fmt.Sprintf("heap[(int)H] = %d", char),
-				fmt.Sprintf("H = H + 1"),
+				fmt.Sprintf("heap[(int)H] = %d;", char),
+				fmt.Sprintf("H = H + 1;"),
 			},
 			fmt.Sprintf("Almacenamiento de caracter '%s' en el heap", string(char)),
 		)
@@ -252,8 +268,8 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("heap[(int)H] = %d", -1),
-			fmt.Sprintf("H = H + 1"),
+			fmt.Sprintf("heap[(int)H] = %d;", -1),
+			fmt.Sprintf("H = H + 1;"),
 		},
 		fmt.Sprintf("Almacenamiento del caracter nulo en el heap"),
 	)
@@ -271,7 +287,7 @@ func (c *Compiler) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = %s * -1", c.TAC.TemporalQuantity(), response.GetValue()),
+			fmt.Sprintf("t%d = %s * -1;", c.TAC.TemporalQuantity(), response.GetValue()),
 		},
 		fmt.Sprintf("Operación aritmética %s", "-"),
 	)

@@ -28,6 +28,7 @@ const (
 	LiteralType  ContextValue = "literal"
 	TemporalType ContextValue = "temporal"
 	PointerType  ContextValue = "pointer"
+	LabelType    ContextValue = "label"
 )
 
 type ValueResponse struct {
