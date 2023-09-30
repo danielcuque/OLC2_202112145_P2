@@ -216,6 +216,10 @@ func (v *BaseSwiftVisitor) VisitIdExpr(ctx *IdExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSwiftVisitor) VisitComparisonExpr(ctx *ComparisonExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSwiftVisitor) VisitRangeExpr(ctx *RangeExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -245,10 +249,6 @@ func (v *BaseSwiftVisitor) VisitParExpr(ctx *ParExprContext) interface{} {
 }
 
 func (v *BaseSwiftVisitor) VisitStrExpr(ctx *StrExprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSwiftVisitor) VisitComparasionExpr(ctx *ComparasionExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

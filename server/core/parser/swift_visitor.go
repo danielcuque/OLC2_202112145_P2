@@ -164,6 +164,9 @@ type SwiftVisitor interface {
 	// Visit a parse tree produced by Swift#IdExpr.
 	VisitIdExpr(ctx *IdExprContext) interface{}
 
+	// Visit a parse tree produced by Swift#ComparisonExpr.
+	VisitComparisonExpr(ctx *ComparisonExprContext) interface{}
+
 	// Visit a parse tree produced by Swift#RangeExpr.
 	VisitRangeExpr(ctx *RangeExprContext) interface{}
 
@@ -187,9 +190,6 @@ type SwiftVisitor interface {
 
 	// Visit a parse tree produced by Swift#StrExpr.
 	VisitStrExpr(ctx *StrExprContext) interface{}
-
-	// Visit a parse tree produced by Swift#ComparasionExpr.
-	VisitComparasionExpr(ctx *ComparasionExprContext) interface{}
 
 	// Visit a parse tree produced by Swift#NotExpr.
 	VisitNotExpr(ctx *NotExprContext) interface{}

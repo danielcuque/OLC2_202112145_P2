@@ -8,4 +8,4 @@ cd grammar
 -Dlanguage=Go -o ../chore/parser/ Swift.g4 SwiftLexer.g4 -visitor -no-listener
 # antlr4 -Dlanguage=Go -o ../chore/parser/ Swift.g4 -visitor -no-listener
 
-java org.antlr.v4.Tool -Dlanguage=Go -o ../chore/parser/ Swift.g4 SwiftLexer.g4 -visitor -no-listener
+java org.antlr.v4.Tool -Dlanguage=Go -o ../core/parser/ Swift.g4 SwiftLexer.g4 -visitor -no-listener

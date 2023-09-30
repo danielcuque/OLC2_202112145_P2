@@ -28,7 +28,7 @@ func (c *Compiler) GetMain() string {
 	return code
 }
 
-func (c *Compiler) GetTAC() string {
+func (c *Compiler) String() string {
 	code := c.GetHeader()
 	code += c.TAC.GetTemporalsHeader()
 	code += fmt.Sprintf("\nint main(){\n%s\nreturn 0;\n}", c.TAC.GetCode())

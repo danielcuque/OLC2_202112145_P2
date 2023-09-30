@@ -222,7 +222,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 	return nil
 }
 
-func (v *Visitor) VisitComparasionExpr(ctx *parser.ComparasionExprContext) interface{} {
+func (v *Visitor) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interface{} {
 
 	// Parse left and right
 	lV, okL := v.Visit(ctx.GetLeft()).(V.IValue)

@@ -9160,6 +9160,114 @@ func (s *IdExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	}
 }
 
+type ComparisonExprContext struct {
+	ExprContext
+	left  IExprContext
+	op    antlr.Token
+	right IExprContext
+}
+
+func NewComparisonExprContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ComparisonExprContext {
+	var p = new(ComparisonExprContext)
+
+	InitEmptyExprContext(&p.ExprContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*ExprContext))
+
+	return p
+}
+
+func (s *ComparisonExprContext) GetOp() antlr.Token { return s.op }
+
+func (s *ComparisonExprContext) SetOp(v antlr.Token) { s.op = v }
+
+func (s *ComparisonExprContext) GetLeft() IExprContext { return s.left }
+
+func (s *ComparisonExprContext) GetRight() IExprContext { return s.right }
+
+func (s *ComparisonExprContext) SetLeft(v IExprContext) { s.left = v }
+
+func (s *ComparisonExprContext) SetRight(v IExprContext) { s.right = v }
+
+func (s *ComparisonExprContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ComparisonExprContext) AllExpr() []IExprContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IExprContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IExprContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IExprContext); ok {
+			tst[i] = t.(IExprContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *ComparisonExprContext) Expr(i int) IExprContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExprContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExprContext)
+}
+
+func (s *ComparisonExprContext) Op_GE() antlr.TerminalNode {
+	return s.GetToken(SwiftOp_GE, 0)
+}
+
+func (s *ComparisonExprContext) Op_GT() antlr.TerminalNode {
+	return s.GetToken(SwiftOp_GT, 0)
+}
+
+func (s *ComparisonExprContext) Op_LE() antlr.TerminalNode {
+	return s.GetToken(SwiftOp_LE, 0)
+}
+
+func (s *ComparisonExprContext) Op_LT() antlr.TerminalNode {
+	return s.GetToken(SwiftOp_LT, 0)
+}
+
+func (s *ComparisonExprContext) Op_EQ() antlr.TerminalNode {
+	return s.GetToken(SwiftOp_EQ, 0)
+}
+
+func (s *ComparisonExprContext) Op_NEQ() antlr.TerminalNode {
+	return s.GetToken(SwiftOp_NEQ, 0)
+}
+
+func (s *ComparisonExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case SwiftVisitor:
+		return t.VisitComparisonExpr(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
 type RangeExprContext struct {
 	ExprContext
 	left  IExprContext
@@ -9593,114 +9701,6 @@ func (s *StrExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case SwiftVisitor:
 		return t.VisitStrExpr(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
-type ComparasionExprContext struct {
-	ExprContext
-	left  IExprContext
-	op    antlr.Token
-	right IExprContext
-}
-
-func NewComparasionExprContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ComparasionExprContext {
-	var p = new(ComparasionExprContext)
-
-	InitEmptyExprContext(&p.ExprContext)
-	p.parser = parser
-	p.CopyAll(ctx.(*ExprContext))
-
-	return p
-}
-
-func (s *ComparasionExprContext) GetOp() antlr.Token { return s.op }
-
-func (s *ComparasionExprContext) SetOp(v antlr.Token) { s.op = v }
-
-func (s *ComparasionExprContext) GetLeft() IExprContext { return s.left }
-
-func (s *ComparasionExprContext) GetRight() IExprContext { return s.right }
-
-func (s *ComparasionExprContext) SetLeft(v IExprContext) { s.left = v }
-
-func (s *ComparasionExprContext) SetRight(v IExprContext) { s.right = v }
-
-func (s *ComparasionExprContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *ComparasionExprContext) AllExpr() []IExprContext {
-	children := s.GetChildren()
-	len := 0
-	for _, ctx := range children {
-		if _, ok := ctx.(IExprContext); ok {
-			len++
-		}
-	}
-
-	tst := make([]IExprContext, len)
-	i := 0
-	for _, ctx := range children {
-		if t, ok := ctx.(IExprContext); ok {
-			tst[i] = t.(IExprContext)
-			i++
-		}
-	}
-
-	return tst
-}
-
-func (s *ComparasionExprContext) Expr(i int) IExprContext {
-	var t antlr.RuleContext
-	j := 0
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IExprContext); ok {
-			if j == i {
-				t = ctx.(antlr.RuleContext)
-				break
-			}
-			j++
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IExprContext)
-}
-
-func (s *ComparasionExprContext) Op_GE() antlr.TerminalNode {
-	return s.GetToken(SwiftOp_GE, 0)
-}
-
-func (s *ComparasionExprContext) Op_GT() antlr.TerminalNode {
-	return s.GetToken(SwiftOp_GT, 0)
-}
-
-func (s *ComparasionExprContext) Op_LE() antlr.TerminalNode {
-	return s.GetToken(SwiftOp_LE, 0)
-}
-
-func (s *ComparasionExprContext) Op_LT() antlr.TerminalNode {
-	return s.GetToken(SwiftOp_LT, 0)
-}
-
-func (s *ComparasionExprContext) Op_EQ() antlr.TerminalNode {
-	return s.GetToken(SwiftOp_EQ, 0)
-}
-
-func (s *ComparasionExprContext) Op_NEQ() antlr.TerminalNode {
-	return s.GetToken(SwiftOp_NEQ, 0)
-}
-
-func (s *ComparasionExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case SwiftVisitor:
-		return t.VisitComparasionExpr(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -10424,8 +10424,8 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 				}
 
 			case 4:
-				localctx = NewComparasionExprContext(p, NewExprContext(p, _parentctx, _parentState))
-				localctx.(*ComparasionExprContext).left = _prevctx
+				localctx = NewComparisonExprContext(p, NewExprContext(p, _parentctx, _parentState))
+				localctx.(*ComparisonExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftRULE_expr)
 				p.SetState(502)
@@ -10439,14 +10439,14 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 
 					var _lt = p.GetTokenStream().LT(1)
 
-					localctx.(*ComparasionExprContext).op = _lt
+					localctx.(*ComparisonExprContext).op = _lt
 
 					_la = p.GetTokenStream().LA(1)
 
 					if !(_la == SwiftOp_GT || _la == SwiftOp_GE) {
 						var _ri = p.GetErrorHandler().RecoverInline(p)
 
-						localctx.(*ComparasionExprContext).op = _ri
+						localctx.(*ComparisonExprContext).op = _ri
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
 						p.Consume()
@@ -10457,12 +10457,12 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 
 					var _x = p.expr(16)
 
-					localctx.(*ComparasionExprContext).right = _x
+					localctx.(*ComparisonExprContext).right = _x
 				}
 
 			case 5:
-				localctx = NewComparasionExprContext(p, NewExprContext(p, _parentctx, _parentState))
-				localctx.(*ComparasionExprContext).left = _prevctx
+				localctx = NewComparisonExprContext(p, NewExprContext(p, _parentctx, _parentState))
+				localctx.(*ComparisonExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftRULE_expr)
 				p.SetState(505)
@@ -10476,14 +10476,14 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 
 					var _lt = p.GetTokenStream().LT(1)
 
-					localctx.(*ComparasionExprContext).op = _lt
+					localctx.(*ComparisonExprContext).op = _lt
 
 					_la = p.GetTokenStream().LA(1)
 
 					if !(_la == SwiftOp_LT || _la == SwiftOp_LE) {
 						var _ri = p.GetErrorHandler().RecoverInline(p)
 
-						localctx.(*ComparasionExprContext).op = _ri
+						localctx.(*ComparisonExprContext).op = _ri
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
 						p.Consume()
@@ -10494,12 +10494,12 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 
 					var _x = p.expr(15)
 
-					localctx.(*ComparasionExprContext).right = _x
+					localctx.(*ComparisonExprContext).right = _x
 				}
 
 			case 6:
-				localctx = NewComparasionExprContext(p, NewExprContext(p, _parentctx, _parentState))
-				localctx.(*ComparasionExprContext).left = _prevctx
+				localctx = NewComparisonExprContext(p, NewExprContext(p, _parentctx, _parentState))
+				localctx.(*ComparisonExprContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, SwiftRULE_expr)
 				p.SetState(508)
@@ -10513,14 +10513,14 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 
 					var _lt = p.GetTokenStream().LT(1)
 
-					localctx.(*ComparasionExprContext).op = _lt
+					localctx.(*ComparisonExprContext).op = _lt
 
 					_la = p.GetTokenStream().LA(1)
 
 					if !(_la == SwiftOp_EQ || _la == SwiftOp_NEQ) {
 						var _ri = p.GetErrorHandler().RecoverInline(p)
 
-						localctx.(*ComparasionExprContext).op = _ri
+						localctx.(*ComparisonExprContext).op = _ri
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
 						p.Consume()
@@ -10531,7 +10531,7 @@ func (p *Swift) expr(_p int) (localctx IExprContext) {
 
 					var _x = p.expr(14)
 
-					localctx.(*ComparasionExprContext).right = _x
+					localctx.(*ComparisonExprContext).right = _x
 				}
 
 			case 7:

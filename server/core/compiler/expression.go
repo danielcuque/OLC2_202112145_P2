@@ -143,7 +143,7 @@ func (c *Compiler) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
 	}
 }
 
-func (c *Compiler) VisitComparasionExpr(ctx *parser.ComparasionExprContext) interface{} {
+func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interface{} {
 	left := c.Visit(ctx.GetLeft()).(*ValueResponse)
 	right := c.Visit(ctx.GetRight()).(*ValueResponse)
 

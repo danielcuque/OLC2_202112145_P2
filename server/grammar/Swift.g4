@@ -185,9 +185,9 @@ expr:
 	| left = expr op = (Op_MUL | Op_DIV) right = expr				# ArithmeticExpr
 	| left = expr op = (Op_PLUS | Op_MINUS) right = expr			# ArithmeticExpr
 	| left = expr op = Op_MOD right = expr							# ArithmeticExpr
-	| left = expr op = (Op_GE | Op_GT) right = expr					# ComparasionExpr
-	| left = expr op = (Op_LE | Op_LT) right = expr					# ComparasionExpr
-	| left = expr op = (Op_EQ | Op_NEQ) right = expr				# ComparasionExpr
+	| left = expr op = (Op_GE | Op_GT) right = expr					# ComparisonExpr
+	| left = expr op = (Op_LE | Op_LT) right = expr					# ComparisonExpr
+	| left = expr op = (Op_EQ | Op_NEQ) right = expr				# ComparisonExpr
 	| condition = expr Op_TERNARY cTrue = expr COLON cFalse = expr	# TernaryExpr
 	| left = expr op = Op_AND right = expr							# LogicalExpr
 	| left = expr op = Op_OR right = expr							# LogicalExpr
