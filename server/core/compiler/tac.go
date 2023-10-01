@@ -5,6 +5,7 @@ import "fmt"
 type TAC struct {
 	temporals []*Temporal
 	labels    []*Label
+	standar   map[string]*Procedure
 	code      string
 }
 
@@ -13,6 +14,7 @@ func NewTAC() *TAC {
 		code:      "",
 		temporals: make([]*Temporal, 0),
 		labels:    make([]*Label, 0),
+		standar:   make(map[string]*Procedure),
 	}
 }
 
@@ -33,7 +35,7 @@ func (t *TAC) GetTemporalsHeader() string {
 		}
 	}
 	code += ";\n"
-	return code
+	return code + "\n"
 }
 
 func (t *TAC) TemporalQuantity() int {
@@ -63,7 +65,7 @@ func (t *TAC) AppendCode(instrucions []string, comment string) {
 	}
 }
 
-func (t *TAC) GetCode() string {
+func (t *TAC) String() string {
 	return t.code
 }
 
@@ -76,6 +78,22 @@ func (t *TAC) NewTemporal(value, castType interface{}) *Temporal {
 
 	t.temporals = append(t.temporals, temporal)
 	return temporal
+}
+
+func (t *TAC) AddProcedure(procedure *Procedure) {
+	t.standar[procedure.Name] = procedure
+}
+
+func (t *TAC) GetStandar(name string) *Procedure {
+	return t.standar[name]
+}
+
+func (t *TAC) GetProcudres() string {
+	var code string
+	for _, procedure := range t.standar {
+		code += fmt.Sprintf("%s\n", procedure)
+	}
+	return code
 }
 
 func (c *Compiler) GetHeader() string {

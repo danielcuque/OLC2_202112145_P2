@@ -13,24 +13,29 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	leftT := l.(*ValueResponse).GetType()
 	rightT := r.(*ValueResponse).GetType()
 
-	l = l.(*ValueResponse).GetValue()
-	r = r.(*ValueResponse).GetValue()
+	lV := l.(*ValueResponse).GetValue()
+	rV := r.(*ValueResponse).GetValue()
 
 	var response *ValueResponse
 
 	switch op {
 	case "+":
+
+		if leftT == V.StringType && rightT == V.StringType {
+			return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
+		}
+
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
 				Type:        V.IntType,
-				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", l, r), IntTemporal), // Temporal
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
 		}
 
 		response = &ValueResponse{
 			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", l, r), FloatTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", lV, rV), FloatTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 
@@ -38,14 +43,14 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
 				Type:        V.IntType,
-				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", l, r), IntTemporal), // Temporal
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
 		}
 
 		response = &ValueResponse{
 			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", l, r), FloatTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", lV, rV), FloatTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 
@@ -53,14 +58,14 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
 				Type:        V.IntType,
-				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", l, r), IntTemporal), // Temporal
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
 		}
 
 		response = &ValueResponse{
 			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", l, r), FloatTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", lV, rV), FloatTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 
@@ -74,28 +79,28 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 		if leftT == V.IntType && rightT == V.IntType {
 			response = &ValueResponse{
 				Type:        V.IntType,
-				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", l, r), IntTemporal), // Temporal
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
 		}
 
 		response = &ValueResponse{
 			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", l, r), FloatTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", lV, rV), FloatTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 
 	case "%":
 		response = &ValueResponse{
 			Type:        V.IntType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s %% %s", l, r), IntTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s %% %s", lV, rV), IntTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 	}
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("%s = %s %s %s;", response.GetValue(), l, op, r),
+			fmt.Sprintf("%s = %s %s %s;", response.GetValue(), lV, op, rV),
 		},
 		fmt.Sprintf("Operación aritmética %s", op))
 	return response

@@ -5,6 +5,13 @@
 // var varString = "COECYS"
 // let varChar: Character = 'a'
 
+// let var1 = "hola" + "mundo"
+
+var string = "que puto asco da" + "la usac"
+
+// var string2 = "prueba" + "de" + "concatenacion"
+// print(string)
+
 // let suma = 10 + numInt
 
 // var val1 = 7 - (5 + 10 * (2 + 4 * (5 + 2 * 3)) - 8 * 3 * 3) + 50 * (6 * 2)
@@ -15,11 +22,11 @@
 
 // var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
 
-var comparison1 =  (50 < 10) 
-var comparison2 = (10 > 5) 
-var comparison3 = (10 == 10) 
-var comparison4 = (10 != 10) 
-var comparison5 = (10 <= 10) 
-var comparison6 = (10 >= 10)
+// var comparison1 =  (50 < 10) 
+// var comparison2 = (10 > 5) 
+// var comparison3 = (10 == 10) 
+// var comparison4 = (10 != 10) 
+// var comparison5 = (10 <= 10) 
+// var comparison6 = (10 >= 10)
 
-var test1: Int?
+// var test1: Int?
