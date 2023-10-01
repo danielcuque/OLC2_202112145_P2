@@ -19,6 +19,19 @@ func (c *Compiler) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationCon
 	return c.DeclareValue(id, response)
 }
 
+func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
+	// The value will be nil
+	id := ctx.ID().GetText()
+
+	response := &ValueResponse{
+		Type:        ctx.VariableType().GetText(),
+		Value:       DefaultNil(),
+		ContextType: LiteralType,
+	}
+
+	return c.DeclareValue(id, response)
+}
+
 func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	if response.GetContextValue() == LiteralType {

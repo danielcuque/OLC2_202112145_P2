@@ -22,10 +22,4 @@ var comparison4 = (10 != 10)
 var comparison5 = (10 <= 10) 
 var comparison6 = (10 >= 10)
 
-// if numInt == 10 {
-//     if numInt == 20 {
-//         print("numInt es 20")
-//     } else {
-//         print("numInt no es 20")
-//     }
-// } 
+var test1: Int?

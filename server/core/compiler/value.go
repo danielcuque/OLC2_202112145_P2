@@ -22,19 +22,23 @@ func (v *Value) GetAddress() int {
 	return v.StackAddress
 }
 
-type ContextValue string
+type ContextType string
 
 const (
-	LiteralType  ContextValue = "literal"
-	TemporalType ContextValue = "temporal"
-	PointerType  ContextValue = "pointer"
-	LabelType    ContextValue = "label"
+	LiteralType  ContextType = "literal"
+	TemporalType ContextType = "temporal"
+	PointerType  ContextType = "pointer"
+	LabelType    ContextType = "label"
 )
 
+func DefaultNil() string {
+	return "9999999"
+}
+
 type ValueResponse struct {
-	Type         string
-	Value        interface{}
-	ContextValue ContextValue
+	Type        string
+	Value       interface{}
+	ContextType ContextType
 }
 
 func (v *ValueResponse) GetValue() interface{} {
@@ -45,8 +49,8 @@ func (v *ValueResponse) SetValue(value interface{}) {
 	v.Value = value
 }
 
-func (v *ValueResponse) GetContextValue() ContextValue {
-	return v.ContextValue
+func (v *ValueResponse) GetContextValue() ContextType {
+	return v.ContextType
 }
 
 func (v *ValueResponse) GetType() string {
