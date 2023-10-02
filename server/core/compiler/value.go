@@ -1,5 +1,9 @@
 package compiler
 
+import (
+	"fmt"
+)
+
 type Value struct {
 	Value        interface{}
 	StackAddress int
@@ -39,6 +43,19 @@ type ValueResponse struct {
 	Type        string
 	Value       interface{}
 	ContextType ContextType
+}
+
+func (v *ValueResponse) ToPrint() string {
+	if v.ContextType == TemporalType {
+		temporal := v.Value.(*Temporal)
+		return fmt.Sprintf("printf(\"%%%s\", %s);", temporal.Type, temporal.Cast())
+	}
+
+	if v.ContextType == LiteralType {
+		return fmt.Sprintf("printf(\"%s\", %s);", v.Type, v.Value)
+	}
+
+	return ""
 }
 
 func (v *ValueResponse) GetValue() interface{} {

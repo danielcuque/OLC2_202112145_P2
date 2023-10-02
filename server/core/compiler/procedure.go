@@ -5,19 +5,19 @@ import "fmt"
 type Procedure struct {
 	Name      string
 	Labels    map[string]*Label
-	Arguments map[string]*Argument
+	Arguments map[string]*Parameter
 	Code      string
 }
 
 func NewProcedure(name string) *Procedure {
 	return &Procedure{
 		Name:      name,
-		Arguments: make(map[string]*Argument),
+		Arguments: make(map[string]*Parameter),
 		Labels:    make(map[string]*Label),
 	}
 }
 
-func (p *Procedure) AddArguments(args []*Argument) {
+func (p *Procedure) AddArguments(args []*Parameter) {
 	for _, arg := range args {
 		p.Arguments[arg.Name] = arg
 	}
@@ -39,7 +39,7 @@ func (p *Procedure) AddLabels(labels []*Label) {
 	}
 }
 
-func (p *Procedure) GetArgument(name string) *Argument {
+func (p *Procedure) GetArgument(name string) *Parameter {
 	return p.Arguments[name]
 }
 
@@ -48,14 +48,20 @@ func (p *Procedure) GetLabel(name string) *Label {
 }
 
 func (p *Procedure) String() string {
-	return fmt.Sprintf("void %s(){\n%s \nreturn;\n}", p.Name, p.Code)
+	return fmt.Sprintf("void %s(){\n%s \nreturn;\n}\n", p.Name, p.Code)
 }
 
-type Argument struct {
+type Parameter struct {
 	Temporal *Temporal
 	Name     string
 }
 
-func (a *Argument) Tmp() string {
-	return a.Temporal.String()
+func (p *Parameter) Tmp() string {
+	return p.Temporal.String()
+}
+
+type Argument struct {
+	Name      string
+	Value     *ValueResponse
+	IsPointer bool
 }

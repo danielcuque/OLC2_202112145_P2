@@ -5,9 +5,9 @@ import "fmt"
 type TemporalCast string
 
 const (
-	FloatTemporal TemporalCast = "float"
-	IntTemporal   TemporalCast = "int"
-	CharTemporal  TemporalCast = "char"
+	FloatTemporal TemporalCast = "f"
+	IntTemporal   TemporalCast = "d"
+	CharTemporal  TemporalCast = "c"
 )
 
 type Temporal struct {
@@ -23,7 +23,15 @@ func NewTemporal(index int, Type TemporalCast) *Temporal {
 }
 
 func (t *Temporal) Cast() string {
-	return fmt.Sprintf("(%s)t%d", t.Type, t.ID)
+	switch t.Type {
+	case FloatTemporal:
+		return fmt.Sprintf("(float) t%d", t.ID)
+	case IntTemporal:
+		return fmt.Sprintf("(int) t%d", t.ID)
+	case CharTemporal:
+		return fmt.Sprintf("(char) t%d", t.ID)
+	}
+	return ""
 }
 
 func (t *Temporal) String() string {

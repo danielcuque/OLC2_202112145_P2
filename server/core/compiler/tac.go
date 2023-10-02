@@ -72,7 +72,7 @@ func (t *TAC) String() string {
 }
 
 func (t *TAC) NewTemporal(value, castType interface{}) *Temporal {
-	temporal := NewTemporal(t.TemporalQuantity(), FloatTemporal)
+	temporal := NewTemporal(t.TemporalQuantity()+1, FloatTemporal)
 
 	if castType != nil {
 		temporal.Type = castType.(TemporalCast)
