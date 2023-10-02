@@ -26,6 +26,7 @@ func (t *TAC) GetTemporalsHeader() string {
 	if t.TemporalQuantity() == 0 {
 		return ""
 	}
+
 	var code string
 	code += "float "
 	for i := 0; i < t.TemporalQuantity(); i++ {
@@ -39,16 +40,17 @@ func (t *TAC) GetTemporalsHeader() string {
 }
 
 func (t *TAC) TemporalQuantity() int {
-	return len(t.temporals) + 1
+	return len(t.temporals)
 }
 
 func (t *TAC) LabelQuantity() int {
 	return len(t.labels) + 1
 }
 
-func (t *TAC) NewLabel() *Label {
+func (t *TAC) NewLabel(name string) *Label {
 	label := NewLabel(
 		t.LabelQuantity(),
+		name,
 	)
 	t.labels = append(t.labels, label)
 	return label

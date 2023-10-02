@@ -36,21 +36,21 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	if response.GetContextValue() == LiteralType {
 
-		c.TAC.NewTemporal(response.GetValue(), nil)
+		newTemporal := c.TAC.NewTemporal(response.GetValue(), nil)
 		c.TAC.AppendCode(
 			[]string{
-				fmt.Sprintf("t%d = %s;", c.TAC.TemporalQuantity(), response.GetValue()),
+				fmt.Sprintf("%s = %s;", newTemporal, response.GetValue()),
 			},
 			"",
 		)
 
-		response.SetValue(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()))
+		response.SetValue(newTemporal)
 	}
 
 	c.TAC.AppendCode(
 		[]string{
 			fmt.Sprintf("stack[(int)P] = %s;", response.GetValue()),
-			fmt.Sprintf("P = P + 1;"),
+			"P = P + 1;",
 		},
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)

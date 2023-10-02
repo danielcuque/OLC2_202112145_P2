@@ -31,12 +31,12 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
-		}
-
-		response = &ValueResponse{
-			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", lV, rV), FloatTemporal), // Temporal
-			ContextType: TemporalType,
+		} else {
+			response = &ValueResponse{
+				Type:        V.FloatType,
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s + %s", lV, rV), FloatTemporal), // Temporal
+				ContextType: TemporalType,
+			}
 		}
 
 	case "-":
@@ -46,27 +46,28 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
-		}
-
-		response = &ValueResponse{
-			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", lV, rV), FloatTemporal), // Temporal
-			ContextType: TemporalType,
+		} else {
+			response = &ValueResponse{
+				Type:        V.FloatType,
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s - %s", lV, rV), FloatTemporal), // Temporal
+				ContextType: TemporalType,
+			}
 		}
 
 	case "*":
 		if leftT == V.IntType && rightT == V.IntType {
+
 			response = &ValueResponse{
 				Type:        V.IntType,
 				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
-		}
-
-		response = &ValueResponse{
-			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", lV, rV), FloatTemporal), // Temporal
-			ContextType: TemporalType,
+		} else {
+			response = &ValueResponse{
+				Type:        V.FloatType,
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s * %s", lV, rV), FloatTemporal), // Temporal
+				ContextType: TemporalType,
+			}
 		}
 
 	case "/":
@@ -82,12 +83,12 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", lV, rV), IntTemporal), // Temporal
 				ContextType: TemporalType,
 			}
-		}
-
-		response = &ValueResponse{
-			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", lV, rV), FloatTemporal), // Temporal
-			ContextType: TemporalType,
+		} else {
+			response = &ValueResponse{
+				Type:        V.FloatType,
+				Value:       c.TAC.NewTemporal(fmt.Sprintf("%s / %s", lV, rV), FloatTemporal), // Temporal
+				ContextType: TemporalType,
+			}
 		}
 
 	case "%":
@@ -134,7 +135,7 @@ func (c *Compiler) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
 		[]string{
 			fmt.Sprintf("t%d = H;", c.TAC.TemporalQuantity()),
 			fmt.Sprintf("heap[(int)H] = %d;", ctx.GetText()[1]),
-			fmt.Sprintf("H = H + 1;"),
+			"H = H + 1;",
 		},
 		fmt.Sprintf("Almacenamiento de caracter '%d' en el heap", ctx.GetText()[1]),
 	)
@@ -154,8 +155,8 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 
 	op := ctx.GetOp().GetText()
 
-	trueLabel := c.TAC.NewLabel()
-	falseLabel := c.TAC.NewLabel()
+	trueLabel := c.TAC.NewLabel("")
+	falseLabel := c.TAC.NewLabel("")
 
 	// Generate TAC
 
@@ -192,16 +193,18 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	value := c.Env.GetValue(id)
 
+	newTemporal := c.TAC.NewTemporal(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()), IntTemporal)
+
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = stack[(int)%d];", c.TAC.TemporalQuantity(), value.GetAddress()),
+			fmt.Sprintf("%s = stack[(int)%d];", newTemporal, value.GetAddress()),
 		},
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
 	return &ValueResponse{
 		Type:        V.IntType,
-		Value:       c.TAC.NewTemporal(fmt.Sprintf("stack[(int)P]"), IntTemporal),
+		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
 }
@@ -251,11 +254,11 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	s = strings.ReplaceAll(s, "\\t", "\t")
 
 	// Traverse string to insert chars in heap
-	initialPointer := c.HeapPointer.GetPointer()
+	newTemporal := c.TAC.NewTemporal(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()), IntTemporal)
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = H", c.TAC.TemporalQuantity()),
+			fmt.Sprintf("%s = H;", newTemporal),
 		},
 		"Obtención de la posición inicial del heap",
 	)
@@ -264,7 +267,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 		c.TAC.AppendCode(
 			[]string{
 				fmt.Sprintf("heap[(int)H] = %d;", char),
-				fmt.Sprintf("H = H + 1;"),
+				"H = H + 1;",
 			},
 			fmt.Sprintf("Almacenamiento de caracter '%s' en el heap", string(char)),
 		)
@@ -274,15 +277,15 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	c.TAC.AppendCode(
 		[]string{
 			fmt.Sprintf("heap[(int)H] = %d;", -1),
-			fmt.Sprintf("H = H + 1;"),
+			"H = H + 1;",
 		},
-		fmt.Sprintf("Almacenamiento del caracter nulo en el heap"),
+		"Almacenamiento del caracter nulo en el heap",
 	)
 	c.HeapPointer.AddPointer()
 
 	return &ValueResponse{
 		Type:        V.StringType,
-		Value:       c.TAC.NewTemporal(fmt.Sprintf("%d", initialPointer), IntTemporal),
+		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
 }

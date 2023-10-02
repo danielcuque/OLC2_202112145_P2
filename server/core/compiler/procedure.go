@@ -4,6 +4,7 @@ import "fmt"
 
 type Procedure struct {
 	Name      string
+	Labels    map[string]*Label
 	Arguments map[string]*Argument
 	Code      string
 }
@@ -12,11 +13,11 @@ func NewProcedure(name string) *Procedure {
 	return &Procedure{
 		Name:      name,
 		Arguments: make(map[string]*Argument),
+		Labels:    make(map[string]*Label),
 	}
 }
 
 func (p *Procedure) AddArguments(args []*Argument) {
-	// Append arguments
 	for _, arg := range args {
 		p.Arguments[arg.Name] = arg
 	}
@@ -32,17 +33,22 @@ func (p *Procedure) AddCode(instructions []string, comment string) {
 	}
 }
 
-func (p *Procedure) GetArgumentByName(name string) *Argument {
-	for _, arg := range p.Arguments {
-		if arg.Name == name {
-			return arg
-		}
+func (p *Procedure) AddLabels(labels []*Label) {
+	for _, label := range labels {
+		p.Labels[label.Name] = label
 	}
-	return nil
+}
+
+func (p *Procedure) GetArgument(name string) *Argument {
+	return p.Arguments[name]
+}
+
+func (p *Procedure) GetLabel(name string) *Label {
+	return p.Labels[name]
 }
 
 func (p *Procedure) String() string {
-	return fmt.Sprintf("void %s(){\n %s \nreturn;\n}", p.Name, p.Code)
+	return fmt.Sprintf("void %s(){\n%s \nreturn;\n}", p.Name, p.Code)
 }
 
 type Argument struct {

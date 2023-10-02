@@ -3,17 +3,23 @@ package compiler
 import "fmt"
 
 type Label struct {
-	ID int
+	Name string
+	ID   int
 }
 
-func NewLabel(id int) *Label {
+func NewLabel(id int, name string) *Label {
 	return &Label{
-		ID: id,
+		ID:   id,
+		Name: name,
 	}
 }
 
 func (l *Label) String() string {
 	return fmt.Sprintf("L%d", l.ID)
+}
+
+func (l *Label) Declare() string {
+	return fmt.Sprintf("%s:", l.String())
 }
 
 type LabelStack struct {
