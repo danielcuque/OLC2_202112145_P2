@@ -7,13 +7,13 @@ var internalFunction map[string]func(c *Compiler, ctx *parser.FunctionCallContex
 func GetInternalBuiltinFunctions(name string) func(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	if internalFunction == nil {
 		internalFunction = map[string]func(c *Compiler, ctx *parser.FunctionCallContext) interface{}{
-			"print": Print,
-			// "Int":        Int,
-			// "Float":      Float,
-			// "String":     String,
-			// "append":     Append,
-			// "removeLast": RemoveLast,
-			// "remove":     Remove,
+			"print":      Print,
+			"Int":        Int,
+			"Float":      Float,
+			"String":     String,
+			"append":     Append,
+			"removeLast": RemoveLast,
+			"remove":     Remove,
 		}
 	}
 	return internalFunction[name]

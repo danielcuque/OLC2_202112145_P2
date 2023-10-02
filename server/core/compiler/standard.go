@@ -266,3 +266,22 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	return nil
 }
+
+func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	return nil
+}
+func Float(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	return nil
+}
+func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	return nil
+}
+func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	return nil
+}
+func Remove(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	return nil
+}
+func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	return nil
+}

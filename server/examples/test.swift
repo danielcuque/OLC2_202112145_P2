@@ -22,7 +22,7 @@ print("El valor de val1 es:", val1, "sii")
 
 // var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
 
-// var comparison1 =  (50 < 10) 
+// var comparison1 =  50 < 10 
 // var comparison2 = (10 > 5) 
 // var comparison3 = (10 == 10) 
 // var comparison4 = (10 != 10) 
