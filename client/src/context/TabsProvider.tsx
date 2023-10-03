@@ -13,7 +13,7 @@ const INITIAL_TAB: TabI = {
   code: `// Bienvenido a T-Swift
 let hola = "Hola"
 let mundo = "Mundo"
-let palabra = hola + " " + mundo
+print(hola, mundo)
 `,
   name: "example.swift",
 };
@@ -60,16 +60,16 @@ export const TabsProvider: FC<TabsProviderProps> = ({ children }) => {
   const setParserAttributes = (
     symbols: TokenSymbol[],
     errors: ParserError[],
-    logs: unknown[],
-    ast: any
+    compiled: string,
+    optimized: string,
   ) => {
     dispatch({
       type: "UPDATE_SELECTED_TAB_PARSER",
       payload: {
-        errors,
-        ast,
         symbols,
-        logs,
+        errors,
+        compiled,
+        optimized,
       },
     });
   };

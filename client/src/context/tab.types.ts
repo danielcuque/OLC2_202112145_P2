@@ -10,7 +10,6 @@ export interface TabI extends FileI {
   parser?: {
     errors: ParserError[];
     symbols: TokenSymbol[];
-    logs: unknown[];
     compiled: string;
     optimized: string;
   };

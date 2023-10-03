@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { EditorContainer, NavbarEditor } from "../components";
+import { CompiledContainer, EditorContainer, NavbarEditor } from "../components";
 import { TabContext } from "../context";
 
 export const EditorPage = () => {
@@ -21,7 +21,10 @@ export const EditorPage = () => {
     <>
       <div className="flex flex-1 flex-col h-screen">
         <NavbarEditor tab={selectedTab} />
-        <EditorContainer tab={selectedTab} />
+        <div className="flex w-full h-full">
+          <EditorContainer tab={selectedTab} />
+          <CompiledContainer tab={selectedTab} />
+        </div>
       </div>
     </>
   );

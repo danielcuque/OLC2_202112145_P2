@@ -12,7 +12,6 @@ import (
 type Resp struct {
 	Errors    []*E.VisitorError `json:"errors"`
 	Symbols   []I.ApiObject     `json:"symbols"`
-	Logs      []string          `json:"logs"`
 	Compiled  string            `json:"compiled"`
 	Optimized string            `json:"optimized"`
 }
@@ -23,13 +22,18 @@ func HandleVisitor(c *fiber.Ctx) error {
 
 	code := c.FormValue("code")
 
-	_, checker := I.NewEvaluator(code)
+	compiler, checker := I.NewEvaluator(code)
+
+	compiled := ""
+
+	if !checker.HasErrors() {
+		compiled = compiler.String()
+	}
 
 	response := Resp{
 		Symbols:   checker.Env.GetSymbolTable(),
-		Errors:    checker.Errors,
-		Logs:      []string{},
-		Compiled:  "",
+		Errors:    checker.GetErrors(),
+		Compiled:  compiled,
 		Optimized: "",
 	}
 

@@ -20,10 +20,10 @@ type TabsActionType =
   | {
     type: "UPDATE_SELECTED_TAB_PARSER";
     payload: {
-      errors: ParserError[];
-      ast: string;
       symbols: TokenSymbol[];
-      logs: unknown[];
+      errors: ParserError[];
+      compiled: string;
+      optimized: string;
     };
   };
 
@@ -76,9 +76,9 @@ export const tabsReducer = (
               ...tab,
               parser: {
                 errors: [...action.payload.errors],
-                cst: action.payload.ast,
+                compiled: action.payload.compiled,
+                optimized: action.payload.optimized,
                 symbols: [...action.payload.symbols],
-                logs: [...action.payload.logs],
               },
             };
           }
@@ -88,9 +88,9 @@ export const tabsReducer = (
           ...state.selectedTab,
           parser: {
             errors: [...action.payload.errors],
-            cst: action.payload.ast,
+            compiled: action.payload.compiled,
+            optimized: action.payload.optimized,
             symbols: [...action.payload.symbols],
-            logs: [...action.payload.logs],
           },
         },
       };

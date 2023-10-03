@@ -21,6 +21,6 @@ export const fetchAPI = async (code: string) => {
 interface CompileResponse {
     symbols: TokenSymbol[];
     errors: ParserError[];
-    logs: string[];
-    cst: string;
+    compiled: string;
+    optimized: string;
 }

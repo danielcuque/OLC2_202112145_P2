@@ -11,7 +11,6 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
   const { updateSelectedTabCode } = useContext(TabContext);
 
   const code = tab.code;
-  const logs = tab.parser?.logs || [];
 
   const onChange = (value: string | undefined) => {
     updateSelectedTabCode(value || "");
@@ -28,11 +27,11 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
 
   return (
     <>
-      <div className="w-full h-full">
-        <div className="flex h-[500px] w-full">
+      <div className="w-1/2 h-full">
+        <div className="flex h-full w-full">
           <Editor
             height="100%"
-            width="50%"
+            width="100%"
             theme="vs-dark"
             defaultLanguage="swift"
             language="swift"
@@ -40,44 +39,7 @@ export const EditorContainer: FC<EditorContainerProps> = ({ tab }) => {
             onChange={onChange}
             onMount={handleEditorDidMount}
           />
-          <Editor
-            height="100%"
-            width="50%"
-            theme="vs-dark"
-            defaultLanguage="c"
-            language="c"
-            value={
-              tab.parser?.compiled ||
-              `#include <stdio.h>
-              
-int main() {
-  const char* hola = "Hola";
-  const char* mundo = "Mundo";
-  printf("%s %s", hola, mundo);
-  return 0;
-}`
-            }
-            options={{ readOnly: true }}
-          />
-
           
-        </div>
-        <div className="w-full h-[calc(100vh-560px)]">
-          <div className="flex gap-2 text-gray-7 font-semibold px-2 items-center">
-            Consola
-            {logs.length > 0 && (
-              <span className="flex bg-blue-500 w-5 h-5 rounded-full text-xs font-normal text-white text-center justify-center items-center">
-                {logs.length > 99 ? "99+" : logs.length}
-              </span>
-            )}
-          </div>
-          <div className="h-full overflow-y-auto">
-            <textarea
-              value={logs.join("\n")}
-              className="h-full w-full bg-gray-2 text-white p-1"
-              readOnly
-            ></textarea>
-          </div>
         </div>
       </div>
     </>

@@ -19,8 +19,8 @@ export const RunButton = ({ tab }: ItemsProps) => {
         setParserAttributes(
           result.symbols,
           result.errors,
-          result.logs,
-          result.cst,
+          result.compiled,
+          result.optimized,
         );
       if (result.errors.length > 0) {
         toast.error("Error al compilar");

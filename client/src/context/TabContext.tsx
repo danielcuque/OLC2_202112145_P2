@@ -10,8 +10,8 @@ interface TabContextProps extends TabState {
   setParserAttributes: (
     symbols: TokenSymbol[],
     errors: ParserError[],
-    logs: unknown[],
-    ast: string | undefined
+    compiledCode: string,
+    optimizedCode: string,
   ) => void;
 }
 

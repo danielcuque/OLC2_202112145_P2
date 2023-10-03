@@ -5,7 +5,7 @@
 // var varString = "COECYS"
 // let varChar: Character = 'a'
 
-// let var1 = "hola" + "mundo"
+let var1 = "hola" + "mundo"
 
 // var string = "prueba" + "de concatenacion" + "de strings"
 
@@ -22,5 +22,5 @@ var val4 = -10;
 
 // var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
 
-var comparison1 =  10 > 1 
-print("el valor de comparison1 es:", comparison1, "y de val4 es:", val4, "y deberia ser", -10)
+// var comparison1 =  10 > 1 
+// print("el valor de comparison1 es:", comparison1, "y de val4 es:", val4, "y deberia ser", -10)

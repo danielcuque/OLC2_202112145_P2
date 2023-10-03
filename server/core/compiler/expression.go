@@ -2,7 +2,6 @@ package compiler
 
 import (
 	"OLC2/core/parser"
-	V "OLC2/core/values"
 	"fmt"
 	"strings"
 
@@ -16,23 +15,25 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	lV := l.(*ValueResponse).GetValue()
 	rV := r.(*ValueResponse).GetValue()
 
+	fmt.Println(lV, rV)
+
 	var response *ValueResponse
 
-	if leftT == V.StringType && rightT == V.StringType {
+	if leftT == StringTemporal && rightT == StringTemporal {
 		return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
 	}
 
-	if leftT == V.IntType && rightT == V.IntType {
+	if leftT == IntTemporal && rightT == IntTemporal {
 		response = &ValueResponse{
-			Type:        V.IntType,
+			Type:        IntTemporal,
 			Value:       c.TAC.NewTemporal(IntTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 	}
 
-	if leftT == V.FloatType || rightT == V.FloatType {
+	if leftT == FloatTemporal || rightT == FloatTemporal {
 		response = &ValueResponse{
-			Type:        V.FloatType,
+			Type:        FloatTemporal,
 			Value:       c.TAC.NewTemporal(FloatTemporal), // Temporal
 			ContextType: TemporalType,
 		}
@@ -61,7 +62,7 @@ func (c *Compiler) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 	}
 
 	return &ValueResponse{
-		Type:        V.BooleanType,
+		Type:        BooleanTemporal,
 		Value:       value,
 		ContextType: LiteralType,
 	}
@@ -138,7 +139,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	value := c.Env.GetValue(id)
 
-	newTemporal := c.TAC.NewTemporal(IntTemporal)
+	newTemporal := c.TAC.NewTemporal(value.GetType())
 
 	c.TAC.AppendCode(
 		[]string{

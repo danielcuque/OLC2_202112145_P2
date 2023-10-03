@@ -82,3 +82,11 @@ func (v *Visitor) GetLogs() string {
 	}
 	return logs
 }
+
+func (v *Visitor) HasErrors() bool {
+	return len(v.Errors) > 0
+}
+
+func (v *Visitor) GetErrors() []*E.VisitorError {
+	return v.Errors
+}
