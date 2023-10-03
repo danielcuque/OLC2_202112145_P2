@@ -35,7 +35,6 @@ func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inte
 func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	if response.GetContextValue() == LiteralType {
-
 		newTemporal := c.TAC.NewTemporal(response.GetValue(), nil)
 		c.TAC.AppendCode(
 			[]string{
@@ -45,6 +44,29 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 		)
 
 		response.SetValue(newTemporal)
+	}
+
+	if response.GetContextValue() == LabelType {
+		// This response have true and false labels
+
+		result := c.TAC.NewTemporal("", BooleanTemporal)
+
+		labelStack := response.GetValue().(*LabelStack)
+		exitLabel := c.TAC.NewLabel("")
+
+		c.TAC.AppendCode(
+			[]string{
+				c.DeclareLabels(labelStack.TrueLabel),
+				fmt.Sprintf("%s = 1;", result),
+				fmt.Sprintf("goto %s;", exitLabel),
+				c.DeclareLabels(labelStack.FalseLabel),
+				fmt.Sprintf("%s = 0;", result),
+				exitLabel.Declare(),
+			},
+			"",
+		)
+
+		response.SetValue(result)
 	}
 
 	c.TAC.AppendCode(

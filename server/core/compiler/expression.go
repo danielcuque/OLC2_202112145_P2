@@ -107,9 +107,14 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 		fmt.Sprintf("Operación %s %s %s", left.GetValue(), op, right.GetValue()),
 	)
 
+	newLabelStack := NewLabelStack()
+
+	newLabelStack.PushTrueLabel(trueLabel)
+	newLabelStack.PushFalseLabel(falseLabel)
+
 	return &ValueResponse{
-		Type:        V.NilType,
-		Value:       trueLabel,
+		Type:        V.BooleanType,
+		Value:       newLabelStack,
 		ContextType: LabelType,
 	}
 }

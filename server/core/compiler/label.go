@@ -23,7 +23,7 @@ func (l *Label) Declare() string {
 }
 
 type LabelStack struct {
-	// Here, we save TrueLabels, FalseLabels, ExitLabels
+	C3D        string
 	TrueLabel  []*Label
 	FalseLabel []*Label
 	ExitLabel  []*Label
@@ -113,4 +113,14 @@ func (l *LabelStack) GetFalseLabelCount() int {
 
 func (l *LabelStack) GetExitLabelCount() int {
 	return len(l.ExitLabel)
+}
+
+func (c *Compiler) DeclareLabels(labels []*Label) string {
+	var code string
+
+	for _, label := range labels {
+		code += label.Declare() + "\n"
+	}
+
+	return code
 }

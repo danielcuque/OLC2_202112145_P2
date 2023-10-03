@@ -6,6 +6,75 @@ import (
 	"fmt"
 )
 
+func (c *Compiler) PrintString(name string) {
+	newProcedure := NewProcedure(name)
+
+	newProcedure.AddArguments(
+		[]*Parameter{
+			{
+				Name:     "HeapPointer",
+				Temporal: c.TAC.NewTemporal("p", IntTemporal),
+			},
+			{
+				Name:     "AccessChar",
+				Temporal: c.TAC.NewTemporal("q", IntTemporal),
+			},
+		},
+	)
+
+	newProcedure.AddLabels(
+		[]*Label{
+			c.TAC.NewLabel("StartString"),
+			c.TAC.NewLabel("EndString"),
+		},
+	)
+
+	// Add code
+
+	newProcedure.AddCode(
+		[]string{
+			// Declare start of string
+			newProcedure.GetLabel("StartString").Declare(),
+
+			// Get char from string
+			fmt.Sprintf(
+				"%v = heap[%v];",
+				newProcedure.GetArgument("AccessChar").Tmp(),
+				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
+			),
+
+			// If char is -1, then go to end of string
+			fmt.Sprintf(
+				"if (%v == -1) goto %s;",
+				newProcedure.GetArgument("AccessChar").Tmp(),
+				newProcedure.GetLabel("EndString"),
+			),
+
+			// Print char
+			fmt.Sprintf(
+				"printf(\"%%c\",(int) %v);",
+				newProcedure.GetArgument("AccessChar").Tmp(),
+			),
+
+			// Increase pointer to access char
+			fmt.Sprintf(
+				"%v = %v + 1;",
+				newProcedure.GetArgument("HeapPointer").Tmp(),
+				newProcedure.GetArgument("HeapPointer").Tmp(),
+			),
+
+			// Go to first label
+			fmt.Sprintf("goto %s;", newProcedure.GetLabel("StartString").String()),
+
+			// Declare end of string
+			newProcedure.GetLabel("EndString").Declare(),
+		},
+		"",
+	)
+
+	c.TAC.AddProcedure(newProcedure)
+}
+
 func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 	procedure := c.TAC.GetStandar("stdconcat")
 
@@ -156,78 +225,15 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	// All args will be Value responses, we will traverse them to get the value, if the value is a string, we use strpint, then we use just printf("%type", value)
 
+	printString := "stdprint"
+
 	for _, arg := range c.GetArgs(ctx) {
 		if arg.Value.Type == V.StringType {
 			// Standar print will be for strings
 			procedure := c.TAC.GetStandar("stdprint")
 
 			if procedure == nil {
-				newProcedure := NewProcedure("stdprint")
-
-				newProcedure.AddArguments(
-					[]*Parameter{
-						{
-							Name:     "HeapPointer",
-							Temporal: c.TAC.NewTemporal("p", IntTemporal),
-						},
-						{
-							Name:     "AccessChar",
-							Temporal: c.TAC.NewTemporal("q", IntTemporal),
-						},
-					},
-				)
-
-				newProcedure.AddLabels(
-					[]*Label{
-						c.TAC.NewLabel("StartString"),
-						c.TAC.NewLabel("EndString"),
-					},
-				)
-
-				// Add code
-
-				newProcedure.AddCode(
-					[]string{
-						// Declare start of string
-						newProcedure.GetLabel("StartString").Declare(),
-
-						// Get char from string
-						fmt.Sprintf(
-							"%v = heap[%v];",
-							newProcedure.GetArgument("AccessChar").Tmp(),
-							newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
-						),
-
-						// If char is -1, then go to end of string
-						fmt.Sprintf(
-							"if (%v == -1) goto %s;",
-							newProcedure.GetArgument("AccessChar").Tmp(),
-							newProcedure.GetLabel("EndString"),
-						),
-
-						// Print char
-						fmt.Sprintf(
-							"printf(\"%%c\",(int) %v);",
-							newProcedure.GetArgument("AccessChar").Tmp(),
-						),
-
-						// Increase pointer to access char
-						fmt.Sprintf(
-							"%v = %v + 1;",
-							newProcedure.GetArgument("HeapPointer").Tmp(),
-							newProcedure.GetArgument("HeapPointer").Tmp(),
-						),
-
-						// Go to first label
-						fmt.Sprintf("goto %s;", newProcedure.GetLabel("StartString").String()),
-
-						// Declare end of string
-						newProcedure.GetLabel("EndString").Declare(),
-					},
-					"",
-				)
-
-				c.TAC.AddProcedure(newProcedure)
+				c.PrintString(printString)
 			}
 
 			procedure = c.TAC.GetStandar("stdprint")

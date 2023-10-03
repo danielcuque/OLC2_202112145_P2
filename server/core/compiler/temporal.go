@@ -5,9 +5,10 @@ import "fmt"
 type TemporalCast string
 
 const (
-	FloatTemporal TemporalCast = "f"
-	IntTemporal   TemporalCast = "d"
-	CharTemporal  TemporalCast = "c"
+	FloatTemporal   TemporalCast = "f"
+	IntTemporal     TemporalCast = "d"
+	CharTemporal    TemporalCast = "c"
+	BooleanTemporal TemporalCast = "b"
 )
 
 type Temporal struct {
