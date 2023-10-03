@@ -84,7 +84,7 @@ type Parameter struct {
 }
 
 func (p *Parameter) String() string {
-	return fmt.Sprintf("%s", p.InternalName)
+	return p.InternalName
 }
 
 type Argument struct {

@@ -5,7 +5,7 @@
 // var varString = "COECYS"
 // let varChar: Character = 'a'
 
-let var1 = "hola" + "mundo"
+let var1 = "hola" + " " + "mundo"
 
 // var string = "prueba" + "de concatenacion" + "de strings"
 

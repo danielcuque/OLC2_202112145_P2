@@ -152,14 +152,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 		if leftT == V.StringType && rightT == V.StringType {
 			return V.NewStringValue(l.(string) + r.(string))
 		}
-		// Sumamos string con char
-		if leftT == V.StringType && rightT == V.CharType {
-			return V.NewStringValue(l.(string) + string(r.(rune)))
-		}
-		// Sumamos char con string
-		if leftT == V.CharType && rightT == V.StringType {
-			return V.NewStringValue(string(l.(rune)) + r.(string))
-		}
+
 		v.NewError("No se puede sumar "+leftT+" con "+rightT, lc)
 	case "-":
 		if leftT == V.IntType && rightT == V.IntType {
