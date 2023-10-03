@@ -18,8 +18,6 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	var response *ValueResponse
 
-	fmt.Println(leftT, rightT)
-
 	if leftT == V.StringType && rightT == V.StringType {
 		return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
 	}
@@ -27,7 +25,7 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	if leftT == V.IntType && rightT == V.IntType {
 		response = &ValueResponse{
 			Type:        V.IntType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s %s %s", lV, op, rV), IntTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(IntTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 	}
@@ -35,12 +33,11 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	if leftT == V.FloatType || rightT == V.FloatType {
 		response = &ValueResponse{
 			Type:        V.FloatType,
-			Value:       c.TAC.NewTemporal(fmt.Sprintf("%s %s %s", lV, op, rV), FloatTemporal), // Temporal
+			Value:       c.TAC.NewTemporal(FloatTemporal), // Temporal
 			ContextType: TemporalType,
 		}
 	}
 
-	fmt.Println("aaaaaaaaaaa")
 	c.TAC.AppendCode(
 		[]string{
 			fmt.Sprintf("%s = %s %s %s;", response.GetValue(), lV, op, rV),
@@ -71,11 +68,12 @@ func (c *Compiler) VisitBoolExpr(ctx *parser.BoolExprContext) interface{} {
 }
 
 func (c *Compiler) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
-	initialPointer := c.HeapPointer.GetPointer()
+
+	newTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = H;", c.TAC.TemporalQuantity()),
+			fmt.Sprintf("%s = H;", newTemporal),
 			fmt.Sprintf("heap[(int)H] = %d;", ctx.GetText()[1]),
 			"H = H + 1;",
 		},
@@ -85,8 +83,8 @@ func (c *Compiler) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
 	c.HeapPointer.AddPointer()
 
 	return &ValueResponse{
-		Type:        V.CharType,
-		Value:       c.TAC.NewTemporal(fmt.Sprintf("%d", initialPointer), IntTemporal),
+		Type:        CharTemporal,
+		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
 }
@@ -116,7 +114,7 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 	newLabelStack.PushFalseLabel(falseLabel)
 
 	return &ValueResponse{
-		Type:        V.BooleanType,
+		Type:        BooleanTemporal,
 		Value:       newLabelStack,
 		ContextType: LabelType,
 	}
@@ -124,7 +122,7 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 
 func (c *Compiler) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
 	return &ValueResponse{
-		Type:        V.FloatType,
+		Type:        FloatTemporal,
 		Value:       ctx.GetText(),
 		ContextType: LiteralType,
 	}
@@ -140,7 +138,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	value := c.Env.GetValue(id)
 
-	newTemporal := c.TAC.NewTemporal(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()), IntTemporal)
+	newTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendCode(
 		[]string{
@@ -158,7 +156,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
 	return &ValueResponse{
-		Type:        V.IntType,
+		Type:        IntTemporal,
 		Value:       ctx.GetText(),
 		ContextType: LiteralType,
 	}
@@ -187,7 +185,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 
 	if len(s) == 1 {
 		return &ValueResponse{
-			Type:        V.CharType,
+			Type:        CharTemporal,
 			Value:       fmt.Sprintf("%d", s[0]),
 			ContextType: LiteralType,
 		}
@@ -201,7 +199,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	s = strings.ReplaceAll(s, "\\t", "\t")
 
 	// Traverse string to insert chars in heap
-	newTemporal := c.TAC.NewTemporal(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()), IntTemporal)
+	newTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendCode(
 		[]string{
@@ -231,7 +229,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	c.HeapPointer.AddPointer()
 
 	return &ValueResponse{
-		Type:        V.StringType,
+		Type:        StringTemporal,
 		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
@@ -240,7 +238,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 func (c *Compiler) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
-	newTemporal := c.TAC.NewTemporal("", response.GetType())
+	newTemporal := c.TAC.NewTemporal(response.GetType())
 
 	c.TAC.AppendCode(
 		[]string{

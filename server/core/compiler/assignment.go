@@ -17,7 +17,7 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	value := c.Env.GetValue(id)
 
 	// Value have stack address
-	c.TAC.NewTemporal(response.GetValue(), nil)
+	c.TAC.NewTemporal(response.GetType())
 	c.TAC.AppendCode(
 		[]string{
 			fmt.Sprintf("t%d = %s", c.TAC.TemporalQuantity(), response.GetValue()),

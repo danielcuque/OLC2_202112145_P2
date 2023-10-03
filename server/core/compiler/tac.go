@@ -71,7 +71,7 @@ func (t *TAC) String() string {
 	return t.code
 }
 
-func (t *TAC) NewTemporal(value, castType interface{}) *Temporal {
+func (t *TAC) NewTemporal(castType interface{}) *Temporal {
 	temporal := NewTemporal(t.TemporalQuantity()+1, FloatTemporal)
 
 	if castType != nil {

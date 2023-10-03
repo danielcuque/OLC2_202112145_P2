@@ -13,7 +13,7 @@ func (c *Compiler) PrintBool(name string) {
 		[]*Parameter{
 			{
 				Name:     "HeapPointer",
-				Temporal: c.TAC.NewTemporal("p", IntTemporal),
+				Temporal: c.TAC.NewTemporal(IntTemporal),
 			},
 		},
 	)
@@ -64,11 +64,11 @@ func (c *Compiler) PrintString(name string) {
 		[]*Parameter{
 			{
 				Name:     "HeapPointer",
-				Temporal: c.TAC.NewTemporal("p", IntTemporal),
+				Temporal: c.TAC.NewTemporal(IntTemporal),
 			},
 			{
 				Name:     "AccessChar",
-				Temporal: c.TAC.NewTemporal("q", IntTemporal),
+				Temporal: c.TAC.NewTemporal(IntTemporal),
 			},
 		},
 	)
@@ -135,19 +135,19 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 			[]*Parameter{
 				{
 					Name:     "HeapPointer",
-					Temporal: c.TAC.NewTemporal("p", IntTemporal),
+					Temporal: c.TAC.NewTemporal(IntTemporal),
 				},
 				{
 					Name:     "leftOp",
-					Temporal: c.TAC.NewTemporal("q", IntTemporal),
+					Temporal: c.TAC.NewTemporal(IntTemporal),
 				},
 				{
 					Name:     "rightOp",
-					Temporal: c.TAC.NewTemporal("r", IntTemporal),
+					Temporal: c.TAC.NewTemporal(IntTemporal),
 				},
 				{
 					Name:     "AccessChar",
-					Temporal: c.TAC.NewTemporal("s", IntTemporal),
+					Temporal: c.TAC.NewTemporal(IntTemporal),
 				},
 			},
 		)
@@ -274,7 +274,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	for _, arg := range c.GetArgs(ctx) {
-		if arg.Value.Type == V.StringType {
+		if arg.Value.Type == StringTemporal {
 
 			if c.TAC.GetStandar("stdprint") == nil {
 				c.PrintString("stdprint")
@@ -290,7 +290,7 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 				"Imprimiendo cadena",
 			)
 
-		} else if arg.Value.Type == V.BooleanType {
+		} else if arg.Value.Type == BooleanTemporal {
 
 			if c.TAC.GetStandar("stdprintbool") == nil {
 				c.PrintBool("stdprintbool")

@@ -56,7 +56,7 @@ func (v *ValueResponse) ToPrint() string {
 	}
 
 	if v.ContextType == LiteralType {
-		return fmt.Sprintf("printf(\"%s\", %s);", v.Type, v.Value)
+		return fmt.Sprintf("printf(\"%%%s\", %s);", v.Type, v.Value)
 	}
 
 	return ""
