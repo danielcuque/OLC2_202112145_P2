@@ -26,6 +26,10 @@ func (v *Value) GetAddress() int {
 	return v.StackAddress
 }
 
+func (v *Value) GetType() TemporalCast {
+	return v.Type
+}
+
 type ContextType string
 
 const (
@@ -40,7 +44,7 @@ func DefaultNil() string {
 }
 
 type ValueResponse struct {
-	Type        string
+	Type        TemporalCast
 	Value       interface{}
 	ContextType ContextType
 }
@@ -70,6 +74,6 @@ func (v *ValueResponse) GetContextValue() ContextType {
 	return v.ContextType
 }
 
-func (v *ValueResponse) GetType() string {
+func (v *ValueResponse) GetType() TemporalCast {
 	return v.Type
 }

@@ -9,6 +9,7 @@ const (
 	IntTemporal     TemporalCast = "d"
 	CharTemporal    TemporalCast = "c"
 	BooleanTemporal TemporalCast = "b"
+	StringTemporal  TemporalCast = "s"
 )
 
 type Temporal struct {

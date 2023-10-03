@@ -24,7 +24,7 @@ func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inte
 	id := ctx.ID().GetText()
 
 	response := &ValueResponse{
-		Type:        ctx.VariableType().GetText(),
+		Type:        c.Visit(ctx.VariableType()).(TemporalCast),
 		Value:       DefaultNil(),
 		ContextType: LiteralType,
 	}
@@ -77,7 +77,7 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 
-	newValue := NewValue(response.GetValue(), c.StackPointer.GetPointer(), TemporalCast(response.GetType()))
+	newValue := NewValue(response.GetValue(), c.StackPointer.GetPointer(), response.GetType())
 
 	c.StackPointer.AddPointer()
 

@@ -17,9 +17,10 @@
 // print("El valor de val1 es:", val1, "sii")
 // var val2 = (2 * 2 * 2 * 2) - 9 - (8 - 6 + (3 * 3 - 6 * 5 - 7 - (9 + 7 * 7 * 7) + 10) - 5) + 8 - (6 - 5 * (2 * 3))
 // var val3 = val1 + ((2 + val2 * 3) + 1 - ((2 * 2 * 2) - 2) * 2) - 2
-// var val4 = -10;
+var val4 = -10;
 // var val5 = -val4;
 
 // var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
 
 var comparison1 =  10 > 1 
+print("el valor de comparison1 es:", comparison1, "y de val4 es:", val4, "y debería ser")

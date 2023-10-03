@@ -6,6 +6,57 @@ import (
 	"fmt"
 )
 
+func (c *Compiler) PrintBool(name string) {
+	newProcedure := NewProcedure(name)
+
+	newProcedure.AddArguments(
+		[]*Parameter{
+			{
+				Name:     "HeapPointer",
+				Temporal: c.TAC.NewTemporal("p", IntTemporal),
+			},
+		},
+	)
+
+	newProcedure.AddLabels(
+		[]*Label{
+			c.TAC.NewLabel("True"),
+			c.TAC.NewLabel("False"),
+			c.TAC.NewLabel("EndBool"),
+		},
+	)
+
+	// Add code
+
+	newProcedure.AddCode(
+		[]string{
+			fmt.Sprintf(
+				"if (%v == 1) goto %s;",
+				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
+				newProcedure.GetLabel("True").String(),
+			),
+			fmt.Sprintf("goto %s;", newProcedure.GetLabel("False").String()),
+			newProcedure.GetLabel("True").Declare(),
+			"printf(\"%c\", (char) 116);",
+			"printf(\"%c\", (char) 114);",
+			"printf(\"%c\", (char) 117);",
+			"printf(\"%c\", (char) 101);",
+			fmt.Sprintf("goto %s;", newProcedure.GetLabel("EndBool")),
+			newProcedure.GetLabel("False").Declare(),
+			"printf(\"%c\", (char) 102);",
+			"printf(\"%c\", (char) 97);",
+			"printf(\"%c\", (char) 108);",
+			"printf(\"%c\", (char) 115);",
+			"printf(\"%c\", (char) 101);",
+			newProcedure.GetLabel("EndBool").Declare(),
+		},
+		"",
+	)
+
+	c.TAC.AddProcedure(newProcedure)
+
+}
+
 func (c *Compiler) PrintString(name string) {
 	newProcedure := NewProcedure(name)
 
@@ -76,9 +127,8 @@ func (c *Compiler) PrintString(name string) {
 }
 
 func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
-	procedure := c.TAC.GetStandar("stdconcat")
 
-	if procedure == nil {
+	if c.TAC.GetStandar("stdconcat") == nil {
 		newProcedure := NewProcedure("stdconcat")
 
 		newProcedure.AddArguments(
@@ -202,7 +252,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure = c.TAC.GetStandar("stdconcat")
+	procedure := c.TAC.GetStandar("stdconcat")
 
 	// Set left Operator in temporal
 	c.TAC.AppendCode(
@@ -223,20 +273,14 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
-	// All args will be Value responses, we will traverse them to get the value, if the value is a string, we use strpint, then we use just printf("%type", value)
-
-	printString := "stdprint"
-
 	for _, arg := range c.GetArgs(ctx) {
 		if arg.Value.Type == V.StringType {
-			// Standar print will be for strings
-			procedure := c.TAC.GetStandar("stdprint")
 
-			if procedure == nil {
-				c.PrintString(printString)
+			if c.TAC.GetStandar("stdprint") == nil {
+				c.PrintString("stdprint")
 			}
 
-			procedure = c.TAC.GetStandar("stdprint")
+			procedure := c.TAC.GetStandar("stdprint")
 
 			c.TAC.AppendCode(
 				[]string{
@@ -245,6 +289,23 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 				},
 				"Imprimiendo cadena",
 			)
+
+		} else if arg.Value.Type == V.BooleanType {
+
+			if c.TAC.GetStandar("stdprintbool") == nil {
+				c.PrintBool("stdprintbool")
+			}
+
+			procedure := c.TAC.GetStandar("stdprintbool")
+
+			c.TAC.AppendCode(
+				[]string{
+					fmt.Sprintf("%v = %v;", procedure.GetArgument("HeapPointer").Tmp(), arg.Value.GetValue()),
+					"stdprintbool();",
+				},
+				"Imprimiendo booleano",
+			)
+
 		} else {
 			c.TAC.AppendCode(
 				[]string{
@@ -254,7 +315,6 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			)
 		}
 
-		// After print an arg, we need to print a space
 		c.TAC.AppendCode(
 			[]string{
 				"printf(\"%c\", 32);",

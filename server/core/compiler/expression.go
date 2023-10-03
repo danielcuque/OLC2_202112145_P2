@@ -18,6 +18,8 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	var response *ValueResponse
 
+	fmt.Println(leftT, rightT)
+
 	if leftT == V.StringType && rightT == V.StringType {
 		return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
 	}
@@ -38,6 +40,7 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 		}
 	}
 
+	fmt.Println("aaaaaaaaaaa")
 	c.TAC.AppendCode(
 		[]string{
 			fmt.Sprintf("%s = %s %s %s;", response.GetValue(), lV, op, rV),
@@ -147,7 +150,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	)
 
 	return &ValueResponse{
-		Type:        V.IntType,
+		Type:        value.GetType(),
 		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
@@ -237,16 +240,36 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 func (c *Compiler) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
+	newTemporal := c.TAC.NewTemporal("", response.GetType())
+
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = %s * -1;", c.TAC.TemporalQuantity(), response.GetValue()),
+			// fmt.Sprintf("t%d = %s * -1;", c.TAC.TemporalQuantity(), response.GetValue()),
+			fmt.Sprintf("%s = %s * -1;", newTemporal, response.GetValue()),
 		},
 		fmt.Sprintf("Operación aritmética %s", "-"),
 	)
 
 	return &ValueResponse{
 		Type:        response.GetType(),
-		Value:       c.TAC.NewTemporal(fmt.Sprintf("t%d", c.TAC.TemporalQuantity()), IntTemporal),
+		Value:       newTemporal,
 		ContextType: TemporalType,
+	}
+}
+
+func (c *Compiler) VisitVariableType(ctx *parser.VariableTypeContext) interface{} {
+	switch ctx.GetText() {
+	case "Int":
+		return IntTemporal
+	case "Float":
+		return FloatTemporal
+	case "Character":
+		return CharTemporal
+	case "Boolean":
+		return BooleanTemporal
+	case "String":
+		return StringTemporal
+	default:
+		return ctx.GetText()
 	}
 }
