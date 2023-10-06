@@ -88,9 +88,82 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 	if c.TAC.GetStandar("stdor") == nil {
-		fmt.Println("Creando procedimiento stdor")
+		newProcedure := NewProcedure("stdor")
+
+		newProcedure.AddArguments(
+			[]*Parameter{
+				{
+					Name:     "leftOp",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					Name:     "rightOp",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					Name:     "result",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+			},
+		)
+
+		newProcedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("TrueCondition"),
+				c.TAC.NewLabel("FalseCondition"),
+			},
+		)
+
+		// Add code
+
+		newProcedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"if (%v == 1) goto %v;",
+					newProcedure.GetArgument("leftOp").Temporal,
+					newProcedure.GetLabel("TrueCondition"),
+				),
+				fmt.Sprintf(
+					"if (%v == 1) goto %v;",
+					newProcedure.GetArgument("rightOp").Temporal,
+					newProcedure.GetLabel("TrueCondition"),
+				),
+				fmt.Sprintf(
+					"%v = 0;",
+					newProcedure.GetArgument("result").Temporal,
+				),
+				fmt.Sprintf("goto %v;", newProcedure.GetLabel("FalseCondition")),
+				newProcedure.GetLabel("TrueCondition").Declare(),
+				fmt.Sprintf(
+					"%v = 1;",
+					newProcedure.GetArgument("result").Temporal,
+				),
+				newProcedure.GetLabel("FalseCondition").Declare(),
+			},
+			"Operación OR",
+		)
+
+		c.TAC.AddProcedure(newProcedure)
 	}
-	return &ValueResponse{}
+
+	procedure := c.TAC.GetStandar("stdor")
+
+	// Set left Operator in temporal
+
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
+			"stdor();",
+		},
+		"Operación OR",
+	)
+
+	return &ValueResponse{
+		Type:        BooleanTemporal,
+		Value:       procedure.GetArgument("result").Temporal,
+		ContextType: TemporalType,
+	}
 }
 
 func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {

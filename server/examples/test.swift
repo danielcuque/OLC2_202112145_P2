@@ -20,8 +20,6 @@
 // var val4 = -10;
 // var val5 = -val4;
 
-// var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
-
-var comparison1 =  10 > 1 && 10 > 20
-print(comparison1)
+var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
+print(val1)
 // print("el valor de comparison1 es:", comparison1, "y de val4 es:", val4, "y deberia ser", -10)
