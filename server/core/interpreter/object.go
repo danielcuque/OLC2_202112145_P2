@@ -1,4 +1,4 @@
-package interfaces
+package interpreter
 
 import (
 	V "OLC2/core/values"

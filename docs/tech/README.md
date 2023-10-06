@@ -165,7 +165,7 @@ func IsBaseTypeString(value string) bool {
 Para el manejo de los objetos dentro del intérprete, se utiliza la estructura Object, la cual contiene un valor y un tipo de dato. Además, se utiliza la estructura Environment, la cual contiene un mapa de objetos, el cual se utiliza para almacenar las variables dentro del intérprete.
 
 ```go
-package interfaces
+package interpreter
 
 import (
 	V "OLC2/core/values"

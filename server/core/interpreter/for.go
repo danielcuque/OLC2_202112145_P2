@@ -1,4 +1,4 @@
-package interfaces
+package interpreter
 
 import (
 	E "OLC2/core/error"

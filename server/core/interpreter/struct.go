@@ -1,4 +1,4 @@
-package interfaces
+package interpreter
 
 import (
 	"OLC2/core/parser"
