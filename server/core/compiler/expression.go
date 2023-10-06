@@ -98,26 +98,24 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 
 	trueLabel := c.TAC.NewLabel("")
 	falseLabel := c.TAC.NewLabel("")
-
-	// Generate TAC
+	temporalResult := c.TAC.NewTemporal(BooleanTemporal)
 
 	c.TAC.AppendCode(
 		[]string{
 			fmt.Sprintf("if (%s %s %s) goto %s;", left.GetValue(), op, right.GetValue(), trueLabel.String()),
+			fmt.Sprintf("%s = 0;", temporalResult),
 			fmt.Sprintf("goto %s;", falseLabel.String()),
+			trueLabel.Declare(),
+			fmt.Sprintf("%s = 1;", temporalResult),
+			falseLabel.Declare(),
 		},
 		fmt.Sprintf("Operación %s %s %s", left.GetValue(), op, right.GetValue()),
 	)
 
-	newLabelStack := NewLabelStack()
-
-	newLabelStack.PushTrueLabel(trueLabel)
-	newLabelStack.PushFalseLabel(falseLabel)
-
 	return &ValueResponse{
 		Type:        BooleanTemporal,
-		Value:       newLabelStack,
-		ContextType: LabelType,
+		Value:       temporalResult,
+		ContextType: TemporalType,
 	}
 }
 
@@ -169,8 +167,11 @@ func (c *Compiler) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} 
 
 	op := ctx.GetOp().GetText()
 
-	fmt.Println(left.GetValue(), right.GetValue(), op)
-	return nil
+	if op == "&&" {
+		return c.And(left, right)
+	}
+
+	return c.Or(left, right)
 }
 
 func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {

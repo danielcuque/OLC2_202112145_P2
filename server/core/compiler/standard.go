@@ -6,124 +6,91 @@ import (
 	"fmt"
 )
 
-func (c *Compiler) PrintBool(name string) {
-	newProcedure := NewProcedure(name)
+func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
+	if c.TAC.GetStandar("stdand") == nil {
+		newProcedure := NewProcedure("stdand")
 
-	newProcedure.AddArguments(
-		[]*Parameter{
-			{
-				Name:     "HeapPointer",
-				Temporal: c.TAC.NewTemporal(IntTemporal),
+		newProcedure.AddArguments(
+			[]*Parameter{
+				{
+					Name:     "leftOp",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					Name:     "rightOp",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					Name:     "result",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
 			},
-		},
-	)
+		)
 
-	newProcedure.AddLabels(
-		[]*Label{
-			c.TAC.NewLabel("True"),
-			c.TAC.NewLabel("False"),
-			c.TAC.NewLabel("EndBool"),
-		},
-	)
+		newProcedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("FalseCondition"),
+				c.TAC.NewLabel("TrueCondition"),
+			},
+		)
 
-	// Add code
+		// Add code
 
-	newProcedure.AddCode(
+		newProcedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"if (%v == 0) goto %v;",
+					newProcedure.GetArgument("leftOp").Temporal,
+					newProcedure.GetLabel("FalseCondition"),
+				),
+				fmt.Sprintf(
+					"if (%v == 0) goto %v;",
+					newProcedure.GetArgument("rightOp").Temporal,
+					newProcedure.GetLabel("FalseCondition"),
+				),
+				fmt.Sprintf(
+					"%v = 1;",
+					newProcedure.GetArgument("result").Temporal,
+				),
+				fmt.Sprintf("goto %v;", newProcedure.GetLabel("TrueCondition")),
+				newProcedure.GetLabel("FalseCondition").Declare(),
+				fmt.Sprintf(
+					"%v = 0;",
+					newProcedure.GetArgument("result").Temporal,
+				),
+				newProcedure.GetLabel("TrueCondition").Declare(),
+			},
+			"Operación AND",
+		)
+
+		c.TAC.AddProcedure(newProcedure)
+	}
+
+	procedure := c.TAC.GetStandar("stdand")
+
+	// Set left Operator in temporal
+
+	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf(
-				"if (%v == 1) goto %s;",
-				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
-				newProcedure.GetLabel("True").String(),
-			),
-			fmt.Sprintf("goto %s;", newProcedure.GetLabel("False").String()),
-			newProcedure.GetLabel("True").Declare(),
-			"printf(\"%c\", (char) 116);",
-			"printf(\"%c\", (char) 114);",
-			"printf(\"%c\", (char) 117);",
-			"printf(\"%c\", (char) 101);",
-			fmt.Sprintf("goto %s;", newProcedure.GetLabel("EndBool")),
-			newProcedure.GetLabel("False").Declare(),
-			"printf(\"%c\", (char) 102);",
-			"printf(\"%c\", (char) 97);",
-			"printf(\"%c\", (char) 108);",
-			"printf(\"%c\", (char) 115);",
-			"printf(\"%c\", (char) 101);",
-			newProcedure.GetLabel("EndBool").Declare(),
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
+			"stdand();",
 		},
-		"",
+		"Operación AND",
 	)
 
-	c.TAC.AddProcedure(newProcedure)
-
+	return &ValueResponse{
+		Type:        BooleanTemporal,
+		Value:       procedure.GetArgument("result").Temporal,
+		ContextType: TemporalType,
+	}
 }
 
-func (c *Compiler) PrintString(name string) {
-	newProcedure := NewProcedure(name)
-
-	newProcedure.AddArguments(
-		[]*Parameter{
-			{
-				Name:     "HeapPointer",
-				Temporal: c.TAC.NewTemporal(IntTemporal),
-			},
-			{
-				Name:     "AccessChar",
-				Temporal: c.TAC.NewTemporal(IntTemporal),
-			},
-		},
-	)
-
-	newProcedure.AddLabels(
-		[]*Label{
-			c.TAC.NewLabel("StartString"),
-			c.TAC.NewLabel("EndString"),
-		},
-	)
-
-	// Add code
-
-	newProcedure.AddCode(
-		[]string{
-			// Declare start of string
-			newProcedure.GetLabel("StartString").Declare(),
-
-			// Get char from string
-			fmt.Sprintf(
-				"%v = heap[%v];",
-				newProcedure.GetArgument("AccessChar").Tmp(),
-				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
-			),
-
-			// If char is -1, then go to end of string
-			fmt.Sprintf(
-				"if (%v == -1) goto %s;",
-				newProcedure.GetArgument("AccessChar").Tmp(),
-				newProcedure.GetLabel("EndString"),
-			),
-
-			// Print char
-			fmt.Sprintf(
-				"printf(\"%%c\",(int) %v);",
-				newProcedure.GetArgument("AccessChar").Tmp(),
-			),
-
-			// Increase pointer to access char
-			fmt.Sprintf(
-				"%v = %v + 1;",
-				newProcedure.GetArgument("HeapPointer").Tmp(),
-				newProcedure.GetArgument("HeapPointer").Tmp(),
-			),
-
-			// Go to first label
-			fmt.Sprintf("goto %s;", newProcedure.GetLabel("StartString").String()),
-
-			// Declare end of string
-			newProcedure.GetLabel("EndString").Declare(),
-		},
-		"",
-	)
-
-	c.TAC.AddProcedure(newProcedure)
+func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
+	if c.TAC.GetStandar("stdor") == nil {
+		fmt.Println("Creando procedimiento stdor")
+	}
+	return &ValueResponse{}
 }
 
 func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
@@ -269,6 +236,124 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 		Value:       procedure.GetArgument("HeapPointer").Temporal,
 		ContextType: TemporalType,
 	}
+}
+
+func (c *Compiler) PrintBool(name string) {
+	newProcedure := NewProcedure(name)
+
+	newProcedure.AddArguments(
+		[]*Parameter{
+			{
+				Name:     "HeapPointer",
+				Temporal: c.TAC.NewTemporal(IntTemporal),
+			},
+		},
+	)
+
+	newProcedure.AddLabels(
+		[]*Label{
+			c.TAC.NewLabel("True"),
+			c.TAC.NewLabel("False"),
+			c.TAC.NewLabel("EndBool"),
+		},
+	)
+
+	newProcedure.AddCode(
+		[]string{
+			fmt.Sprintf(
+				"if (%v == 1) goto %s;",
+				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
+				newProcedure.GetLabel("True").String(),
+			),
+			fmt.Sprintf("goto %s;", newProcedure.GetLabel("False").String()),
+			newProcedure.GetLabel("True").Declare(),
+			"printf(\"%c\", (char) 116);",
+			"printf(\"%c\", (char) 114);",
+			"printf(\"%c\", (char) 117);",
+			"printf(\"%c\", (char) 101);",
+			fmt.Sprintf("goto %s;", newProcedure.GetLabel("EndBool")),
+			newProcedure.GetLabel("False").Declare(),
+			"printf(\"%c\", (char) 102);",
+			"printf(\"%c\", (char) 97);",
+			"printf(\"%c\", (char) 108);",
+			"printf(\"%c\", (char) 115);",
+			"printf(\"%c\", (char) 101);",
+			newProcedure.GetLabel("EndBool").Declare(),
+		},
+		"",
+	)
+
+	c.TAC.AddProcedure(newProcedure)
+
+}
+
+func (c *Compiler) PrintString(name string) {
+	newProcedure := NewProcedure(name)
+
+	newProcedure.AddArguments(
+		[]*Parameter{
+			{
+				Name:     "HeapPointer",
+				Temporal: c.TAC.NewTemporal(IntTemporal),
+			},
+			{
+				Name:     "AccessChar",
+				Temporal: c.TAC.NewTemporal(IntTemporal),
+			},
+		},
+	)
+
+	newProcedure.AddLabels(
+		[]*Label{
+			c.TAC.NewLabel("StartString"),
+			c.TAC.NewLabel("EndString"),
+		},
+	)
+
+	// Add code
+
+	newProcedure.AddCode(
+		[]string{
+			// Declare start of string
+			newProcedure.GetLabel("StartString").Declare(),
+
+			// Get char from string
+			fmt.Sprintf(
+				"%v = heap[%v];",
+				newProcedure.GetArgument("AccessChar").Tmp(),
+				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
+			),
+
+			// If char is -1, then go to end of string
+			fmt.Sprintf(
+				"if (%v == -1) goto %s;",
+				newProcedure.GetArgument("AccessChar").Tmp(),
+				newProcedure.GetLabel("EndString"),
+			),
+
+			// Print char
+			fmt.Sprintf(
+				"printf(\"%%c\",(int) %v);",
+				newProcedure.GetArgument("AccessChar").Tmp(),
+			),
+
+			// Increase pointer to access char
+			fmt.Sprintf(
+				"%v = %v + 1;",
+				newProcedure.GetArgument("HeapPointer").Tmp(),
+				newProcedure.GetArgument("HeapPointer").Tmp(),
+			),
+
+			// Go to first label
+			fmt.Sprintf("goto %s;", newProcedure.GetLabel("StartString").String()),
+
+			// Declare end of string
+			newProcedure.GetLabel("EndString").Declare(),
+		},
+		"",
+	)
+
+	c.TAC.AddProcedure(newProcedure)
 }
 
 func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
