@@ -11,12 +11,14 @@ type Compiler struct {
 	TAC          TAC
 	HeapPointer  Heap
 	StackPointer Stack
+	Context      *Context
 }
 
 func NewCompiler() *Compiler {
 	return &Compiler{
-		Env: NewEnvTree(),
-		TAC: *NewTAC(),
+		Env:     NewEnvTree(),
+		TAC:     *NewTAC(),
+		Context: NewContext(),
 	}
 }
 

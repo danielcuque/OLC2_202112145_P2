@@ -22,5 +22,9 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.VariableAssignment())
 	}
 
+	if ctx.WhileStatement() != nil {
+		return c.Visit(ctx.WhileStatement())
+	}
+
 	return nil
 }

@@ -3,6 +3,8 @@ package api
 import (
 	E "OLC2/core/error"
 	I "OLC2/core/interpreter"
+	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -45,11 +47,17 @@ func Init() {
 
 	// Configure cors middleware
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
+		AllowOrigins: "http://localhost:5173, https://tswift-compiler.vercel.app",
 		AllowMethods: "GET,POST,OPTIONS",
 	}))
 
 	app.Post("/compile", HandleVisitor)
 
-	app.Listen(":3000")
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "3000"
+	}
+
+	log.Fatal(app.Listen("0.0.0.0:" + port))
 }
