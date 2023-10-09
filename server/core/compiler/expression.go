@@ -173,7 +173,75 @@ func (c *Compiler) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} 
 }
 
 func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
-	return nil
+	value := c.Visit(ctx.Expr()).(*ValueResponse)
+
+	if c.TAC.GetStandar("std_not") == nil {
+		newProcedure := NewProcedure("std_not")
+
+		newProcedure.AddArguments(
+			[]*Parameter{
+				{
+					Name:     "operand",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					Name:     "result",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+			},
+		)
+
+		newProcedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("FalseCondition"),
+				c.TAC.NewLabel("TrueCondition"),
+			},
+		)
+
+		newProcedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"if (%v == 0) goto %s;",
+					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetLabel("TrueCondition"),
+				),
+				fmt.Sprintf(
+					"%s = 0;",
+					newProcedure.GetArgument("result").Temporal,
+				),
+				fmt.Sprintf("goto %s;", newProcedure.GetLabel("FalseCondition")),
+				newProcedure.GetLabel("TrueCondition").Declare(),
+				fmt.Sprintf(
+					"%s = 1;",
+					newProcedure.GetArgument("result").Temporal,
+				),
+				newProcedure.GetLabel("FalseCondition").Declare(),
+			},
+			"Operación not",
+		)
+
+		c.TAC.AddProcedure(newProcedure)
+	}
+
+	procedure := c.TAC.GetStandar("std_not")
+
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf(
+				"%s = %s;",
+				procedure.GetArgument("operand").Temporal,
+				value.GetValue(),
+			),
+			"std_not();",
+		},
+		"Operación not",
+	)
+
+	return &ValueResponse{
+		Type:        BooleanTemporal,
+		Value:       procedure.GetArgument("result").Temporal,
+		ContextType: TemporalType,
+	}
 }
 
 func (c *Compiler) VisitParExpr(ctx *parser.ParExprContext) interface{} {
@@ -182,6 +250,14 @@ func (c *Compiler) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	s := strings.Trim(ctx.GetText(), "\"")
+
+	if len(s) == 0 {
+		return &ValueResponse{
+			Type:        StringTemporal,
+			Value:       "-1",
+			ContextType: LiteralType,
+		}
+	}
 
 	if len(s) == 1 {
 		return &ValueResponse{
@@ -214,7 +290,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 				fmt.Sprintf("heap[(int)H] = %d;", char),
 				"H = H + 1;",
 			},
-			fmt.Sprintf("Almacenamiento de caracter '%s' en el heap", string(char)),
+			"",
 		)
 		c.HeapPointer.AddPointer()
 	}
@@ -242,7 +318,6 @@ func (c *Compiler) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 
 	c.TAC.AppendCode(
 		[]string{
-			// fmt.Sprintf("t%d = %s * -1;", c.TAC.TemporalQuantity(), response.GetValue()),
 			fmt.Sprintf("%s = %s * -1;", newTemporal, response.GetValue()),
 		},
 		fmt.Sprintf("Operación aritmética %s", "-"),

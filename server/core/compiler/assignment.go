@@ -20,8 +20,8 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	c.TAC.NewTemporal(response.GetType())
 	c.TAC.AppendCode(
 		[]string{
-			fmt.Sprintf("t%d = %s", c.TAC.TemporalQuantity(), response.GetValue()),
-			fmt.Sprintf("stack[(int)%d] = t%d", value.GetAddress(), c.TAC.TemporalQuantity()),
+			fmt.Sprintf("t%d = %s;", c.TAC.TemporalQuantity(), response.GetValue()),
+			fmt.Sprintf("stack[(int)%d] = t%d;", value.GetAddress(), c.TAC.TemporalQuantity()),
 		},
 		fmt.Sprintf("Asignación de la variable '%s'", id),
 	)

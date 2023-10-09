@@ -7,8 +7,8 @@ import (
 )
 
 func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
-	if c.TAC.GetStandar("stdand") == nil {
-		newProcedure := NewProcedure("stdand")
+	if c.TAC.GetStandar("std_and") == nil {
+		newProcedure := NewProcedure("std_and")
 
 		newProcedure.AddArguments(
 			[]*Parameter{
@@ -66,7 +66,7 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("stdand")
+	procedure := c.TAC.GetStandar("std_and")
 
 	// Set left Operator in temporal
 
@@ -74,7 +74,7 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
-			"stdand();",
+			"std_and();",
 		},
 		"Operación AND",
 	)
@@ -87,8 +87,8 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 }
 
 func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
-	if c.TAC.GetStandar("stdor") == nil {
-		newProcedure := NewProcedure("stdor")
+	if c.TAC.GetStandar("std_or") == nil {
+		newProcedure := NewProcedure("std_or")
 
 		newProcedure.AddArguments(
 			[]*Parameter{
@@ -146,7 +146,7 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("stdor")
+	procedure := c.TAC.GetStandar("std_or")
 
 	// Set left Operator in temporal
 
@@ -154,7 +154,7 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
-			"stdor();",
+			"std_or();",
 		},
 		"Operación OR",
 	)
