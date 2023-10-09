@@ -1,5 +1,3 @@
-// El navbar solo podrá tener 1 hijo, que será el archivo actual
-
 import { FC, useContext } from "react";
 import { FileI, TabContext } from "../../context";
 
