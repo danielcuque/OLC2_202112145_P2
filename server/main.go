@@ -10,8 +10,8 @@ import (
 
 func main() {
 
+	// content := utils.ReadFile("./examples/Basicos/Basicas.swift")
 	content := utils.ReadFile("./examples/test.swift")
-
 	compiler, checker := interpreter.NewEvaluator(content)
 
 	for _, err := range checker.Errors {

@@ -1,25 +1,9 @@
-// var bol = true
-// var numInt: Int = 10
-// numInt = 20
-// var numFloat: Float = 10.0
-// var varString = "COECYS"
-// let varChar: Character = 'a'
+var val1 = 210
 
-// let var1 = "hola" + " " + "mundo"
-
-// var string = "prueba" + "de concatenacion" + "de strings"
-
-// print(string)
-
-// let suma = 10 + numInt
-
-// var val1 = 7 - (5 + 10 * (2 + 4 * (5 + 2 * 3)) - 8 * 3 * 3) + 50 * (6 * 2)
-// print("El valor de val1 es:", val1, "sii")
-// var val2 = (2 * 2 * 2 * 2) - 9 - (8 - 6 + (3 * 3 - 6 * 5 - 7 - (9 + 7 * 7 * 7) + 10) - 5) + 8 - (6 - 5 * (2 * 3))
-// var val3 = val1 + ((2 + val2 * 3) + 1 - ((2 * 2 * 2) - 2) * 2) - 2
-// var val4 = -10;
-// var val5 = -val4;
-
-var val1 = (50 < 10) || (10 > 5) || (10 == 10) || (10 != 10) || (10 <= 10) || (10 >= 10);
-print(val1)
-// print("el valor de comparison1 es:", comparison1, "y de val4 es:", val4, "y deberia ser", -10)
+if (val1 == 210){
+    print("== 210")
+} else if val1 == 211 {
+    print("== 211")
+} else if val1 < 210 {
+    print("< 210")
+}

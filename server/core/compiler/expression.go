@@ -15,8 +15,6 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	lV := l.(*ValueResponse).GetValue()
 	rV := r.(*ValueResponse).GetValue()
 
-	fmt.Println(lV, rV)
-
 	var response *ValueResponse
 
 	if leftT == StringTemporal && rightT == StringTemporal {

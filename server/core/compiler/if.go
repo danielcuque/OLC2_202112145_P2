@@ -6,49 +6,83 @@ import (
 )
 
 func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} {
-	// Change this code to generate TAC for if statements
-	fmt.Println("if statement")
 
-	executeElse := true
+	endLabel := c.TAC.NewLabel("if")
+
+	c.Env.PushEnv(IfEnv)
 
 	for _, ifStmt := range ctx.AllIfTail() {
 
-		executeElse = !c.Visit(ifStmt).(bool)
+		ifStatement := ifStmt.(*parser.IfTailContext)
 
-		if !executeElse {
-			break
-		}
+		currentLabel := c.TAC.NewLabel("if")
+		nextLabel := c.TAC.NewLabel("if")
+
+		condition := c.Visit(ifStatement.Expr()).(*ValueResponse).GetValue()
+
+		c.TAC.AppendCode(
+			[]string{
+				fmt.Sprintf("if (%s == 1) goto %s;", condition, currentLabel),
+				fmt.Sprintf("goto %s;", nextLabel),
+				currentLabel.Declare(),
+			},
+			"Declaración de if",
+		)
+
+		c.Visit(ifStatement.Block())
+
+		c.TAC.AppendCode(
+			[]string{
+				fmt.Sprintf("goto %s;", endLabel),
+				nextLabel.Declare(),
+			},
+			"",
+		)
+
 	}
 
-	if executeElse && ctx.ElseStatement() != nil {
-		c.Visit(ctx.ElseStatement())
+	if ctx.ElseStatement() != nil {
+		c.ExecuteElse(ctx.ElseStatement().(*parser.ElseStatementContext), endLabel)
 	}
 
+	c.TAC.AppendCode(
+		[]string{
+			endLabel.Declare(),
+		},
+		"",
+	)
+
+	c.Env.PopEnv()
 	return nil
 }
 
-func (c *Compiler) VisitIfTail(ctx *parser.IfTailContext) interface{} {
+func (c *Compiler) ExecuteIf(ctx *parser.IfTailContext, currentLabel, endLabel *Label) *Label {
+
 	condition := c.Visit(ctx.Expr()).(*ValueResponse).GetValue()
 
-	if condition == "1" {
+	nextLabel := c.TAC.NewLabel("if")
 
-		c.Env.PushEnv(IfEnv)
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("if (%s == 1) goto %s;", condition, currentLabel),
+			fmt.Sprintf("goto %s;", nextLabel),
+			currentLabel.Declare(),
+		},
+		"Declaración de if",
+	)
 
-		c.Visit(ctx.Block())
+	c.Visit(ctx.Block())
 
-		c.Env.PopEnv()
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("goto %s;", endLabel),
+		},
+		"Declaración de if",
+	)
 
-		return true
-	}
-
-	return false
+	return nextLabel
 }
 
-func (c *Compiler) VisitElseStatement(ctx *parser.ElseStatementContext) interface{} {
-
-	c.Env.PushEnv(ElseEnv)
+func (c *Compiler) ExecuteElse(ctx *parser.ElseStatementContext, endLabel *Label) {
 	c.Visit(ctx.Block())
-	c.Env.PopEnv()
-
-	return nil
 }
