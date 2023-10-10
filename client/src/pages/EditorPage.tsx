@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { CompiledContainer, EditorContainer, NavbarEditor } from "../components";
+import { CompiledContainer, Copy, EditorContainer, NavbarEditor } from "../components";
 import { TabContext } from "../context";
 
 export const EditorPage = () => {
@@ -26,6 +26,8 @@ export const EditorPage = () => {
           <CompiledContainer tab={selectedTab} />
         </div>
       </div>
+
+      <Copy tab={selectedTab} />
     </>
   );
 };
