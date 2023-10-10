@@ -15,6 +15,11 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	lV := l.(*ValueResponse).GetValue()
 	rV := r.(*ValueResponse).GetValue()
 
+	if op == "/" || op == "%" || op == "*" {
+		lV = l.(*ValueResponse).Cast()
+		rV = r.(*ValueResponse).Cast()
+	}
+
 	var response *ValueResponse
 
 	if leftT == StringTemporal && rightT == StringTemporal {

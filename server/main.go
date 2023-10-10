@@ -1,26 +1,40 @@
 package main
 
-import "OLC2/api"
+import (
+	"log"
+	"os"
 
-// import (
-// 	"OLC2/core/interpreter"
-// 	"OLC2/core/utils"
-// 	"fmt"
-// )
+	"github.com/joho/godotenv"
+
+	"OLC2/api"
+	"OLC2/core/interpreter"
+	"OLC2/core/utils"
+	"fmt"
+)
 
 func main() {
 
-	// content := utils.ReadFile("./examples/Basicos/Basicas.swift")
-	// content := utils.ReadFile("./examples/test.swift")
-	// compiler, checker := interpreter.NewEvaluator(content)
+	err := godotenv.Load()
 
-	// for _, err := range checker.Errors {
-	// 	fmt.Println(err.Error())
-	// }
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-	// if compiler != nil {
-	// 	fmt.Println(compiler)
-	// }
+	mode := os.Getenv("MODE")
 
-	api.Init()
+	if mode != "DEVELOP" {
+		api.Init()
+		return
+	}
+
+	content := utils.ReadFile("./examples/test.swift")
+	compiler, checker := interpreter.NewEvaluator(content)
+
+	for _, err := range checker.Errors {
+		fmt.Println(err.Error())
+	}
+
+	if compiler != nil {
+		fmt.Println(compiler)
+	}
 }
