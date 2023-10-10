@@ -22,7 +22,7 @@ func main() {
 
 	mode := os.Getenv("MODE")
 
-	if mode == "production" {
+	if mode != "DEVELOP" {
 		api.Init()
 		return
 	}
