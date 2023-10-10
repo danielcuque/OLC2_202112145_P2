@@ -2,9 +2,18 @@ package compiler
 
 import "fmt"
 
+type LabelFlowType string
+
+const (
+	ContinueLabel LabelFlowType = "continue"
+	BreakLabel    LabelFlowType = "break"
+	ReturnLabel   LabelFlowType = "return"
+)
+
 type Label struct {
 	Name string
 	ID   int
+	Type LabelFlowType
 }
 
 func NewLabel(id int, name string) *Label {
@@ -20,4 +29,8 @@ func (l *Label) String() string {
 
 func (l *Label) Declare() string {
 	return fmt.Sprintf("%s:", l.String())
+}
+
+func (l *Label) GetType() LabelFlowType {
+	return l.Type
 }
