@@ -99,6 +99,10 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 
 	op := ctx.GetOp().GetText()
 
+	if left.GetType() == StringTemporal && right.GetType() == StringTemporal {
+		return c.CompareString(left, right, op)
+	}
+
 	trueLabel := c.TAC.NewLabel("")
 	falseLabel := c.TAC.NewLabel("")
 	temporalResult := c.TAC.NewTemporal(BooleanTemporal)
