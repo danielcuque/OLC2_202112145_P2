@@ -62,6 +62,26 @@ func (v *ValueResponse) ToPrint() string {
 	return ""
 }
 
+func (v *ValueResponse) Cast() string {
+	if v.ContextType == TemporalType {
+		temporal := v.Value.(*Temporal)
+		return temporal.Cast()
+	}
+
+	if v.ContextType == LiteralType {
+		switch v.Type {
+		case FloatTemporal:
+			return fmt.Sprintf("(float) %s", v.Value)
+		case IntTemporal:
+			return fmt.Sprintf("(int) %s", v.Value)
+		case CharTemporal:
+			return fmt.Sprintf("(char) %s", v.Value)
+		}
+	}
+
+	return ""
+}
+
 func (v *ValueResponse) GetValue() interface{} {
 	return v.Value
 }
