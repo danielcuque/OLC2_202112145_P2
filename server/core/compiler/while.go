@@ -12,16 +12,11 @@ func (c *Compiler) VisitWhileStatement(ctx *parser.WhileStatementContext) interf
 	recurrence := c.NewLabelFlow("", []LabelFlowType{ContinueLabel})
 	end := c.NewLabelFlow("", []LabelFlowType{BreakLabel})
 
-	c.TAC.AppendCode(
-		[]string{
-			recurrence.Declare(),
-		},
-		"",
-	)
+	c.TAC.AppendInstruction(recurrence.Declare(), "")
 
 	condition := c.Visit(ctx.Expr()).(*ValueResponse)
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf(
 				"if (%s == 0) goto %s;",
@@ -34,15 +29,9 @@ func (c *Compiler) VisitWhileStatement(ctx *parser.WhileStatementContext) interf
 
 	c.Visit(ctx.Block())
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("goto %s;", recurrence),
-		},
-		"",
-	)
-
-	c.TAC.AppendCode(
-		[]string{
 			end.Declare(),
 		},
 		"",

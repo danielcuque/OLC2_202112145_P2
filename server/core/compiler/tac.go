@@ -63,15 +63,19 @@ func (c *Compiler) NewLabelFlow(name string, Type []LabelFlowType) *Label {
 	return label
 }
 
-func (t *TAC) AppendCode(instrucions []string, comment string) {
+func (t *TAC) AppendInstructions(instructions []string, comment string) {
 
 	if comment != "" {
 		t.code += fmt.Sprintf("// %s\n", comment)
 	}
 
-	for _, instruction := range instrucions {
+	for _, instruction := range instructions {
 		t.code += fmt.Sprintf("%s\n", instruction)
 	}
+}
+
+func (t *TAC) AppendInstruction(instruction string, comment string) {
+	t.AppendInstructions([]string{instruction}, comment)
 }
 
 func (t *TAC) String() string {
@@ -106,11 +110,5 @@ func (t *TAC) GetProcudres() string {
 }
 
 func (c *Compiler) GetHeader() string {
-	return `
-#include <stdio.h>
-float stack[100000];
-float heap[100000];
-float P;
-float H;
-`
+	return "#include <stdio.h>\nfloat stack[100000];\nfloat heap[100000];\nfloat P;\nfloat H;\n"
 }

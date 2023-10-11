@@ -70,7 +70,7 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 	// Set left Operator in temporal
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
@@ -150,7 +150,7 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 	// Set left Operator in temporal
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
@@ -295,7 +295,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 	procedure := c.TAC.GetStandar("stdconcat")
 
 	// Set left Operator in temporal
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
@@ -446,7 +446,7 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 	procedure := c.TAC.GetStandar(procedureName)
 
 	// Set left Operator in temporal
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("strPointer1").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("strPointer2").Tmp(), rightOp.GetValue()),
@@ -607,7 +607,7 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 			procedure := c.TAC.GetStandar("stdprint")
 
-			c.TAC.AppendCode(
+			c.TAC.AppendInstructions(
 				[]string{
 					fmt.Sprintf("%v = %v;", procedure.GetArgument("HeapPointer").Tmp(), arg.Value.GetValue()),
 					"stdprint();",
@@ -623,7 +623,7 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 			procedure := c.TAC.GetStandar("stdprintbool")
 
-			c.TAC.AppendCode(
+			c.TAC.AppendInstructions(
 				[]string{
 					fmt.Sprintf("%v = %v;", procedure.GetArgument("HeapPointer").Tmp(), arg.Value.GetValue()),
 					"stdprintbool();",
@@ -632,28 +632,13 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			)
 
 		} else {
-			c.TAC.AppendCode(
-				[]string{
-					arg.Value.ToPrint(),
-				},
-				"Imprimiendo valor",
-			)
+			c.TAC.AppendInstruction(arg.Value.ToPrint(), "Imprimiendo valor")
 		}
 
-		c.TAC.AppendCode(
-			[]string{
-				"printf(\"%c\", 32);",
-			},
-			"",
-		)
+		c.TAC.AppendInstruction("printf(\"%c\", 32);", "")
 	}
 
-	c.TAC.AppendCode(
-		[]string{
-			"printf(\"%c\", 10);",
-		},
-		"",
-	)
+	c.TAC.AppendInstruction("printf(\"%c\", 10);", "")
 
 	return nil
 }
@@ -727,7 +712,7 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 	}
 
 	// Set left Operator in temporal
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("operand").Tmp(), rightOp.GetValue()),
 			"std_zero_division();",

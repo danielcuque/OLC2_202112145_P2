@@ -27,10 +27,5 @@ func (c *Compiler) DeclareControlFlow(LabelFlowType LabelFlowType) {
 		return
 	}
 
-	c.TAC.AppendCode(
-		[]string{
-			fmt.Sprintf("goto %s;", label),
-		},
-		fmt.Sprintf("Control %s", LabelFlowType),
-	)
+	c.TAC.AppendInstruction(fmt.Sprintf("goto %s;", label), fmt.Sprintf("Control %s", LabelFlowType))
 }

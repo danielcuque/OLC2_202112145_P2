@@ -37,7 +37,7 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 	if response.GetContextValue() == LiteralType {
 		newTemporal := c.TAC.NewTemporal(response.GetType())
 
-		c.TAC.AppendCode(
+		c.TAC.AppendInstructions(
 			[]string{
 				fmt.Sprintf("%s = %s;", newTemporal, response.GetValue()),
 			},
@@ -47,7 +47,7 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 		response.SetValue(newTemporal)
 	}
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("stack[(int)P] = %s;", response.GetValue()),
 			"P = P + 1;",

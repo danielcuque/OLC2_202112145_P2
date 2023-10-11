@@ -20,7 +20,7 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 
 		condition := c.Visit(ifStatement.Expr()).(*ValueResponse).GetValue()
 
-		c.TAC.AppendCode(
+		c.TAC.AppendInstructions(
 			[]string{
 				fmt.Sprintf("if (%s == 1) goto %s;", condition, currentLabel),
 				fmt.Sprintf("goto %s;", nextLabel),
@@ -31,7 +31,7 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 
 		c.Visit(ifStatement.Block())
 
-		c.TAC.AppendCode(
+		c.TAC.AppendInstructions(
 			[]string{
 				fmt.Sprintf("goto %s;", endLabel),
 				nextLabel.Declare(),
@@ -45,12 +45,7 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 		c.ExecuteElse(ctx.ElseStatement().(*parser.ElseStatementContext), endLabel)
 	}
 
-	c.TAC.AppendCode(
-		[]string{
-			endLabel.Declare(),
-		},
-		"",
-	)
+	c.TAC.AppendInstruction(endLabel.Declare(), "")
 
 	c.Env.PopEnv()
 	return nil
@@ -62,7 +57,7 @@ func (c *Compiler) ExecuteIf(ctx *parser.IfTailContext, currentLabel, endLabel *
 
 	nextLabel := c.TAC.NewLabel("if")
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("if (%s == 1) goto %s;", condition, currentLabel),
 			fmt.Sprintf("goto %s;", nextLabel),
@@ -73,12 +68,7 @@ func (c *Compiler) ExecuteIf(ctx *parser.IfTailContext, currentLabel, endLabel *
 
 	c.Visit(ctx.Block())
 
-	c.TAC.AppendCode(
-		[]string{
-			fmt.Sprintf("goto %s;", endLabel),
-		},
-		"Declaración de if",
-	)
+	c.TAC.AppendInstruction(fmt.Sprintf("goto %s;", endLabel), "Declaración de if")
 
 	return nextLabel
 }

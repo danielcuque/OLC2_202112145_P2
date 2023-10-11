@@ -49,7 +49,7 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 		}
 	}
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%s = %s %s %s;", response.GetValue(), lV, op, rV),
 		},
@@ -82,7 +82,7 @@ func (c *Compiler) VisitCharExpr(ctx *parser.CharExprContext) interface{} {
 
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%s = H;", newTemporal),
 			fmt.Sprintf("heap[(int)H] = %d;", ctx.GetText()[1]),
@@ -114,7 +114,7 @@ func (c *Compiler) VisitComparisonExpr(ctx *parser.ComparisonExprContext) interf
 	falseLabel := c.TAC.NewLabel("")
 	temporalResult := c.TAC.NewTemporal(BooleanTemporal)
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("if (%s %s %s) goto %s;", left.GetValue(), op, right.GetValue(), trueLabel.String()),
 			fmt.Sprintf("%s = 0;", temporalResult),
@@ -153,7 +153,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	newTemporal := c.TAC.NewTemporal(value.GetType())
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%s = stack[(int)%d];", newTemporal, value.GetAddress()),
 		},
@@ -241,7 +241,7 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 
 	procedure := c.TAC.GetStandar("std_not")
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf(
 				"%s = %s;",
@@ -293,7 +293,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	// Traverse string to insert chars in heap
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%s = H;", newTemporal),
 		},
@@ -301,7 +301,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	)
 
 	for _, char := range s {
-		c.TAC.AppendCode(
+		c.TAC.AppendInstructions(
 			[]string{
 				fmt.Sprintf("heap[(int)H] = %d;", char),
 				"H = H + 1;",
@@ -311,7 +311,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 		c.HeapPointer.AddPointer()
 	}
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("heap[(int)H] = %d;", -1),
 			"H = H + 1;",
@@ -332,7 +332,7 @@ func (c *Compiler) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
 
 	newTemporal := c.TAC.NewTemporal(response.GetType())
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%s = %s * -1;", newTemporal, response.GetValue()),
 		},

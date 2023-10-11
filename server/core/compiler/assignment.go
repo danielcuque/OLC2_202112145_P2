@@ -33,7 +33,7 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, value.GetValue(), response.GetValue())
 	}
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			responseValue,
 			fmt.Sprintf("stack[(int)%d] = %s;", value.GetAddress(), newTemporal),
