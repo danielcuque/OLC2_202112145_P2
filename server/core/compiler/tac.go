@@ -56,10 +56,10 @@ func (t *TAC) NewLabel(name string) *Label {
 	return label
 }
 
-func (c *Compiler) NewLabelFlow(name string, Type LabelFlowType) *Label {
+func (c *Compiler) NewLabelFlow(name string, Type []LabelFlowType) *Label {
 	label := c.TAC.NewLabel(name)
 	label.Type = Type
-	c.Context.Push(label)
+	c.Env.AddLabel(label)
 	return label
 }
 

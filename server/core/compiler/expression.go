@@ -262,8 +262,8 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 
 	if len(s) == 0 {
 		return &ValueResponse{
-			Type:        StringTemporal,
-			Value:       "-1",
+			Type:        CharTemporal,
+			Value:       fmt.Sprintf("%d", 0),
 			ContextType: LiteralType,
 		}
 	}

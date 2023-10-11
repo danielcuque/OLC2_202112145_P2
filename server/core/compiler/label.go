@@ -13,7 +13,7 @@ const (
 type Label struct {
 	Name string
 	ID   int
-	Type LabelFlowType
+	Type []LabelFlowType
 }
 
 func NewLabel(id int, name string) *Label {
@@ -29,8 +29,4 @@ func (l *Label) String() string {
 
 func (l *Label) Declare() string {
 	return fmt.Sprintf("%s:", l.String())
-}
-
-func (l *Label) GetType() LabelFlowType {
-	return l.Type
 }

@@ -71,8 +71,10 @@ func (s *EnvNode) AddLabel(value *Label) {
 func (s *EnvNode) GetLabel(labelType LabelFlowType) *Label {
 	for node := s; node != nil; node = node.Parent {
 		for _, label := range node.FlowLabels {
-			if label.Type == labelType {
-				return label
+			for _, lblType := range label.Type {
+				if lblType == labelType {
+					return label
+				}
 			}
 		}
 	}

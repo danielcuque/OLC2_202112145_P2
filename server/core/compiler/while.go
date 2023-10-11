@@ -7,8 +7,10 @@ import (
 
 func (c *Compiler) VisitWhileStatement(ctx *parser.WhileStatementContext) interface{} {
 
-	recurrence := c.NewLabelFlow("", ContinueLabel)
-	end := c.NewLabelFlow("", BreakLabel)
+	c.Env.PushEnv(WhileEnv)
+
+	recurrence := c.NewLabelFlow("", []LabelFlowType{ContinueLabel})
+	end := c.NewLabelFlow("", []LabelFlowType{BreakLabel})
 
 	c.TAC.AppendCode(
 		[]string{
@@ -45,6 +47,8 @@ func (c *Compiler) VisitWhileStatement(ctx *parser.WhileStatementContext) interf
 		},
 		"",
 	)
+
+	c.Env.PopEnv()
 
 	return nil
 }

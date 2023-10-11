@@ -31,6 +31,6 @@ func (c *Compiler) DeclareControlFlow(LabelFlowType LabelFlowType) {
 		[]string{
 			fmt.Sprintf("goto %s;", label),
 		},
-		"",
+		fmt.Sprintf("Control %s", LabelFlowType),
 	)
 }
