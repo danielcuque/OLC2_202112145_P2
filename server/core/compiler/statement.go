@@ -10,8 +10,16 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.ControlFlowStatement())
 	}
 
+	if ctx.ForStatement() != nil {
+		return c.Visit(ctx.ForStatement())
+	}
+
 	if ctx.FunctionCall() != nil {
 		return c.Visit(ctx.FunctionCall())
+	}
+
+	if ctx.GuardStatement() != nil {
+		return c.Visit(ctx.GuardStatement())
 	}
 
 	if ctx.IfStatement() != nil {

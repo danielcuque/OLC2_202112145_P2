@@ -706,12 +706,12 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 	procedure := c.TAC.GetStandar("std_zero_division")
 
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
+	isZeroDivisionLabel := c.TAC.NewLabel("")
 
-	if leftOp.GetType() == FloatTemporal || rightOp.GetType() == FloatTemporal {
+	if leftOp.GetType() == FloatTemporal {
 		newTemporal.Type = FloatTemporal
 	}
 
-	// Set left Operator in temporal
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetArgument("operand").Tmp(), rightOp.GetValue()),
@@ -719,7 +719,7 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 			fmt.Sprintf(
 				"if (%v == 1) goto %s;",
 				procedure.GetArgument("operand").Temporal,
-				procedure.GetLabel("IsZeroDivision"),
+				isZeroDivisionLabel,
 			),
 			fmt.Sprintf(
 				"%s = %v %s %v;",
@@ -728,7 +728,7 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 				op,
 				rightOp.Cast(),
 			),
-			procedure.GetLabel("IsZeroDivision").Declare(),
+			isZeroDivisionLabel.Declare(),
 		},
 		"División entre cero",
 	)
