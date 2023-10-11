@@ -6,7 +6,14 @@ import (
 )
 
 func (v *Visitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interface{} {
-	condition, ok := v.Visit(ctx.Expr()).(V.IValue).GetValue().(bool)
+	checkCondition := v.Visit(ctx.Expr())
+
+	if checkCondition == nil {
+		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())
+		return nil
+	}
+
+	condition, ok := checkCondition.(V.IValue).GetValue().(bool)
 
 	if !ok {
 		v.NewError("Se esperaba una expresión booleana", ctx.GetStart())

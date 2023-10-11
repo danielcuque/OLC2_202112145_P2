@@ -2,9 +2,18 @@ package compiler
 
 import "fmt"
 
+type LabelFlowType string
+
+const (
+	ContinueLabel LabelFlowType = "continue"
+	BreakLabel    LabelFlowType = "break"
+	ReturnLabel   LabelFlowType = "return"
+)
+
 type Label struct {
 	Name string
 	ID   int
+	Type []LabelFlowType
 }
 
 func NewLabel(id int, name string) *Label {

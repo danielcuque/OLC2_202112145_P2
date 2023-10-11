@@ -6,6 +6,10 @@ import (
 
 func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 
+	if ctx.ControlFlowStatement() != nil {
+		return c.Visit(ctx.ControlFlowStatement())
+	}
+
 	if ctx.FunctionCall() != nil {
 		return c.Visit(ctx.FunctionCall())
 	}

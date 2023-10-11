@@ -16,11 +16,12 @@ const (
 )
 
 type EnvNode struct {
-	Parent  *EnvNode
-	Child   []*EnvNode
-	Level   int
-	EnvType string
-	Values  map[string]*Value
+	Parent     *EnvNode
+	Child      []*EnvNode
+	Level      int
+	EnvType    string
+	Values     map[string]*Value
+	FlowLabels []*Label
 }
 
 func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
@@ -61,6 +62,24 @@ func (s *EnvNode) AddValue(key string, value *Value) {
 		s.Values = make(map[string]*Value)
 	}
 	s.Values[key] = value
+}
+
+func (s *EnvNode) AddLabel(value *Label) {
+	s.FlowLabels = append(s.FlowLabels, value)
+}
+
+func (s *EnvNode) GetLabel(labelType LabelFlowType) *Label {
+	for node := s; node != nil; node = node.Parent {
+		for _, label := range node.FlowLabels {
+			for _, lblType := range label.Type {
+				if lblType == labelType {
+					return label
+				}
+			}
+		}
+	}
+
+	return nil
 }
 
 // EnvTree is a nary tree to represent scopes
@@ -111,6 +130,14 @@ func (s *EnvTree) GetValue(key string) *Value {
 		}
 	}
 	return nil
+}
+
+func (s *EnvTree) AddLabel(value *Label) {
+	s.Current.AddLabel(value)
+}
+
+func (s *EnvTree) GetLabel(labelType LabelFlowType) *Label {
+	return s.Current.GetLabel(labelType)
 }
 
 func (s *EnvTree) GetMain() string {

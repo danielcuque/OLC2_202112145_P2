@@ -311,6 +311,174 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 	}
 }
 
+func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *ValueResponse {
+	// There are two cases, when the operator is == or !=
+
+	procedureName := "std_compare_str"
+	if c.TAC.GetStandar(procedureName) == nil {
+		newProcedure := NewProcedure(procedureName)
+
+		newProcedure.AddArguments(
+			[]*Parameter{
+				{
+					Name:     "strPointer1",
+					Temporal: c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					Name:     "strPointer2",
+					Temporal: c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					Name:     "AccessChar1",
+					Temporal: c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					Name:     "AccessChar2",
+					Temporal: c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					Name:     "result",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					Name:     "result2",
+					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+				},
+			},
+		)
+
+		newProcedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("5"),
+				c.TAC.NewLabel("6"),
+				c.TAC.NewLabel("7"),
+				c.TAC.NewLabel("8"),
+				c.TAC.NewLabel("9"),
+				c.TAC.NewLabel("10"),
+
+				c.TAC.NewLabel("TrueCondition"),
+				c.TAC.NewLabel("EndCondition"),
+			},
+		)
+
+		// Add code
+		newProcedure.AddCode(
+			[]string{
+				newProcedure.GetLabel("5").Declare(),
+				fmt.Sprintf(
+					"%v = heap[%v];",
+					newProcedure.GetArgument("AccessChar1").Tmp(),
+					newProcedure.GetArgument("strPointer1").Temporal.Cast(),
+				),
+				fmt.Sprintf(
+					"%v = heap[%v];",
+					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetArgument("strPointer2").Temporal.Cast(),
+				),
+				fmt.Sprintf(
+					"if (%v == -1) goto %s;",
+					newProcedure.GetArgument("AccessChar1").Tmp(),
+					newProcedure.GetLabel("6"),
+				),
+				fmt.Sprintf(
+					"if (%v == -1) goto %s;",
+					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetLabel("7"),
+				),
+				fmt.Sprintf(
+					"if (%v < %v) goto %s;",
+					newProcedure.GetArgument("AccessChar1").Tmp(),
+					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetLabel("8"),
+				),
+				fmt.Sprintf(
+					"if (%v > %v) goto %s;",
+					newProcedure.GetArgument("AccessChar1").Tmp(),
+					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetLabel("7"),
+				),
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					newProcedure.GetArgument("strPointer1").Tmp(),
+					newProcedure.GetArgument("strPointer1").Tmp(),
+				),
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					newProcedure.GetArgument("strPointer2").Tmp(),
+					newProcedure.GetArgument("strPointer2").Tmp(),
+				),
+				fmt.Sprintf("goto %s;", newProcedure.GetLabel("5").String()),
+				newProcedure.GetLabel("6").Declare(),
+				fmt.Sprintf(
+					"if (%v == -1) goto %s;",
+					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetLabel("9"),
+				),
+				fmt.Sprintf(
+					"goto %s;",
+					newProcedure.GetLabel("8"),
+				),
+				newProcedure.GetLabel("9").Declare(),
+				fmt.Sprintf(
+					"%v = 0;",
+					newProcedure.GetArgument("result").Tmp(),
+				),
+				fmt.Sprintf("goto %s;", newProcedure.GetLabel("10").String()),
+				newProcedure.GetLabel("8").Declare(),
+				fmt.Sprintf(
+					"%v = -1;",
+					newProcedure.GetArgument("result").Tmp(),
+				),
+				fmt.Sprintf("goto %s;", newProcedure.GetLabel("10").String()),
+				newProcedure.GetLabel("7").Declare(),
+				fmt.Sprintf(
+					"%v = 1;",
+					newProcedure.GetArgument("result").Tmp(),
+				),
+				newProcedure.GetLabel("10").Declare(),
+			},
+			"Comparación de cadenas",
+		)
+
+		c.TAC.AddProcedure(newProcedure)
+	}
+
+	procedure := c.TAC.GetStandar(procedureName)
+
+	// Set left Operator in temporal
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("strPointer1").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("strPointer2").Tmp(), rightOp.GetValue()),
+			"std_compare_str();",
+			fmt.Sprintf(
+				"if(%v %s 0) goto %s;",
+				procedure.GetArgument("result").Temporal,
+				op,
+				procedure.GetLabel("TrueCondition"),
+			),
+			fmt.Sprintf(
+				"%s = 0;",
+				procedure.GetArgument("result2").Temporal,
+			),
+			fmt.Sprintf("goto %s;", procedure.GetLabel("EndCondition")),
+			procedure.GetLabel("TrueCondition").Declare(),
+			fmt.Sprintf(
+				"%s = 1;",
+				procedure.GetArgument("result2").Temporal,
+			),
+			procedure.GetLabel("EndCondition").Declare(),
+		},
+		"Comparación de cadenas",
+	)
+
+	return &ValueResponse{
+		Type:        BooleanTemporal,
+		Value:       procedure.GetArgument("result2").Temporal,
+		ContextType: TemporalType,
+	}
+}
+
 func (c *Compiler) PrintBool(name string) {
 	newProcedure := NewProcedure(name)
 
