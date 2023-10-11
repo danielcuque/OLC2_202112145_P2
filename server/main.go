@@ -34,7 +34,6 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	if compiler != nil {
-		fmt.Println(compiler)
-	}
+	fmt.Println(compiler)
+
 }

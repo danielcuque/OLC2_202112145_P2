@@ -15,6 +15,9 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	lV := l.(*ValueResponse).GetValue()
 	rV := r.(*ValueResponse).GetValue()
 
+	// Check if division by zero
+	// Add code to handle this
+
 	if op == "/" || op == "%" || op == "*" {
 		lV = l.(*ValueResponse).Cast()
 		rV = r.(*ValueResponse).Cast()
@@ -24,6 +27,10 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	if leftT == StringTemporal && rightT == StringTemporal {
 		return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
+	}
+
+	if (op == "/" || op == "%") && (rightT == IntTemporal) {
+		return c.ZeroDivision(l.(*ValueResponse), r.(*ValueResponse), op)
 	}
 
 	if leftT == IntTemporal && rightT == IntTemporal {

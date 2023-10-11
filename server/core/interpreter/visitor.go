@@ -56,10 +56,6 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 	checker := NewVisitor()
 	checker.Visit(tree)
 
-	if len(checker.Errors) > 0 {
-		return nil, checker
-	}
-
 	compiler := C.NewCompiler()
 	compiler.Visit(tree)
 

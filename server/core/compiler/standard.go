@@ -525,7 +525,6 @@ func (c *Compiler) PrintBool(name string) {
 	)
 
 	c.TAC.AddProcedure(newProcedure)
-
 }
 
 func (c *Compiler) PrintString(name string) {
@@ -657,6 +656,103 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	)
 
 	return nil
+}
+
+func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *ValueResponse {
+
+	if c.TAC.GetStandar("std_zero_division") == nil {
+		newProcedure := NewProcedure("std_zero_division")
+
+		newProcedure.AddArguments(
+			[]*Parameter{
+				{
+					Name:     "operand",
+					Temporal: c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		newProcedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("NotZeroDivision"),
+				c.TAC.NewLabel("EndZeroDivision"),
+				c.TAC.NewLabel("IsZeroDivision"),
+			},
+		)
+
+		// Add code
+
+		newProcedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"if (%v != 0) goto %s;",
+					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetLabel("NotZeroDivision"),
+				),
+
+				"printf(\"%c\", 77);",
+				"printf(\"%c\", 97);",
+				"printf(\"%c\", 116);",
+				"printf(\"%c\", 104);",
+				"printf(\"%c\", 69);",
+				"printf(\"%c\", 114);",
+				"printf(\"%c\", 114);",
+				"printf(\"%c\", 111);",
+				"printf(\"%c\", 114);",
+				"printf(\"%c\", 10);",
+				fmt.Sprintf(
+					"%s = 1;",
+					newProcedure.GetArgument("operand").Temporal,
+				),
+				fmt.Sprintf("goto %s;", newProcedure.GetLabel("EndZeroDivision")),
+				newProcedure.GetLabel("NotZeroDivision").Declare(),
+				fmt.Sprintf(
+					"%s = 0;",
+					newProcedure.GetArgument("operand").Temporal,
+				),
+				newProcedure.GetLabel("EndZeroDivision").Declare(),
+			},
+			"División entre cero",
+		)
+
+		c.TAC.AddProcedure(newProcedure)
+	}
+
+	procedure := c.TAC.GetStandar("std_zero_division")
+
+	newTemporal := c.TAC.NewTemporal(IntTemporal)
+
+	if leftOp.GetType() == FloatTemporal || rightOp.GetType() == FloatTemporal {
+		newTemporal.Type = FloatTemporal
+	}
+
+	// Set left Operator in temporal
+	c.TAC.AppendCode(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("operand").Tmp(), rightOp.GetValue()),
+			"std_zero_division();",
+			fmt.Sprintf(
+				"if (%v == 1) goto %s;",
+				procedure.GetArgument("operand").Temporal,
+				procedure.GetLabel("IsZeroDivision"),
+			),
+			fmt.Sprintf(
+				"%s = %v %s %v;",
+				newTemporal,
+				leftOp.Cast(),
+				op,
+				rightOp.Cast(),
+			),
+			procedure.GetLabel("IsZeroDivision").Declare(),
+		},
+		"División entre cero",
+	)
+
+	return &ValueResponse{
+		Type:        IntTemporal,
+		Value:       newTemporal,
+		ContextType: TemporalType,
+	}
 }
 
 func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
