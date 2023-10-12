@@ -18,6 +18,10 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.FunctionCall())
 	}
 
+	if ctx.FunctionDeclarationStatement() != nil {
+		return c.Visit(ctx.FunctionDeclarationStatement())
+	}
+
 	if ctx.GuardStatement() != nil {
 		return c.Visit(ctx.GuardStatement())
 	}
