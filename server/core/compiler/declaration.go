@@ -9,12 +9,21 @@ func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) in
 	id := ctx.ID().GetText()
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
+	if response == nil {
+		fmt.Println("Error al declarar la variable")
+		return nil
+	}
+
 	return c.DeclareValue(id, response)
 }
 
 func (c *Compiler) VisitTypeValueDeclaration(ctx *parser.TypeValueDeclarationContext) interface{} {
 	id := ctx.ID().GetText()
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
+
+	if response == nil {
+		return nil
+	}
 
 	return c.DeclareValue(id, response)
 }

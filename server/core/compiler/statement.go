@@ -42,6 +42,10 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.VariableAssignment())
 	}
 
+	if ctx.VectorDeclaration() != nil {
+		return c.Visit(ctx.VectorDeclaration())
+	}
+
 	if ctx.WhileStatement() != nil {
 		return c.Visit(ctx.WhileStatement())
 	}

@@ -1,6 +1,1 @@
-func suma(a: Int, b: Int) -> Int {
-    return a + b
-}
-
-// var suma = suma(1, 2)
-// print(suma)
+var arr1: [Int] = [8, 4, 6, 2]

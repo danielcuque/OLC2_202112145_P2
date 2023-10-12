@@ -16,6 +16,10 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	// 1. Get the value of the expression
 	value := c.Env.GetValue(id)
 
+	if value == nil {
+		return nil
+	}
+
 	// Value have stack address
 	newTemporal := c.TAC.NewTemporal(response.GetType())
 	// Can be three types of assignment, =, +=, -=

@@ -151,6 +151,10 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	value := c.Env.GetValue(id)
 
+	if value == nil {
+		return nil
+	}
+
 	newTemporal := c.TAC.NewTemporal(value.GetType())
 
 	c.TAC.AppendInstructions(
