@@ -1,7 +1,6 @@
-var a = 0;
+var index = 0;
 
-while (a < 10) {
-    var b = 0;
-    print(a)
-    a = a + 1;
+while (index < 10) {
+    print(index);
+    index += 1; 
 }

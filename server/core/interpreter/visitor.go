@@ -50,8 +50,10 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 
 	if len(errorListener.Errors) > 0 {
 		semanticChecker := NewVisitor()
+
 		semanticChecker.Errors = errorListener.Errors
-		return nil, semanticChecker
+
+		return C.NewCompiler(), semanticChecker
 	}
 
 	checker := NewVisitor()
