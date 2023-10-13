@@ -11,6 +11,7 @@ const (
 	ForEnv    = "For"
 	IfEnv     = "If"
 	ElseEnv   = "Else"
+	GuardEnv  = "Guard"
 	SwitchEnv = "Switch"
 	StructEnv = "Struct"
 )
@@ -18,18 +19,18 @@ const (
 type EnvNode struct {
 	Parent     *EnvNode
 	Child      []*EnvNode
-	Level      int
+	Index      int
 	EnvType    string
 	Values     map[string]*Value
 	FlowLabels []*Label
 }
 
-func NewEnvNode(parent *EnvNode, envType string, Level int) *EnvNode {
+func NewEnvNode(parent *EnvNode, envType string, Index int) *EnvNode {
 	return &EnvNode{
 		Parent:  parent,
 		Child:   make([]*EnvNode, 0),
-		Level:   Level,
 		EnvType: envType,
+		Index:   Index,
 	}
 }
 
@@ -39,9 +40,7 @@ func (s *EnvNode) GetType() string {
 
 func (s *EnvNode) String() string {
 	result := ""
-	for i := 0; i < s.Level; i++ {
-		result += "\t"
-	}
+
 	result += fmt.Sprintf("%s\n", s.EnvType)
 	for _, v := range s.Child {
 		result += v.String()
@@ -50,7 +49,7 @@ func (s *EnvNode) String() string {
 }
 
 func (s *EnvNode) Copy() *EnvNode {
-	newNode := NewEnvNode(nil, s.EnvType, s.Level)
+	newNode := NewEnvNode(nil, s.EnvType, s.Index)
 	for _, child := range s.Child {
 		newNode.Child = append(newNode.Child, child.Copy())
 	}
@@ -97,7 +96,7 @@ func NewEnvTree() *EnvTree {
 }
 
 func (s *EnvTree) PushEnv(scopeType string) *EnvNode {
-	node := NewEnvNode(s.Current, scopeType, s.Current.Level+1)
+	node := NewEnvNode(s.Current, scopeType, s.Current.Index+1)
 	s.Current.Child = append(s.Current.Child, node)
 	s.Current = node
 	return node
@@ -142,4 +141,17 @@ func (s *EnvTree) GetLabel(labelType LabelFlowType) *Label {
 
 func (s *EnvTree) GetMain() string {
 	return ""
+}
+
+func (s *EnvTree) Next() {
+	if len(s.Current.Child) > 0 {
+		s.Current = s.Current.Child[0]
+	} else {
+		for s.Current.Parent != nil && s.Current.Index == len(s.Current.Parent.Child)-1 {
+			s.Current = s.Current.Parent
+		}
+		if s.Current.Parent != nil {
+			s.Current = s.Current.Parent.Child[s.Current.Index+1]
+		}
+	}
 }

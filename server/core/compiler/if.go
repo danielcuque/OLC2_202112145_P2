@@ -9,10 +9,8 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 
 	endLabel := c.TAC.NewLabel("if")
 
-	c.Env.PushEnv(IfEnv)
-
 	for _, ifStmt := range ctx.AllIfTail() {
-
+		c.Env.PushEnv(IfEnv)
 		ifStatement := ifStmt.(*parser.IfTailContext)
 
 		currentLabel := c.TAC.NewLabel("if")
@@ -38,7 +36,7 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 			},
 			"",
 		)
-
+		c.Env.PopEnv()
 	}
 
 	if ctx.ElseStatement() != nil {
@@ -47,32 +45,11 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 
 	c.TAC.AppendInstruction(endLabel.Declare(), "")
 
-	c.Env.PopEnv()
 	return nil
 }
 
-func (c *Compiler) ExecuteIf(ctx *parser.IfTailContext, currentLabel, endLabel *Label) *Label {
-
-	condition := c.Visit(ctx.Expr()).(*ValueResponse).GetValue()
-
-	nextLabel := c.TAC.NewLabel("if")
-
-	c.TAC.AppendInstructions(
-		[]string{
-			fmt.Sprintf("if (%s == 1) goto %s;", condition, currentLabel),
-			fmt.Sprintf("goto %s;", nextLabel),
-			currentLabel.Declare(),
-		},
-		"Declaración de if",
-	)
-
-	c.Visit(ctx.Block())
-
-	c.TAC.AppendInstruction(fmt.Sprintf("goto %s;", endLabel), "Declaración de if")
-
-	return nextLabel
-}
-
 func (c *Compiler) ExecuteElse(ctx *parser.ElseStatementContext, endLabel *Label) {
+	c.Env.PushEnv(ElseEnv)
 	c.Visit(ctx.Block())
+	c.Env.PopEnv()
 }

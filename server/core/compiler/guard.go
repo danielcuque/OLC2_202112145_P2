@@ -19,7 +19,9 @@ func (c *Compiler) VisitGuardStatement(ctx *parser.GuardStatementContext) interf
 		"Sentencia Guard",
 	)
 
+	c.Env.PushEnv(GuardEnv)
 	c.Visit(ctx.Block())
+	c.Env.PopEnv()
 
 	c.TAC.AppendInstruction(continueLabel.Declare(), "")
 

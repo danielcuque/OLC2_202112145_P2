@@ -1,10 +1,7 @@
-for i in 0...9 {
-    var output = "  "
-    for j in 0...(10 - i) {
-        output = output + "  "
-    }
-    for k in 0...i {
-        output = output + "* "
-    }
-    print(output)
+var a = 0;
+
+while (a < 10) {
+    var b = 0;
+    print(a)
+    a = a + 1;
 }
