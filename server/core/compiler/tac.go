@@ -112,3 +112,16 @@ func (t *TAC) GetProcudres() string {
 func (c *Compiler) GetHeader() string {
 	return "#include <stdio.h>\nfloat stack[100000];\nfloat heap[100000];\nfloat P;\nfloat H;\n"
 }
+
+func (c *Compiler) GenerateVariables() {
+	counter := c.StaticVars
+	for i := 0; i < counter; i++ {
+		c.TAC.AppendInstructions(
+			[]string{
+				"stack[(int)P] = 0;",
+				"P = P + 1;",
+			},
+			"",
+		)
+	}
+}

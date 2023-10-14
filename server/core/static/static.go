@@ -10,7 +10,7 @@ import (
 type StaticVisitor struct {
 	parser.BaseSwiftVisitor
 	Env     *compiler.EnvTree
-	Address int
+	Counter int
 }
 
 func NewStaticVisitor() *StaticVisitor {
@@ -26,8 +26,8 @@ func (c *StaticVisitor) SetEnv(envType string, ctx *parser.BlockContext) {
 }
 
 func (c *StaticVisitor) NewValue(name string) {
-	c.Env.AddValue(name, compiler.NewSimpleValue(c.Address))
-	c.Address++
+	c.Env.AddValue(name, compiler.NewSimpleValue(c.Counter))
+	c.Counter++
 }
 
 func (c *StaticVisitor) Visit(tree antlr.ParseTree) interface{} {

@@ -1,6 +1,3 @@
-var index = 0;
-
-while (index < 10) {
-    print(index);
-    index += 1; 
-}
+let hola = "Hola"
+let mundo = "Mundo"
+print(hola, mundo)

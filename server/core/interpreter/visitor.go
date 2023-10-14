@@ -50,10 +50,8 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 
 	if len(errorListener.Errors) > 0 {
 		semanticChecker := NewVisitor()
-
 		semanticChecker.Errors = errorListener.Errors
-
-		return C.NewCompiler(), semanticChecker
+		return C.NewCompiler(0), semanticChecker
 	}
 
 	checker := NewVisitor()
@@ -62,7 +60,8 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 	staticVisitor := static.NewStaticVisitor()
 	staticVisitor.Visit(tree)
 
-	compiler := C.NewCompiler()
+	compiler := C.NewCompiler(staticVisitor.Counter)
+	// compiler.Env = staticVisitor.Env
 	compiler.Visit(tree)
 
 	return compiler, checker
