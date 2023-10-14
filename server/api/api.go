@@ -26,16 +26,10 @@ func HandleVisitor(c *fiber.Ctx) error {
 
 	compiler, checker := I.NewEvaluator(code)
 
-	compiled := ""
-
-	if !checker.HasErrors() {
-		compiled = compiler.String()
-	}
-
 	response := Resp{
 		Symbols:   checker.Env.GetSymbolTable(),
 		Errors:    checker.GetErrors(),
-		Compiled:  compiled,
+		Compiled:  compiler.String(),
 		Optimized: "",
 	}
 

@@ -10,12 +10,28 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.ControlFlowStatement())
 	}
 
+	if ctx.ForStatement() != nil {
+		return c.Visit(ctx.ForStatement())
+	}
+
 	if ctx.FunctionCall() != nil {
 		return c.Visit(ctx.FunctionCall())
 	}
 
+	if ctx.FunctionDeclarationStatement() != nil {
+		return c.Visit(ctx.FunctionDeclarationStatement())
+	}
+
+	if ctx.GuardStatement() != nil {
+		return c.Visit(ctx.GuardStatement())
+	}
+
 	if ctx.IfStatement() != nil {
 		return c.Visit(ctx.IfStatement())
+	}
+
+	if ctx.SwitchStatement() != nil {
+		return c.Visit(ctx.SwitchStatement())
 	}
 
 	if ctx.VariableDeclaration() != nil {
@@ -24,6 +40,10 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 
 	if ctx.VariableAssignment() != nil {
 		return c.Visit(ctx.VariableAssignment())
+	}
+
+	if ctx.VectorDeclaration() != nil {
+		return c.Visit(ctx.VectorDeclaration())
 	}
 
 	if ctx.WhileStatement() != nil {

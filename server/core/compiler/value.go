@@ -18,6 +18,12 @@ func NewValue(value interface{}, stackAddress int, Type TemporalCast) *Value {
 	}
 }
 
+func NewSimpleValue(stackAddress int) *Value {
+	return &Value{
+		StackAddress: stackAddress,
+	}
+}
+
 func (v *Value) GetValue() interface{} {
 	return v.Value
 }

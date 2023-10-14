@@ -16,6 +16,10 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	// 1. Get the value of the expression
 	value := c.Env.GetValue(id)
 
+	if value == nil {
+		return nil
+	}
+
 	// Value have stack address
 	newTemporal := c.TAC.NewTemporal(response.GetType())
 	// Can be three types of assignment, =, +=, -=
@@ -28,12 +32,12 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	case "=":
 		responseValue = fmt.Sprintf("%s = %s;", newTemporal, response.GetValue())
 	case "+=":
-		responseValue = fmt.Sprintf("%s = %v + %v;", newTemporal, value.GetValue(), response.GetValue())
+		responseValue = fmt.Sprintf("%s = %v + %s;", newTemporal, newTemporal, response.GetValue())
 	case "-=":
-		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, value.GetValue(), response.GetValue())
+		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, newTemporal, response.GetValue())
 	}
 
-	c.TAC.AppendCode(
+	c.TAC.AppendInstructions(
 		[]string{
 			responseValue,
 			fmt.Sprintf("stack[(int)%d] = %s;", value.GetAddress(), newTemporal),

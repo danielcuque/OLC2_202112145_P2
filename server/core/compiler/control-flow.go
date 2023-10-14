@@ -21,16 +21,11 @@ func (c *Compiler) VisitControlReturn(ctx *parser.ControlReturnContext) interfac
 }
 
 func (c *Compiler) DeclareControlFlow(LabelFlowType LabelFlowType) {
-	label := c.Env.GetLabel(BreakLabel)
+	label := c.Env.GetLabel(LabelFlowType)
 
 	if label == nil {
 		return
 	}
 
-	c.TAC.AppendCode(
-		[]string{
-			fmt.Sprintf("goto %s;", label),
-		},
-		fmt.Sprintf("Control %s", LabelFlowType),
-	)
+	c.TAC.AppendInstruction(fmt.Sprintf("goto %s;", label), fmt.Sprintf("Control %s", LabelFlowType))
 }

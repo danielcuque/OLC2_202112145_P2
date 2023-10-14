@@ -11,13 +11,18 @@ type Compiler struct {
 	TAC          TAC
 	HeapPointer  Heap
 	StackPointer Stack
+	StaticVars   int
 }
 
-func NewCompiler() *Compiler {
-	return &Compiler{
-		Env: NewEnvTree(),
-		TAC: *NewTAC(),
+func NewCompiler(staticVars int) *Compiler {
+	newCompiler := &Compiler{
+		TAC:        *NewTAC(),
+		StaticVars: staticVars,
+		Env:        NewEnvTree(),
 	}
+
+	newCompiler.GenerateVariables()
+	return newCompiler
 }
 
 func (c *Compiler) GetMain() string {
