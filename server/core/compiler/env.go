@@ -22,13 +22,15 @@ type EnvNode struct {
 	EnvType    string
 	Values     map[string]*Value
 	FlowLabels []*Label
+	IndexChild int // Index of the current child used
 }
 
 func NewEnvNode(parent *EnvNode, envType string) *EnvNode {
 	return &EnvNode{
-		Parent:  parent,
-		Child:   make([]*EnvNode, 0),
-		EnvType: envType,
+		Parent:     parent,
+		Child:      make([]*EnvNode, 0),
+		EnvType:    envType,
+		IndexChild: 0,
 	}
 }
 
@@ -81,9 +83,8 @@ func (s *EnvNode) GetLabel(labelType LabelFlowType) *Label {
 
 // EnvTree is a nary tree to represent scopes
 type EnvTree struct {
-	Root     *EnvNode
-	Current  *EnvNode
-	StackEnv []*EnvNode
+	Root    *EnvNode
+	Current *EnvNode
 }
 
 func NewEnvTree() *EnvTree {
@@ -143,18 +144,6 @@ func (s *EnvTree) GetMain() string {
 }
 
 func (s *EnvTree) Next() {
-	if len(s.StackEnv) == 0 {
-		// Si la pila está vacía, no hay más nodos para recorrer.
-		return
-	}
-
-	// Toma el primer nodo de la pila.
-	node := s.StackEnv[0]
-	s.StackEnv = s.StackEnv[1:]
-
-	// Actualiza el nodo actual.
-	s.Current = node
-
-	// Agrega los hijos del nodo actual a la pila (en el orden deseado).
-	s.StackEnv = append(s.StackEnv, node.Child...)
+	s.Current = s.Current.Child[s.Current.IndexChild]
+	s.Current.IndexChild++
 }

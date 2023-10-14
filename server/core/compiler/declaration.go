@@ -43,32 +43,14 @@ func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inte
 
 func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
-	if response.GetContextValue() == LiteralType {
-		newTemporal := c.TAC.NewTemporal(response.GetType())
+	value := c.Env.GetValue(id)
+	value.Type = response.GetType()
+	value.Value = response.GetValue()
 
-		c.TAC.AppendInstructions(
-			[]string{
-				fmt.Sprintf("%s = %s;", newTemporal, response.GetValue()),
-			},
-			"",
-		)
-
-		response.SetValue(newTemporal)
-	}
-
-	c.TAC.AppendInstructions(
-		[]string{
-			fmt.Sprintf("stack[(int)P] = %s;", response.GetValue()),
-			"P = P + 1;",
-		},
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), value.GetValue()),
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 
-	newValue := NewValue(response.GetValue(), c.StackPointer.GetPointer(), response.GetType())
-
-	c.StackPointer.AddPointer()
-
-	c.Env.AddValue(id, newValue)
-
-	return newValue
+	return nil
 }

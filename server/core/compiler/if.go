@@ -10,7 +10,9 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 	endLabel := c.TAC.NewLabel("if")
 
 	for _, ifStmt := range ctx.AllIfTail() {
-		c.Env.PushEnv(IfEnv)
+
+		c.Env.Next()
+
 		ifStatement := ifStmt.(*parser.IfTailContext)
 
 		currentLabel := c.TAC.NewLabel("if")
@@ -36,7 +38,9 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 			},
 			"",
 		)
+
 		c.Env.PopEnv()
+
 	}
 
 	if ctx.ElseStatement() != nil {

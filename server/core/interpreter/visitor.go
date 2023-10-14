@@ -61,7 +61,7 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 	staticVisitor.Visit(tree)
 
 	compiler := C.NewCompiler(staticVisitor.Counter)
-	// compiler.Env = staticVisitor.Env
+	compiler.Env = staticVisitor.Env
 	compiler.Visit(tree)
 
 	return compiler, checker

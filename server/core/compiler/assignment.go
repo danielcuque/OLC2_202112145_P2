@@ -32,9 +32,9 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	case "=":
 		responseValue = fmt.Sprintf("%s = %s;", newTemporal, response.GetValue())
 	case "+=":
-		responseValue = fmt.Sprintf("%s = %v + %v;", newTemporal, value.GetValue(), response.GetValue())
+		responseValue = fmt.Sprintf("%s = %v + %s;", newTemporal, newTemporal, response.GetValue())
 	case "-=":
-		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, value.GetValue(), response.GetValue())
+		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, newTemporal, response.GetValue())
 	}
 
 	c.TAC.AppendInstructions(

@@ -7,7 +7,7 @@ import (
 
 func (c *Compiler) VisitWhileStatement(ctx *parser.WhileStatementContext) interface{} {
 
-	c.Env.PushEnv(WhileEnv)
+	c.Env.Next()
 
 	recurrence := c.NewLabelFlow("", []LabelFlowType{ContinueLabel})
 	end := c.NewLabelFlow("", []LabelFlowType{BreakLabel})
