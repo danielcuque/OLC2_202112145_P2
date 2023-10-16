@@ -237,8 +237,8 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 				// Increase pointer to access char
 				fmt.Sprintf(
 					"%v = %v + 1;",
-					newProcedure.GetArgument("AccessChar").Tmp(),
-					newProcedure.GetArgument("AccessChar").Tmp(),
+					newProcedure.GetArgument("leftOp").Tmp(),
+					newProcedure.GetArgument("leftOp").Tmp(),
 				),
 
 				// Go to first label

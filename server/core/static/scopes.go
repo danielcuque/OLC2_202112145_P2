@@ -53,7 +53,10 @@ func (c *StaticVisitor) VisitWhileStatement(ctx *parser.WhileStatementContext) i
 }
 
 func (c *StaticVisitor) VisitForStatement(ctx *parser.ForStatementContext) interface{} {
-	c.SetEnv(compiler.ForEnv, ctx.Block().(*parser.BlockContext))
+	c.Env.PushEnv(compiler.ForEnv)
+	c.Visit(ctx.Block())
+	c.NewValue(ctx.ID().GetText())
+	c.Env.PopEnv()
 	return nil
 }
 

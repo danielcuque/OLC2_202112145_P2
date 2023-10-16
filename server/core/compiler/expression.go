@@ -268,6 +268,17 @@ func (c *Compiler) VisitParExpr(ctx *parser.ParExprContext) interface{} {
 	return c.Visit(ctx.Expr())
 }
 
+func (c *Compiler) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
+
+	left := c.Visit(ctx.GetLeft()).(*ValueResponse)
+	right := c.Visit(ctx.GetRight()).(*ValueResponse)
+
+	return map[string]interface{}{
+		"left":  left.GetValue(),
+		"right": right.GetValue(),
+	}
+}
+
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	s := strings.Trim(ctx.GetText(), "\"")
 
