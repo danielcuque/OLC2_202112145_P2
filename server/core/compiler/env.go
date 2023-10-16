@@ -30,7 +30,7 @@ func NewEnvNode(parent *EnvNode, envType string) *EnvNode {
 		Parent:     parent,
 		Child:      make([]*EnvNode, 0),
 		EnvType:    envType,
-		IndexChild: 0,
+		IndexChild: -1,
 	}
 }
 
@@ -144,6 +144,6 @@ func (s *EnvTree) GetMain() string {
 }
 
 func (s *EnvTree) Next() {
-	s.Current = s.Current.Child[s.Current.IndexChild]
 	s.Current.IndexChild++
+	s.Current = s.Current.Child[s.Current.IndexChild]
 }
