@@ -10,6 +10,7 @@ const (
 	CharTemporal    TemporalCast = "c"
 	BooleanTemporal TemporalCast = "b"
 	StringTemporal  TemporalCast = "s"
+	MatrixTemporal  TemporalCast = "m"
 )
 
 type Temporal struct {

@@ -25,8 +25,7 @@ func (c *Compiler) ForRange(ctx *parser.ForStatementContext) {
 	endLabel := c.TAC.NewLabel("ForEnd")
 
 	value := c.Env.GetValue(id)
-	value.Type = IntTemporal
-	value.Value = iteratorTemp
+	value.SetData(IntTemporal, iteratorTemp)
 
 	// Assign the iterator to the first value of the range
 	c.TAC.AppendInstructions(

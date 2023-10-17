@@ -25,6 +25,8 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 		"Direccion de vector",
 	)
 
+	value.SetData(MatrixTemporal, response.GetValue())
+
 	return nil
 }
 

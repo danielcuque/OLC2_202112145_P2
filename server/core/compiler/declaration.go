@@ -44,8 +44,7 @@ func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inte
 func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	value := c.Env.GetValue(id)
-	value.Type = response.GetType()
-	value.Value = response.GetValue()
+	value.SetData(response.GetType(), response.GetValue())
 
 	c.TAC.AppendInstruction(
 		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), value.GetValue()),

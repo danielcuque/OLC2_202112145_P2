@@ -36,6 +36,11 @@ func (v *Value) GetType() TemporalCast {
 	return v.Type
 }
 
+func (v *Value) SetData(Type TemporalCast, value interface{}) {
+	v.Type = Type
+	v.Value = value
+}
+
 type ContextType string
 
 const (
