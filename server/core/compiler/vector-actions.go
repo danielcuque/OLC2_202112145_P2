@@ -23,7 +23,7 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 	}
 
 	c.TAC.AppendInstruction(
-		fmt.Sprintf("stack[%v] = %v;", value.GetAddress(), response.GetValue()),
+		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), response.GetValue()),
 		"Direccion de vector",
 	)
 
@@ -72,8 +72,15 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 	ctx_ := ctx.VectorValues().(*parser.VectorValuesContext)
 
 	initVector := c.TAC.NewTemporal(IntTemporal)
+	counter := c.TAC.NewTemporal(IntTemporal)
 
-	c.TAC.AppendInstruction(fmt.Sprintf("%v = H;", initVector), "Inicio del vector")
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = H;", initVector), // Inicio del vector
+			"H = H + 1;",                       // Aumentamos un espacio para dejar la posicion vacia donde va la propiedad .count
+		},
+		"Inicio del vector",
+	)
 
 	for _, value := range ctx_.AllExpr() {
 		val := c.Visit(value).(*ValueResponse)
@@ -82,6 +89,15 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 			"H = H + 1;",
 		}, "")
 	}
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = H - %v;", counter, initVector), // Obtenemos la cantidad de elementos del vector
+			fmt.Sprintf("%v = %v - 1;", counter, counter),    // Restamos uno porque el contador empieza en 1
+			fmt.Sprintf("heap[(int)%v] = %v;", initVector, counter),
+		},
+		"Cantidad de elementos del vector",
+	)
 
 	return &ValueResponse{
 			Value:       initVector,
@@ -106,15 +122,18 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 	}
 
 	vectorObject := value.GetValue().(*Matrix)
+	baseTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	vectorPosition := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendInstructions(
 		[]string{
+			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, value.GetAddress()),
+			fmt.Sprintf("%v = %v + 1;", baseTemporal, baseTemporal),
 			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), vectorObject.GetInit()),
-			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, value.GetAddress()),
+			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, baseTemporal),
 		},
-		"Acceso a vector",
+		fmt.Sprintf("Posicion de vector %v", id),
 	)
 
 	return &ValueResponse{
