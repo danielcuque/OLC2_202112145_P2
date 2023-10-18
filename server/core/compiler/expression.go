@@ -377,3 +377,22 @@ func (c *Compiler) VisitVariableType(ctx *parser.VariableTypeContext) interface{
 		return ctx.GetText()
 	}
 }
+
+func (c *Compiler) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) interface{} {
+	vectorPosition := c.Visit(ctx.VectorAccess()).(*ValueResponse)
+
+	newTemporal := c.TAC.NewTemporal(IntTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%s = heap[(int)%s];", newTemporal, vectorPosition.GetValue()),
+		},
+		"Acceso a vector",
+	)
+
+	return &ValueResponse{
+		Type:        IntTemporal,
+		Value:       newTemporal,
+		ContextType: TemporalType,
+	}
+}

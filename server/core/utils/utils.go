@@ -40,3 +40,14 @@ func ParseToJSON(input string) string {
 
 	return string(formatted)
 }
+
+func GetMatrixTypeDimensions(ctx string) int {
+	var counter int
+	for _, dim := range ctx {
+		if dim == '[' {
+			counter++
+		}
+	}
+
+	return counter
+}

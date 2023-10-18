@@ -3,6 +3,7 @@ package interpreter
 import (
 	E "OLC2/core/error"
 	"OLC2/core/parser"
+	"OLC2/core/utils"
 	V "OLC2/core/values"
 	"fmt"
 	"reflect"
@@ -368,7 +369,7 @@ func (v *Visitor) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) i
 		return nil
 	}
 
-	matrixTypeDimensions := v.GetMatrixTypeDimensions(ctx.MatrixType().GetText())
+	matrixTypeDimensions := utils.GetMatrixTypeDimensions(ctx.MatrixType().GetText())
 	bodyDimension := v.GetMatrixDimensions(body, 0)
 
 	if matrixTypeDimensions != bodyDimension {
@@ -541,17 +542,6 @@ func (v *Visitor) GetMatrixDimensions(node interface{}, counter int) int {
 	counter++
 
 	return v.GetMatrixDimensions(nd.Body[0], counter)
-}
-
-func (v *Visitor) GetMatrixTypeDimensions(ctx string) int {
-	var counter int
-	for _, dim := range ctx {
-		if dim == '[' {
-			counter++
-		}
-	}
-
-	return counter
 }
 
 func (v *Visitor) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{} {
