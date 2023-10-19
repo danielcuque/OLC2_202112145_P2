@@ -201,12 +201,12 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 		newProcedure.AddArguments(
 			[]*Parameter{
 				{
-					Name:     "operand",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "operand",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "result",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "result",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 			},
 		)

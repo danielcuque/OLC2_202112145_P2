@@ -3,10 +3,11 @@ package compiler
 import "fmt"
 
 type Procedure struct {
-	Name      string
-	Labels    map[string]*Label
-	Arguments map[string]*Parameter
-	Code      string
+	Name        string
+	Labels      map[string]*Label
+	Arguments   map[string]*Parameter
+	Code        string
+	BasePointer *Temporal
 }
 
 func NewProcedure(name string) *Procedure {
@@ -19,8 +20,12 @@ func NewProcedure(name string) *Procedure {
 
 func (p *Procedure) AddArguments(args []*Parameter) {
 	for _, arg := range args {
-		p.Arguments[arg.Name] = arg
+		p.Arguments[arg.ExternalName] = arg
 	}
+}
+
+func (p *Procedure) SetBasePointer(t *Temporal) {
+	p.BasePointer = t
 }
 
 func (p *Procedure) AddCode(instructions []string, comment string) {
@@ -52,8 +57,10 @@ func (p *Procedure) String() string {
 }
 
 type Parameter struct {
-	Temporal *Temporal
-	Name     string
+	Temporal     *Temporal
+	ExternalName string
+	InternalName string
+	IsReference  bool
 }
 
 func (p *Parameter) Tmp() string {

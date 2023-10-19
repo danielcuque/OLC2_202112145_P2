@@ -52,6 +52,10 @@ func (c *StaticVisitor) VisitStatement(ctx *parser.StatementContext) interface{}
 		c.Visit(ctx.SwitchStatement())
 	}
 
+	// if ctx.FunctionDeclarationStatement() != nil {
+	// 	c.Visit(ctx.FunctionDeclarationStatement())
+	// }
+
 	return nil
 }
 
@@ -99,3 +103,14 @@ func (c *StaticVisitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext)
 
 	return nil
 }
+
+// func (c *StaticVisitor) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarationStatementContext) interface{} {
+
+// 	id := ctx.ID().GetText()
+
+// 	params := ctx.FunctionParameters().GetText()
+
+// 	fmt.Println("FUNCTION", id, params)
+
+// 	return nil
+// }

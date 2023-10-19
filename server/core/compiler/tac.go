@@ -7,6 +7,7 @@ type TAC struct {
 	labels    []*Label
 	standar   map[string]*Procedure
 	code      string
+	procedure *Procedure
 }
 
 func NewTAC() *TAC {
@@ -15,6 +16,7 @@ func NewTAC() *TAC {
 		temporals: make([]*Temporal, 0),
 		labels:    make([]*Label, 0),
 		standar:   make(map[string]*Procedure),
+		procedure: nil,
 	}
 }
 
@@ -65,6 +67,11 @@ func (c *Compiler) NewLabelFlow(name string, Type []LabelFlowType) *Label {
 
 func (t *TAC) AppendInstructions(instructions []string, comment string) {
 
+	if t.procedure != nil {
+		t.procedure.AddCode(instructions, comment)
+		return
+	}
+
 	if comment != "" {
 		t.code += fmt.Sprintf("// %s\n", comment)
 	}
@@ -99,6 +106,15 @@ func (t *TAC) AddProcedure(procedure *Procedure) {
 
 func (t *TAC) GetStandar(name string) *Procedure {
 	return t.standar[name]
+}
+
+func (t *TAC) SetProcedure(procedure *Procedure) {
+	t.procedure = procedure
+	t.AddProcedure(procedure)
+}
+
+func (t *TAC) UnsetProcedure() {
+	t.procedure = nil
 }
 
 func (t *TAC) GetProcudres() string {

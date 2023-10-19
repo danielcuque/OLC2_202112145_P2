@@ -6,6 +6,83 @@ import (
 	"fmt"
 )
 
+func (c *Compiler) AllocateStack(basePointer, size *ValueResponse) {
+	allocateStackName := "std_allocate_stack"
+
+	if c.TAC.GetStandar(allocateStackName) == nil {
+		newProcedure := NewProcedure(allocateStackName)
+
+		newProcedure.AddArguments(
+			[]*Parameter{
+				{
+					ExternalName: "size",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "basePointer",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "counter",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		newProcedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("StartLoop"),
+				c.TAC.NewLabel("EndLoop"),
+			},
+		)
+
+		newProcedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"stack[(int)P] = %v;",
+					newProcedure.GetArgument("size").Temporal.Cast(),
+				),
+				c.StackPointer.IncreasePointer(1),
+				fmt.Sprintf(
+					"%v = 0;",
+					newProcedure.GetArgument("counter").Temporal,
+				),
+
+				newProcedure.GetLabel("StartLoop").Declare(),
+				fmt.Sprintf(
+					"if (%v == %v) goto %s;",
+					newProcedure.GetArgument("counter").Temporal,
+					newProcedure.GetArgument("size").Temporal,
+					newProcedure.GetLabel("EndLoop"),
+				),
+				"stack[(int)P] = 0;",
+				c.StackPointer.IncreasePointer(1),
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					newProcedure.GetArgument("counter").Temporal,
+					newProcedure.GetArgument("counter").Temporal,
+				),
+				fmt.Sprintf("goto %s;", newProcedure.GetLabel("StartLoop").String()),
+				newProcedure.GetLabel("EndLoop").Declare(),
+			},
+			"Allocating stack",
+		)
+
+		c.TAC.AddProcedure(newProcedure)
+	}
+
+	procedure := c.TAC.GetStandar(allocateStackName)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("size").Tmp(), size.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetArgument("basePointer").Tmp(), basePointer.GetValue()),
+			fmt.Sprintf("%v();", allocateStackName),
+		},
+		"Allocating stack",
+	)
+}
+
 func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 	if c.TAC.GetStandar("std_and") == nil {
 		newProcedure := NewProcedure("std_and")
@@ -13,16 +90,16 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 		newProcedure.AddArguments(
 			[]*Parameter{
 				{
-					Name:     "leftOp",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "leftOp",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "rightOp",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "rightOp",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "result",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "result",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 			},
 		)
@@ -93,16 +170,16 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 		newProcedure.AddArguments(
 			[]*Parameter{
 				{
-					Name:     "leftOp",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "leftOp",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "rightOp",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "rightOp",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "result",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "result",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 			},
 		)
@@ -174,20 +251,20 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 		newProcedure.AddArguments(
 			[]*Parameter{
 				{
-					Name:     "HeapPointer",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "HeapPointer",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "leftOp",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "leftOp",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "rightOp",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "rightOp",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "AccessChar",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "AccessChar",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 			},
 		)
@@ -321,28 +398,28 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 		newProcedure.AddArguments(
 			[]*Parameter{
 				{
-					Name:     "strPointer1",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "strPointer1",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "strPointer2",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "strPointer2",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "AccessChar1",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "AccessChar1",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "AccessChar2",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "AccessChar2",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					Name:     "result",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "result",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "result2",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "result2",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 			},
 		)
@@ -485,8 +562,8 @@ func (c *Compiler) PrintBool(name string) {
 	newProcedure.AddArguments(
 		[]*Parameter{
 			{
-				Name:     "HeapPointer",
-				Temporal: c.TAC.NewTemporal(IntTemporal),
+				ExternalName: "HeapPointer",
+				Temporal:     c.TAC.NewTemporal(IntTemporal),
 			},
 		},
 	)
@@ -533,12 +610,12 @@ func (c *Compiler) PrintString(name string) {
 	newProcedure.AddArguments(
 		[]*Parameter{
 			{
-				Name:     "HeapPointer",
-				Temporal: c.TAC.NewTemporal(IntTemporal),
+				ExternalName: "HeapPointer",
+				Temporal:     c.TAC.NewTemporal(IntTemporal),
 			},
 			{
-				Name:     "AccessChar",
-				Temporal: c.TAC.NewTemporal(IntTemporal),
+				ExternalName: "AccessChar",
+				Temporal:     c.TAC.NewTemporal(IntTemporal),
 			},
 		},
 	)
@@ -651,8 +728,8 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 		newProcedure.AddArguments(
 			[]*Parameter{
 				{
-					Name:     "operand",
-					Temporal: c.TAC.NewTemporal(IntTemporal),
+					ExternalName: "operand",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 			},
 		)
