@@ -22,7 +22,7 @@ type EnvNode struct {
 	EnvType    string
 	Values     map[string]*Value
 	FlowLabels []*Label
-	IndexChild int // Index of the current child used
+	IndexChild int
 }
 
 func NewEnvNode(parent *EnvNode, envType string) *EnvNode {
@@ -56,11 +56,12 @@ func (s *EnvNode) Copy() *EnvNode {
 	return newNode
 }
 
-func (s *EnvNode) AddValue(key string, value *Value) {
+func (s *EnvNode) AddValue(key string, value *Value) *Value {
 	if s.Values == nil {
 		s.Values = make(map[string]*Value)
 	}
 	s.Values[key] = value
+	return value
 }
 
 func (s *EnvNode) AddLabel(value *Label) {
@@ -81,7 +82,6 @@ func (s *EnvNode) GetLabel(labelType LabelFlowType) *Label {
 	return nil
 }
 
-// EnvTree is a nary tree to represent scopes
 type EnvTree struct {
 	Root    *EnvNode
 	Current *EnvNode
@@ -114,12 +114,24 @@ func (s *EnvTree) GetCurrentScope() *EnvNode {
 	return s.Current
 }
 
+func (s *EnvTree) FindFunction(id string) *EnvNode {
+	// All functions are in the root
+
+	for _, child := range s.Root.Child {
+		if child.EnvType == id {
+			return child
+		}
+	}
+
+	return nil
+}
+
 func (s *EnvTree) String() string {
 	return s.Root.String()
 }
 
-func (s *EnvTree) AddValue(key string, value *Value) {
-	s.Current.AddValue(key, value)
+func (s *EnvTree) AddValue(key string, value *Value) *Value {
+	return s.Current.AddValue(key, value)
 }
 
 func (s *EnvTree) GetValue(key string) *Value {

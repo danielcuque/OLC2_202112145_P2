@@ -6,7 +6,6 @@ import (
 	C "OLC2/core/compiler"
 	E "OLC2/core/error"
 	"OLC2/core/parser"
-	"OLC2/core/static"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -57,7 +56,7 @@ func NewEvaluator(input string) (*C.Compiler, *Visitor) {
 	checker := NewVisitor()
 	checker.Visit(tree)
 
-	staticVisitor := static.NewStaticVisitor()
+	staticVisitor := C.NewStaticVisitor(false, 0)
 	staticVisitor.Visit(tree)
 
 	compiler := C.NewCompiler(staticVisitor.Counter)

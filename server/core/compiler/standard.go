@@ -6,13 +6,13 @@ import (
 	"fmt"
 )
 
-func (c *Compiler) AllocateStack(basePointer, size *ValueResponse) {
+func (c *Compiler) AllocateStack(basePointer *Temporal, size int) {
 	allocateStackName := "std_allocate_stack"
 
-	if c.TAC.GetStandar(allocateStackName) == nil {
+	if c.TAC.GetProcedure(allocateStackName) == nil {
 		newProcedure := NewProcedure(allocateStackName)
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "size",
@@ -22,17 +22,6 @@ func (c *Compiler) AllocateStack(basePointer, size *ValueResponse) {
 					ExternalName: "basePointer",
 					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
-				{
-					ExternalName: "counter",
-					Temporal:     c.TAC.NewTemporal(IntTemporal),
-				},
-			},
-		)
-
-		newProcedure.AddLabels(
-			[]*Label{
-				c.TAC.NewLabel("StartLoop"),
-				c.TAC.NewLabel("EndLoop"),
 			},
 		)
 
@@ -40,54 +29,36 @@ func (c *Compiler) AllocateStack(basePointer, size *ValueResponse) {
 			[]string{
 				fmt.Sprintf(
 					"stack[(int)P] = %v;",
-					newProcedure.GetArgument("size").Temporal.Cast(),
+					newProcedure.GetParameter("basePointer").Temporal.Cast(),
 				),
-				c.StackPointer.IncreasePointer(1),
-				fmt.Sprintf(
-					"%v = 0;",
-					newProcedure.GetArgument("counter").Temporal,
-				),
-
-				newProcedure.GetLabel("StartLoop").Declare(),
-				fmt.Sprintf(
-					"if (%v == %v) goto %s;",
-					newProcedure.GetArgument("counter").Temporal,
-					newProcedure.GetArgument("size").Temporal,
-					newProcedure.GetLabel("EndLoop"),
-				),
-				"stack[(int)P] = 0;",
-				c.StackPointer.IncreasePointer(1),
-				fmt.Sprintf(
-					"%v = %v + 1;",
-					newProcedure.GetArgument("counter").Temporal,
-					newProcedure.GetArgument("counter").Temporal,
-				),
-				fmt.Sprintf("goto %s;", newProcedure.GetLabel("StartLoop").String()),
-				newProcedure.GetLabel("EndLoop").Declare(),
+				c.StackPointer.IncreasePointer(size),
 			},
-			"Allocating stack",
+			"",
 		)
 
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar(allocateStackName)
+	procedure := c.TAC.GetProcedure(allocateStackName)
+	initFreeAddress := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("size").Tmp(), size.GetValue()),
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("basePointer").Tmp(), basePointer.GetValue()),
+			fmt.Sprintf("%v = P;", initFreeAddress),
+			fmt.Sprintf("%v = %d;", procedure.GetParameter("size").Tmp(), size),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("basePointer").Tmp(), basePointer),
 			fmt.Sprintf("%v();", allocateStackName),
+			fmt.Sprintf("%v = %v", basePointer, initFreeAddress),
 		},
-		"Allocating stack",
+		"Reservando espacio para la instancia de la función",
 	)
 }
 
 func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
-	if c.TAC.GetStandar("std_and") == nil {
+	if c.TAC.GetProcedure("std_and") == nil {
 		newProcedure := NewProcedure("std_and")
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "leftOp",
@@ -117,23 +88,23 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 			[]string{
 				fmt.Sprintf(
 					"if (%v == 0) goto %v;",
-					newProcedure.GetArgument("leftOp").Temporal,
+					newProcedure.GetParameter("leftOp").Temporal,
 					newProcedure.GetLabel("FalseCondition"),
 				),
 				fmt.Sprintf(
 					"if (%v == 0) goto %v;",
-					newProcedure.GetArgument("rightOp").Temporal,
+					newProcedure.GetParameter("rightOp").Temporal,
 					newProcedure.GetLabel("FalseCondition"),
 				),
 				fmt.Sprintf(
 					"%v = 1;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				fmt.Sprintf("goto %v;", newProcedure.GetLabel("TrueCondition")),
 				newProcedure.GetLabel("FalseCondition").Declare(),
 				fmt.Sprintf(
 					"%v = 0;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				newProcedure.GetLabel("TrueCondition").Declare(),
 			},
@@ -143,14 +114,14 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("std_and")
+	procedure := c.TAC.GetProcedure("std_and")
 
 	// Set left Operator in temporal
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("leftOp").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("rightOp").Tmp(), rightOp.GetValue()),
 			"std_and();",
 		},
 		"Operación AND",
@@ -158,16 +129,16 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 	return &ValueResponse{
 		Type:        BooleanTemporal,
-		Value:       procedure.GetArgument("result").Temporal,
+		Value:       procedure.GetParameter("result").Temporal,
 		ContextType: TemporalType,
 	}
 }
 
 func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
-	if c.TAC.GetStandar("std_or") == nil {
+	if c.TAC.GetProcedure("std_or") == nil {
 		newProcedure := NewProcedure("std_or")
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "leftOp",
@@ -197,23 +168,23 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 			[]string{
 				fmt.Sprintf(
 					"if (%v == 1) goto %v;",
-					newProcedure.GetArgument("leftOp").Temporal,
+					newProcedure.GetParameter("leftOp").Temporal,
 					newProcedure.GetLabel("TrueCondition"),
 				),
 				fmt.Sprintf(
 					"if (%v == 1) goto %v;",
-					newProcedure.GetArgument("rightOp").Temporal,
+					newProcedure.GetParameter("rightOp").Temporal,
 					newProcedure.GetLabel("TrueCondition"),
 				),
 				fmt.Sprintf(
 					"%v = 0;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				fmt.Sprintf("goto %v;", newProcedure.GetLabel("FalseCondition")),
 				newProcedure.GetLabel("TrueCondition").Declare(),
 				fmt.Sprintf(
 					"%v = 1;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				newProcedure.GetLabel("FalseCondition").Declare(),
 			},
@@ -223,14 +194,14 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("std_or")
+	procedure := c.TAC.GetProcedure("std_or")
 
 	// Set left Operator in temporal
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("leftOp").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("rightOp").Tmp(), rightOp.GetValue()),
 			"std_or();",
 		},
 		"Operación OR",
@@ -238,17 +209,17 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 	return &ValueResponse{
 		Type:        BooleanTemporal,
-		Value:       procedure.GetArgument("result").Temporal,
+		Value:       procedure.GetParameter("result").Temporal,
 		ContextType: TemporalType,
 	}
 }
 
 func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 
-	if c.TAC.GetStandar("stdconcat") == nil {
+	if c.TAC.GetProcedure("stdconcat") == nil {
 		newProcedure := NewProcedure("stdconcat")
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "HeapPointer",
@@ -283,7 +254,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 		newProcedure.AddCode(
 			[]string{
 				// Get first free space in heap
-				fmt.Sprintf("%s = H;", newProcedure.GetArgument("HeapPointer").Tmp()),
+				fmt.Sprintf("%s = H;", newProcedure.GetParameter("HeapPointer").Tmp()),
 
 				// Declare first label to create a loop for first string
 				newProcedure.GetLabel("FirstString").Declare(),
@@ -291,21 +262,21 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 				// Get char from first string
 				fmt.Sprintf(
 					"%v = heap[%v];",
-					newProcedure.GetArgument("AccessChar").Tmp(),
-					newProcedure.GetArgument("leftOp").Temporal.Cast(),
+					newProcedure.GetParameter("AccessChar").Tmp(),
+					newProcedure.GetParameter("leftOp").Temporal.Cast(),
 				),
 
 				// If char is -1, then go to end of first string
 				fmt.Sprintf(
 					"if (%v == -1) goto %s;",
-					newProcedure.GetArgument("AccessChar").Tmp(),
+					newProcedure.GetParameter("AccessChar").Tmp(),
 					newProcedure.GetLabel("EndFirstString"),
 				),
 
 				// Add char to heap
 				fmt.Sprintf(
 					"heap[(int)H] = %v;",
-					newProcedure.GetArgument("AccessChar").Tmp(),
+					newProcedure.GetParameter("AccessChar").Tmp(),
 				),
 
 				// Increase heap pointer
@@ -314,8 +285,8 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 				// Increase pointer to access char
 				fmt.Sprintf(
 					"%v = %v + 1;",
-					newProcedure.GetArgument("leftOp").Tmp(),
-					newProcedure.GetArgument("leftOp").Tmp(),
+					newProcedure.GetParameter("leftOp").Tmp(),
+					newProcedure.GetParameter("leftOp").Tmp(),
 				),
 
 				// Go to first label
@@ -328,29 +299,29 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 				// Get char from second string
 				fmt.Sprintf(
 					"%v = heap[%v];",
-					newProcedure.GetArgument("AccessChar").Tmp(),
-					newProcedure.GetArgument("rightOp").Temporal.Cast(),
+					newProcedure.GetParameter("AccessChar").Tmp(),
+					newProcedure.GetParameter("rightOp").Temporal.Cast(),
 				),
 
 				// If char is -1, then go to end of second string
 				fmt.Sprintf(
 					"if (%v == -1) goto %s;",
-					newProcedure.GetArgument("AccessChar").Tmp(),
+					newProcedure.GetParameter("AccessChar").Tmp(),
 					newProcedure.GetLabel("EndSecondString"),
 				),
 
 				// Add char to heap
 				fmt.Sprintf(
 					"heap[(int)H] = %v;",
-					newProcedure.GetArgument("AccessChar").Tmp(),
+					newProcedure.GetParameter("AccessChar").Tmp(),
 				),
 
 				// Increase heap pointer
 				"H = H + 1;",
 				fmt.Sprintf(
 					"%v = %v + 1;",
-					newProcedure.GetArgument("rightOp").Tmp(),
-					newProcedure.GetArgument("rightOp").Tmp(),
+					newProcedure.GetParameter("rightOp").Tmp(),
+					newProcedure.GetParameter("rightOp").Tmp(),
 				),
 
 				// Go to second label
@@ -369,13 +340,13 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("stdconcat")
+	procedure := c.TAC.GetProcedure("stdconcat")
 
 	// Set left Operator in temporal
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("leftOp").Tmp(), leftOp.GetValue()),
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("rightOp").Tmp(), rightOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("leftOp").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("rightOp").Tmp(), rightOp.GetValue()),
 			"stdconcat();",
 		},
 		"Concatenación de cadenas",
@@ -383,7 +354,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 	return &ValueResponse{
 		Type:        V.StringType,
-		Value:       procedure.GetArgument("HeapPointer").Temporal,
+		Value:       procedure.GetParameter("HeapPointer").Temporal,
 		ContextType: TemporalType,
 	}
 }
@@ -392,10 +363,10 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 	// There are two cases, when the operator is == or !=
 
 	procedureName := "std_compare_str"
-	if c.TAC.GetStandar(procedureName) == nil {
+	if c.TAC.GetProcedure(procedureName) == nil {
 		newProcedure := NewProcedure(procedureName)
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "strPointer1",
@@ -444,51 +415,51 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 				newProcedure.GetLabel("5").Declare(),
 				fmt.Sprintf(
 					"%v = heap[%v];",
-					newProcedure.GetArgument("AccessChar1").Tmp(),
-					newProcedure.GetArgument("strPointer1").Temporal.Cast(),
+					newProcedure.GetParameter("AccessChar1").Tmp(),
+					newProcedure.GetParameter("strPointer1").Temporal.Cast(),
 				),
 				fmt.Sprintf(
 					"%v = heap[%v];",
-					newProcedure.GetArgument("AccessChar2").Tmp(),
-					newProcedure.GetArgument("strPointer2").Temporal.Cast(),
+					newProcedure.GetParameter("AccessChar2").Tmp(),
+					newProcedure.GetParameter("strPointer2").Temporal.Cast(),
 				),
 				fmt.Sprintf(
 					"if (%v == -1) goto %s;",
-					newProcedure.GetArgument("AccessChar1").Tmp(),
+					newProcedure.GetParameter("AccessChar1").Tmp(),
 					newProcedure.GetLabel("6"),
 				),
 				fmt.Sprintf(
 					"if (%v == -1) goto %s;",
-					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetParameter("AccessChar2").Tmp(),
 					newProcedure.GetLabel("7"),
 				),
 				fmt.Sprintf(
 					"if (%v < %v) goto %s;",
-					newProcedure.GetArgument("AccessChar1").Tmp(),
-					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetParameter("AccessChar1").Tmp(),
+					newProcedure.GetParameter("AccessChar2").Tmp(),
 					newProcedure.GetLabel("8"),
 				),
 				fmt.Sprintf(
 					"if (%v > %v) goto %s;",
-					newProcedure.GetArgument("AccessChar1").Tmp(),
-					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetParameter("AccessChar1").Tmp(),
+					newProcedure.GetParameter("AccessChar2").Tmp(),
 					newProcedure.GetLabel("7"),
 				),
 				fmt.Sprintf(
 					"%v = %v + 1;",
-					newProcedure.GetArgument("strPointer1").Tmp(),
-					newProcedure.GetArgument("strPointer1").Tmp(),
+					newProcedure.GetParameter("strPointer1").Tmp(),
+					newProcedure.GetParameter("strPointer1").Tmp(),
 				),
 				fmt.Sprintf(
 					"%v = %v + 1;",
-					newProcedure.GetArgument("strPointer2").Tmp(),
-					newProcedure.GetArgument("strPointer2").Tmp(),
+					newProcedure.GetParameter("strPointer2").Tmp(),
+					newProcedure.GetParameter("strPointer2").Tmp(),
 				),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("5").String()),
 				newProcedure.GetLabel("6").Declare(),
 				fmt.Sprintf(
 					"if (%v == -1) goto %s;",
-					newProcedure.GetArgument("AccessChar2").Tmp(),
+					newProcedure.GetParameter("AccessChar2").Tmp(),
 					newProcedure.GetLabel("9"),
 				),
 				fmt.Sprintf(
@@ -498,19 +469,19 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 				newProcedure.GetLabel("9").Declare(),
 				fmt.Sprintf(
 					"%v = 0;",
-					newProcedure.GetArgument("result").Tmp(),
+					newProcedure.GetParameter("result").Tmp(),
 				),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("10").String()),
 				newProcedure.GetLabel("8").Declare(),
 				fmt.Sprintf(
 					"%v = -1;",
-					newProcedure.GetArgument("result").Tmp(),
+					newProcedure.GetParameter("result").Tmp(),
 				),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("10").String()),
 				newProcedure.GetLabel("7").Declare(),
 				fmt.Sprintf(
 					"%v = 1;",
-					newProcedure.GetArgument("result").Tmp(),
+					newProcedure.GetParameter("result").Tmp(),
 				),
 				newProcedure.GetLabel("10").Declare(),
 			},
@@ -520,29 +491,29 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar(procedureName)
+	procedure := c.TAC.GetProcedure(procedureName)
 
 	// Set left Operator in temporal
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("strPointer1").Tmp(), leftOp.GetValue()),
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("strPointer2").Tmp(), rightOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("strPointer1").Tmp(), leftOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("strPointer2").Tmp(), rightOp.GetValue()),
 			"std_compare_str();",
 			fmt.Sprintf(
 				"if(%v %s 0) goto %s;",
-				procedure.GetArgument("result").Temporal,
+				procedure.GetParameter("result").Temporal,
 				op,
 				procedure.GetLabel("TrueCondition"),
 			),
 			fmt.Sprintf(
 				"%s = 0;",
-				procedure.GetArgument("result2").Temporal,
+				procedure.GetParameter("result2").Temporal,
 			),
 			fmt.Sprintf("goto %s;", procedure.GetLabel("EndCondition")),
 			procedure.GetLabel("TrueCondition").Declare(),
 			fmt.Sprintf(
 				"%s = 1;",
-				procedure.GetArgument("result2").Temporal,
+				procedure.GetParameter("result2").Temporal,
 			),
 			procedure.GetLabel("EndCondition").Declare(),
 		},
@@ -551,7 +522,7 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 
 	return &ValueResponse{
 		Type:        BooleanTemporal,
-		Value:       procedure.GetArgument("result2").Temporal,
+		Value:       procedure.GetParameter("result2").Temporal,
 		ContextType: TemporalType,
 	}
 }
@@ -559,7 +530,7 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 func (c *Compiler) PrintBool(name string) {
 	newProcedure := NewProcedure(name)
 
-	newProcedure.AddArguments(
+	newProcedure.AddParameters(
 		[]*Parameter{
 			{
 				ExternalName: "HeapPointer",
@@ -580,7 +551,7 @@ func (c *Compiler) PrintBool(name string) {
 		[]string{
 			fmt.Sprintf(
 				"if (%v == 1) goto %s;",
-				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
+				newProcedure.GetParameter("HeapPointer").Temporal.Cast(),
 				newProcedure.GetLabel("True").String(),
 			),
 			fmt.Sprintf("goto %s;", newProcedure.GetLabel("False").String()),
@@ -607,7 +578,7 @@ func (c *Compiler) PrintBool(name string) {
 func (c *Compiler) PrintString(name string) {
 	newProcedure := NewProcedure(name)
 
-	newProcedure.AddArguments(
+	newProcedure.AddParameters(
 		[]*Parameter{
 			{
 				ExternalName: "HeapPointer",
@@ -637,28 +608,28 @@ func (c *Compiler) PrintString(name string) {
 			// Get char from string
 			fmt.Sprintf(
 				"%v = heap[%v];",
-				newProcedure.GetArgument("AccessChar").Tmp(),
-				newProcedure.GetArgument("HeapPointer").Temporal.Cast(),
+				newProcedure.GetParameter("AccessChar").Tmp(),
+				newProcedure.GetParameter("HeapPointer").Temporal.Cast(),
 			),
 
 			// If char is -1, then go to end of string
 			fmt.Sprintf(
 				"if (%v == -1) goto %s;",
-				newProcedure.GetArgument("AccessChar").Tmp(),
+				newProcedure.GetParameter("AccessChar").Tmp(),
 				newProcedure.GetLabel("EndString"),
 			),
 
 			// Print char
 			fmt.Sprintf(
 				"printf(\"%%c\",(int) %v);",
-				newProcedure.GetArgument("AccessChar").Tmp(),
+				newProcedure.GetParameter("AccessChar").Tmp(),
 			),
 
 			// Increase pointer to access char
 			fmt.Sprintf(
 				"%v = %v + 1;",
-				newProcedure.GetArgument("HeapPointer").Tmp(),
-				newProcedure.GetArgument("HeapPointer").Tmp(),
+				newProcedure.GetParameter("HeapPointer").Tmp(),
+				newProcedure.GetParameter("HeapPointer").Tmp(),
 			),
 
 			// Go to first label
@@ -678,15 +649,15 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	for _, arg := range c.GetArgs(ctx) {
 		if arg.Value.Type == StringTemporal {
 
-			if c.TAC.GetStandar("stdprint") == nil {
+			if c.TAC.GetProcedure("stdprint") == nil {
 				c.PrintString("stdprint")
 			}
 
-			procedure := c.TAC.GetStandar("stdprint")
+			procedure := c.TAC.GetProcedure("stdprint")
 
 			c.TAC.AppendInstructions(
 				[]string{
-					fmt.Sprintf("%v = %v;", procedure.GetArgument("HeapPointer").Tmp(), arg.Value.GetValue()),
+					fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), arg.Value.GetValue()),
 					"stdprint();",
 				},
 				"Imprimiendo cadena",
@@ -694,15 +665,15 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 		} else if arg.Value.Type == BooleanTemporal {
 
-			if c.TAC.GetStandar("stdprintbool") == nil {
+			if c.TAC.GetProcedure("stdprintbool") == nil {
 				c.PrintBool("stdprintbool")
 			}
 
-			procedure := c.TAC.GetStandar("stdprintbool")
+			procedure := c.TAC.GetProcedure("stdprintbool")
 
 			c.TAC.AppendInstructions(
 				[]string{
-					fmt.Sprintf("%v = %v;", procedure.GetArgument("HeapPointer").Tmp(), arg.Value.GetValue()),
+					fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), arg.Value.GetValue()),
 					"stdprintbool();",
 				},
 				"Imprimiendo booleano",
@@ -722,10 +693,10 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *ValueResponse {
 
-	if c.TAC.GetStandar("std_zero_division") == nil {
+	if c.TAC.GetProcedure("std_zero_division") == nil {
 		newProcedure := NewProcedure("std_zero_division")
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "operand",
@@ -748,7 +719,7 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 			[]string{
 				fmt.Sprintf(
 					"if (%v != 0) goto %s;",
-					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetParameter("operand").Temporal,
 					newProcedure.GetLabel("NotZeroDivision"),
 				),
 
@@ -764,13 +735,13 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 				"printf(\"%c\", 10);",
 				fmt.Sprintf(
 					"%s = 1;",
-					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetParameter("operand").Temporal,
 				),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("EndZeroDivision")),
 				newProcedure.GetLabel("NotZeroDivision").Declare(),
 				fmt.Sprintf(
 					"%s = 0;",
-					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetParameter("operand").Temporal,
 				),
 				newProcedure.GetLabel("EndZeroDivision").Declare(),
 			},
@@ -780,7 +751,7 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("std_zero_division")
+	procedure := c.TAC.GetProcedure("std_zero_division")
 
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
 	isZeroDivisionLabel := c.TAC.NewLabel("")
@@ -791,11 +762,11 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetArgument("operand").Tmp(), rightOp.GetValue()),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("operand").Tmp(), rightOp.GetValue()),
 			"std_zero_division();",
 			fmt.Sprintf(
 				"if (%v == 1) goto %s;",
-				procedure.GetArgument("operand").Temporal,
+				procedure.GetParameter("operand").Temporal,
 				isZeroDivisionLabel,
 			),
 			fmt.Sprintf(

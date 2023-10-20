@@ -17,22 +17,32 @@
 //     [94, 74, 58, 84, 100]
 // ]
 
-// func factorial(_ n: Int) -> Int {
-//     if n < 2 {
-//         return 1
-//     } else {
-//         return n * factorial(n - 1)
-//     }
-// }
+func factorial(_ n: Int) -> Int {
+    if n < 2 {
+        return 1
+    } else {
+        return n * factorial(resta)
+    }
+}
 
 // func vacio() {
 //     print("vacio")
 // }
 
-func numero(num x: Int) {
-    x = x + 1
-} 
+
+// print(numero(num: 10))
+
 
 // print(factorial(6))
 // print(factorial(4))
 // print(factorial(3))
+
+
+
+
+func numero(num x: Int) -> Int {
+    var resultado = 10;
+    return resultado
+} 
+
+numero(num: 10)

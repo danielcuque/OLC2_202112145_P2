@@ -1,4 +1,4 @@
-package static
+package compiler
 
 import (
 	"OLC2/core/parser"

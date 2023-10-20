@@ -6,30 +6,39 @@ import (
 
 func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarationStatementContext) interface{} {
 
-	id := ctx.ID().GetText()
-
-	newProcedure := NewProcedure(id)
-
-	parameters := make([]*Parameter, 0)
+	params := make([]*Parameter, 0)
 
 	if ctx.FunctionParameters() != nil {
-		parameters = c.Visit(ctx.FunctionParameters()).([]*Parameter)
+		params = c.Visit(ctx.FunctionParameters()).([]*Parameter)
 	}
 
-	newProcedure.AddArguments(parameters)
+	statementsBlock := ctx.Block()
+	staticVisitor := NewStaticVisitor(true, len(params))
+	staticVisitor.Visit(statementsBlock)
+	envFunction := staticVisitor.Env
 
-	newProcedure.SetBasePointer(c.TAC.NewTemporal(IntTemporal))
+	c.Env.Root.Child = append(c.Env.Root.Child, envFunction.Root)
 
-	c.TAC.SetProcedure(newProcedure)
-	c.Visit(ctx.Block())
-	c.TAC.UnsetProcedure()
+	newProcedure := NewProcedure(ctx.ID().GetText())
+	newProcedure.Env = envFunction
 
-	// fmt.Println("FUNCTION", id, newProcedure)
+	newProcedure.AddParameters(params)
+
+	for i, param := range params {
+		newValue := envFunction.AddValue(param.InternalName, NewSimpleValue(i))
+		newValue.IsRelative = true
+	}
+
+	returnTemporal := c.TAC.NewTemporal(IntTemporal)
+	returnLabel := c.TAC.NewLabel("return")
+
+	newProcedure.ReturnValue = returnTemporal
+	newProcedure.ReturnLabel = returnLabel
+
 	return nil
 }
 
 func (c *Compiler) VisitFunctionParameters(ctx *parser.FunctionParametersContext) interface{} {
-	// Return an array of V.IValue
 	params := make([]*Parameter, 0)
 
 	for _, param := range ctx.AllFunctionParameter() {
@@ -42,7 +51,6 @@ func (c *Compiler) VisitFunctionParameters(ctx *parser.FunctionParametersContext
 }
 
 func (v *Compiler) VisitFunctionParameter(ctx *parser.FunctionParameterContext) interface{} {
-	// Get the parameter name
 	externalName := ctx.ID(0).GetText()
 	internalName := externalName
 

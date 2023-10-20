@@ -195,10 +195,10 @@ func (c *Compiler) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} 
 func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 	value := c.Visit(ctx.Expr()).(*ValueResponse)
 
-	if c.TAC.GetStandar("std_not") == nil {
+	if c.TAC.GetProcedure("std_not") == nil {
 		newProcedure := NewProcedure("std_not")
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
 					ExternalName: "operand",
@@ -222,18 +222,18 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 			[]string{
 				fmt.Sprintf(
 					"if (%v == 0) goto %s;",
-					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetParameter("operand").Temporal,
 					newProcedure.GetLabel("TrueCondition"),
 				),
 				fmt.Sprintf(
 					"%s = 0;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("FalseCondition")),
 				newProcedure.GetLabel("TrueCondition").Declare(),
 				fmt.Sprintf(
 					"%s = 1;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				newProcedure.GetLabel("FalseCondition").Declare(),
 			},
@@ -243,13 +243,13 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("std_not")
+	procedure := c.TAC.GetProcedure("std_not")
 
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf(
 				"%s = %s;",
-				procedure.GetArgument("operand").Temporal,
+				procedure.GetParameter("operand").Temporal,
 				value.GetValue(),
 			),
 			"std_not();",
@@ -259,7 +259,7 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 
 	return &ValueResponse{
 		Type:        BooleanTemporal,
-		Value:       procedure.GetArgument("result").Temporal,
+		Value:       procedure.GetParameter("result").Temporal,
 		ContextType: TemporalType,
 	}
 }

@@ -7,20 +7,14 @@ import (
 type Value struct {
 	Value        interface{}
 	StackAddress int
+	IsRelative   bool
 	Type         TemporalCast
-}
-
-func NewValue(value interface{}, stackAddress int, Type TemporalCast) *Value {
-	return &Value{
-		Value:        value,
-		StackAddress: stackAddress,
-		Type:         Type,
-	}
 }
 
 func NewSimpleValue(stackAddress int) *Value {
 	return &Value{
 		StackAddress: stackAddress,
+		IsRelative:   false,
 	}
 }
 

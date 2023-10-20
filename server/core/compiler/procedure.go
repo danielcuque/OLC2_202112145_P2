@@ -5,27 +5,25 @@ import "fmt"
 type Procedure struct {
 	Name        string
 	Labels      map[string]*Label
-	Arguments   map[string]*Parameter
+	Parameters  map[string]*Parameter
 	Code        string
-	BasePointer *Temporal
+	Env         *EnvTree
+	ReturnValue *Temporal
+	ReturnLabel *Label
 }
 
 func NewProcedure(name string) *Procedure {
 	return &Procedure{
-		Name:      name,
-		Arguments: make(map[string]*Parameter),
-		Labels:    make(map[string]*Label),
+		Name:       name,
+		Parameters: make(map[string]*Parameter),
+		Labels:     make(map[string]*Label),
 	}
 }
 
-func (p *Procedure) AddArguments(args []*Parameter) {
+func (p *Procedure) AddParameters(args []*Parameter) {
 	for _, arg := range args {
-		p.Arguments[arg.ExternalName] = arg
+		p.Parameters[arg.ExternalName] = arg
 	}
-}
-
-func (p *Procedure) SetBasePointer(t *Temporal) {
-	p.BasePointer = t
 }
 
 func (p *Procedure) AddCode(instructions []string, comment string) {
@@ -44,8 +42,8 @@ func (p *Procedure) AddLabels(labels []*Label) {
 	}
 }
 
-func (p *Procedure) GetArgument(name string) *Parameter {
-	return p.Arguments[name]
+func (p *Procedure) GetParameter(name string) *Parameter {
+	return p.Parameters[name]
 }
 
 func (p *Procedure) GetLabel(name string) *Label {
@@ -54,6 +52,10 @@ func (p *Procedure) GetLabel(name string) *Label {
 
 func (p *Procedure) String() string {
 	return fmt.Sprintf("void %s(){\n%s \nreturn;\n}\n", p.Name, p.Code)
+}
+
+func (p *Procedure) ParamSize() int {
+	return len(p.Parameters)
 }
 
 type Parameter struct {

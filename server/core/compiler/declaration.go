@@ -6,6 +6,7 @@ import (
 )
 
 func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
+
 	id := ctx.ID().GetText()
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
