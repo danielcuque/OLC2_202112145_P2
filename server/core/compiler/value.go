@@ -6,15 +6,17 @@ import (
 
 type Value struct {
 	Value        interface{}
-	StackAddress int
+	StackAddress *StackIndex
 	IsRelative   bool
 	Type         TemporalCast
 }
 
-func NewSimpleValue(stackAddress int) *Value {
+func NewSimpleValue(index int) *Value {
 	return &Value{
-		StackAddress: stackAddress,
-		IsRelative:   false,
+		StackAddress: &StackIndex{
+			Index: index,
+		},
+		IsRelative: false,
 	}
 }
 
@@ -22,8 +24,8 @@ func (v *Value) GetValue() interface{} {
 	return v.Value
 }
 
-func (v *Value) GetAddress() int {
-	return v.StackAddress
+func (v *Value) GetAddress() string {
+	return v.StackAddress.String()
 }
 
 func (v *Value) GetType() TemporalCast {

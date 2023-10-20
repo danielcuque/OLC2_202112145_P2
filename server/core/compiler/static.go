@@ -31,7 +31,7 @@ func (c *StaticVisitor) SetEnv(envType string, ctx *parser.BlockContext) {
 }
 
 func (c *StaticVisitor) NewValue(name string) {
-	value := c.Env.AddValue(name, NewSimpleValue(c.Counter))
+	value := c.Env.AddValue(name, NewSimpleValue(c.Counter+c.Offset+1))
 	value.IsRelative = c.IsRelative
 	c.Counter++
 }

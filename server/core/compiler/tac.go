@@ -51,6 +51,27 @@ func (t *TAC) GetTemporalsHeader() string {
 	return code + "\n"
 }
 
+func (t *TAC) GetValueAddress(value *Value) string {
+	if value.IsRelative {
+		relativeIndex := t.NewTemporal(IntTemporal)
+
+		t.AppendInstructions(
+			[]string{
+				fmt.Sprintf(
+					"%s = %s + %s;",
+					relativeIndex,
+					t.GetOffSetPointer(),
+					value.StackAddress,
+				),
+			},
+			"",
+		)
+		return relativeIndex.String()
+	}
+
+	return value.StackAddress.String()
+}
+
 func (t *TAC) TemporalQuantity() int {
 	return len(t.temporals)
 }

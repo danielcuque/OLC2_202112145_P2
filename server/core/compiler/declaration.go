@@ -45,10 +45,15 @@ func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inte
 func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	value := c.Env.GetValue(id)
+
+	if value == nil {
+		return nil
+	}
+
 	value.SetData(response.GetType(), response.GetValue())
 
 	c.TAC.AppendInstruction(
-		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), value.GetValue()),
+		fmt.Sprintf("stack[(int)%v] = %v;", c.TAC.GetValueAddress(value), value.GetValue()),
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 

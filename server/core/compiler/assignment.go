@@ -40,7 +40,7 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	c.TAC.AppendInstructions(
 		[]string{
 			responseValue,
-			fmt.Sprintf("stack[(int)%d] = %s;", value.GetAddress(), newTemporal),
+			fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), newTemporal),
 		},
 		fmt.Sprintf("Asignación de la variable '%s'", id),
 	)

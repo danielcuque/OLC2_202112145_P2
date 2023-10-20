@@ -1,35 +1,16 @@
-// let notasBuenas: [[Int]] = [
-//     [53, 88, 95, 89, 75],
-//     [81, 51, 57, 67, 93],
-//     [94, 74, 58, 84, 100]
-// ]
+var num1 = 10; 
+var num2 = 20; 
+var num3 = 30; 
 
-// func factorial(_ n: Int) -> Int {
-//     if n < 2 {
-//         return 1
-//     } else {
-//         return n * factorial(resta)
-//     }
-// }
+var arr1: [Int] = [8, 4, 6, 2]
 
-// func suma(_ a: Int, _ b: Int) {
-//     var c = a + b
-// }
-
-// func multiplicacion(_ a: Int, _ b: Int) -> Int {
-//     var c = a * b
-//     if c > 10 {
-//         print("Es mayor a 10")
-//     } else {
-//         print("Es menor a 10")
-//     }
-//     return c
-// }
-
-// var op = multiplicacion(1, 2)
-// print(op)
+for i in 0...3 {
+    arr1[i] = arr1[i] * 2
+    print(arr1[i])
+}
 
 
-// print(factorial(6))
-// print(factorial(4))
-// print(factorial(3))
+func suma(_ a: Int, _ b: Int) {
+    var c = a + b
+}
+

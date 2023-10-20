@@ -15,9 +15,6 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	lV := l.(*ValueResponse).GetValue()
 	rV := r.(*ValueResponse).GetValue()
 
-	// Check if division by zero
-	// Add code to handle this
-
 	if op == "/" || op == "%" || op == "*" {
 		lV = l.(*ValueResponse).Cast()
 		rV = r.(*ValueResponse).Cast()
@@ -159,7 +156,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%s = stack[(int)%d];", newTemporal, value.GetAddress()),
+			fmt.Sprintf("%s = stack[(int)%s];", newTemporal, c.TAC.GetValueAddress(value)),
 		},
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)

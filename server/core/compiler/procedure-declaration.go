@@ -28,7 +28,8 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 	newProcedure.AddParameters(params)
 
 	for i, param := range params {
-		newValue := envFunction.AddValue(param.InternalName, NewSimpleValue(i))
+		newValue := envFunction.AddValue(param.InternalName, NewSimpleValue(i+1))
+		newValue.SetData(param.Type, "1")
 		newValue.IsRelative = true
 	}
 
@@ -37,8 +38,14 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 		c.NewLabelFlow("return", []LabelFlowType{ReturnLabel}),
 	)
 
-	c.TAC.AddProcedure(newProcedure)
+	prevEnv := c.Env.Current
+	c.TAC.SetProcedure(newProcedure)
 
+	c.Env.Current = envFunction.Root
+	c.Visit(statementsBlock)
+	c.TAC.UnsetProcedure()
+
+	c.Env.Current = prevEnv
 	return nil
 }
 
@@ -65,10 +72,17 @@ func (v *Compiler) VisitFunctionParameter(ctx *parser.FunctionParameterContext) 
 
 	isRef := ctx.Kw_INOUT() != nil
 
+	dataType := IntTemporal
+
+	if ctx.VariableType() != nil {
+		dataType = v.Visit(ctx.VariableType()).(TemporalCast)
+	}
+
 	return &Parameter{
 		Temporal:     nil,
 		ExternalName: externalName,
 		InternalName: internalName,
 		IsReference:  isRef,
+		Type:         dataType,
 	}
 }

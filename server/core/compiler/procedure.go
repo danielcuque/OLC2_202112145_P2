@@ -68,6 +68,7 @@ type Parameter struct {
 	ExternalName string
 	InternalName string
 	IsReference  bool
+	Type         TemporalCast
 }
 
 func (p *Parameter) Tmp() string {

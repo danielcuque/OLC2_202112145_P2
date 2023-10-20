@@ -2,16 +2,9 @@ package compiler
 
 import (
 	"OLC2/core/parser"
-	"fmt"
 )
 
 func (c *StaticVisitor) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
-
-	if c.IsRelative {
-		// Compute the offset
-		fmt.Print(c.Env.Current.Values)
-	}
-
 	id := ctx.ID().GetText()
 	c.NewValue(id)
 	return nil
