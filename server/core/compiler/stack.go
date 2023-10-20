@@ -30,3 +30,8 @@ func (s *Stack) IncreasePointer(amount int) string {
 	s.Pointer += amount
 	return fmt.Sprintf("P = P + %d;", s.Pointer)
 }
+
+func (s *Stack) IncreasePointerByOne() string {
+	s.Pointer++
+	return "P = P + 1;"
+}

@@ -17,7 +17,7 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 	staticVisitor.Visit(statementsBlock)
 	envFunction := staticVisitor.Env
 
-	c.Env.Root.Child = append(c.Env.Root.Child, envFunction.Root)
+	c.Env.Root.AppendChild(envFunction.Root)
 
 	newProcedure := NewProcedure(ctx.ID().GetText())
 	newProcedure.Env = envFunction
@@ -29,11 +29,10 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 		newValue.IsRelative = true
 	}
 
-	returnTemporal := c.TAC.NewTemporal(IntTemporal)
-	returnLabel := c.TAC.NewLabel("return")
-
-	newProcedure.ReturnValue = returnTemporal
-	newProcedure.ReturnLabel = returnLabel
+	newProcedure.SetReturnProps(
+		c.TAC.NewTemporal(IntTemporal),
+		c.NewLabelFlow("return", []LabelFlowType{ReturnLabel}),
+	)
 
 	return nil
 }

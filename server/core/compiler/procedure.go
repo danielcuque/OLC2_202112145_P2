@@ -3,13 +3,13 @@ package compiler
 import "fmt"
 
 type Procedure struct {
-	Name        string
-	Labels      map[string]*Label
-	Parameters  map[string]*Parameter
-	Code        string
-	Env         *EnvTree
-	ReturnValue *Temporal
-	ReturnLabel *Label
+	Name           string
+	Labels         map[string]*Label
+	Parameters     map[string]*Parameter
+	Code           string
+	Env            *EnvTree
+	ReturnTemporal *Temporal
+	ReturnLabel    *Label
 }
 
 func NewProcedure(name string) *Procedure {
@@ -52,6 +52,11 @@ func (p *Procedure) GetLabel(name string) *Label {
 
 func (p *Procedure) String() string {
 	return fmt.Sprintf("void %s(){\n%s \nreturn;\n}\n", p.Name, p.Code)
+}
+
+func (p *Procedure) SetReturnProps(returnTemporal *Temporal, label *Label) {
+	p.ReturnTemporal = returnTemporal
+	p.ReturnLabel = label
 }
 
 func (p *Procedure) ParamSize() int {

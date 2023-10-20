@@ -17,13 +17,20 @@
 //     [94, 74, 58, 84, 100]
 // ]
 
-func factorial(_ n: Int) -> Int {
-    if n < 2 {
-        return 1
-    } else {
-        return n * factorial(resta)
-    }
+// func factorial(_ n: Int) -> Int {
+//     if n < 2 {
+//         return 1
+//     } else {
+//         return n * factorial(resta)
+//     }
+// }
+
+func suma(_ a: Int, _ b: Int) {
+    var c = a + b
 }
+
+suma(1, 2)
+
 
 // func vacio() {
 //     print("vacio")
@@ -36,13 +43,3 @@ func factorial(_ n: Int) -> Int {
 // print(factorial(6))
 // print(factorial(4))
 // print(factorial(3))
-
-
-
-
-func numero(num x: Int) -> Int {
-    var resultado = 10;
-    return resultado
-} 
-
-numero(num: 10)

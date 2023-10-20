@@ -145,7 +145,7 @@ func (c *Compiler) GenerateVariables() {
 		c.TAC.AppendInstructions(
 			[]string{
 				"stack[(int)P] = 0;",
-				"P = P + 1;",
+				c.StackPointer.IncreasePointerByOne(),
 			},
 			"",
 		)

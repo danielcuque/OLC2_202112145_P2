@@ -82,6 +82,10 @@ func (s *EnvNode) GetLabel(labelType LabelFlowType) *Label {
 	return nil
 }
 
+func (s *EnvNode) AppendChild(child *EnvNode) {
+	s.Child = append(s.Child, child)
+}
+
 type EnvTree struct {
 	Root    *EnvNode
 	Current *EnvNode
