@@ -12,5 +12,9 @@ for i in 0...3 {
 
 func suma(_ a: Int, _ b: Int) {
     var c = a + b
+    print(c)
 }
+
+
+suma(num1, num3)
 

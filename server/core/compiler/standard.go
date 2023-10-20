@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func (c *Compiler) AllocateStack(basePointer *Temporal, size int) {
+func (c *Compiler) AllocateStack(size int) {
 	allocateStackName := "std_allocate_stack"
 
 	if c.TAC.GetProcedure(allocateStackName) == nil {
@@ -31,7 +31,7 @@ func (c *Compiler) AllocateStack(basePointer *Temporal, size int) {
 					"stack[(int)P] = %v;",
 					newProcedure.GetParameter("basePointer").Temporal.Cast(),
 				),
-				c.StackPointer.IncreasePointer(size),
+				c.StackPointer.IncreasePointer(size + 1),
 			},
 			"",
 		)
@@ -46,9 +46,9 @@ func (c *Compiler) AllocateStack(basePointer *Temporal, size int) {
 		[]string{
 			fmt.Sprintf("%v = P;", initFreeAddress),
 			fmt.Sprintf("%v = %d;", procedure.GetParameter("size").Tmp(), size),
-			fmt.Sprintf("%v = %v;", procedure.GetParameter("basePointer").Tmp(), basePointer),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("basePointer").Tmp(), c.TAC.GetOffSetPointer()),
 			fmt.Sprintf("%v();", allocateStackName),
-			fmt.Sprintf("%v = %v", basePointer, initFreeAddress),
+			fmt.Sprintf("%v = %v;", c.TAC.GetOffSetPointer(), initFreeAddress),
 		},
 		"Reservando espacio para la instancia de la función",
 	)

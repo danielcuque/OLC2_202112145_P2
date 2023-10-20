@@ -5,7 +5,7 @@ import "fmt"
 type Procedure struct {
 	Name           string
 	Labels         map[string]*Label
-	Parameters     map[string]*Parameter
+	Parameters     []*Parameter
 	Code           string
 	Env            *EnvTree
 	ReturnTemporal *Temporal
@@ -15,15 +15,14 @@ type Procedure struct {
 func NewProcedure(name string) *Procedure {
 	return &Procedure{
 		Name:       name,
-		Parameters: make(map[string]*Parameter),
+		Parameters: make([]*Parameter, 0),
 		Labels:     make(map[string]*Label),
 	}
 }
 
 func (p *Procedure) AddParameters(args []*Parameter) {
-	for _, arg := range args {
-		p.Parameters[arg.ExternalName] = arg
-	}
+	p.Parameters = append(p.Parameters, args...)
+
 }
 
 func (p *Procedure) AddCode(instructions []string, comment string) {
@@ -43,7 +42,17 @@ func (p *Procedure) AddLabels(labels []*Label) {
 }
 
 func (p *Procedure) GetParameter(name string) *Parameter {
-	return p.Parameters[name]
+	for _, param := range p.Parameters {
+		if param.ExternalName == name {
+			return param
+		}
+	}
+
+	return nil
+}
+
+func (p *Procedure) Call() string {
+	return fmt.Sprintf("%s();", p.Name)
 }
 
 func (p *Procedure) GetLabel(name string) *Label {

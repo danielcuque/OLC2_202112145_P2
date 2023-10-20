@@ -22,8 +22,7 @@ func (s *Stack) SubPointer() int {
 }
 
 func (s *Stack) IncreasePointer(amount int) string {
-	s.Pointer += amount
-	return fmt.Sprintf("P = P + %d;", s.Pointer)
+	return fmt.Sprintf("P = P + %d;", amount)
 }
 
 func (s *Stack) IncreasePointerByOne() string {

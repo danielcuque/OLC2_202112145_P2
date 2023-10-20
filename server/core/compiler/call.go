@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"OLC2/core/parser"
+	"fmt"
 
 	"github.com/antlr4-go/antlr/v4"
 )
@@ -23,21 +24,56 @@ func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{
 
 	args := c.GetArgs(ctx)
 
-	// c.AllocateStack(procedure., procedure.ParamSize())
-
 	if len(args) > 0 {
-		isPositional := args[0].Name == ""
 
-		if isPositional {
-			c.SetArgs(args)
+		c.AllocateStack(len(args))
+
+		procedureEnv := procedure.Env
+
+		arePositional := args[0].Name == ""
+
+		// Traverse array of arguments and match with procedure parameters
+		for i, arg := range args {
+
+			parameter := procedure.Parameters[i]
+
+			if !arePositional {
+				parameter = procedure.GetParameter(arg.Name)
+			}
+
+			if parameter == nil {
+				fmt.Println("Parameter not found", arg.Name)
+				continue
+			}
+
+			parameterName := parameter.InternalName
+
+			parameterValue := procedureEnv.GetValue(parameterName)
+
+			if parameterValue == nil {
+				fmt.Print("Parameter value not found", parameterName)
+				continue
+			}
+
+			parameterAddress := c.TAC.GetValueAddress(parameterValue)
+
+			c.TAC.AppendInstruction(
+				fmt.Sprintf(
+					"stack[(int)%s]= %s;",
+					parameterAddress,
+					arg.Value.GetValue(),
+				),
+				"",
+			)
 		}
 	}
 
-	return nil
-}
+	c.TAC.AppendInstruction(
+		procedure.Call(),
+		"",
+	)
 
-func (c *Compiler) SetArgs(args []*Argument) {
-
+	return procedure.ReturnTemporal
 }
 
 func (c *Compiler) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
