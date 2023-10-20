@@ -12,14 +12,15 @@ type StaticVisitor struct {
 	Counter    int
 	IsRelative bool
 	Offset     int
-	Pointer    *Temporal
+	TAC        *TAC
 }
 
-func NewStaticVisitor(IsRelative bool, Offset int, Pointer *Temporal) *StaticVisitor {
+func NewStaticVisitor(IsRelative bool, Offset int, TAC *TAC) *StaticVisitor {
 	return &StaticVisitor{
 		Env:        NewEnvTree(),
 		IsRelative: IsRelative,
 		Offset:     Offset,
+		TAC:        TAC,
 	}
 }
 

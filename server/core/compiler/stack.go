@@ -30,3 +30,17 @@ func (s *Stack) IncreasePointerByOne() string {
 	s.Pointer++
 	return "P = P + 1;"
 }
+
+type StackIndex struct {
+	Index int
+}
+
+func NewStackIndex(Index int) *StackIndex {
+	return &StackIndex{
+		Index: Index,
+	}
+}
+
+func (s *StackIndex) String() string {
+	return fmt.Sprintf("%v", s.Index)
+}

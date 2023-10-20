@@ -8,7 +8,7 @@ import (
 type Compiler struct {
 	parser.BaseSwiftVisitor
 	Env          *EnvTree
-	TAC          TAC
+	TAC          *TAC
 	HeapPointer  Heap
 	StackPointer Stack
 	StaticVars   int
@@ -16,7 +16,7 @@ type Compiler struct {
 
 func NewCompiler(staticVars int) *Compiler {
 	newCompiler := &Compiler{
-		TAC:        *NewTAC(),
+		TAC:        NewTAC(),
 		StaticVars: staticVars,
 		Env:        NewEnvTree(),
 	}

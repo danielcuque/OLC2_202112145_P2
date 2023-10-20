@@ -15,7 +15,7 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 
 	statementsBlock := ctx.Block()
 
-	staticVisitor := NewStaticVisitor(true, len(params), c.TAC.GetOffSetPointer())
+	staticVisitor := NewStaticVisitor(true, len(params), c.TAC)
 
 	staticVisitor.Visit(statementsBlock)
 	envFunction := staticVisitor.Env
