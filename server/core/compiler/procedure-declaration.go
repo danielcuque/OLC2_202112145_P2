@@ -6,6 +6,7 @@ import (
 
 func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarationStatementContext) interface{} {
 
+	procedureName := ctx.ID().GetText()
 	params := make([]*Parameter, 0)
 
 	if ctx.FunctionParameters() != nil {
@@ -13,13 +14,15 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 	}
 
 	statementsBlock := ctx.Block()
-	staticVisitor := NewStaticVisitor(true, len(params))
+
+	staticVisitor := NewStaticVisitor(true, len(params), c.TAC.GetOffSetPointer())
+
 	staticVisitor.Visit(statementsBlock)
 	envFunction := staticVisitor.Env
 
 	c.Env.Root.AppendChild(envFunction.Root)
 
-	newProcedure := NewProcedure(ctx.ID().GetText())
+	newProcedure := NewProcedure(procedureName)
 	newProcedure.Env = envFunction
 
 	newProcedure.AddParameters(params)
@@ -33,6 +36,8 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 		c.TAC.NewTemporal(IntTemporal),
 		c.NewLabelFlow("return", []LabelFlowType{ReturnLabel}),
 	)
+
+	c.TAC.AddProcedure(newProcedure)
 
 	return nil
 }

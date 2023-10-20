@@ -17,8 +17,6 @@ func (c *StaticVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 }
 
 func (c *StaticVisitor) VisitStatement(ctx *parser.StatementContext) interface{} {
-	// Just visit variable declarations, possible scopes such as if, for, while, etc
-
 	if ctx.VectorDeclaration() != nil {
 		return c.Visit(ctx.VectorDeclaration())
 	}
