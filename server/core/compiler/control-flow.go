@@ -16,7 +16,27 @@ func (c *Compiler) VisitControlContinue(ctx *parser.ControlContinueContext) inte
 }
 
 func (c *Compiler) VisitControlReturn(ctx *parser.ControlReturnContext) interface{} {
-	c.DeclareControlFlow(BreakLabel)
+
+	if ctx.Expr() != nil {
+		value := c.Visit(ctx.Expr()).(*ValueResponse)
+
+		procedure := c.TAC.GetCurrentProcedure()
+
+		if procedure == nil {
+			return nil
+		}
+
+		c.TAC.AppendInstruction(
+			fmt.Sprintf(
+				"%s = %s;",
+				procedure.ReturnTemporal,
+				value.GetValue(),
+			),
+			"Valor de retorno",
+		)
+	}
+
+	c.DeclareControlFlow(ReturnLabel)
 	return nil
 }
 

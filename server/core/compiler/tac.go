@@ -5,6 +5,7 @@ import "fmt"
 type TAC struct {
 	temporals     []*Temporal
 	labels        []*Label
+	standar       map[string]*Procedure
 	procedures    map[string]*Procedure
 	code          string
 	procedure     *Procedure
@@ -17,6 +18,7 @@ func NewTAC() *TAC {
 		temporals:     make([]*Temporal, 0),
 		labels:        make([]*Label, 0),
 		procedures:    make(map[string]*Procedure),
+		standar:       make(map[string]*Procedure),
 		procedure:     nil,
 		offSetPointer: nil,
 	}
@@ -28,7 +30,7 @@ func (t *TAC) GetTemporals() []*Temporal {
 
 func (t *TAC) GetOffSetPointer() *Temporal {
 	if t.offSetPointer == nil {
-		t.offSetPointer = t.NewTemporal(FloatTemporal)
+		t.offSetPointer = t.NewTemporal(IntTemporal)
 	}
 
 	return t.offSetPointer
@@ -70,6 +72,10 @@ func (t *TAC) GetValueAddress(value *Value) string {
 	}
 
 	return value.StackAddress.String()
+}
+
+func (t *TAC) GetCurrentProcedure() *Procedure {
+	return t.procedure
 }
 
 func (t *TAC) TemporalQuantity() int {
@@ -131,12 +137,20 @@ func (t *TAC) NewTemporal(castType interface{}) *Temporal {
 	return temporal
 }
 
+func (t *TAC) AddStandard(procedure *Procedure) {
+	t.standar[procedure.Name] = procedure
+}
+
 func (t *TAC) AddProcedure(procedure *Procedure) {
 	t.procedures[procedure.Name] = procedure
 }
 
 func (t *TAC) GetProcedure(name string) *Procedure {
 	return t.procedures[name]
+}
+
+func (t *TAC) GetStandard(name string) *Procedure {
+	return t.standar[name]
 }
 
 func (t *TAC) SetProcedure(procedure *Procedure) {
@@ -148,9 +162,17 @@ func (t *TAC) UnsetProcedure() {
 	t.procedure = nil
 }
 
-func (t *TAC) GetProcudres() string {
+func (t *TAC) GetProcedures() string {
 	var code string
 	for _, procedure := range t.procedures {
+		code += fmt.Sprintf("%s\n", procedure)
+	}
+	return code
+}
+
+func (t *TAC) GetStandards() string {
+	var code string
+	for _, procedure := range t.standar {
 		code += fmt.Sprintf("%s\n", procedure)
 	}
 	return code

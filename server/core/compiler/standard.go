@@ -9,7 +9,7 @@ import (
 func (c *Compiler) AllocateStack(size int) {
 	allocateStackName := "std_allocate_stack"
 
-	if c.TAC.GetProcedure(allocateStackName) == nil {
+	if c.TAC.GetStandard(allocateStackName) == nil {
 		newProcedure := NewProcedure(allocateStackName)
 
 		newProcedure.AddParameters(
@@ -31,15 +31,18 @@ func (c *Compiler) AllocateStack(size int) {
 					"stack[(int)P] = %v;",
 					newProcedure.GetParameter("basePointer").Temporal.Cast(),
 				),
-				c.StackPointer.IncreasePointer(size + 1),
+				fmt.Sprintf(
+					"P = P + %v;",
+					newProcedure.GetParameter("size").Temporal.Cast(),
+				),
 			},
 			"",
 		)
 
-		c.TAC.AddProcedure(newProcedure)
+		c.TAC.AddStandard(newProcedure)
 	}
 
-	procedure := c.TAC.GetProcedure(allocateStackName)
+	procedure := c.TAC.GetStandard(allocateStackName)
 	initFreeAddress := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendInstructions(
@@ -55,7 +58,7 @@ func (c *Compiler) AllocateStack(size int) {
 }
 
 func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
-	if c.TAC.GetProcedure("std_and") == nil {
+	if c.TAC.GetStandard("std_and") == nil {
 		newProcedure := NewProcedure("std_and")
 
 		newProcedure.AddParameters(
@@ -111,10 +114,10 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 			"Operación AND",
 		)
 
-		c.TAC.AddProcedure(newProcedure)
+		c.TAC.AddStandard(newProcedure)
 	}
 
-	procedure := c.TAC.GetProcedure("std_and")
+	procedure := c.TAC.GetStandard("std_and")
 
 	// Set left Operator in temporal
 
@@ -135,7 +138,7 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 }
 
 func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
-	if c.TAC.GetProcedure("std_or") == nil {
+	if c.TAC.GetStandard("std_or") == nil {
 		newProcedure := NewProcedure("std_or")
 
 		newProcedure.AddParameters(
@@ -191,10 +194,10 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 			"Operación OR",
 		)
 
-		c.TAC.AddProcedure(newProcedure)
+		c.TAC.AddStandard(newProcedure)
 	}
 
-	procedure := c.TAC.GetProcedure("std_or")
+	procedure := c.TAC.GetStandard("std_or")
 
 	// Set left Operator in temporal
 
@@ -216,7 +219,7 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 
-	if c.TAC.GetProcedure("stdconcat") == nil {
+	if c.TAC.GetStandard("stdconcat") == nil {
 		newProcedure := NewProcedure("stdconcat")
 
 		newProcedure.AddParameters(
@@ -337,10 +340,10 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 			"",
 		)
 
-		c.TAC.AddProcedure(newProcedure)
+		c.TAC.AddStandard(newProcedure)
 	}
 
-	procedure := c.TAC.GetProcedure("stdconcat")
+	procedure := c.TAC.GetStandard("stdconcat")
 
 	// Set left Operator in temporal
 	c.TAC.AppendInstructions(
@@ -363,7 +366,7 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 	// There are two cases, when the operator is == or !=
 
 	procedureName := "std_compare_str"
-	if c.TAC.GetProcedure(procedureName) == nil {
+	if c.TAC.GetStandard(procedureName) == nil {
 		newProcedure := NewProcedure(procedureName)
 
 		newProcedure.AddParameters(
@@ -488,10 +491,10 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 			"Comparación de cadenas",
 		)
 
-		c.TAC.AddProcedure(newProcedure)
+		c.TAC.AddStandard(newProcedure)
 	}
 
-	procedure := c.TAC.GetProcedure(procedureName)
+	procedure := c.TAC.GetStandard(procedureName)
 
 	// Set left Operator in temporal
 	c.TAC.AppendInstructions(
@@ -572,7 +575,7 @@ func (c *Compiler) PrintBool(name string) {
 		"",
 	)
 
-	c.TAC.AddProcedure(newProcedure)
+	c.TAC.AddStandard(newProcedure)
 }
 
 func (c *Compiler) PrintString(name string) {
@@ -641,7 +644,7 @@ func (c *Compiler) PrintString(name string) {
 		"",
 	)
 
-	c.TAC.AddProcedure(newProcedure)
+	c.TAC.AddStandard(newProcedure)
 }
 
 func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
@@ -649,11 +652,11 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	for _, arg := range c.GetArgs(ctx) {
 		if arg.Value.Type == StringTemporal {
 
-			if c.TAC.GetProcedure("stdprint") == nil {
+			if c.TAC.GetStandard("stdprint") == nil {
 				c.PrintString("stdprint")
 			}
 
-			procedure := c.TAC.GetProcedure("stdprint")
+			procedure := c.TAC.GetStandard("stdprint")
 
 			c.TAC.AppendInstructions(
 				[]string{
@@ -665,11 +668,11 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 		} else if arg.Value.Type == BooleanTemporal {
 
-			if c.TAC.GetProcedure("stdprintbool") == nil {
+			if c.TAC.GetStandard("stdprintbool") == nil {
 				c.PrintBool("stdprintbool")
 			}
 
-			procedure := c.TAC.GetProcedure("stdprintbool")
+			procedure := c.TAC.GetStandard("stdprintbool")
 
 			c.TAC.AppendInstructions(
 				[]string{
@@ -693,7 +696,7 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *ValueResponse {
 
-	if c.TAC.GetProcedure("std_zero_division") == nil {
+	if c.TAC.GetStandard("std_zero_division") == nil {
 		newProcedure := NewProcedure("std_zero_division")
 
 		newProcedure.AddParameters(
@@ -748,10 +751,10 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 			"División entre cero",
 		)
 
-		c.TAC.AddProcedure(newProcedure)
+		c.TAC.AddStandard(newProcedure)
 	}
 
-	procedure := c.TAC.GetProcedure("std_zero_division")
+	procedure := c.TAC.GetStandard("std_zero_division")
 
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
 	isZeroDivisionLabel := c.TAC.NewLabel("")

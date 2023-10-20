@@ -73,7 +73,11 @@ func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{
 		"",
 	)
 
-	return procedure.ReturnTemporal
+	return &ValueResponse{
+		Type:        procedure.ReturnTemporal.Type,
+		Value:       procedure.ReturnTemporal,
+		ContextType: TemporalType,
+	}
 }
 
 func (c *Compiler) VisitArguments(ctx *parser.ArgumentsContext) interface{} {

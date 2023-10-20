@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"OLC2/core/parser"
+	"fmt"
 )
 
 func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclarationStatementContext) interface{} {
@@ -44,8 +45,26 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 	c.Env.Current = envFunction.Root
 	c.Visit(statementsBlock)
 	c.TAC.UnsetProcedure()
-
 	c.Env.Current = prevEnv
+
+	memoryAddressTemporal := c.TAC.NewTemporal(IntTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			newProcedure.ReturnLabel.Declare(),
+			fmt.Sprintf(
+				"%s = stack[%v];",
+				memoryAddressTemporal,
+				c.TAC.GetOffSetPointer().Cast(),
+			),
+			fmt.Sprintf(
+				"%s = %s;",
+				c.TAC.GetOffSetPointer(),
+				memoryAddressTemporal,
+			),
+		},
+		"Fin de la función",
+	)
 	return nil
 }
 

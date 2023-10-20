@@ -138,6 +138,10 @@ func (c *Compiler) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
 	}
 }
 
+func (c *Compiler) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {
+	return c.Visit(ctx.FunctionCall())
+}
+
 func (c *Compiler) VisitIDChain(ctx *parser.IDChainContext) interface{} {
 	return ctx.AllID()
 }
