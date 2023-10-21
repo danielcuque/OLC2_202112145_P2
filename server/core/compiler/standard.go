@@ -792,8 +792,201 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 }
 
 func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	args := c.GetArgs(ctx)
+
+	if len(args) <= 0 {
+		return nil
+	}
+
+	if args[0].Value.Type == StringTemporal {
+		return c.StringToInt(args[0])
+	}
+
 	return nil
 }
+
+func (c *Compiler) StringToInt(arg *Argument) *ValueResponse {
+	procedureName := "std_string_to_int"
+
+	if c.TAC.GetStandard(procedureName) == nil {
+		procedure := NewProcedure(procedureName)
+
+		procedure.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "BaseChar",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "HeapPointer",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "HeapPointerValue",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "Result",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "IsNegative",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "Digit",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		procedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("NotNegative"),
+				c.TAC.NewLabel("StartString"),
+				c.TAC.NewLabel("EndString"),
+				c.TAC.NewLabel("End"),
+			},
+		)
+
+		procedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = 48;",
+					procedure.GetParameter("BaseChar").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = heap[%v];",
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal.Cast(),
+				),
+
+				// Check if is negative
+
+				fmt.Sprintf(
+					"if (%v != 45) goto %s;",
+					procedure.GetParameter("HeapPointerValue").Temporal.Cast(),
+					procedure.GetLabel("NotNegative"),
+				),
+
+				fmt.Sprintf(
+					"%v = 1;",
+					procedure.GetParameter("IsNegative").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					procedure.GetParameter("HeapPointer").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal,
+				),
+
+				fmt.Sprintf(
+					"goto %s;",
+					procedure.GetLabel("StartString"),
+				),
+
+				procedure.GetLabel("NotNegative").Declare(),
+
+				fmt.Sprintf(
+					"%v = 0;",
+					procedure.GetParameter("IsNegative").Temporal,
+				),
+
+				procedure.GetLabel("StartString").Declare(),
+
+				fmt.Sprintf(
+					"%v = heap[%v];",
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal.Cast(),
+				),
+
+				fmt.Sprintf(
+					"if (%v == -1) goto %s;",
+					procedure.GetParameter("HeapPointerValue").Temporal.Cast(),
+					procedure.GetLabel("EndString"),
+				),
+
+				fmt.Sprintf(
+					"if (%v == 46) goto %s;",
+					procedure.GetParameter("HeapPointerValue").Temporal.Cast(),
+					procedure.GetLabel("EndString"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v - %v;",
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetParameter("BaseChar").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v * 10;",
+					procedure.GetParameter("Result").Temporal,
+					procedure.GetParameter("Result").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v + %v;",
+					procedure.GetParameter("Result").Temporal,
+					procedure.GetParameter("Result").Temporal,
+					procedure.GetParameter("HeapPointerValue").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					procedure.GetParameter("HeapPointer").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal,
+				),
+
+				fmt.Sprintf(
+					"goto %s;",
+					procedure.GetLabel("StartString"),
+				),
+
+				procedure.GetLabel("EndString").Declare(),
+
+				fmt.Sprintf(
+					"if (%v != 1) goto %s;",
+					procedure.GetParameter("IsNegative").Temporal,
+					procedure.GetLabel("End"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v * -1;",
+					procedure.GetParameter("Result").Temporal,
+					procedure.GetParameter("Result").Temporal,
+				),
+
+				procedure.GetLabel("End").Declare(),
+			},
+			"String a número",
+		)
+
+		c.TAC.AddStandard(procedure)
+	}
+
+	procedure := c.TAC.GetStandard(procedureName)
+
+	returnValue := c.TAC.NewTemporal(IntTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), arg.Value.GetValue()),
+			"std_string_to_int();",
+			fmt.Sprintf("%v = %v;", returnValue, procedure.GetParameter("Result").Temporal),
+		},
+		"String a número",
+	)
+
+	return &ValueResponse{
+		Type:        IntTemporal,
+		Value:       returnValue,
+		ContextType: TemporalType,
+	}
+}
+
 func Float(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	return nil
 }

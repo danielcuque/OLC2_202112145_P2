@@ -114,7 +114,7 @@ func (c *Compiler) VisitNamedArguments(ctx *parser.NamedArgumentsContext) interf
 // Utils
 
 func (c *Compiler) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.TerminalNode) {
-	var id string
+	id := ""
 	var ids []antlr.TerminalNode
 
 	if ctx.IdChain() != nil {
@@ -123,7 +123,7 @@ func (c *Compiler) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.Term
 		return id, ids
 	}
 
-	id = c.Visit(ctx.VariableType()).(string)
+	id = ctx.VariableType().GetText()
 
 	return id, ids
 }
