@@ -800,13 +800,26 @@ func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	}
 
 	if args[0].Value.Type == StringTemporal {
-		return c.StringToInt(args[0])
+		return c.StringToNum(args[0], false)
 	}
 
-	return nil
+	newTemporal := c.TAC.NewTemporal(IntTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = (int) %v;", newTemporal, args[0].Value.GetValue()),
+		},
+		"Convirtiendo a entero",
+	)
+
+	return &ValueResponse{
+		Type:        IntTemporal,
+		Value:       newTemporal,
+		ContextType: TemporalType,
+	}
 }
 
-func (c *Compiler) StringToInt(arg *Argument) *ValueResponse {
+func (c *Compiler) StringToNum(arg *Argument, isFloat bool) *ValueResponse {
 	procedureName := "std_string_to_int"
 
 	if c.TAC.GetStandard(procedureName) == nil {
@@ -988,6 +1001,17 @@ func (c *Compiler) StringToInt(arg *Argument) *ValueResponse {
 }
 
 func Float(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	args := c.GetArgs(ctx)
+
+	if len(args) <= 0 {
+		return nil
+	}
+
+	if args[0].Value.Type == StringTemporal {
+		return c.StringToNum(args[0], true)
+	}
+
 	return nil
 }
 func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {

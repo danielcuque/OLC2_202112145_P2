@@ -23,8 +23,12 @@
 // var op = multiplicacion(4, 2)
 // print(op)
 
-var op = Int("-10.10") - 10
+var op = Int("-10.10") - Int(33.102132)
 print(op)
+
+
+// Float("10") // w obtiene el valor de 10.00
+// Float("10.001") //x adopta el valor de 10.001
 
 
 // func factorial(_ n: Int) -> Int {
