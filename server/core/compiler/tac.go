@@ -8,8 +8,8 @@ type TAC struct {
 	standar       map[string]*Procedure
 	procedures    map[string]*Procedure
 	code          string
-	procedure     *Procedure
-	offSetPointer *Temporal
+	Procedure     *Procedure
+	OffsetPointer *Temporal
 }
 
 func NewTAC() *TAC {
@@ -19,8 +19,8 @@ func NewTAC() *TAC {
 		labels:        make([]*Label, 0),
 		procedures:    make(map[string]*Procedure),
 		standar:       make(map[string]*Procedure),
-		procedure:     nil,
-		offSetPointer: nil,
+		Procedure:     nil,
+		OffsetPointer: nil,
 	}
 }
 
@@ -29,11 +29,11 @@ func (t *TAC) GetTemporals() []*Temporal {
 }
 
 func (t *TAC) GetOffSetPointer() *Temporal {
-	if t.offSetPointer == nil {
-		t.offSetPointer = t.NewTemporal(IntTemporal)
+	if t.OffsetPointer == nil {
+		t.OffsetPointer = t.NewTemporal(IntTemporal)
 	}
 
-	return t.offSetPointer
+	return t.OffsetPointer
 }
 
 func (t *TAC) GetTemporalsHeader() string {
@@ -75,7 +75,7 @@ func (t *TAC) GetValueAddress(value *Value) string {
 }
 
 func (t *TAC) GetCurrentProcedure() *Procedure {
-	return t.procedure
+	return t.Procedure
 }
 
 func (t *TAC) TemporalQuantity() int {
@@ -104,8 +104,8 @@ func (c *Compiler) NewLabelFlow(name string, Type []LabelFlowType) *Label {
 
 func (t *TAC) AppendInstructions(instructions []string, comment string) {
 
-	if t.procedure != nil {
-		t.procedure.AddCode(instructions, comment)
+	if t.Procedure != nil {
+		t.Procedure.AddCode(instructions, comment)
 		return
 	}
 
@@ -154,12 +154,12 @@ func (t *TAC) GetStandard(name string) *Procedure {
 }
 
 func (t *TAC) SetProcedure(procedure *Procedure) {
-	t.procedure = procedure
+	t.Procedure = procedure
 	t.AddProcedure(procedure)
 }
 
 func (t *TAC) UnsetProcedure() {
-	t.procedure = nil
+	t.Procedure = nil
 }
 
 func (t *TAC) GetProcedures() string {

@@ -50,7 +50,7 @@ func (c *Compiler) AllocateStack(size int) {
 			fmt.Sprintf("%v = P;", initFreeAddress),
 			fmt.Sprintf("%v = %d;", procedure.GetParameter("size").Tmp(), size),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("basePointer").Tmp(), c.TAC.GetOffSetPointer()),
-			fmt.Sprintf("%v();", allocateStackName),
+			procedure.Call(),
 			fmt.Sprintf("%v = %v;", c.TAC.GetOffSetPointer(), initFreeAddress),
 		},
 		"Reservando espacio para la instancia de la función",
@@ -125,7 +125,7 @@ func (c *Compiler) And(leftOp, rightOp *ValueResponse) *ValueResponse {
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("rightOp").Tmp(), rightOp.GetValue()),
-			"std_and();",
+			procedure.Call(),
 		},
 		"Operación AND",
 	)
@@ -205,7 +205,7 @@ func (c *Compiler) Or(leftOp, rightOp *ValueResponse) *ValueResponse {
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("rightOp").Tmp(), rightOp.GetValue()),
-			"std_or();",
+			procedure.Call(),
 		},
 		"Operación OR",
 	)
@@ -350,7 +350,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("leftOp").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("rightOp").Tmp(), rightOp.GetValue()),
-			"stdconcat();",
+			procedure.Call(),
 		},
 		"Concatenación de cadenas",
 	)
@@ -501,7 +501,7 @@ func (c *Compiler) CompareString(leftOp, rightOp *ValueResponse, op string) *Val
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("strPointer1").Tmp(), leftOp.GetValue()),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("strPointer2").Tmp(), rightOp.GetValue()),
-			"std_compare_str();",
+			procedure.Call(),
 			fmt.Sprintf(
 				"if(%v %s 0) goto %s;",
 				procedure.GetParameter("result").Temporal,
@@ -661,7 +661,7 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			c.TAC.AppendInstructions(
 				[]string{
 					fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), arg.Value.GetValue()),
-					"stdprint();",
+					procedure.Call(),
 				},
 				"Imprimiendo cadena",
 			)
@@ -677,7 +677,7 @@ func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			c.TAC.AppendInstructions(
 				[]string{
 					fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), arg.Value.GetValue()),
-					"stdprintbool();",
+					procedure.Call(),
 				},
 				"Imprimiendo booleano",
 			)
@@ -766,7 +766,7 @@ func (c *Compiler) ZeroDivision(leftOp, rightOp *ValueResponse, op string) *Valu
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("operand").Tmp(), rightOp.GetValue()),
-			"std_zero_division();",
+			procedure.Call(),
 			fmt.Sprintf(
 				"if (%v == 1) goto %s;",
 				procedure.GetParameter("operand").Temporal,
@@ -800,7 +800,7 @@ func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	}
 
 	if args[0].Value.Type == StringTemporal {
-		return c.StringToNum(args[0], false)
+		return c.StringToNum(args[0].Value)
 	}
 
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
@@ -819,8 +819,214 @@ func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	}
 }
 
-func (c *Compiler) StringToNum(arg *Argument, isFloat bool) *ValueResponse {
-	procedureName := "std_string_to_int"
+func Float(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	args := c.GetArgs(ctx)
+
+	if len(args) <= 0 {
+		return nil
+	}
+
+	return c.StringToFloat(args[0].Value)
+}
+
+func (c *Compiler) StringToFloat(value *ValueResponse) *ValueResponse {
+
+	procedureName := "std_string_to_float"
+
+	if c.TAC.GetStandard(procedureName) == nil {
+		procedure := NewProcedure(procedureName)
+
+		procedure.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "HeapPointer",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "HeapPointerValue",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "IntegerPart",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "DecimalPart",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "InitialDecimalPartPointer",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "DecimalCounter",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		procedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("LookUpPoint"),
+				c.TAC.NewLabel("EndLookUpPoint"),
+				c.TAC.NewLabel("DecimalCounter"),
+				c.TAC.NewLabel("EndDecimalCounter"),
+				c.TAC.NewLabel("End"),
+			},
+		)
+
+		c.TAC.Procedure = procedure
+
+		integerPart := c.StringToNum(&ValueResponse{
+			Type:        IntTemporal,
+			Value:       procedure.GetParameter("HeapPointer").Temporal,
+			ContextType: TemporalType,
+		})
+
+		procedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = %v;",
+					procedure.GetParameter("IntegerPart").Temporal,
+					integerPart.GetValue(),
+				),
+				fmt.Sprintf(
+					"%v = 1;",
+					procedure.GetParameter("DecimalCounter").Temporal,
+				),
+				procedure.GetLabel("LookUpPoint").Declare(),
+
+				fmt.Sprintf(
+					"%v = heap[%v];",
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal.Cast(),
+				),
+
+				fmt.Sprintf(
+					"if (%v == 46) goto %s;",
+					procedure.GetParameter("HeapPointerValue").Temporal.Cast(),
+					procedure.GetLabel("EndLookUpPoint"),
+				),
+
+				fmt.Sprintf(
+					"if (%v == -1) goto %s;",
+					procedure.GetParameter("HeapPointerValue").Temporal.Cast(),
+					procedure.GetLabel("End"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					procedure.GetParameter("HeapPointer").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal,
+				),
+
+				fmt.Sprintf(
+					"goto %s;",
+					procedure.GetLabel("LookUpPoint").String(),
+				),
+
+				procedure.GetLabel("EndLookUpPoint").Declare(),
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					procedure.GetParameter("HeapPointer").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal,
+				),
+			},
+			"",
+		)
+
+		decimalPart := c.StringToNum(&ValueResponse{
+			Type:        IntTemporal,
+			Value:       procedure.GetParameter("HeapPointer").Temporal,
+			ContextType: TemporalType,
+		})
+
+		procedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = %v;",
+					procedure.GetParameter("DecimalPart").Temporal,
+					decimalPart.GetValue(),
+				),
+				procedure.GetLabel("DecimalCounter").Declare(),
+
+				fmt.Sprintf(
+					"%v = heap[%v];",
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal.Cast(),
+				),
+
+				fmt.Sprintf(
+					"if (%v == -1) goto %s;",
+					procedure.GetParameter("HeapPointerValue").Temporal,
+					procedure.GetLabel("EndDecimalCounter"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					procedure.GetParameter("HeapPointer").Temporal,
+					procedure.GetParameter("HeapPointer").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v * 10;",
+					procedure.GetParameter("DecimalCounter").Temporal,
+					procedure.GetParameter("DecimalCounter").Temporal,
+				),
+
+				fmt.Sprintf(
+					"goto %s;",
+					procedure.GetLabel("DecimalCounter").String(),
+				),
+
+				procedure.GetLabel("EndDecimalCounter").Declare(),
+				fmt.Sprintf(
+					"%v = %v / %v;",
+					procedure.GetParameter("DecimalPart").Temporal,
+					procedure.GetParameter("DecimalPart").Temporal,
+					procedure.GetParameter("DecimalCounter").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v + %v;",
+					procedure.GetParameter("IntegerPart").Temporal,
+					procedure.GetParameter("IntegerPart").Temporal,
+					procedure.GetParameter("DecimalPart").Temporal,
+				),
+
+				procedure.GetLabel("End").Declare(),
+			},
+			"",
+		)
+
+		c.TAC.UnsetProcedure()
+
+		c.TAC.AddStandard(procedure)
+	}
+
+	procedure := c.TAC.GetStandard(procedureName)
+
+	returnValue := c.TAC.NewTemporal(FloatTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), value.GetValue()),
+			procedure.Call(),
+			fmt.Sprintf("%v = %v;", returnValue, procedure.GetParameter("IntegerPart").Temporal),
+		},
+		"Convirtiendo a flotante",
+	)
+
+	return &ValueResponse{
+		Type:        FloatTemporal,
+		Value:       returnValue,
+		ContextType: TemporalType,
+	}
+}
+
+func (c *Compiler) StringToNum(value *ValueResponse) *ValueResponse {
+	procedureName := "std_string_to_num"
 
 	if c.TAC.GetStandard(procedureName) == nil {
 		procedure := NewProcedure(procedureName)
@@ -869,7 +1075,10 @@ func (c *Compiler) StringToNum(arg *Argument, isFloat bool) *ValueResponse {
 					"%v = 48;",
 					procedure.GetParameter("BaseChar").Temporal,
 				),
-
+				fmt.Sprintf(
+					"%v = 0;",
+					procedure.GetParameter("Result").Temporal,
+				),
 				fmt.Sprintf(
 					"%v = heap[%v];",
 					procedure.GetParameter("HeapPointerValue").Temporal,
@@ -986,8 +1195,8 @@ func (c *Compiler) StringToNum(arg *Argument, isFloat bool) *ValueResponse {
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), arg.Value.GetValue()),
-			"std_string_to_int();",
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("HeapPointer").Tmp(), value.GetValue()),
+			procedure.Call(),
 			fmt.Sprintf("%v = %v;", returnValue, procedure.GetParameter("Result").Temporal),
 		},
 		"String a número",
@@ -1000,20 +1209,6 @@ func (c *Compiler) StringToNum(arg *Argument, isFloat bool) *ValueResponse {
 	}
 }
 
-func Float(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
-
-	args := c.GetArgs(ctx)
-
-	if len(args) <= 0 {
-		return nil
-	}
-
-	if args[0].Value.Type == StringTemporal {
-		return c.StringToNum(args[0], true)
-	}
-
-	return nil
-}
 func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	return nil
 }
