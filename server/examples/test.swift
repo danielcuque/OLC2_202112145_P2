@@ -1,34 +1,16 @@
-print("--------------------------");
-print("---FUNCIONES EMBEBIDAS----");
-print("--------------------------");
+// var arr1: [Int] = [8, 4, 6, 2]
+// print("arr1 vacío: ", arr1.isEmpty)
+// print("arr1 cantidad: ", arr1.count)
 
-print("");
-let num1 = Int("20")
-let num2 = Int("20")
-let suma = String(num1 + num2)
-let num3 = Float("9.5")
-let num4 = Float("3.6")
-let resta = String(num3 - num4)
-let cadena = String(true) + "->" + String(3.504)
+func Hanoi(_ discos: Int, _ origen: Int, _ auxiliar: Int, _ destino: Int) {
+    if discos == 1 {
+        print("Mover disco de", origen, "a", destino)
+    } else {
+        Hanoi(discos - 1, origen, destino, auxiliar)
+        print("Mover disco de", origen, "a", destino)
+        Hanoi(discos - 1, auxiliar, origen, destino)
+    }
+}
 
-print("valor 1: ", suma)
-print("valor 2: ", resta)
-print("valor true: ", String(true))
-print("valor false: ", String(false))
-print("valor nulo: ", nil)
-print(String(10) + String(3.5))
-print("valor cadena: ", cadena);
-
-/*
---------------------------
----FUNCIONES EMBEBIDAS----
---------------------------
-
-valor 1:  40
-valor 2:  5.9
-valor true:  true
-valor false:  false
-valor nulo: nil
-103.5
-valor cadena: true->3.504
-*/
+print("Hanoi")
+Hanoi(3, 1, 2, 3)

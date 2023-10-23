@@ -156,7 +156,7 @@ func (v *Visitor) arithmeticOp(l, r interface{}, op string, lc antlr.Token) inte
 		v.NewError("No se puede sumar "+leftT+" con "+rightT, lc)
 	case "-":
 		if leftT == V.IntType && rightT == V.IntType {
-			return V.NewIntValue(l.(int) * r.(int))
+			return V.NewIntValue(l.(int) - r.(int))
 		}
 		if leftT == V.FloatType && rightT == V.FloatType {
 			return V.NewFloatValue(l.(float64) - r.(float64))
