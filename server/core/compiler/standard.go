@@ -288,7 +288,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 				),
 
 				// Increase heap pointer
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 
 				// Increase pointer to access char
 				fmt.Sprintf(
@@ -325,7 +325,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 				),
 
 				// Increase heap pointer
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				fmt.Sprintf(
 					"%v = %v + 1;",
 					newProcedure.GetParameter("rightOp").Tmp(),
@@ -340,7 +340,7 @@ func (c *Compiler) ConcatString(leftOp, rightOp *ValueResponse) *ValueResponse {
 
 				// Add -1 to end of string
 				"heap[(int)H] = -1;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 			},
 			"",
 		)
@@ -583,25 +583,25 @@ func (c *Compiler) PrintBool(arg *Argument) *ValueResponse {
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("False").String()),
 				newProcedure.GetLabel("True").Declare(),
 				"heap[(int)H] = 116;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 114;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 117;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 101;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("EndBool")),
 				newProcedure.GetLabel("False").Declare(),
 				"heap[(int)H] = 102;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 97;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 108;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 115;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				"heap[(int)H] = 101;",
-				"H = H + 1;",
+				c.HeapPointer.IncreasePointer(),
 				newProcedure.GetLabel("EndBool").Declare(),
 				"heap[(int)H] = -1;",
 				c.HeapPointer.IncreasePointer(),
@@ -717,7 +717,6 @@ func (c *Compiler) PrintString(value *ValueResponse) {
 		},
 		"Imprimiendo cadena",
 	)
-
 }
 
 func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
@@ -1455,7 +1454,146 @@ func (c *Compiler) NumberToString(value *ValueResponse) *ValueResponse {
 }
 
 func (c *Compiler) FloatToString(value *ValueResponse) *ValueResponse {
-	return nil
+
+	name := "std_float_to_string"
+
+	if c.TAC.GetStandard(name) == nil {
+		proc := NewProcedure(name)
+
+		proc.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "Value",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "IntPart",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "DecimalPart",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "DotPointer",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		proc.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("IsNotNegative"),
+			},
+		)
+
+		proc.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = (int)%v;",
+					proc.GetParameter("IntPart").Temporal,
+					proc.GetParameter("Value").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = %v - %v;",
+					proc.GetParameter("DecimalPart").Temporal,
+					proc.GetParameter("Value").Temporal,
+					proc.GetParameter("IntPart").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v * 1000;",
+					proc.GetParameter("DecimalPart").Temporal,
+					proc.GetParameter("DecimalPart").Temporal,
+				),
+
+				fmt.Sprintf(
+					"if (%v >= 0) goto %s;",
+					proc.GetParameter("Value").Temporal,
+					proc.GetLabel("IsNotNegative"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v * -1;",
+					proc.GetParameter("DecimalPart").Temporal,
+					proc.GetParameter("DecimalPart").Temporal,
+				),
+
+				proc.GetLabel("IsNotNegative").Declare(),
+			},
+			"",
+		)
+
+		c.TAC.Procedure = proc
+
+		integerPart := c.NumberToString(&ValueResponse{
+			Type:        IntTemporal,
+			Value:       proc.GetParameter("IntPart").Temporal,
+			ContextType: TemporalType,
+		})
+
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf(
+					"%v = H;",
+					proc.GetParameter("DotPointer").Temporal,
+				),
+
+				"heap[(int)H] = 46;",
+				c.HeapPointer.IncreasePointer(),
+				"heap[(int)H] = -1;",
+				c.HeapPointer.IncreasePointer(),
+			},
+			"",
+		)
+
+		concatInteger := c.ConcatString(integerPart, &ValueResponse{
+			Type:        CharTemporal,
+			Value:       proc.GetParameter("DotPointer").Temporal,
+			ContextType: TemporalType,
+		})
+
+		decimalPart := c.NumberToString(&ValueResponse{
+			Type:        IntTemporal,
+			Value:       proc.GetParameter("DecimalPart").Temporal,
+			ContextType: TemporalType,
+		})
+
+		concatDecimal := c.ConcatString(concatInteger, decimalPart)
+
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf(
+					"%v = %v;",
+					proc.GetParameter("Value").Temporal,
+					concatDecimal.GetValue(),
+				),
+			},
+			"",
+		)
+
+		c.TAC.UnsetProcedure()
+		c.TAC.AddStandard(proc)
+	}
+
+	procedure := c.TAC.GetStandard(name)
+
+	returnValue := c.TAC.NewTemporal(StringTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("Value").Tmp(), value.GetValue()),
+			procedure.Call(),
+			fmt.Sprintf("%v = %v;", returnValue, procedure.GetParameter("Value").Temporal),
+		},
+		"Convirtiendo a cadena",
+	)
+
+	return &ValueResponse{
+		Type:        StringTemporal,
+		Value:       returnValue,
+		ContextType: TemporalType,
+	}
 }
 
 func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
