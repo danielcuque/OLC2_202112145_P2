@@ -44,8 +44,6 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 
 	c.Env.Current = envFunction.Root
 	c.Visit(statementsBlock)
-	c.TAC.UnsetProcedure()
-	c.Env.Current = prevEnv
 
 	memoryAddressTemporal := c.TAC.NewTemporal(IntTemporal)
 
@@ -65,6 +63,10 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 		},
 		"Fin de la función",
 	)
+
+	c.TAC.UnsetProcedure()
+	c.Env.Current = prevEnv
+
 	return nil
 }
 

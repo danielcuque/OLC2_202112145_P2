@@ -30,6 +30,7 @@ func (c *Compiler) AllocateStack(size int) {
 					"stack[(int)P] = %v;",
 					newProcedure.GetParameter("basePointer").Temporal.Cast(),
 				),
+				c.StackPointer.IncreasePointerByOne(),
 				fmt.Sprintf(
 					"P = P + %v;",
 					newProcedure.GetParameter("size").Temporal.Cast(),
