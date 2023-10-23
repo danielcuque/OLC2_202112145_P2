@@ -1482,6 +1482,7 @@ func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	return nil
 }
+
 func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	return nil
 }

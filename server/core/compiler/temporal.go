@@ -5,12 +5,12 @@ import "fmt"
 type TemporalCast string
 
 const (
+	BooleanTemporal TemporalCast = "b"
+	CharTemporal    TemporalCast = "c"
 	FloatTemporal   TemporalCast = "f"
 	IntTemporal     TemporalCast = "d"
-	CharTemporal    TemporalCast = "c"
-	BooleanTemporal TemporalCast = "b"
-	StringTemporal  TemporalCast = "s"
 	MatrixTemporal  TemporalCast = "m"
+	StringTemporal  TemporalCast = "s"
 )
 
 type Temporal struct {

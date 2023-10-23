@@ -47,7 +47,7 @@ const (
 )
 
 func DefaultNil() string {
-	return "9999999"
+	return "9999999827968.00"
 }
 
 type ValueResponse struct {

@@ -11,7 +11,7 @@ func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) in
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
 	if response == nil {
-		fmt.Println("Error al declarar la variable")
+		fmt.Println("Error al declarar la variable", id)
 		return nil
 	}
 

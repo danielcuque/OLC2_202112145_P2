@@ -5,7 +5,7 @@ import "fmt"
 type TAC struct {
 	temporals     []*Temporal
 	labels        []*Label
-	standar       map[string]*Procedure
+	standar       []*Procedure
 	procedures    map[string]*Procedure
 	code          string
 	Procedure     *Procedure
@@ -18,7 +18,7 @@ func NewTAC() *TAC {
 		temporals:     make([]*Temporal, 0),
 		labels:        make([]*Label, 0),
 		procedures:    make(map[string]*Procedure),
-		standar:       make(map[string]*Procedure),
+		standar:       make([]*Procedure, 0),
 		Procedure:     nil,
 		OffsetPointer: nil,
 	}
@@ -138,7 +138,7 @@ func (t *TAC) NewTemporal(castType interface{}) *Temporal {
 }
 
 func (t *TAC) AddStandard(procedure *Procedure) {
-	t.standar[procedure.Name] = procedure
+	t.standar = append(t.standar, procedure)
 }
 
 func (t *TAC) AddProcedure(procedure *Procedure) {
@@ -150,7 +150,13 @@ func (t *TAC) GetProcedure(name string) *Procedure {
 }
 
 func (t *TAC) GetStandard(name string) *Procedure {
-	return t.standar[name]
+	for _, procedure := range t.standar {
+		if procedure.Name == name {
+			return procedure
+		}
+	}
+
+	return nil
 }
 
 func (t *TAC) SetProcedure(procedure *Procedure) {

@@ -193,6 +193,14 @@ func (c *Compiler) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} 
 	return c.Or(left, right)
 }
 
+func (c *Compiler) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
+	return &ValueResponse{
+		Type:        FloatTemporal,
+		Value:       DefaultNil(),
+		ContextType: LiteralType,
+	}
+}
+
 func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 	value := c.Visit(ctx.Expr()).(*ValueResponse)
 
