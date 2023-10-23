@@ -1,49 +1,34 @@
-// var num1 = 10; 
-// var num2 = 20; 
-// var num3 = 30; 
+print("--------------------------");
+print("---FUNCIONES EMBEBIDAS----");
+print("--------------------------");
 
-// var arr1: [Int] = [8, 4, 6, 2]
+print("");
+let num1 = Int("20")
+let num2 = Int("20")
+let suma = String(num1 + num2)
+let num3 = Float("9.5")
+let num4 = Float("3.6")
+let resta = String(num3 - num4)
+let cadena = String(true) + "->" + String(3)
 
-// for i in 0...3 {
-//     arr1[i] = arr1[i] * 2
-//     print(arr1[i])
-// }
+print("valor 1: ", suma)
+print("valor 2: ", resta)
+print("valor true: ", String(true))
+print("valor false: ", String(false))
+// print("valor nulo: ", nil)
+print(String(10) + String(3))
+print("valor cadena: ", cadena);
 
+/*
+--------------------------
+---FUNCIONES EMBEBIDAS----
+--------------------------
 
-// func multiplicacion(_ a: Int, _ b: Int) -> Int {
-//     var c = a * b
-//     if c > 10 {
-//         print("Es mayor a 10")
-//     } else {
-//         print("Es menor a 10")
-//     }
-//     return c
-// }
-
-// var op = multiplicacion(4, 2)
-// print(op)
-
-
-
-
-// var op2 = Float("21") + Float("20.435") 
-// print(op2)
-
-// var op = Int("10.99") - Int(33.102132)
-// print(op)
-
-
-print(String(-10))
-
-
-// func factorial(_ n: Int) -> Int {
-//     if n < 2 {
-//         return 1
-//     } else {
-//         return n * factorial(n - 1)
-//     }
-// }
-
-// print(factorial(6))
-// print(factorial(4))
-// print(factorial(3))
+valor 1:  40
+valor 2:  5.9
+valor true:  true
+valor false:  false
+valor nulo: nil
+103.5
+valor cadena: true->3.504
+*/
