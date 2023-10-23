@@ -26,13 +26,14 @@
 
 
 
-var op2 = Float("21") + Float("20.435") 
-print(op2)
+// var op2 = Float("21") + Float("20.435") 
+// print(op2)
 
-var op = Int("10.99") - Int(33.102132)
-print(op)
+// var op = Int("10.99") - Int(33.102132)
+// print(op)
 
 
+print(String(-10))
 
 
 // func factorial(_ n: Int) -> Int {

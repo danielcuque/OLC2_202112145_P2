@@ -89,3 +89,11 @@ type Argument struct {
 	Value     *ValueResponse
 	IsPointer bool
 }
+
+func (a *Argument) GetValue() *ValueResponse {
+	return a.Value
+}
+
+func (a *Argument) GetType() TemporalCast {
+	return a.Value.Type
+}

@@ -799,7 +799,7 @@ func Int(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 		return nil
 	}
 
-	if args[0].Value.Type == StringTemporal {
+	if args[0].GetType() == StringTemporal {
 		return c.StringToNum(args[0].Value)
 	}
 
@@ -1209,7 +1209,224 @@ func (c *Compiler) StringToNum(value *ValueResponse) *ValueResponse {
 	}
 }
 
+func (c *Compiler) NumberToString(value *ValueResponse) *ValueResponse {
+
+	procName := "std_num_to_string"
+
+	if c.TAC.GetStandard(procName) == nil {
+		procedure := NewProcedure(procName)
+
+		procedure.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("L5"),
+				c.TAC.NewLabel("L6"),
+				c.TAC.NewLabel("L7"),
+				c.TAC.NewLabel("L8"),
+				c.TAC.NewLabel("L9"),
+				c.TAC.NewLabel("L10"),
+				c.TAC.NewLabel("L11"),
+			},
+		)
+
+		procedure.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "t2",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "t5",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "t6",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "t7",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		procedure.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = H;",
+					procedure.GetParameter("t5").Temporal,
+				),
+
+				fmt.Sprintf(
+					"if (%v > 0) goto %s;",
+					procedure.GetParameter("t2").Temporal.Cast(),
+					procedure.GetLabel("L5"),
+				),
+
+				"heap[(int)H] = 45;",
+				c.HeapPointer.IncreasePointer(),
+
+				fmt.Sprintf(
+					"%v = %v * -1;",
+					procedure.GetParameter("t2").Temporal,
+					procedure.GetParameter("t2").Temporal,
+				),
+
+				procedure.GetLabel("L5").Declare(),
+
+				fmt.Sprintf(
+					"if(%v != 0) goto %s;",
+					procedure.GetParameter("t2").Temporal,
+					procedure.GetLabel("L6"),
+				),
+				"heap[(int)H] = 48;",
+				c.HeapPointer.IncreasePointer(),
+
+				"heap[(int)H] = 0;",
+				c.HeapPointer.IncreasePointer(),
+
+				fmt.Sprintf("goto %s;", procedure.GetLabel("L11")),
+				procedure.GetLabel("L6").Declare(),
+				fmt.Sprintf(
+					"%v = H - 1;",
+					procedure.GetParameter("t6").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = %v;",
+					procedure.GetParameter("t7").Temporal,
+					procedure.GetParameter("t2").Temporal,
+				),
+				procedure.GetLabel("L7").Declare(),
+				fmt.Sprintf(
+					"if (%v == 0) goto %s;",
+					procedure.GetParameter("t7").Temporal,
+					procedure.GetLabel("L8"),
+				),
+				fmt.Sprintf(
+					"%v = %v / 10;",
+					procedure.GetParameter("t7").Temporal,
+					procedure.GetParameter("t7").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = %v;",
+					procedure.GetParameter("t7").Temporal,
+					procedure.GetParameter("t7").Temporal.Cast(),
+				),
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					procedure.GetParameter("t6").Temporal,
+					procedure.GetParameter("t6").Temporal,
+				),
+				fmt.Sprintf("goto %s;", procedure.GetLabel("L7")),
+				procedure.GetLabel("L8").Declare(),
+				fmt.Sprintf(
+					"H = %v + 1;",
+					procedure.GetParameter("t6").Temporal,
+				),
+				procedure.GetLabel("L9").Declare(),
+				fmt.Sprintf(
+					"if (%v == 0) goto %s;",
+					procedure.GetParameter("t2").Temporal,
+					procedure.GetLabel("L10"),
+				),
+				fmt.Sprintf(
+					"%v = %s %% 10;",
+					procedure.GetParameter("t7").Temporal,
+					procedure.GetParameter("t2").Temporal.Cast(),
+				),
+				fmt.Sprintf(
+					"%v = %v + 48;",
+					procedure.GetParameter("t7").Temporal,
+					procedure.GetParameter("t7").Temporal,
+				),
+				fmt.Sprintf(
+					"heap[%v] = %v;",
+					procedure.GetParameter("t6").Temporal.Cast(),
+					procedure.GetParameter("t7").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = %v - 1;",
+					procedure.GetParameter("t6").Temporal,
+					procedure.GetParameter("t6").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = %v / 10;",
+					procedure.GetParameter("t2").Temporal,
+					procedure.GetParameter("t2").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v;",
+					procedure.GetParameter("t2").Temporal,
+					procedure.GetParameter("t2").Temporal.Cast(),
+				),
+
+				fmt.Sprintf("goto %s;", procedure.GetLabel("L9")),
+
+				procedure.GetLabel("L10").Declare(),
+
+				"heap[(int)H] = -1;",
+
+				c.HeapPointer.IncreasePointer(),
+
+				procedure.GetLabel("L11").Declare(),
+
+				fmt.Sprintf(
+					"%v = %v;",
+					procedure.GetParameter("t2").Temporal,
+					procedure.GetParameter("t5").Temporal,
+				),
+			},
+			"",
+		)
+
+		c.TAC.AddStandard(procedure)
+	}
+
+	procedure := c.TAC.GetStandard(procName)
+	returnValue := c.TAC.NewTemporal(StringTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("t2").Tmp(), value.GetValue()),
+			procedure.Call(),
+			fmt.Sprintf("%v = %v;", returnValue, procedure.GetParameter("t2").Temporal),
+		},
+		"Convirtiendo a cadena",
+	)
+
+	return &ValueResponse{
+		Type:        StringTemporal,
+		Value:       returnValue,
+		ContextType: TemporalType,
+	}
+}
+
+func (c *Compiler) FloatToString(value *ValueResponse) *ValueResponse {
+	return nil
+}
+
 func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	args := c.GetArgs(ctx)
+
+	if len(args) <= 0 {
+		return nil
+	}
+
+	arg := args[0]
+
+	if arg.GetType() == IntTemporal {
+		return c.NumberToString(arg.Value)
+	}
+
+	if arg.GetType() == FloatTemporal {
+		return c.FloatToString(arg.Value)
+	}
+
+	if arg.GetType() == BooleanTemporal {
+		return nil
+	}
+
 	return nil
 }
 func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
