@@ -55,9 +55,20 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 }
 
 func (c *Compiler) VisitArithmeticExpr(ctx *parser.ArithmeticExprContext) interface{} {
-	l := c.Visit(ctx.GetLeft()).(*ValueResponse)
-	r := c.Visit(ctx.GetRight()).(*ValueResponse)
+	var l, r *ValueResponse
+
 	op := ctx.GetOp().GetText()
+
+	_, isCall := ctx.GetRight().(*parser.FunctionCallExprContext)
+
+	if isCall {
+		r = c.Visit(ctx.GetRight()).(*ValueResponse)
+		l = c.Visit(ctx.GetLeft()).(*ValueResponse)
+	} else {
+		l = c.Visit(ctx.GetLeft()).(*ValueResponse)
+		r = c.Visit(ctx.GetRight()).(*ValueResponse)
+	}
+
 	return c.arithmeticOp(l, r, op, ctx.GetStart())
 }
 
