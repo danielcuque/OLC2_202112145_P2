@@ -123,7 +123,7 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, value.GetAddress()),
+			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, c.TAC.GetValueAddress(value)),
 			fmt.Sprintf("%v = %v + 2;", baseTemporal, baseTemporal),
 			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), newVectorObject.GetInit()),
 			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, baseTemporal),

@@ -8,24 +8,25 @@ var arr1: [Int] = [8, 4, 6, 2]
 // var arr2: [Int] = []
 // print("arr1 cantidad: ", arr1.count)
 // print("arr1 vacío: ", arr1.isEmpty)
-for i in 0...arr1.count-1 {
-    print(arr1[i])
-}
-
-// func printArray(_ msg: String, _ arr: [Int]) {
-//     var out = ".["
-//     for i in 0...arr.count-1 {
-//         if i == arr.count - 1 {
-//             out += String(arr[i])
-//         } else {
-//             out += String(arr[i]) + ", "
-//         }
-//     }
-//     out += "]."
-//     print(msg + out)
+// for i in 0...arr1.count-1 {
+//     print(arr1[i])
 // }
 
-// printArray("arr1: ", arr1)
+func printArray(_ msg: String, _ arr: [Int]) {
+    var out = ".["
+    for i in 0...arr.count-1 {
+        print("i: ", i)
+        if i == arr.count - 1 {
+            out = out + String(arr[i])
+        } else {
+            out = out + String(arr[i]) + ", "
+        }
+    }
+    out = out + "]."
+    print(msg + out)
+}
+
+printArray("arr1: ", arr1)
 
 // print("arr2 cantidad: ", arr2.count)
 // print("arr2 vacío: ", arr2.isEmpty)
