@@ -31,10 +31,10 @@ func (s *Stack) IncreasePointerByOne() string {
 }
 
 type StackIndex struct {
-	Index int
+	Index interface{}
 }
 
-func NewStackIndex(Index int) *StackIndex {
+func NewStackIndex(Index interface{}) *StackIndex {
 	return &StackIndex{
 		Index: Index,
 	}

@@ -185,7 +185,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	prop := c.GetProps(value, props)
 
-	fmt.Println(prop)
+	fmt.Print(prop)
 
 	return nil
 
@@ -445,8 +445,22 @@ func (c *Compiler) GetProps(value *Value, props []string) interface{} {
 		return value
 	}
 
-	fmt.Print(value.GetValue())
-	// fmt.Print(value.GetValue().(*Object).GetProp(props[0]))
+	obj, ok := value.GetValue().(*Object)
 
-	return nil
+	if !ok {
+		val := value.GetValue().(*Value)
+
+		c.TAC.AppendInstruction(
+			fmt.Sprintf("%s = heap[%v];",
+				value.GetValue(),
+				val.GetValue(),
+			),
+			"Accesso a valor",
+		)
+		return val
+	}
+
+	value = obj.GetProp(props[0])
+
+	return c.GetProps(value, props[1:])
 }

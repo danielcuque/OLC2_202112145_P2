@@ -11,12 +11,10 @@ type Value struct {
 	Type         TemporalCast
 }
 
-func NewSimpleValue(index int) *Value {
+func NewSimpleValue(index interface{}) *Value {
 	return &Value{
-		StackAddress: &StackIndex{
-			Index: index,
-		},
-		IsRelative: false,
+		StackAddress: NewStackIndex(index),
+		IsRelative:   false,
 	}
 }
 

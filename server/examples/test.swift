@@ -1,15 +1,7 @@
-
-print("aa")
 var arr1: [Int] = [8, 4, 6, 2]
 print("arr1 cantidad: ", arr1.count)
 
 // print("arr1 vacío: ", arr1.isEmpty)
-
-
-// func suma(_ a: Int, _ b: Int) -> Int {
-//     return a + b
-// }
-
 
 // func factorial(_ n: Int) -> Int {
 //     if n < 2 {
