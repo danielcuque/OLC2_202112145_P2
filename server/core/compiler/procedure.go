@@ -78,6 +78,7 @@ type Parameter struct {
 	InternalName string
 	IsReference  bool
 	Type         TemporalCast
+	Value        interface{}
 }
 
 func (p *Parameter) Tmp() string {

@@ -16,8 +16,18 @@ func NewMatrix(dimension int, temporal *Temporal, metadata []int) *Matrix {
 	}
 }
 
-func NewVector(temporal *Temporal, metadata []int) *Matrix {
-	return NewMatrix(1, temporal, metadata)
+func NewVector(temporal *Temporal, metadata []int) *Object {
+	newVector := NewObject("vector", NewMatrix(1, temporal, metadata))
+	count := NewSimpleValue(0)
+	count.SetData(IntTemporal, metadata[1])
+
+	isEmpty := NewSimpleValue(1)
+	isEmpty.SetData(BooleanTemporal, metadata[0])
+
+	newVector.AddProp("count", count)
+	newVector.AddProp("isEmpty", isEmpty)
+
+	return newVector
 }
 
 func (m *Matrix) GetValue() string {

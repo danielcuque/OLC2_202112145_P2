@@ -26,18 +26,7 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 	)
 
 	newVectorObject := NewVector(response.GetValue().(*Temporal), metadata)
-	newObject := NewObject("vector", newVectorObject, NewEnvNode(nil, "vector"))
-
-	count := NewSimpleValue(0)
-	count.SetData(IntTemporal, metadata[1])
-
-	isEmpty := NewSimpleValue(1)
-	isEmpty.SetData(BooleanTemporal, metadata[0])
-
-	newObject.AddProp("count", count)
-	newObject.AddProp("isEmpty", isEmpty)
-
-	value.SetData(MatrixTemporal, newObject)
+	value.SetData(MatrixTemporal, newVectorObject)
 
 	return nil
 }
@@ -135,7 +124,7 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, value.GetAddress()),
-			fmt.Sprintf("%v = %v + 1;", baseTemporal, baseTemporal),
+			fmt.Sprintf("%v = %v + 2;", baseTemporal, baseTemporal),
 			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), newVectorObject.GetInit()),
 			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, baseTemporal),
 		},

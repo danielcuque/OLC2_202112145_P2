@@ -93,7 +93,6 @@ func (c *Compiler) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 
 		value := evalValue.(*ValueResponse)
 
-		// TODO: Check if value is a pointer
 		args = append(args, &Argument{
 			Value:     value,
 			Name:      "",

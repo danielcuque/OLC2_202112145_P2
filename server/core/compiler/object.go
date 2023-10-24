@@ -6,11 +6,11 @@ type Object struct {
 	Props *EnvNode
 }
 
-func NewObject(t string, v interface{}, env *EnvNode) *Object {
+func NewObject(t string, v interface{}) *Object {
 	return &Object{
 		Type:  t,
 		Value: v,
-		Props: env,
+		Props: NewEnvNode(nil, t),
 	}
 }
 

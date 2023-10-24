@@ -401,7 +401,13 @@ func (c *Compiler) VisitVariableType(ctx *parser.VariableTypeContext) interface{
 }
 
 func (c *Compiler) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) interface{} {
-	vectorPosition := c.Visit(ctx.VectorAccess()).(*ValueResponse)
+	evalValue := c.Visit(ctx.VectorAccess())
+
+	if evalValue == nil {
+		return nil
+	}
+
+	vectorPosition := evalValue.(*ValueResponse)
 
 	newTemporal := c.TAC.NewTemporal(IntTemporal)
 

@@ -30,7 +30,7 @@ func (c *Compiler) VisitFunctionDeclarationStatement(ctx *parser.FunctionDeclara
 
 	for i, param := range params {
 		newValue := envFunction.AddValue(param.InternalName, NewSimpleValue(i+1))
-		newValue.SetData(param.Type, "1")
+		newValue.SetData(param.Type, param.Value)
 		newValue.IsRelative = true
 	}
 
@@ -93,10 +93,21 @@ func (v *Compiler) VisitFunctionParameter(ctx *parser.FunctionParameterContext) 
 
 	isRef := ctx.Kw_INOUT() != nil
 
+	var value interface{}
+	value = "1"
+
 	dataType := IntTemporal
 
 	if ctx.VariableType() != nil {
 		dataType = v.Visit(ctx.VariableType()).(TemporalCast)
+	}
+
+	if ctx.MatrixType() != nil {
+		if ctx.MatrixType().GetText()[1] == '[' {
+			value = NewObject("matrix", NewMatrix(1, nil, make([]int, 0)))
+		} else {
+			value = NewVector(NewTemporal(0, IntTemporal), []int{0, 1})
+		}
 	}
 
 	return &Parameter{
@@ -105,5 +116,6 @@ func (v *Compiler) VisitFunctionParameter(ctx *parser.FunctionParameterContext) 
 		InternalName: internalName,
 		IsReference:  isRef,
 		Type:         dataType,
+		Value:        value,
 	}
 }
