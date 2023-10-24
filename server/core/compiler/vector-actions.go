@@ -3,8 +3,6 @@ package compiler
 import (
 	"OLC2/core/parser"
 	"fmt"
-
-	"github.com/antlr4-go/antlr/v4"
 )
 
 func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) interface{} {
@@ -28,7 +26,7 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 	)
 
 	newVectorObject := NewVector(response.GetValue().(*Temporal), metadata)
-	newObject := NewObject("matrix", newVectorObject, NewEnvNode(nil, "matrix"))
+	newObject := NewObject("vector", newVectorObject, NewEnvNode(nil, "vector"))
 
 	count := NewSimpleValue(0)
 
@@ -115,8 +113,7 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 }
 
 func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{} {
-	ids := c.Visit(ctx.IdChain()).([]antlr.TerminalNode)
-	id := ids[0].GetText()
+	id, _ := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
 
 	index := c.Visit(ctx.Expr()).(*ValueResponse)
 
@@ -126,7 +123,7 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 		return nil
 	}
 
-	newVectorObject := value.GetValue().(*Matrix)
+	newVectorObject := value.GetValue().(*Object).GetValue().(*Matrix)
 	baseTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	vectorPosition := c.TAC.NewTemporal(IntTemporal)

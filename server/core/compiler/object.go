@@ -14,6 +14,10 @@ func NewObject(t string, v interface{}, env *EnvNode) *Object {
 	}
 }
 
+func (o *Object) GetValue() interface{} {
+	return o.Value
+}
+
 func (o *Object) AddProp(name string, value *Value) {
 	o.Props.AddValue(name, value)
 }

@@ -158,8 +158,7 @@ func (c *Compiler) VisitIDChain(ctx *parser.IDChainContext) interface{} {
 }
 
 func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
-	expr := strings.Split(ctx.IdChain().GetText(), ".")
-	id := expr[len(expr)-1]
+	id, props := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
 
 	value := c.Env.GetValue(id)
 
@@ -176,11 +175,20 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
-	return &ValueResponse{
-		Type:        value.GetType(),
-		Value:       newTemporal,
-		ContextType: TemporalType,
+	if len(props) == 0 {
+		return &ValueResponse{
+			Type:        value.GetType(),
+			Value:       newTemporal,
+			ContextType: TemporalType,
+		}
 	}
+
+	prop := c.GetProps(value, props)
+
+	fmt.Println(prop)
+
+	return nil
+
 }
 
 func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
@@ -415,4 +423,30 @@ func (c *Compiler) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) in
 		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
+}
+
+// Utils
+
+func (c *Compiler) GetPropsAsString(ctx *parser.IDChainContext) (string, []string) {
+	props := strings.Split(ctx.GetText(), ".")
+	id := props[0]
+
+	return id, props[1:]
+}
+
+// Calculate id patter, for example, avion.piloto.persona.edad, return value
+
+// If is an object, return position, por example, avion.piloto.persona, return object
+
+// The return value can be an object or a value
+
+func (c *Compiler) GetProps(value *Value, props []string) interface{} {
+	if len(props) == 0 {
+		return value
+	}
+
+	fmt.Print(value.GetValue())
+	// fmt.Print(value.GetValue().(*Object).GetProp(props[0]))
+
+	return nil
 }

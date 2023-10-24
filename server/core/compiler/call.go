@@ -85,7 +85,13 @@ func (c *Compiler) VisitArguments(ctx *parser.ArgumentsContext) interface{} {
 	args := make([]*Argument, 0)
 
 	for _, arg := range ctx.AllExpr() {
-		value := c.Visit(arg).(*ValueResponse)
+		evalValue := c.Visit(arg)
+
+		if evalValue == nil {
+			return nil
+		}
+
+		value := evalValue.(*ValueResponse)
 
 		// TODO: Check if value is a pointer
 		args = append(args, &Argument{
@@ -132,7 +138,13 @@ func (c *Compiler) GetArgs(ctx *parser.FunctionCallContext) []*Argument {
 	args := make([]*Argument, 0)
 
 	if ctx.FunctionCallArguments() != nil {
-		args = c.Visit(ctx.FunctionCallArguments()).([]*Argument)
+		evalArgs := c.Visit(ctx.FunctionCallArguments())
+
+		if evalArgs == nil {
+			return args
+		}
+
+		args = evalArgs.([]*Argument)
 	}
 
 	return args
