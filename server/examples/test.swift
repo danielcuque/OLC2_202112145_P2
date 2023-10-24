@@ -1,4 +1,5 @@
 var arr1: [Int] = [8, 4, 6, 2]
+
 // print("arr1 vacío: ", arr1.isEmpty)
 // print("arr1 cantidad: ", arr1.count)
 
@@ -32,10 +33,10 @@ var arr1: [Int] = [8, 4, 6, 2]
 // print("Hanoi")
 // Hanoi(3, 1, 2, 3)
 
-func suma(_ a: Int, _ b: Int) -> Int {
-    var rs = a+b
-    return rs
-}
+// func suma(_ a: Int, _ b: Int) -> Int {
+//     var rs = a+b
+//     return rs
+// }
 
-print(suma(1,2))
-print(suma(1,3))
+// print(suma(1,2))
+// print(suma(1,3))
