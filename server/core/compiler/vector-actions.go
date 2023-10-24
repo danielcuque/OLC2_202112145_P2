@@ -27,9 +27,14 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 		"Direccion de vector",
 	)
 
-	vectorObject := NewVector(response.GetValue().(*Temporal), metadata)
+	newVectorObject := NewVector(response.GetValue().(*Temporal), metadata)
+	newObject := NewObject("matrix", newVectorObject, NewEnvNode(nil, "matrix"))
 
-	value.SetData(MatrixTemporal, vectorObject)
+	count := NewSimpleValue(0)
+
+	newObject.AddProp("count", count)
+
+	value.SetData(MatrixTemporal, newObject)
 
 	return nil
 }
@@ -121,7 +126,7 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 		return nil
 	}
 
-	vectorObject := value.GetValue().(*Matrix)
+	newVectorObject := value.GetValue().(*Matrix)
 	baseTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	vectorPosition := c.TAC.NewTemporal(IntTemporal)
@@ -130,7 +135,7 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 		[]string{
 			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, value.GetAddress()),
 			fmt.Sprintf("%v = %v + 1;", baseTemporal, baseTemporal),
-			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), vectorObject.GetInit()),
+			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), newVectorObject.GetInit()),
 			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, baseTemporal),
 		},
 		fmt.Sprintf("Posicion de vector %v", id),

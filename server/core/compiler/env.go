@@ -87,15 +87,17 @@ func (s *EnvNode) AppendChild(child *EnvNode) {
 }
 
 type EnvTree struct {
-	Root    *EnvNode
-	Current *EnvNode
+	Root        *EnvNode
+	Current     *EnvNode
+	CountValues int
 }
 
 func NewEnvTree() *EnvTree {
 	root := NewEnvNode(nil, RootEnv)
 	return &EnvTree{
-		Root:    root,
-		Current: root,
+		Root:        root,
+		Current:     root,
+		CountValues: 0,
 	}
 }
 
@@ -135,6 +137,7 @@ func (s *EnvTree) String() string {
 }
 
 func (s *EnvTree) AddValue(key string, value *Value) *Value {
+	s.CountValues++
 	return s.Current.AddValue(key, value)
 }
 
@@ -162,4 +165,8 @@ func (s *EnvTree) GetMain() string {
 func (s *EnvTree) Next() {
 	s.Current.IndexChild++
 	s.Current = s.Current.Child[s.Current.IndexChild]
+}
+
+func (s *EnvTree) GetCountValues() int {
+	return s.CountValues
 }
