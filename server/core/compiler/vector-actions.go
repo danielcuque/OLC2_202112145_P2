@@ -28,10 +28,14 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 	newVectorObject := NewVector(response.GetValue().(*Temporal), metadata)
 	newObject := NewObject("vector", newVectorObject, NewEnvNode(nil, "vector"))
 
-	count := NewSimpleValue(response.GetValue())
+	count := NewSimpleValue(0)
 	count.SetData(IntTemporal, metadata[1])
 
+	isEmpty := NewSimpleValue(1)
+	isEmpty.SetData(BooleanTemporal, metadata[0])
+
 	newObject.AddProp("count", count)
+	newObject.AddProp("isEmpty", isEmpty)
 
 	value.SetData(MatrixTemporal, newObject)
 

@@ -446,13 +446,15 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 	objectValue, ok := obj.GetValue().(*Object)
 
 	if !ok {
-		val := value.GetValue().(*Object).GetProp(props[0])
+		val := obj.GetProp(props[0])
 
+		relativePosition := c.TAC.NewTemporal(IntTemporal)
 		heapTemporal := c.TAC.NewTemporal(val.GetType())
 
 		c.TAC.AppendInstructions(
 			[]string{
-				fmt.Sprintf("%s = heap[(int)%s];", heapTemporal, auxiliarTemporal),
+				fmt.Sprintf("%s = %s + %s;", relativePosition, auxiliarTemporal, val.GetAddress()),
+				fmt.Sprintf("%s = heap[%s];", heapTemporal, relativePosition.Cast()),
 			},
 			fmt.Sprintf("Propiedad '%s'", props[0]),
 		)
@@ -460,9 +462,9 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 		return c.GetProps(val, props[1:], heapTemporal)
 	}
 
-	stackTemporal := c.TAC.NewTemporal(value.GetType())
-
 	value = objectValue.GetProp(props[0])
+
+	stackTemporal := c.TAC.NewTemporal(value.GetType())
 
 	if value == nil {
 		return auxiliarTemporal
