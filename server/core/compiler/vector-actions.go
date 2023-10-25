@@ -120,13 +120,40 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 	baseTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	vectorPosition := c.TAC.NewTemporal(IntTemporal)
+	vectorCount := c.TAC.NewTemporal(IntTemporal)
+
+	outOfBoundsLabel := c.TAC.NewLabel("outOfBounds")
+	end := c.TAC.NewLabel("end")
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, c.TAC.GetValueAddress(value)),
-			fmt.Sprintf("%v = %v + 2;", baseTemporal, baseTemporal),
+			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, c.TAC.GetValueAddress(value)), // Obtenemos la posicion inicial del vector
+			fmt.Sprintf("%v = heap[(int)%v];", vectorCount, baseTemporal),                   // Obtenemos la cantidad de elementos del vector
+			fmt.Sprintf("if (%v > %v) goto %v;", index.GetValue(), vectorCount, outOfBoundsLabel),
+			fmt.Sprintf("if (%v < 0) goto %v;", index.GetValue(), outOfBoundsLabel),
+			fmt.Sprintf("%v = %v + 2;", baseTemporal, baseTemporal), // Obtenemos la posicion inicial del vector
 			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), newVectorObject.GetInit()),
 			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, baseTemporal),
+			fmt.Sprintf("goto %v;", end),
+
+			outOfBoundsLabel.Declare(),
+
+			"printf(\"%c\", 79);",  //O
+			"printf(\"%c\", 117);", //u
+			"printf(\"%c\", 116);", //t
+			"printf(\"%c\", 32);",  //
+			"printf(\"%c\", 111);", //o
+			"printf(\"%c\", 102);", //f
+			"printf(\"%c\", 32);",  //
+			"printf(\"%c\", 66);",  //B
+			"printf(\"%c\", 111);", //o
+			"printf(\"%c\", 117);", //u
+			"printf(\"%c\", 110);", //n
+			"printf(\"%c\", 100);", //d
+			"printf(\"%c\", 115);", //s
+			"printf(\"%c\", 10);",  //
+
+			end.Declare(),
 		},
 		fmt.Sprintf("Posicion de vector %v", id),
 	)

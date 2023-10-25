@@ -24,9 +24,9 @@ func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{
 
 	args := c.GetArgs(ctx)
 
-	if len(args) > 0 {
+	c.AllocateStack(procedure.Env.GetCountValues())
 
-		c.AllocateStack(procedure.Env.GetCountValues())
+	if len(args) > 0 {
 
 		procedureEnv := procedure.Env
 

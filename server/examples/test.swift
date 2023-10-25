@@ -5,28 +5,44 @@
 // ]
 
 var arr1: [Int] = [8, 4, 6, 2]
-// var arr2: [Int] = []
-// print("arr1 cantidad: ", arr1.count)
+print(arr1[10])
+// var arr2: [Int] = [40, 21, 1, 3, 14, 4]
+// var arr3: [Int] = [90, 3, 40, 10, 8, 5]
+
+// print(arr1.count)
+// print(arr1.isEmpty)
+
+// printArray("arr1: ", arr1)
+// arr1.append(9)
+// printArray("arr1: ", arr1)
+
+// printArray("arr2: ", arr2)
+// arr2.removeLast()
+// printArray("arr2: ", arr2)
+
+// printArray("arr2: ", arr3)
+// arr3.remove(at: 3)
+// printArray("arr2: ", arr3)
+
 // print("arr1 vacío: ", arr1.isEmpty)
-// for i in 0...arr1.count-1 {
-//     print(arr1[i])
+// print("arr1 cantidad: ", arr1.count)
+
+
+// func printArray(_ msg: String, _ arr: [Int]) {
+//     var out = ".["
+//     for i in 0...arr.count-1 {
+//         print("i: ", i)
+//         if i == arr.count - 1 {
+//             out = out + String(arr[i])
+//         } else {
+//             out = out + String(arr[i]) + ", "
+//         }
+//     }
+//     out = out + "]."
+//     print(msg + out)
 // }
 
-func printArray(_ msg: String, _ arr: [Int]) {
-    var out = ".["
-    for i in 0...arr.count-1 {
-        print("i: ", i)
-        if i == arr.count - 1 {
-            out = out + String(arr[i])
-        } else {
-            out = out + String(arr[i]) + ", "
-        }
-    }
-    out = out + "]."
-    print(msg + out)
-}
-
-printArray("arr1: ", arr1)
+// printArray("arr1: ", arr1)
 
 // print("arr2 cantidad: ", arr2.count)
 // print("arr2 vacío: ", arr2.isEmpty)
