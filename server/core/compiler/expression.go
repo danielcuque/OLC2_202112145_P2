@@ -175,19 +175,13 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
-	if len(props) == 0 {
-		return &ValueResponse{
-			Type:        value.GetType(),
-			Value:       newTemporal,
-			ContextType: TemporalType,
-		}
+	temporalPointer := c.GetProps(value, props, newTemporal)
+
+	return &ValueResponse{
+		Type:        temporalPointer.GetType(),
+		Value:       temporalPointer,
+		ContextType: TemporalType,
 	}
-
-	prop := c.GetProps(value, props)
-
-	fmt.Print(prop)
-
-	return nil
 
 }
 
@@ -434,33 +428,37 @@ func (c *Compiler) GetPropsAsString(ctx *parser.IDChainContext) (string, []strin
 	return id, props[1:]
 }
 
-// Calculate id patter, for example, avion.piloto.persona.edad, return value
-
-// If is an object, return position, por example, avion.piloto.persona, return object
-
-// The return value can be an object or a value
-
-func (c *Compiler) GetProps(value *Value, props []string) interface{} {
+func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temporal) *Temporal {
 	if len(props) == 0 {
-		return value
+		return auxiliarTemporal
 	}
 
-	obj, ok := value.GetValue().(*Object)
+	obj, ok := value.GetValue().(*Object).GetProp(props[0]).GetValue().(*Object)
 
 	if !ok {
-		val := value.GetValue().(*Value)
+		val := value.GetValue().(*Object).GetProp(props[0])
 
-		c.TAC.AppendInstruction(
-			fmt.Sprintf("%s = heap[%v];",
-				value.GetValue(),
-				val.GetValue(),
-			),
-			"Accesso a valor",
+		heapTemporal := c.TAC.NewTemporal(val.GetType())
+
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("%s = heap[(int)%s];", heapTemporal, c.TAC.GetValueAddress(val)),
+			},
+			fmt.Sprintf("Propiedad '%s'", props[0]),
 		)
-		return val
+
+		return c.GetProps(val, props[1:], heapTemporal)
 	}
 
+	stackTemporal := c.TAC.NewTemporal(value.GetType())
 	value = obj.GetProp(props[0])
 
-	return c.GetProps(value, props[1:])
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%s = stack[(int)%s];", stackTemporal, c.TAC.GetValueAddress(value)),
+		},
+		fmt.Sprintf("Propiedad '%s'", props[0]),
+	)
+
+	return c.GetProps(value, props[1:], stackTemporal)
 }

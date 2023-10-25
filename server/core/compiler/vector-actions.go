@@ -29,6 +29,7 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 	newObject := NewObject("vector", newVectorObject, NewEnvNode(nil, "vector"))
 
 	count := NewSimpleValue(response.GetValue())
+	count.SetData(IntTemporal, metadata[1])
 
 	newObject.AddProp("count", count)
 

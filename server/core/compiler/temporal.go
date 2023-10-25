@@ -40,3 +40,7 @@ func (t *Temporal) Cast() string {
 func (t *Temporal) String() string {
 	return fmt.Sprintf("t%d", t.ID)
 }
+
+func (t *Temporal) GetType() TemporalCast {
+	return t.Type
+}
