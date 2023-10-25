@@ -55,42 +55,32 @@ func (c *Compiler) VisitVectorSingleValue(ctx *parser.VectorSingleValueContext) 
 }
 
 func (c *Compiler) VisitVectorValues(ctx *parser.VectorValuesContext) interface{} {
-
-	initVector := c.TAC.NewTemporal(IntTemporal)
-
-	c.TAC.AppendInstruction(fmt.Sprintf("%v = H;", initVector), "Inicio del vector")
-
-	for _, value := range ctx.AllExpr() {
-		val := c.Visit(value).(*ValueResponse)
-		c.TAC.AppendInstructions([]string{
-			fmt.Sprintf("heap[(int)H] = %v;", val.GetValue()),
-			"H = H + 1;",
-		}, "")
-	}
-
-	return &ValueResponse{
-		Value:       initVector,
-		Type:        IntTemporal,
-		ContextType: TemporalType,
-	}
+	return ctx.AllExpr()
 }
 
 func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*ValueResponse, []int) {
 
-	ctx_ := ctx.VectorValues().(*parser.VectorValuesContext)
+	vectorValues := make([]parser.IExprContext, 0)
+
+	if ctx.VectorValues() != nil {
+		vectorValues = c.Visit(ctx.VectorValues()).([]parser.IExprContext)
+	}
 
 	initVector := c.TAC.NewTemporal(IntTemporal)
 	counter := c.TAC.NewTemporal(IntTemporal)
+	isEmptyAddress := c.TAC.NewTemporal(BooleanTemporal)
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = H;", initVector), // Inicio del vector
-			"H = H + 1;",                       // Aumentamos un espacio para dejar la posicion vacia donde va la propiedad .count
+			fmt.Sprintf("%v = H;", initVector),     // Inicio del vector
+			c.HeapPointer.IncreasePointer(),        // Aumentamos un espacio para dejar la posicion vacia donde va la propiedad .count
+			fmt.Sprintf("%v = H;", isEmptyAddress), // Inicio del contador
+			c.HeapPointer.IncreasePointer(),        // Aumentamos un espacio para dejar la posicion vacia donde va la propiedad .isEmpty
 		},
 		"Inicio del vector",
 	)
 
-	for _, value := range ctx_.AllExpr() {
+	for _, value := range vectorValues {
 		val := c.Visit(value).(*ValueResponse)
 		c.TAC.AppendInstructions([]string{
 			fmt.Sprintf("heap[(int)H] = %v;", val.GetValue()),
@@ -98,13 +88,22 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 		}, "")
 	}
 
+	isEmptyLabel := c.TAC.NewLabel("isEmpty")
+	end := c.TAC.NewLabel("end")
+
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = H - %v;", counter, initVector), // Obtenemos la cantidad de elementos del vector
-			fmt.Sprintf("%v = %v - 1;", counter, counter),    // Restamos uno porque el contador empieza en 1
+			fmt.Sprintf("%v = H - %v;", counter, isEmptyAddress), // Obtenemos la cantidad de elementos del vector
+			fmt.Sprintf("%v = %v - 1;", counter, counter),        // Restamos uno porque el contador empieza en 1
 			fmt.Sprintf("heap[(int)%v] = %v;", initVector, counter),
+			fmt.Sprintf("if (%v == 0) goto %v;", counter, isEmptyLabel),
+			fmt.Sprintf("heap[(int)%v] = 0;", isEmptyAddress),
+			fmt.Sprintf("goto %v;", end),
+			isEmptyLabel.Declare(),
+			fmt.Sprintf("heap[(int)%v] = 1;", isEmptyAddress),
+			end.Declare(),
 		},
-		"Cantidad de elementos del vector",
+		"Propiedades del vector",
 	)
 
 	return &ValueResponse{
@@ -113,7 +112,7 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 			ContextType: TemporalType,
 		}, []int{
 			0,
-			len(ctx_.AllExpr()),
+			len(vectorValues),
 		}
 }
 

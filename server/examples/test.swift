@@ -1,7 +1,10 @@
 var arr1: [Int] = [8, 4, 6, 2]
+var arr2: [Int] = []
 print("arr1 cantidad: ", arr1.count)
-// print("arr1 vacío: ", arr1.isEmpty)
+print("arr1 vacío: ", arr1.isEmpty)
 
+print("arr2 cantidad: ", arr2.count)
+print("arr2 vacío: ", arr2.isEmpty)
 
 // func factorial(_ n: Int) -> Int {
 //     if n < 2 {
