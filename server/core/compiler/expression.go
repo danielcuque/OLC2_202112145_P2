@@ -433,7 +433,17 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 		return auxiliarTemporal
 	}
 
-	obj, ok := value.GetValue().(*Object).GetProp(props[0]).GetValue().(*Object)
+	// If length of props is 1, then we are accessing to a property of object
+
+	obj, notObject := value.GetValue().(*Object)
+
+	if !notObject {
+		return auxiliarTemporal
+	}
+
+	// Check if object value is nested object or not
+
+	objectValue, ok := obj.GetValue().(*Object)
 
 	if !ok {
 		val := value.GetValue().(*Object).GetProp(props[0])
@@ -442,7 +452,7 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 
 		c.TAC.AppendInstructions(
 			[]string{
-				fmt.Sprintf("%s = heap[(int)%s];", heapTemporal, c.TAC.GetValueAddress(val)),
+				fmt.Sprintf("%s = heap[(int)%s];", heapTemporal, auxiliarTemporal),
 			},
 			fmt.Sprintf("Propiedad '%s'", props[0]),
 		)
@@ -451,7 +461,12 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 	}
 
 	stackTemporal := c.TAC.NewTemporal(value.GetType())
-	value = obj.GetProp(props[0])
+
+	value = objectValue.GetProp(props[0])
+
+	if value == nil {
+		return auxiliarTemporal
+	}
 
 	c.TAC.AppendInstructions(
 		[]string{
