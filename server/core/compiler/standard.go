@@ -1623,11 +1623,38 @@ func String(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 }
 
 func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	name := "std_append"
+
+	if c.TAC.GetStandard(name) == nil {
+		prc := NewProcedure(name)
+
+		c.TAC.AddStandard(prc)
+	}
+
 	return nil
 }
 func Remove(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	name := "std_remove"
+
+	if c.TAC.GetStandard(name) == nil {
+		prc := NewProcedure(name)
+
+		c.TAC.AddStandard(prc)
+	}
+
 	return nil
 }
 func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+	name := "std_remove_last"
+
+	if c.TAC.GetStandard(name) == nil {
+		prc := NewProcedure(name)
+
+		c.TAC.AddStandard(prc)
+	}
+
 	return nil
 }
