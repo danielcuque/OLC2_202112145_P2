@@ -6,9 +6,7 @@ import (
 )
 
 func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
-	id, props := c.GetIds(ctx)
-
-	fmt.Println("Function call", id, props)
+	_, props := c.GetIds(ctx)
 
 	functionName := props[len(props)-1]
 

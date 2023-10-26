@@ -1626,13 +1626,20 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	name := "std_append"
 
-	fmt.Println("Append")
-
 	if c.TAC.GetStandard(name) == nil {
 		prc := NewProcedure(name)
 
 		c.TAC.AddStandard(prc)
 	}
+
+	id, props := c.GetIds(ctx)
+
+	value := c.Env.GetValue(id)
+
+	baseTemporal := c.TAC.NewTemporal(IntTemporal)
+	response := c.GetProps(value, props[:len(props)-1], baseTemporal)
+
+	fmt.Println(response)
 
 	return nil
 }

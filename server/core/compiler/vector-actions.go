@@ -116,6 +116,10 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 		return nil
 	}
 
+	return c.AccessVector(value, index)
+}
+
+func (c *Compiler) AccessVector(value *Value, index *ValueResponse) *ValueResponse {
 	newVectorObject := value.GetValue().(*Object).GetValue().(*Matrix)
 	baseTemporal := c.TAC.NewTemporal(IntTemporal)
 
@@ -155,7 +159,7 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 
 			end.Declare(),
 		},
-		fmt.Sprintf("Posicion de vector %v", id),
+		"Acceso a vector",
 	)
 
 	return &ValueResponse{

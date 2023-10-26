@@ -453,6 +453,10 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 	if !ok {
 		val := obj.GetProp(props[0])
 
+		if val == nil {
+			return auxiliarTemporal
+		}
+
 		relativePosition := c.TAC.NewTemporal(IntTemporal)
 		heapTemporal := c.TAC.NewTemporal(val.GetType())
 
