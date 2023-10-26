@@ -18,7 +18,7 @@ print(arr1.count)
 print(arr1.isEmpty)
 
 printArray("arr1: ", arr1)
-// arr1.append(9)
+arr1.append(9)
 // printArray("arr1: ", arr1)
 
 // printArray("arr2: ", arr2)

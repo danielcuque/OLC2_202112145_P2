@@ -5,24 +5,22 @@ type Matrix struct {
 	Temporal  *Temporal
 	Dimension int
 	Body      []*Matrix
-	Metadata  []int
 }
 
-func NewMatrix(dimension int, temporal *Temporal, metadata []int) *Matrix {
+func NewMatrix(dimension int, temporal *Temporal) *Matrix {
 	return &Matrix{
 		Dimension: dimension,
 		Temporal:  temporal,
-		Metadata:  metadata,
 	}
 }
 
-func NewVector(temporal *Temporal, metadata []int) *Object {
-	newVector := NewObject("vector", NewMatrix(1, temporal, metadata))
+func NewVector(temporal *Temporal) *Object {
+	newVector := NewObject("vector", NewMatrix(1, temporal))
 	count := NewSimpleValue(0)
-	count.SetData(IntTemporal, metadata[1])
+	count.SetData(IntTemporal, "")
 
 	isEmpty := NewSimpleValue(1)
-	isEmpty.SetData(BooleanTemporal, metadata[0])
+	isEmpty.SetData(BooleanTemporal, "")
 
 	newVector.AddProp("count", count)
 	newVector.AddProp("isEmpty", isEmpty)
@@ -32,12 +30,4 @@ func NewVector(temporal *Temporal, metadata []int) *Object {
 
 func (m *Matrix) GetValue() string {
 	return m.Temporal.String()
-}
-
-func (m *Matrix) GetInit() int {
-	return m.Metadata[0]
-}
-
-func (m *Matrix) GetSizeRow() int {
-	return m.Metadata[1]
 }
