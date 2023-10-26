@@ -1626,6 +1626,8 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	name := "std_append"
 
+	fmt.Println("Append")
+
 	if c.TAC.GetStandard(name) == nil {
 		prc := NewProcedure(name)
 

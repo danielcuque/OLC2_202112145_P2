@@ -5,7 +5,6 @@
 // ]
 
 var arr1: [Int] = [8, 4, 6, 2]
-print(arr1[10])
 // var arr2: [Int] = [40, 21, 1, 3, 14, 4]
 // var arr3: [Int] = [90, 3, 40, 10, 8, 5]
 
@@ -13,7 +12,7 @@ print(arr1[10])
 // print(arr1.isEmpty)
 
 // printArray("arr1: ", arr1)
-// arr1.append(9)
+arr1.append(9)
 // printArray("arr1: ", arr1)
 
 // printArray("arr2: ", arr2)

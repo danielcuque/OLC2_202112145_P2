@@ -175,7 +175,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
-	temporalPointer := c.GetProps(value, props, newTemporal)
+	temporalPointer := c.GetProps(value, props[1:], newTemporal)
 
 	return &ValueResponse{
 		Type:        temporalPointer.GetType(),
@@ -430,7 +430,7 @@ func (c *Compiler) GetPropsAsString(ctx *parser.IDChainContext) (string, []strin
 	props := strings.Split(ctx.GetText(), ".")
 	id := props[0]
 
-	return id, props[1:]
+	return id, props
 }
 
 func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temporal) *Temporal {

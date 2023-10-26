@@ -3,20 +3,22 @@ package compiler
 import (
 	"OLC2/core/parser"
 	"fmt"
-
-	"github.com/antlr4-go/antlr/v4"
 )
 
 func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{} {
-	id, _ := c.GetIds(ctx)
+	id, props := c.GetIds(ctx)
 
-	fnc := GetInternalBuiltinFunctions(id)
+	fmt.Println("Function call", id, props)
+
+	functionName := props[len(props)-1]
+
+	fnc := GetInternalBuiltinFunctions(functionName)
 
 	if fnc != nil {
 		return fnc(c, ctx)
 	}
 
-	procedure := c.TAC.GetProcedure(id)
+	procedure := c.TAC.GetProcedure(functionName)
 
 	if procedure == nil {
 		return nil
@@ -118,17 +120,20 @@ func (c *Compiler) VisitNamedArguments(ctx *parser.NamedArgumentsContext) interf
 
 // Utils
 
-func (c *Compiler) GetIds(ctx *parser.FunctionCallContext) (string, []antlr.TerminalNode) {
+func (c *Compiler) GetIds(ctx *parser.FunctionCallContext) (string, []string) {
 	id := ""
-	var ids []antlr.TerminalNode
+	ids := make([]string, 0)
 
 	if ctx.IdChain() != nil {
-		ids = c.Visit(ctx.IdChain()).([]antlr.TerminalNode)
-		id = ids[0].GetText()
+		propId, props := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
+		id = propId
+		ids = props
 		return id, ids
 	}
 
 	id = ctx.VariableType().GetText()
+
+	ids = append(ids, id)
 
 	return id, ids
 }
