@@ -7,15 +7,16 @@ type Matrix struct {
 	Body      []*Matrix
 }
 
-func NewMatrix(dimension int, temporal *Temporal) *Matrix {
+func NewMatrix(dimension int, temporal *Temporal, Type TemporalCast) *Matrix {
 	return &Matrix{
 		Dimension: dimension,
 		Temporal:  temporal,
+		Type:      Type,
 	}
 }
 
-func NewVector(temporal *Temporal) *Object {
-	newVector := NewObject("vector", NewMatrix(1, temporal))
+func NewVector(temporal *Temporal, Type TemporalCast) *Object {
+	newVector := NewObject("vector", NewMatrix(1, temporal, Type))
 	count := NewSimpleValue(0)
 	count.SetData(IntTemporal, "")
 
@@ -30,4 +31,12 @@ func NewVector(temporal *Temporal) *Object {
 
 func (m *Matrix) GetValue() string {
 	return m.Temporal.String()
+}
+
+func (m *Matrix) GetType() TemporalCast {
+	return m.Type
+}
+
+func (m *Matrix) SetType(t TemporalCast) {
+	m.Type = t
 }

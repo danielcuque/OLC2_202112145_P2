@@ -14,6 +14,8 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 		return nil
 	}
 
+	valueType := c.Visit(ctx.VariableType()).(TemporalCast)
+
 	values := c.GetVectorValues(ctx.VectorDefinition().(*parser.VectorListValueContext))
 
 	initVector := c.InitVector() // Declaramos un nuevo vector
@@ -27,7 +29,8 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 		"Direccion de vector",
 	)
 
-	newVectorObject := NewVector(initVector[0])
+	newVectorObject := NewVector(initVector[0], valueType)
+
 	value.SetData(MatrixTemporal, newVectorObject)
 	c.TAC.AppendInstruction(
 		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), initVector[0]), // Inicio del vector
@@ -176,7 +179,8 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 }
 
 func (c *Compiler) AccessVector(value *Value, index *ValueResponse) *ValueResponse {
-	// newVectorObject := value.GetValue().(*Object).GetValue().(*Matrix)
+	object := value.GetValue().(*Object)
+	vectorObject := object.GetValue().(*Matrix)
 	baseTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	vectorPosition := c.TAC.NewTemporal(IntTemporal)
@@ -188,12 +192,17 @@ func (c *Compiler) AccessVector(value *Value, index *ValueResponse) *ValueRespon
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = stack[(int)%v];", baseTemporal, c.TAC.GetValueAddress(value)), // Obtenemos la posicion inicial del vector
-			fmt.Sprintf("%v = heap[(int)%v];", vectorCount, baseTemporal),                   // Obtenemos la cantidad de elementos del vector
+
+			fmt.Sprintf("%v = heap[(int)%v];", vectorCount, baseTemporal), // Obtenemos la cantidad de elementos del vector
+
 			fmt.Sprintf("if (%v > %v) goto %v;", index.GetValue(), vectorCount, outOfBoundsLabel),
 			fmt.Sprintf("if (%v < 0) goto %v;", index.GetValue(), outOfBoundsLabel),
+
 			fmt.Sprintf("%v = %v + 2;", baseTemporal, baseTemporal), // Obtenemos la posicion inicial del vector
+
 			fmt.Sprintf("%v = %v - %v;", vectorPosition, index.GetValue(), 0),
 			fmt.Sprintf("%v = %v + %v;", vectorPosition, vectorPosition, baseTemporal),
+
 			fmt.Sprintf("goto %v;", end),
 
 			outOfBoundsLabel.Declare(),
@@ -220,7 +229,7 @@ func (c *Compiler) AccessVector(value *Value, index *ValueResponse) *ValueRespon
 
 	return &ValueResponse{
 		Value:       vectorPosition,
-		Type:        IntTemporal,
+		Type:        vectorObject.GetType(),
 		ContextType: TemporalType,
 	}
 }

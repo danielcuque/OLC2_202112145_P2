@@ -407,19 +407,20 @@ func (c *Compiler) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) in
 		return nil
 	}
 
-	vectorPosition := evalValue.(*ValueResponse).GetValue()
-	newTemporal := c.TAC.NewTemporal(IntTemporal)
+	response := evalValue.(*ValueResponse)
+	vectorPosition := response.GetValue()
+	returnTemporal := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%s = heap[(int)%s];", newTemporal, vectorPosition),
+			fmt.Sprintf("%s = heap[(int)%s];", returnTemporal, vectorPosition),
 		},
 		"Acceso a vector",
 	)
 
 	return &ValueResponse{
-		Type:        IntTemporal,
-		Value:       newTemporal,
+		Type:        response.GetType(),
+		Value:       returnTemporal,
 		ContextType: TemporalType,
 	}
 }

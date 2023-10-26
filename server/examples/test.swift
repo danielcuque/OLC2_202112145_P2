@@ -4,21 +4,22 @@
 //     [94, 74, 58, 84, 100]
 // ]
 
-// var stringArray: [String] = ["ab", "cd", "ef", "gh", "ij"]
-// for i in 0...stringArray.count-1 {
-//     print(stringArray[i])
-// }
+var stringArray: [String] = ["ab", "cd", "ef", "gh", "ij"]
+for i in 0...stringArray.count-1 {
+    print(stringArray[i])
+}
 
 var arr1: [Int] = [8, 4, 6, 2]
+printArray("arr1: ", arr1)
 
 // var arr2: [Int] = [40, 21, 1, 3, 14, 4]
 // var arr3: [Int] = [90, 3, 40, 10, 8, 5]
 
-print(arr1.count)
-print(arr1.isEmpty)
+// print(arr1.count)
+// print(arr1.isEmpty)
 
-printArray("arr1: ", arr1)
-arr1.append(9)
+// printArray("arr1: ", arr1)
+// arr1.append(9)
 // printArray("arr1: ", arr1)
 
 // printArray("arr2: ", arr2)
