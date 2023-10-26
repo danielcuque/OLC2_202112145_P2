@@ -14,7 +14,9 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 		return nil
 	}
 
-	response, metadata := c.CreateVectorValues(ctx.VectorDefinition().(*parser.VectorListValueContext))
+	values := c.GetVectorValues(ctx.VectorDefinition().(*parser.VectorListValueContext))
+
+	response, metadata := c.CreateVectorValues(values)
 
 	if response == nil {
 		return nil
@@ -27,6 +29,10 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 
 	newVectorObject := NewVector(response.GetValue().(*Temporal), metadata)
 	value.SetData(MatrixTemporal, newVectorObject)
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), response.GetValue()),
+		"Direccion de vector",
+	)
 
 	return nil
 }
@@ -47,13 +53,29 @@ func (c *Compiler) VisitVectorValues(ctx *parser.VectorValuesContext) interface{
 	return ctx.AllExpr()
 }
 
-func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*ValueResponse, []int) {
+func (c *Compiler) GetVectorValues(ctx *parser.VectorListValueContext) []*ValueResponse {
 
 	vectorValues := make([]parser.IExprContext, 0)
+	valueResponses := make([]*ValueResponse, 0)
 
 	if ctx.VectorValues() != nil {
 		vectorValues = c.Visit(ctx.VectorValues()).([]parser.IExprContext)
 	}
+
+	for _, value := range vectorValues {
+		val := c.Visit(value).(*ValueResponse)
+
+		if value == nil {
+			continue
+		}
+		valueResponses = append(valueResponses, val)
+
+	}
+
+	return valueResponses
+}
+
+func (c *Compiler) CreateVectorValues(valueResponses []*ValueResponse) (*ValueResponse, []int) {
 
 	initVector := c.TAC.NewTemporal(IntTemporal)
 	counter := c.TAC.NewTemporal(IntTemporal)
@@ -69,14 +91,26 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 		"Inicio del vector",
 	)
 
-	for _, value := range vectorValues {
-		val := c.Visit(value).(*ValueResponse)
+	for _, value := range valueResponses {
 		c.TAC.AppendInstructions([]string{
-			fmt.Sprintf("heap[(int)H] = %v;", val.GetValue()),
+			fmt.Sprintf("heap[(int)H] = %v;", value.GetValue()),
 			"H = H + 1;",
 		}, "")
 	}
 
+	c.DefineVectorProps(counter, isEmptyAddress, initVector)
+
+	return &ValueResponse{
+			Value:       initVector,
+			Type:        IntTemporal,
+			ContextType: TemporalType,
+		}, []int{
+			0,
+			len(valueResponses),
+		}
+}
+
+func (c *Compiler) DefineVectorProps(counter, isEmptyAddress, initVector *Temporal) {
 	isEmptyLabel := c.TAC.NewLabel("isEmpty")
 	end := c.TAC.NewLabel("end")
 
@@ -94,15 +128,6 @@ func (c *Compiler) CreateVectorValues(ctx *parser.VectorListValueContext) (*Valu
 		},
 		"Propiedades del vector",
 	)
-
-	return &ValueResponse{
-			Value:       initVector,
-			Type:        IntTemporal,
-			ContextType: TemporalType,
-		}, []int{
-			0,
-			len(vectorValues),
-		}
 }
 
 func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{} {

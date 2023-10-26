@@ -25,3 +25,7 @@ func (o *Object) AddProp(name string, value *Value) {
 func (o *Object) GetProp(name string) *Value {
 	return o.Props.Values[name]
 }
+
+func (o *Object) GetType() string {
+	return o.Type
+}

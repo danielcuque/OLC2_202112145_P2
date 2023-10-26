@@ -1629,6 +1629,78 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	if c.TAC.GetStandard(name) == nil {
 		prc := NewProcedure(name)
 
+		// Needd to copy all vector value
+
+		// Get size of vector in position 0 of vector
+		// [size, isEmpty, value1, value2, value3, ...]
+
+		prc.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "vectorAddress",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "size",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "appendValue",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "newVectorAddress",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "IsEmpty",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
+				},
+				{
+					ExternalName: "counter",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		prc.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("Start"),
+				c.TAC.NewLabel("End"),
+			},
+		)
+
+		prc.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = 0;",
+					prc.GetParameter("counter").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = heap[(int)%v];",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+				fmt.Sprintf(
+					"%v = H;",
+					prc.GetParameter("newVectorAddress").Temporal,
+				),
+
+				fmt.Sprintf(
+					"if (%v == 0) goto %s;",
+					prc.GetParameter("size").Temporal,
+					prc.GetLabel("End"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v - 1;",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("size").Temporal,
+				),
+			},
+			"",
+		)
+
 		c.TAC.AddStandard(prc)
 	}
 
@@ -1636,10 +1708,44 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	value := c.Env.GetValue(id)
 
-	baseTemporal := c.TAC.NewTemporal(IntTemporal)
-	response := c.GetProps(value, props[:len(props)-1], baseTemporal)
+	if value == nil {
+		return nil
+	}
 
-	fmt.Println(response)
+	baseTemporal := c.TAC.NewTemporal(value.GetType())
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%s = stack[(int)%s];", baseTemporal, c.TAC.GetValueAddress(value)),
+		},
+		fmt.Sprintf("Acceso a la variable '%s'", id),
+	)
+
+	props = props[1 : len(props)-1]
+
+	temporalResponse := c.GetProps(value, props, baseTemporal)
+
+	if temporalResponse == nil {
+		return nil
+	}
+
+	args := c.GetArgs(ctx)
+
+	if len(args) <= 0 {
+		return nil
+	}
+
+	procedure := c.TAC.GetStandard(name)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("appendValue").Tmp(), args[0].GetValue().GetValue()),
+			procedure.Call(),
+			fmt.Sprintf("stack[(int)%s] = %s", temporalResponse, procedure.GetParameter("newVectorAddress").Temporal),
+		},
+		"",
+	)
 
 	return nil
 }
