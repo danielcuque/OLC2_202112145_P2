@@ -1634,6 +1634,10 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 		// Get size of vector in position 0 of vector
 		// [size, isEmpty, value1, value2, value3, ...]
 
+		c.TAC.Procedure = prc
+
+		response := c.InitVector()
+
 		prc.AddParameters(
 			[]*Parameter{
 				{
@@ -1650,15 +1654,23 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 				},
 				{
 					ExternalName: "newVectorAddress",
+					Temporal:     response[0],
+				},
+				{
+					ExternalName: "vectorAddressValue",
 					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
-					ExternalName: "IsEmpty",
-					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "vectorAccessPosition",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
 				},
 				{
 					ExternalName: "counter",
-					Temporal:     c.TAC.NewTemporal(IntTemporal),
+					Temporal:     response[1],
+				},
+				{
+					ExternalName: "IsEmptyAddress",
+					Temporal:     response[2],
 				},
 			},
 		)
@@ -1672,35 +1684,95 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 		prc.AddCode(
 			[]string{
-				fmt.Sprintf(
-					"%v = 0;",
-					prc.GetParameter("counter").Temporal,
-				),
+				// Get size of the old vector, this will help us to copy all values and append the new one at the end
+
+				// Obtenemos el valor del tamaño del vector viejo
 				fmt.Sprintf(
 					"%v = heap[(int)%v];",
-					prc.GetParameter("size").Temporal,
+					prc.GetParameter("counter").Temporal,
 					prc.GetParameter("vectorAddress").Temporal,
 				),
+
+				// Iniciamos el contador en 0
 				fmt.Sprintf(
-					"%v = H;",
-					prc.GetParameter("newVectorAddress").Temporal,
+					"%v = 0;",
+					prc.GetParameter("size").Temporal,
 				),
 
+				// Obtenemos la dirección de donde inician los valores del vector
 				fmt.Sprintf(
-					"if (%v == 0) goto %s;",
+					"%v = %v + 2;",
+					prc.GetParameter("vectorAddress").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+
+				// Declaramos la etiqueta de inicio del loop para copiar los valores
+				prc.GetLabel("Start").Declare(),
+
+				//
+				fmt.Sprintf(
+					"if (%v == %s) goto %s;",
 					prc.GetParameter("size").Temporal,
+					prc.GetParameter("counter").Temporal,
 					prc.GetLabel("End"),
 				),
 
 				fmt.Sprintf(
-					"%v = %v - 1;",
+					"%v = %v;",
+					prc.GetParameter("vectorAccessPosition").Temporal,
+					prc.GetParameter("size").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v + %v;",
+					prc.GetParameter("vectorAccessPosition").Temporal,
+					prc.GetParameter("vectorAccessPosition").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = heap[(int)%v];",
+					prc.GetParameter("vectorAddressValue").Temporal,
+					prc.GetParameter("vectorAccessPosition").Temporal,
+				),
+
+				fmt.Sprintf(
+					"heap[(int)H] = %v;",
+					prc.GetParameter("vectorAddressValue").Temporal,
+				),
+
+				c.HeapPointer.IncreasePointer(),
+
+				fmt.Sprintf(
+					"%v = %v + 1;",
 					prc.GetParameter("size").Temporal,
 					prc.GetParameter("size").Temporal,
+				),
+
+				fmt.Sprintf(
+					"goto %s;",
+					prc.GetLabel("Start"),
+				),
+
+				prc.GetLabel("End").Declare(),
+
+				// El nuevo valor del contador es contadorViejo + 1
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					prc.GetParameter("counter").Temporal,
+					prc.GetParameter("counter").Temporal,
+				),
+
+				// Añadimos el valor al final del vector
+				fmt.Sprintf(
+					"heap[(int)H] = %v;",
+					prc.GetParameter("appendValue").Temporal,
 				),
 			},
 			"",
 		)
 
+		c.TAC.UnsetProcedure()
 		c.TAC.AddStandard(prc)
 	}
 
@@ -1742,7 +1814,7 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("appendValue").Tmp(), args[0].GetValue().GetValue()),
 			procedure.Call(),
-			fmt.Sprintf("stack[(int)%s] = %s", temporalResponse, procedure.GetParameter("newVectorAddress").Temporal),
+			fmt.Sprintf("stack[(int)%s] = %s;", temporalResponse, procedure.GetParameter("newVectorAddress").Temporal),
 		},
 		"",
 	)
