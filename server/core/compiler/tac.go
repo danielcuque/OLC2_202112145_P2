@@ -138,6 +138,9 @@ func (t *TAC) NewTemporal(castType interface{}) *Temporal {
 }
 
 func (t *TAC) AddStandard(procedure *Procedure) {
+	if t.GetStandard(procedure.Name) != nil {
+		return
+	}
 	t.standar = append(t.standar, procedure)
 }
 

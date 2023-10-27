@@ -1820,17 +1820,24 @@ func Remove(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 		return nil
 	}
 
-	c.RemoveStandard(args[0].GetValue(), temporalResponse, value)
+	returnValue := c.RemoveStandard(args[0].GetValue(), temporalResponse)
+
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), returnValue.GetValue()),
+		"",
+	)
 
 	return nil
 }
 
-func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal, value *Value) {
+func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal) *ValueResponse {
 
 	name := "std_remove"
 
 	if c.TAC.GetStandard(name) == nil {
 		prc := NewProcedure(name)
+
+		prevProcedure := c.TAC.Procedure
 
 		c.TAC.Procedure = prc
 
@@ -1970,31 +1977,135 @@ func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal
 		c.DefineVectorProps(response[0], response[1], response[2])
 
 		c.TAC.UnsetProcedure()
+		c.TAC.Procedure = prevProcedure
 		c.TAC.AddStandard(prc)
 	}
 
 	procedure := c.TAC.GetStandard(name)
+	returnValue := c.TAC.NewTemporal(IntTemporal)
 
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("removeIndex").Tmp(), arg.GetValue()),
 			procedure.Call(),
-			fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), procedure.GetParameter("newVectorAddress").Temporal),
+			fmt.Sprintf("%v = %v;", returnValue, procedure.GetParameter("newVectorAddress").Temporal),
 		},
 		"Función append",
 	)
 
+	return &ValueResponse{
+		Type:        IntTemporal,
+		Value:       returnValue,
+		ContextType: TemporalType,
+	}
 }
-func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+
+func (c *Compiler) RemoveLastStandar(temporalResponse *Temporal) *ValueResponse {
 
 	name := "std_remove_last"
 
 	if c.TAC.GetStandard(name) == nil {
 		prc := NewProcedure(name)
 
+		c.TAC.Procedure = prc
+
+		prc.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "vectorAddress",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "size",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "newVectorAddress",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+			},
+		)
+
+		prc.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = heap[(int)%v];",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v - 1;",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("size").Temporal,
+				),
+			},
+			"",
+		)
+
+		response := c.RemoveStandard(
+			&ValueResponse{
+				Type:        IntTemporal,
+				Value:       prc.GetParameter("size").Temporal,
+				ContextType: TemporalType,
+			},
+			prc.GetParameter("vectorAddress").Temporal,
+		)
+
+		prc.AddCode(
+			[]string{
+				fmt.Sprintf(
+					"%v = %v;",
+					prc.GetParameter("newVectorAddress").Temporal,
+					response.GetValue(),
+				),
+			},
+			"",
+		)
+
+		c.TAC.UnsetProcedure()
 		c.TAC.AddStandard(prc)
 	}
+
+	returnValue := c.TAC.NewTemporal(IntTemporal)
+	prc := c.TAC.GetStandard(name)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", prc.GetParameter("vectorAddress").Tmp(), temporalResponse),
+			prc.Call(),
+			fmt.Sprintf("%v = %v;", returnValue, prc.GetParameter("newVectorAddress").Temporal),
+		},
+		"Remover el último elemento de un vector",
+	)
+
+	return &ValueResponse{
+		Type:        IntTemporal,
+		Value:       returnValue,
+		ContextType: TemporalType,
+	}
+}
+
+func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
+	args := c.GetArgs(ctx)
+
+	if len(args) > 0 {
+		return nil
+	}
+
+	temporalResponse, value := c.GetTemporalResponse(ctx)
+
+	if value == nil || temporalResponse == nil {
+		return nil
+	}
+
+	returnValue := c.RemoveLastStandar(temporalResponse)
+
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), returnValue.GetValue()),
+		"",
+	)
 
 	return nil
 }

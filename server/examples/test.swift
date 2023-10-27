@@ -9,29 +9,21 @@
 //     print(stringArray[i])
 // }
 
-// var arr1: [Int] = [8, 4, 6, 2]
-// var arr2: [Int] = [40, 21, 1, 3, 14, 4]
+var arr1: [Int] = [8, 4, 6, 2]
+var arr2: [Int] = [40, 21, 1, 3, 14, 4]
 var arr3: [Int] = [90, 3, 40, 10, 8, 5]
 
+printArray("arr1: ", arr1)
+arr1.append(9)
+printArray("arr1: ", arr1)
 
-
-// printArray("arr1: ", arr1)
-// arr1.append(9)
-// arr1.append(10)
-// arr1.append(11)
-// printArray("arr1: ", arr1)
-
-// printArray("arr2: ", arr2)
-// arr2.removeLast()
-// printArray("arr2: ", arr2)
+printArray("arr2: ", arr2)
+arr2.removeLast()
+printArray("arr2: ", arr2)
 
 printArray("arr3: ", arr3)
 arr3.remove(at: 3)
 printArray("arr3: ", arr3)
-
-// print("arr1 vacío: ", arr1.isEmpty)
-// print("arr1 cantidad: ", arr1.count)
-
 
 func printArray(_ msg: String, _ arr: [Int]) {
     print(arr.count)
