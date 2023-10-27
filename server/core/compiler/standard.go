@@ -1779,26 +1779,7 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 		c.TAC.AddStandard(prc)
 	}
 
-	id, props := c.GetIds(ctx)
-
-	value := c.Env.GetValue(id)
-
-	if value == nil {
-		return nil
-	}
-
-	baseTemporal := c.TAC.NewTemporal(value.GetType())
-
-	c.TAC.AppendInstructions(
-		[]string{
-			fmt.Sprintf("%s = stack[(int)%s];", baseTemporal, c.TAC.GetValueAddress(value)),
-		},
-		fmt.Sprintf("Acceso a la variable '%s'", id),
-	)
-
-	props = props[1 : len(props)-1]
-
-	temporalResponse := c.GetProps(value, props, baseTemporal)
+	temporalResponse, value := c.GetTemporalResponse(ctx)
 
 	args := c.GetArgs(ctx)
 
@@ -1830,8 +1811,24 @@ func Remove(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 		c.TAC.AddStandard(prc)
 	}
 
+	args := c.GetArgs(ctx)
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	// procedure := c.TAC.GetStandard(name)
+
+	// c.TAC.AppendInstructions(
+	// 	[]string{
+	// 		fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
+	// 	},
+	// 	"",
+	// )
+
 	return nil
 }
+
 func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	name := "std_remove_last"
@@ -1843,4 +1840,27 @@ func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	}
 
 	return nil
+}
+
+func (c *Compiler) GetTemporalResponse(ctx *parser.FunctionCallContext) (*Temporal, *Value) {
+	id, props := c.GetIds(ctx)
+
+	value := c.Env.GetValue(id)
+
+	if value == nil {
+		return nil, nil
+	}
+
+	baseTemporal := c.TAC.NewTemporal(value.GetType())
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%s = stack[(int)%s];", baseTemporal, c.TAC.GetValueAddress(value)),
+		},
+		fmt.Sprintf("Acceso a la variable '%s'", id),
+	)
+
+	props = props[1 : len(props)-1]
+
+	return c.GetProps(value, props, baseTemporal), value
 }
