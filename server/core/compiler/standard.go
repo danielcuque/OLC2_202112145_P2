@@ -1781,6 +1781,10 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	temporalResponse, value := c.GetTemporalResponse(ctx)
 
+	if value == nil || temporalResponse == nil {
+		return nil
+	}
+
 	args := c.GetArgs(ctx)
 
 	if len(args) == 0 {
@@ -1801,15 +1805,8 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	return nil
 }
+
 func Remove(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
-
-	name := "std_remove"
-
-	if c.TAC.GetStandard(name) == nil {
-		prc := NewProcedure(name)
-
-		c.TAC.AddStandard(prc)
-	}
 
 	args := c.GetArgs(ctx)
 
@@ -1817,18 +1814,178 @@ func Remove(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 		return nil
 	}
 
-	// procedure := c.TAC.GetStandard(name)
+	temporalResponse, value := c.GetTemporalResponse(ctx)
 
-	// c.TAC.AppendInstructions(
-	// 	[]string{
-	// 		fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
-	// 	},
-	// 	"",
-	// )
+	if value == nil || temporalResponse == nil {
+		return nil
+	}
+
+	c.RemoveStandard(args[0].GetValue(), temporalResponse, value)
 
 	return nil
 }
 
+func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal, value *Value) {
+
+	name := "std_remove"
+
+	if c.TAC.GetStandard(name) == nil {
+		prc := NewProcedure(name)
+
+		c.TAC.Procedure = prc
+
+		response := c.InitVector()
+
+		prc.AddParameters(
+			[]*Parameter{
+				{
+					ExternalName: "vectorAddress",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "size",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "removeIndex",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "newVectorAddress",
+					Temporal:     response[0],
+				},
+				{
+					ExternalName: "vectorAddressValue",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "vectorAccessPosition",
+					Temporal:     c.TAC.NewTemporal(IntTemporal),
+				},
+				{
+					ExternalName: "counter",
+					Temporal:     response[1],
+				},
+				{
+					ExternalName: "IsEmptyAddress",
+					Temporal:     response[2],
+				},
+			},
+		)
+
+		prc.AddLabels(
+			[]*Label{
+				c.TAC.NewLabel("Start"),
+				c.TAC.NewLabel("End"),
+				c.TAC.NewLabel("Skip"),
+			},
+		)
+
+		prc.AddCode(
+			[]string{
+				// Get size of the old vector, this will help us to copy all values and append the new one at the end
+
+				// Obtenemos el valor del tamaño del vector viejo
+				fmt.Sprintf(
+					"%v = heap[(int)%v];",
+					prc.GetParameter("counter").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+
+				// Iniciamos el contador en 0
+				fmt.Sprintf(
+					"%v = 0;",
+					prc.GetParameter("size").Temporal,
+				),
+
+				// Obtenemos la dirección de donde inician los valores del vector
+				fmt.Sprintf(
+					"%v = %v + 2;",
+					prc.GetParameter("vectorAddress").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+
+				// Declaramos la etiqueta de inicio del loop para copiar los valores
+				prc.GetLabel("Start").Declare(),
+
+				//
+				fmt.Sprintf(
+					"if (%v == %s) goto %s;",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("counter").Temporal,
+					prc.GetLabel("End"),
+				),
+
+				fmt.Sprintf(
+					"if (%v == %v) goto %s;",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("removeIndex").Temporal,
+					prc.GetLabel("Skip"),
+				),
+
+				fmt.Sprintf(
+					"%v = %v;",
+					prc.GetParameter("vectorAccessPosition").Temporal,
+					prc.GetParameter("size").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = %v + %v;",
+					prc.GetParameter("vectorAccessPosition").Temporal,
+					prc.GetParameter("vectorAccessPosition").Temporal,
+					prc.GetParameter("vectorAddress").Temporal,
+				),
+
+				fmt.Sprintf(
+					"%v = heap[(int)%v];",
+					prc.GetParameter("vectorAddressValue").Temporal,
+					prc.GetParameter("vectorAccessPosition").Temporal,
+				),
+
+				fmt.Sprintf(
+					"heap[(int)H] = %v;",
+					prc.GetParameter("vectorAddressValue").Temporal,
+				),
+
+				c.HeapPointer.IncreasePointer(),
+
+				prc.GetLabel("Skip").Declare(),
+
+				fmt.Sprintf(
+					"%v = %v + 1;",
+					prc.GetParameter("size").Temporal,
+					prc.GetParameter("size").Temporal,
+				),
+
+				fmt.Sprintf(
+					"goto %s;",
+					prc.GetLabel("Start"),
+				),
+
+				prc.GetLabel("End").Declare(),
+			},
+			"",
+		)
+
+		c.DefineVectorProps(response[0], response[1], response[2])
+
+		c.TAC.UnsetProcedure()
+		c.TAC.AddStandard(prc)
+	}
+
+	procedure := c.TAC.GetStandard(name)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
+			fmt.Sprintf("%v = %v;", procedure.GetParameter("removeIndex").Tmp(), arg.GetValue()),
+			procedure.Call(),
+			fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), procedure.GetParameter("newVectorAddress").Temporal),
+		},
+		"Función append",
+	)
+
+}
 func RemoveLast(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	name := "std_remove_last"
