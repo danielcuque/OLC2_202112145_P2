@@ -29,7 +29,7 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 		"Direccion de vector",
 	)
 
-	newVectorObject := NewVector(initVector[0], valueType)
+	newVectorObject := NewVector(valueType)
 
 	value.SetData(MatrixTemporal, newVectorObject)
 

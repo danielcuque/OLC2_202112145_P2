@@ -2,21 +2,19 @@ package compiler
 
 type Matrix struct {
 	Type      TemporalCast
-	Temporal  *Temporal
 	Dimension int
 	Body      []*Matrix
 }
 
-func NewMatrix(dimension int, temporal *Temporal, Type TemporalCast) *Matrix {
+func NewMatrix(dimension int, Type TemporalCast) *Matrix {
 	return &Matrix{
 		Dimension: dimension,
-		Temporal:  temporal,
 		Type:      Type,
 	}
 }
 
-func NewVector(temporal *Temporal, Type TemporalCast) *Object {
-	newVector := NewObject("vector", NewMatrix(1, temporal, Type))
+func NewVector(Type TemporalCast) *Object {
+	newVector := NewObject("vector", NewMatrix(1, Type))
 	count := NewSimpleValue(0)
 	count.SetData(IntTemporal, "")
 
@@ -27,10 +25,6 @@ func NewVector(temporal *Temporal, Type TemporalCast) *Object {
 	newVector.AddProp("isEmpty", isEmpty)
 
 	return newVector
-}
-
-func (m *Matrix) GetValue() string {
-	return m.Temporal.String()
 }
 
 func (m *Matrix) GetType() TemporalCast {

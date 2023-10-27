@@ -1768,9 +1768,12 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 					"heap[(int)H] = %v;",
 					prc.GetParameter("appendValue").Temporal,
 				),
+				c.HeapPointer.IncreasePointer(),
 			},
 			"",
 		)
+
+		c.DefineVectorProps(response[0], response[1], response[2])
 
 		c.TAC.UnsetProcedure()
 		c.TAC.AddStandard(prc)
@@ -1797,13 +1800,9 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	temporalResponse := c.GetProps(value, props, baseTemporal)
 
-	if temporalResponse == nil {
-		return nil
-	}
-
 	args := c.GetArgs(ctx)
 
-	if len(args) <= 0 {
+	if len(args) == 0 {
 		return nil
 	}
 
@@ -1814,9 +1813,9 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("vectorAddress").Tmp(), temporalResponse),
 			fmt.Sprintf("%v = %v;", procedure.GetParameter("appendValue").Tmp(), args[0].GetValue().GetValue()),
 			procedure.Call(),
-			fmt.Sprintf("stack[(int)%s] = %s;", temporalResponse, procedure.GetParameter("newVectorAddress").Temporal),
+			fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), procedure.GetParameter("newVectorAddress").Temporal),
 		},
-		"",
+		"Función append",
 	)
 
 	return nil

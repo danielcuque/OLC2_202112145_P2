@@ -104,9 +104,9 @@ func (v *Compiler) VisitFunctionParameter(ctx *parser.FunctionParameterContext) 
 
 	if ctx.MatrixType() != nil {
 		if ctx.MatrixType().GetText()[1] == '[' {
-			value = NewObject("matrix", NewMatrix(1, nil, dataType))
+			value = NewObject("matrix", NewMatrix(1, dataType))
 		} else {
-			value = NewVector(NewTemporal(0, IntTemporal), dataType)
+			value = NewVector(dataType)
 		}
 	}
 
