@@ -18,11 +18,11 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 
 	values := c.GetVectorValues(ctx.VectorDefinition().(*parser.VectorListValueContext))
 
-	initVector := c.InitVector() // Declaramos un nuevo vector
+	initVector := c.InitNewMatrix() // Declaramos un nuevo vector
 
 	c.DeclareVectorValues(values) // Declaramos su contenido
 
-	c.DefineVectorProps(initVector[0], initVector[1], initVector[2]) // Definimos las propiedades del vector
+	c.DeclareMatrixProps(initVector[0], initVector[1], initVector[2]) // Definimos las propiedades del vector
 
 	c.TAC.AppendInstruction(
 		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), initVector[0]), // Inicio del vector
@@ -87,7 +87,7 @@ func (c *Compiler) DeclareVectorValues(values []*ValueResponse) {
 	}
 }
 
-func (c *Compiler) InitVector() []*Temporal {
+func (c *Compiler) InitNewMatrix() []*Temporal {
 	initVector := c.TAC.NewTemporal(IntTemporal)
 	counter := c.TAC.NewTemporal(IntTemporal)
 	isEmptyAddress := c.TAC.NewTemporal(BooleanTemporal)
@@ -109,7 +109,7 @@ func (c *Compiler) InitVector() []*Temporal {
 	}
 }
 
-func (c *Compiler) DefineVectorProps(initVector, counter, isEmptyAddress *Temporal) {
+func (c *Compiler) DeclareMatrixProps(initVector, counter, isEmptyAddress *Temporal) {
 	isEmptyLabel := c.TAC.NewLabel("isEmpty")
 	end := c.TAC.NewLabel("end")
 

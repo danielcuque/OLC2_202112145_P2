@@ -1636,7 +1636,7 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 		c.TAC.Procedure = prc
 
-		response := c.InitVector()
+		response := c.InitNewMatrix()
 
 		prc.AddParameters(
 			[]*Parameter{
@@ -1773,7 +1773,7 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 			"",
 		)
 
-		c.DefineVectorProps(response[0], response[1], response[2])
+		c.DeclareMatrixProps(response[0], response[1], response[2])
 
 		c.TAC.UnsetProcedure()
 		c.TAC.AddStandard(prc)
@@ -1841,7 +1841,7 @@ func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal
 
 		c.TAC.Procedure = prc
 
-		response := c.InitVector()
+		response := c.InitNewMatrix()
 
 		prc.AddParameters(
 			[]*Parameter{
@@ -1974,7 +1974,7 @@ func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal
 			"",
 		)
 
-		c.DefineVectorProps(response[0], response[1], response[2])
+		c.DeclareMatrixProps(response[0], response[1], response[2])
 
 		c.TAC.UnsetProcedure()
 		c.TAC.Procedure = prevProcedure

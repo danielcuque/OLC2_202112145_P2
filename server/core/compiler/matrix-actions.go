@@ -2,10 +2,35 @@ package compiler
 
 import (
 	"OLC2/core/parser"
+	"fmt"
 )
 
 func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
-	// Create a matrix using a vector
+	// Create a vector of vectors to handle the matrix
+
+	id, _ := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
+
+	value := c.Env.GetValue(id)
+
+	if value == nil {
+		return nil
+	}
+
+	matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
+
+	newMatrix := c.InitNewMatrix()
+
+	c.DeclareMatrixProps(newMatrix[0], newMatrix[1], newMatrix[2])
+
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), newMatrix[0]), // Inicio del vector
+		"Direccion de vector",
+	)
+
+	newMatrixObject := NewVector(matrixType)
+
+	value.SetData(MatrixTemporal, newMatrixObject)
+
 	return nil
 }
 
