@@ -1629,11 +1629,6 @@ func Append(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 	if c.TAC.GetStandard(name) == nil {
 		prc := NewProcedure(name)
 
-		// Needd to copy all vector value
-
-		// Get size of vector in position 0 of vector
-		// [size, isEmpty, value1, value2, value3, ...]
-
 		c.TAC.Procedure = prc
 
 		response := c.InitNewMatrix()
@@ -1970,6 +1965,12 @@ func (c *Compiler) RemoveStandard(arg *ValueResponse, temporalResponse *Temporal
 				),
 
 				prc.GetLabel("End").Declare(),
+
+				fmt.Sprintf(
+					"%v = %v - 1;",
+					prc.GetParameter("counter").Temporal,
+					prc.GetParameter("counter").Temporal,
+				),
 			},
 			"",
 		)

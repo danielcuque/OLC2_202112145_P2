@@ -6,8 +6,6 @@ import (
 )
 
 func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
-	// Create a vector of vectors to handle the matrix
-
 	id, _ := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
 
 	value := c.Env.GetValue(id)
@@ -19,6 +17,7 @@ func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) 
 	matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
 
 	// matrixValue := c.GetMatrixBody(ctx)
+	// c.Visit(ctx.MatrixValues())
 
 	newMatrix := c.InitNewMatrix()
 
@@ -45,7 +44,12 @@ func (c *Compiler) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) in
 }
 
 func (c *Compiler) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) interface{} {
-	return nil
+
+	if ctx.MatrixValues() != nil {
+		return c.Visit(ctx.MatrixValues())
+	}
+
+	return c.Visit(ctx.Expr())
 }
 
 func (v *Compiler) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {

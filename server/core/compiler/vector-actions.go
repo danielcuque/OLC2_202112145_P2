@@ -20,7 +20,7 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 
 	initVector := c.InitNewMatrix() // Declaramos un nuevo vector
 
-	c.DeclareVectorValues(values) // Declaramos su contenido
+	c.DeclareVectorValues(values, initVector[1]) // Declaramos su contenido
 
 	c.DeclareMatrixProps(initVector[0], initVector[1], initVector[2]) // Definimos las propiedades del vector
 
@@ -74,7 +74,7 @@ func (c *Compiler) GetVectorValues(ctx *parser.VectorListValueContext) []*ValueR
 	return valueResponses
 }
 
-func (c *Compiler) DeclareVectorValues(values []*ValueResponse) {
+func (c *Compiler) DeclareVectorValues(values []*ValueResponse, counter *Temporal) {
 
 	for _, value := range values {
 		c.TAC.AppendInstructions(
@@ -85,9 +85,15 @@ func (c *Compiler) DeclareVectorValues(values []*ValueResponse) {
 			"",
 		)
 	}
+
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("%v = %v;", counter, len(values)),
+		"Contador de vector",
+	)
 }
 
 func (c *Compiler) InitNewMatrix() []*Temporal {
+
 	initVector := c.TAC.NewTemporal(IntTemporal)
 	counter := c.TAC.NewTemporal(IntTemporal)
 	isEmptyAddress := c.TAC.NewTemporal(BooleanTemporal)
@@ -115,14 +121,18 @@ func (c *Compiler) DeclareMatrixProps(initVector, counter, isEmptyAddress *Tempo
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = H - %v;", counter, isEmptyAddress), // Obtenemos la cantidad de elementos del vector
-			fmt.Sprintf("%v = %v - 1;", counter, counter),        // Restamos uno porque el contador empieza en 1
+			// fmt.Sprintf("%v = H - %v;", counter, isEmptyAddress), // Obtenemos la cantidad de elementos del vector
+			// fmt.Sprintf("%v = %v - 1;", counter, counter), // Restamos uno porque el contador empieza en 1
 			fmt.Sprintf("heap[(int)%v] = %v;", initVector, counter),
+
 			fmt.Sprintf("if (%v == 0) goto %v;", counter, isEmptyLabel),
 			fmt.Sprintf("heap[(int)%v] = 0;", isEmptyAddress),
 			fmt.Sprintf("goto %v;", end),
+
 			isEmptyLabel.Declare(),
+
 			fmt.Sprintf("heap[(int)%v] = 1;", isEmptyAddress),
+
 			end.Declare(),
 		},
 		"Propiedades del vector",
@@ -140,10 +150,10 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 		return nil
 	}
 
-	return c.AccessVector(value, index)
+	return c.VectorAccess(value, index)
 }
 
-func (c *Compiler) AccessVector(value *Value, index *ValueResponse) *ValueResponse {
+func (c *Compiler) VectorAccess(value *Value, index *ValueResponse) *ValueResponse {
 	genericObject := value.GetValue().(*Object)
 	vectorObject := genericObject.GetValue().(*Matrix)
 	vectorAddress := c.TAC.NewTemporal(IntTemporal)
