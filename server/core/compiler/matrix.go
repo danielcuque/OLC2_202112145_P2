@@ -1,20 +1,17 @@
 package compiler
 
 type Matrix struct {
-	Type      TemporalCast
-	Dimension int
-	Body      []*Matrix
+	Type TemporalCast
 }
 
-func NewMatrix(dimension int, Type TemporalCast) *Matrix {
+func NewMatrix(Type TemporalCast) *Matrix {
 	return &Matrix{
-		Dimension: dimension,
-		Type:      Type,
+		Type: Type,
 	}
 }
 
 func NewVector(Type TemporalCast) *Object {
-	newVector := NewObject("vector", NewMatrix(1, Type))
+	newVector := NewObject("vector", NewMatrix(Type))
 	count := NewSimpleValue(0)
 	count.SetData(IntTemporal, "")
 

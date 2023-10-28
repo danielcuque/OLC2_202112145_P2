@@ -33,11 +33,6 @@ func (c *Compiler) VisitVectorTypeValue(ctx *parser.VectorTypeValueContext) inte
 
 	value.SetData(MatrixTemporal, newVectorObject)
 
-	c.TAC.AppendInstruction(
-		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), initVector[0]), // Inicio del vector
-		"Direccion de vector",
-	)
-
 	return nil
 }
 

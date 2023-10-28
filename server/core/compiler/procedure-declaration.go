@@ -103,11 +103,12 @@ func (v *Compiler) VisitFunctionParameter(ctx *parser.FunctionParameterContext) 
 	}
 
 	if ctx.MatrixType() != nil {
-		if ctx.MatrixType().GetText()[1] == '[' {
-			value = NewObject("matrix", NewMatrix(1, dataType))
-		} else {
-			value = NewVector(dataType)
-		}
+		// if ctx.MatrixType().GetText()[1] == '[' {
+		// 	value = NewObject("matrix", NewMatrix(dataType))
+		// } else {
+		// 	value = NewVector(dataType)
+		// }
+		value = NewVector(dataType)
 	}
 
 	return &Parameter{
