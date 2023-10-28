@@ -1,13 +1,13 @@
-// let notasBuenas: [[Int]] = [
-//     [53, 88, 95, 89, 75],
-//     [81, 51, 57, 67, 93],
-//     [94, 74, 58, 84, 100]
-// ]
+let notasBuenas: [[Int]] = [
+    [53, 88, 95, 89, 75],
+    [81, 51, 57, 67, 93],
+    [94, 74, 58, 84, 100]
+]
 
-// var stringArray: [String] = ["ab", "cd", "ef", "gh", "ij"]
-// for i in 0...stringArray.count-1 {
-//     print(stringArray[i])
-// }
+var stringArray: [String] = ["ab", "cd", "ef", "gh", "ij"]
+for i in 0...stringArray.count-1 {
+    print(stringArray[i])
+}
 
 // var arr1: [Int] = [8, 4, 6, 2]
 // var arr2: [Int] = [40, 21, 1, 3, 14, 4]
