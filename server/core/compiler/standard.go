@@ -723,7 +723,7 @@ func (c *Compiler) PrintString(value *ValueResponse) {
 func Print(c *Compiler, ctx *parser.FunctionCallContext) interface{} {
 
 	for _, arg := range c.GetArgs(ctx) {
-		if arg.Value.Type == StringTemporal {
+		if arg.Value.Type == StringTemporal || arg.Value.Type == CharTemporal {
 
 			c.PrintString(arg.Value)
 

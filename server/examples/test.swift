@@ -1,8 +1,8 @@
-let notasBuenas: [[Int]] = [
-    [53, 88, 95, 89, 75],
-    [81, 51, 57, 67, 93],
-    [94, 74, 58, 84, 100]
-]
+// let notasBuenas: [[Int]] = [
+//     [53, 88, 95, 89, 75],
+//     [81, 51, 57, 67, 93],
+//     [94, 74, 58, 84, 100]
+// ]
 
 // var stringArray: [String] = ["ab", "cd", "ef", "gh", "ij"]
 // for i in 0...stringArray.count-1 {

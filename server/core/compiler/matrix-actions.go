@@ -18,6 +18,8 @@ func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) 
 
 	matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
 
+	// matrixValue := c.GetMatrixBody(ctx)
+
 	newMatrix := c.InitNewMatrix()
 
 	c.DeclareMatrixProps(newMatrix[0], newMatrix[1], newMatrix[2])

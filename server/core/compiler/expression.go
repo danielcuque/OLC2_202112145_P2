@@ -22,7 +22,7 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	var response *ValueResponse
 
-	if leftT == StringTemporal && rightT == StringTemporal {
+	if (leftT == StringTemporal || leftT == CharTemporal) || (rightT == StringTemporal || rightT == CharTemporal) {
 		return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
 	}
 
@@ -304,21 +304,29 @@ func (c *Compiler) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	s := strings.Trim(ctx.GetText(), "\"")
 
-	if len(s) == 0 {
-		return &ValueResponse{
-			Type:        CharTemporal,
-			Value:       fmt.Sprintf("%d", 0),
-			ContextType: LiteralType,
-		}
+	var stringType TemporalCast
+
+	if len(s) <= 1 {
+		stringType = CharTemporal
+	} else {
+		stringType = StringTemporal
 	}
 
-	if len(s) == 1 {
-		return &ValueResponse{
-			Type:        CharTemporal,
-			Value:       fmt.Sprintf("%d", s[0]),
-			ContextType: LiteralType,
-		}
-	}
+	// if len(s) == 0 {
+	// 	return &ValueResponse{
+	// 		Type:        CharTemporal,
+	// 		Value:       fmt.Sprintf("%d", 0),
+	// 		ContextType: LiteralType,
+	// 	}
+	// }
+
+	// if len(s) == 1 {
+	// 	return &ValueResponse{
+	// 		Type:        CharTemporal,
+	// 		Value:       fmt.Sprintf("%d", s[0]),
+	// 		ContextType: LiteralType,
+	// 	}
+	// }
 
 	// Replace scape characters: double quote, backslash, new line, carriage return, tab
 	s = strings.ReplaceAll(s, "\\\"", "\"")
@@ -358,7 +366,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	c.HeapPointer.AddPointer()
 
 	return &ValueResponse{
-		Type:        StringTemporal,
+		Type:        stringType,
 		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
