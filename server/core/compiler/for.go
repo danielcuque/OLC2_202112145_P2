@@ -18,31 +18,35 @@ func (c *Compiler) ForRange(ctx *parser.ForStatementContext) {
 
 	id := ctx.ID().GetText()
 
+	value := c.Env.GetValue(id)
+
+	if value == nil {
+		return
+	}
+
 	rangeExpr := c.Visit(ctx.Expr()).(map[string]interface{})
 
 	iteratorTemp := c.TAC.NewTemporal(IntTemporal)
 	loopLabel := c.TAC.NewLabel("ForLoop")
 	endLabel := c.TAC.NewLabel("ForEnd")
 
-	value := c.Env.GetValue(id)
-	value.Type = IntTemporal
-	value.Value = iteratorTemp
+	value.SetData(IntTemporal, iteratorTemp)
 
 	// Assign the iterator to the first value of the range
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf(
-				"stack[(int)%d] = %s;",
-				value.GetAddress(),
+				"stack[(int)%s] = %s;",
+				c.TAC.GetValueAddress(value),
 				rangeExpr["left"],
 			),
 
 			loopLabel.Declare(),
 
 			fmt.Sprintf(
-				"%s = stack[(int)%d];",
+				"%s = stack[(int)%s];",
 				iteratorTemp,
-				value.GetAddress(),
+				c.TAC.GetValueAddress(value),
 			),
 
 			fmt.Sprintf(
@@ -68,8 +72,8 @@ func (c *Compiler) ForRange(ctx *parser.ForStatementContext) {
 			),
 
 			fmt.Sprintf(
-				"stack[(int)%d] = %s;",
-				value.GetAddress(),
+				"stack[(int)%s] = %s;",
+				c.TAC.GetValueAddress(value),
 				iteratorTemp,
 			),
 

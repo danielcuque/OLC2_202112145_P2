@@ -15,9 +15,6 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 	lV := l.(*ValueResponse).GetValue()
 	rV := r.(*ValueResponse).GetValue()
 
-	// Check if division by zero
-	// Add code to handle this
-
 	if op == "/" || op == "%" || op == "*" {
 		lV = l.(*ValueResponse).Cast()
 		rV = r.(*ValueResponse).Cast()
@@ -25,7 +22,7 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 
 	var response *ValueResponse
 
-	if leftT == StringTemporal && rightT == StringTemporal {
+	if (leftT == StringTemporal || leftT == CharTemporal) || (rightT == StringTemporal || rightT == CharTemporal) {
 		return c.ConcatString(l.(*ValueResponse), r.(*ValueResponse))
 	}
 
@@ -58,9 +55,20 @@ func (c *Compiler) arithmeticOp(l, r interface{}, op string, lc antlr.Token) int
 }
 
 func (c *Compiler) VisitArithmeticExpr(ctx *parser.ArithmeticExprContext) interface{} {
-	l := c.Visit(ctx.GetLeft()).(*ValueResponse)
-	r := c.Visit(ctx.GetRight()).(*ValueResponse)
+	var l, r *ValueResponse
+
 	op := ctx.GetOp().GetText()
+
+	_, isCall := ctx.GetRight().(*parser.FunctionCallExprContext)
+
+	if isCall {
+		r = c.Visit(ctx.GetRight()).(*ValueResponse)
+		l = c.Visit(ctx.GetLeft()).(*ValueResponse)
+	} else {
+		l = c.Visit(ctx.GetLeft()).(*ValueResponse)
+		r = c.Visit(ctx.GetRight()).(*ValueResponse)
+	}
+
 	return c.arithmeticOp(l, r, op, ctx.GetStart())
 }
 
@@ -141,13 +149,16 @@ func (c *Compiler) VisitFloatExpr(ctx *parser.FloatExprContext) interface{} {
 	}
 }
 
+func (c *Compiler) VisitFunctionCallExpr(ctx *parser.FunctionCallExprContext) interface{} {
+	return c.Visit(ctx.FunctionCall())
+}
+
 func (c *Compiler) VisitIDChain(ctx *parser.IDChainContext) interface{} {
 	return ctx.AllID()
 }
 
 func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
-	expr := strings.Split(ctx.IdChain().GetText(), ".")
-	id := expr[len(expr)-1]
+	id, props := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
 
 	value := c.Env.GetValue(id)
 
@@ -159,16 +170,19 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%s = stack[(int)%d];", newTemporal, value.GetAddress()),
+			fmt.Sprintf("%s = stack[(int)%s];", newTemporal, c.TAC.GetValueAddress(value)),
 		},
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
+	temporalPointer := c.GetProps(value, props[1:], newTemporal)
+
 	return &ValueResponse{
-		Type:        value.GetType(),
-		Value:       newTemporal,
+		Type:        temporalPointer.GetType(),
+		Value:       temporalPointer,
 		ContextType: TemporalType,
 	}
+
 }
 
 func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
@@ -192,21 +206,29 @@ func (c *Compiler) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} 
 	return c.Or(left, right)
 }
 
+func (c *Compiler) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
+	return &ValueResponse{
+		Type:        FloatTemporal,
+		Value:       DefaultNil(),
+		ContextType: LiteralType,
+	}
+}
+
 func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 	value := c.Visit(ctx.Expr()).(*ValueResponse)
 
-	if c.TAC.GetStandar("std_not") == nil {
+	if c.TAC.GetProcedure("std_not") == nil {
 		newProcedure := NewProcedure("std_not")
 
-		newProcedure.AddArguments(
+		newProcedure.AddParameters(
 			[]*Parameter{
 				{
-					Name:     "operand",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "operand",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 				{
-					Name:     "result",
-					Temporal: c.TAC.NewTemporal(BooleanTemporal),
+					ExternalName: "result",
+					Temporal:     c.TAC.NewTemporal(BooleanTemporal),
 				},
 			},
 		)
@@ -222,18 +244,18 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 			[]string{
 				fmt.Sprintf(
 					"if (%v == 0) goto %s;",
-					newProcedure.GetArgument("operand").Temporal,
+					newProcedure.GetParameter("operand").Temporal,
 					newProcedure.GetLabel("TrueCondition"),
 				),
 				fmt.Sprintf(
 					"%s = 0;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				fmt.Sprintf("goto %s;", newProcedure.GetLabel("FalseCondition")),
 				newProcedure.GetLabel("TrueCondition").Declare(),
 				fmt.Sprintf(
 					"%s = 1;",
-					newProcedure.GetArgument("result").Temporal,
+					newProcedure.GetParameter("result").Temporal,
 				),
 				newProcedure.GetLabel("FalseCondition").Declare(),
 			},
@@ -243,13 +265,13 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 		c.TAC.AddProcedure(newProcedure)
 	}
 
-	procedure := c.TAC.GetStandar("std_not")
+	procedure := c.TAC.GetProcedure("std_not")
 
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf(
 				"%s = %s;",
-				procedure.GetArgument("operand").Temporal,
+				procedure.GetParameter("operand").Temporal,
 				value.GetValue(),
 			),
 			"std_not();",
@@ -259,7 +281,7 @@ func (c *Compiler) VisitNotExpr(ctx *parser.NotExprContext) interface{} {
 
 	return &ValueResponse{
 		Type:        BooleanTemporal,
-		Value:       procedure.GetArgument("result").Temporal,
+		Value:       procedure.GetParameter("result").Temporal,
 		ContextType: TemporalType,
 	}
 }
@@ -282,21 +304,29 @@ func (c *Compiler) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	s := strings.Trim(ctx.GetText(), "\"")
 
-	if len(s) == 0 {
-		return &ValueResponse{
-			Type:        CharTemporal,
-			Value:       fmt.Sprintf("%d", 0),
-			ContextType: LiteralType,
-		}
+	var stringType TemporalCast
+
+	if len(s) <= 1 {
+		stringType = CharTemporal
+	} else {
+		stringType = StringTemporal
 	}
 
-	if len(s) == 1 {
-		return &ValueResponse{
-			Type:        CharTemporal,
-			Value:       fmt.Sprintf("%d", s[0]),
-			ContextType: LiteralType,
-		}
-	}
+	// if len(s) == 0 {
+	// 	return &ValueResponse{
+	// 		Type:        CharTemporal,
+	// 		Value:       fmt.Sprintf("%d", 0),
+	// 		ContextType: LiteralType,
+	// 	}
+	// }
+
+	// if len(s) == 1 {
+	// 	return &ValueResponse{
+	// 		Type:        CharTemporal,
+	// 		Value:       fmt.Sprintf("%d", s[0]),
+	// 		ContextType: LiteralType,
+	// 	}
+	// }
 
 	// Replace scape characters: double quote, backslash, new line, carriage return, tab
 	s = strings.ReplaceAll(s, "\\\"", "\"")
@@ -336,7 +366,7 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	c.HeapPointer.AddPointer()
 
 	return &ValueResponse{
-		Type:        StringTemporal,
+		Type:        stringType,
 		Value:       newTemporal,
 		ContextType: TemporalType,
 	}
@@ -376,4 +406,94 @@ func (c *Compiler) VisitVariableType(ctx *parser.VariableTypeContext) interface{
 	default:
 		return ctx.GetText()
 	}
+}
+
+func (c *Compiler) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) interface{} {
+	evalValue := c.Visit(ctx.VectorAccess())
+
+	if evalValue == nil {
+		return nil
+	}
+
+	response := evalValue.(*ValueResponse)
+	vectorPosition := response.GetValue()
+	returnTemporal := c.TAC.NewTemporal(IntTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%s = heap[(int)%s];", returnTemporal, vectorPosition),
+		},
+		"Acceso a vector",
+	)
+
+	return &ValueResponse{
+		Type:        response.GetType(),
+		Value:       returnTemporal,
+		ContextType: TemporalType,
+	}
+}
+
+// Utils
+
+func (c *Compiler) GetPropsAsString(ctx *parser.IDChainContext) (string, []string) {
+	props := strings.Split(ctx.GetText(), ".")
+	id := props[0]
+
+	return id, props
+}
+
+func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temporal) *Temporal {
+	if len(props) == 0 {
+		return auxiliarTemporal
+	}
+
+	// If length of props is 1, then we are accessing to a property of object
+
+	obj, notObject := value.GetValue().(*Object)
+
+	if !notObject {
+		return auxiliarTemporal
+	}
+
+	// Check if object value is nested object or not
+
+	objectValue, ok := obj.GetValue().(*Object)
+
+	if !ok {
+		val := obj.GetProp(props[0])
+
+		if val == nil {
+			return auxiliarTemporal
+		}
+
+		relativePosition := c.TAC.NewTemporal(IntTemporal)
+		heapTemporal := c.TAC.NewTemporal(val.GetType())
+
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("%s = %s + %s;", relativePosition, auxiliarTemporal, val.GetAddress()),
+				fmt.Sprintf("%s = heap[%s];", heapTemporal, relativePosition.Cast()),
+			},
+			fmt.Sprintf("Propiedad '%s'", props[0]),
+		)
+
+		return c.GetProps(val, props[1:], heapTemporal)
+	}
+
+	value = objectValue.GetProp(props[0])
+
+	stackTemporal := c.TAC.NewTemporal(value.GetType())
+
+	if value == nil {
+		return auxiliarTemporal
+	}
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%s = stack[(int)%s];", stackTemporal, c.TAC.GetValueAddress(value)),
+		},
+		fmt.Sprintf("Propiedad '%s'", props[0]),
+	)
+
+	return c.GetProps(value, props[1:], stackTemporal)
 }

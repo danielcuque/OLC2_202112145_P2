@@ -23,3 +23,7 @@ func (h *Heap) SubPointer() int {
 	h.Pointer--
 	return h.Pointer
 }
+
+func (h *Heap) IncreasePointer() string {
+	return "H = H + 1;"
+}

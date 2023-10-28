@@ -3,13 +3,10 @@ package compiler
 import (
 	"OLC2/core/parser"
 	"fmt"
-
-	"github.com/antlr4-go/antlr/v4"
 )
 
 func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
-	ids := c.Visit(ctx.IdChain()).([]antlr.TerminalNode)
-	id := ids[0].GetText()
+	id, _ := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
 
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
@@ -40,7 +37,7 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	c.TAC.AppendInstructions(
 		[]string{
 			responseValue,
-			fmt.Sprintf("stack[(int)%d] = %s;", value.GetAddress(), newTemporal),
+			fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), newTemporal),
 		},
 		fmt.Sprintf("Asignación de la variable '%s'", id),
 	)

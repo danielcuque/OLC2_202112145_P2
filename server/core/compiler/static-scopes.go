@@ -1,7 +1,6 @@
-package static
+package compiler
 
 import (
-	"OLC2/core/compiler"
 	"OLC2/core/parser"
 )
 
@@ -18,7 +17,13 @@ func (c *StaticVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 }
 
 func (c *StaticVisitor) VisitStatement(ctx *parser.StatementContext) interface{} {
-	// Just visit variable declarations, possible scopes such as if, for, while, etc
+	if ctx.VectorDeclaration() != nil {
+		return c.Visit(ctx.VectorDeclaration())
+	}
+
+	if ctx.MatrixDeclaration() != nil {
+		return c.Visit(ctx.MatrixDeclaration())
+	}
 
 	if ctx.VariableDeclaration() != nil {
 		c.Visit(ctx.VariableDeclaration())
@@ -48,12 +53,12 @@ func (c *StaticVisitor) VisitStatement(ctx *parser.StatementContext) interface{}
 }
 
 func (c *StaticVisitor) VisitWhileStatement(ctx *parser.WhileStatementContext) interface{} {
-	c.SetEnv(compiler.WhileEnv, ctx.Block().(*parser.BlockContext))
+	c.SetEnv(WhileEnv, ctx.Block().(*parser.BlockContext))
 	return nil
 }
 
 func (c *StaticVisitor) VisitForStatement(ctx *parser.ForStatementContext) interface{} {
-	c.Env.PushEnv(compiler.ForEnv)
+	c.Env.PushEnv(ForEnv)
 	c.Visit(ctx.Block())
 	c.NewValue(ctx.ID().GetText())
 	c.Env.PopEnv()
@@ -64,29 +69,29 @@ func (c *StaticVisitor) VisitIfStatement(ctx *parser.IfStatementContext) interfa
 
 	for _, ifStmt := range ctx.AllIfTail() {
 		ifStatement := ifStmt.(*parser.IfTailContext)
-		c.SetEnv(compiler.IfEnv, ifStatement.Block().(*parser.BlockContext))
+		c.SetEnv(IfEnv, ifStatement.Block().(*parser.BlockContext))
 	}
 
 	if ctx.ElseStatement() != nil {
-		c.SetEnv(compiler.ElseEnv, ctx.ElseStatement().(*parser.ElseStatementContext).Block().(*parser.BlockContext))
+		c.SetEnv(ElseEnv, ctx.ElseStatement().(*parser.ElseStatementContext).Block().(*parser.BlockContext))
 	}
 
 	return nil
 }
 
 func (c *StaticVisitor) VisitGuardStatement(ctx *parser.GuardStatementContext) interface{} {
-	c.SetEnv(compiler.GuardEnv, ctx.Block().(*parser.BlockContext))
+	c.SetEnv(GuardEnv, ctx.Block().(*parser.BlockContext))
 	return nil
 }
 
 func (c *StaticVisitor) VisitSwitchStatement(ctx *parser.SwitchStatementContext) interface{} {
 
 	for _, switchCase := range ctx.AllSwitchCase() {
-		c.SetEnv(compiler.SwitchEnv, switchCase.(*parser.SwitchCaseContext).Block().(*parser.BlockContext))
+		c.SetEnv(SwitchEnv, switchCase.(*parser.SwitchCaseContext).Block().(*parser.BlockContext))
 	}
 
 	if ctx.SwitchDefault() != nil {
-		c.SetEnv(compiler.SwitchEnv, ctx.SwitchDefault().(*parser.SwitchDefaultContext).Block().(*parser.BlockContext))
+		c.SetEnv(SwitchEnv, ctx.SwitchDefault().(*parser.SwitchDefaultContext).Block().(*parser.BlockContext))
 	}
 
 	return nil

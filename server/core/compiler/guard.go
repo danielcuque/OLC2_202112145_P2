@@ -19,7 +19,7 @@ func (c *Compiler) VisitGuardStatement(ctx *parser.GuardStatementContext) interf
 		"Sentencia Guard",
 	)
 
-	c.Env.PushEnv(GuardEnv)
+	c.Env.Next()
 	c.Visit(ctx.Block())
 	c.Env.PopEnv()
 

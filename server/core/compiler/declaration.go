@@ -6,11 +6,12 @@ import (
 )
 
 func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
+
 	id := ctx.ID().GetText()
 	response := c.Visit(ctx.Expr()).(*ValueResponse)
 
 	if response == nil {
-		fmt.Println("Error al declarar la variable")
+		fmt.Println("Error al declarar la variable", id)
 		return nil
 	}
 
@@ -44,11 +45,15 @@ func (c *Compiler) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) inte
 func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 
 	value := c.Env.GetValue(id)
-	value.Type = response.GetType()
-	value.Value = response.GetValue()
+
+	if value == nil {
+		return nil
+	}
+
+	value.SetData(response.GetType(), response.GetValue())
 
 	c.TAC.AppendInstruction(
-		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), value.GetValue()),
+		fmt.Sprintf("stack[(int)%v] = %v;", c.TAC.GetValueAddress(value), value.GetValue()),
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 

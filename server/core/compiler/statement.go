@@ -30,6 +30,10 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.IfStatement())
 	}
 
+	if ctx.MatrixDeclaration() != nil {
+		return c.Visit(ctx.MatrixDeclaration())
+	}
+
 	if ctx.SwitchStatement() != nil {
 		return c.Visit(ctx.SwitchStatement())
 	}
@@ -40,6 +44,10 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 
 	if ctx.VariableAssignment() != nil {
 		return c.Visit(ctx.VariableAssignment())
+	}
+
+	if ctx.VectorAssignment() != nil {
+		return c.Visit(ctx.VectorAssignment())
 	}
 
 	if ctx.VectorDeclaration() != nil {

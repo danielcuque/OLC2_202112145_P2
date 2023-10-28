@@ -3,23 +3,37 @@ package compiler
 import "fmt"
 
 type TAC struct {
-	temporals []*Temporal
-	labels    []*Label
-	standar   map[string]*Procedure
-	code      string
+	temporals     []*Temporal
+	labels        []*Label
+	standar       []*Procedure
+	procedures    map[string]*Procedure
+	code          string
+	Procedure     *Procedure
+	OffsetPointer *Temporal
 }
 
 func NewTAC() *TAC {
 	return &TAC{
-		code:      "",
-		temporals: make([]*Temporal, 0),
-		labels:    make([]*Label, 0),
-		standar:   make(map[string]*Procedure),
+		code:          "",
+		temporals:     make([]*Temporal, 0),
+		labels:        make([]*Label, 0),
+		procedures:    make(map[string]*Procedure),
+		standar:       make([]*Procedure, 0),
+		Procedure:     nil,
+		OffsetPointer: nil,
 	}
 }
 
 func (t *TAC) GetTemporals() []*Temporal {
 	return t.temporals
+}
+
+func (t *TAC) GetOffSetPointer() *Temporal {
+	if t.OffsetPointer == nil {
+		t.OffsetPointer = t.NewTemporal(IntTemporal)
+	}
+
+	return t.OffsetPointer
 }
 
 func (t *TAC) GetTemporalsHeader() string {
@@ -37,6 +51,31 @@ func (t *TAC) GetTemporalsHeader() string {
 	}
 	code += ";\n"
 	return code + "\n"
+}
+
+func (t *TAC) GetValueAddress(value *Value) string {
+	if value.IsRelative {
+		relativeIndex := t.NewTemporal(IntTemporal)
+
+		t.AppendInstructions(
+			[]string{
+				fmt.Sprintf(
+					"%s = %s + %s;",
+					relativeIndex,
+					t.GetOffSetPointer(),
+					value.StackAddress,
+				),
+			},
+			"",
+		)
+		return relativeIndex.String()
+	}
+
+	return value.StackAddress.String()
+}
+
+func (t *TAC) GetCurrentProcedure() *Procedure {
+	return t.Procedure
 }
 
 func (t *TAC) TemporalQuantity() int {
@@ -64,6 +103,11 @@ func (c *Compiler) NewLabelFlow(name string, Type []LabelFlowType) *Label {
 }
 
 func (t *TAC) AppendInstructions(instructions []string, comment string) {
+
+	if t.Procedure != nil {
+		t.Procedure.AddCode(instructions, comment)
+		return
+	}
 
 	if comment != "" {
 		t.code += fmt.Sprintf("// %s\n", comment)
@@ -93,15 +137,49 @@ func (t *TAC) NewTemporal(castType interface{}) *Temporal {
 	return temporal
 }
 
+func (t *TAC) AddStandard(procedure *Procedure) {
+	if t.GetStandard(procedure.Name) != nil {
+		return
+	}
+	t.standar = append(t.standar, procedure)
+}
+
 func (t *TAC) AddProcedure(procedure *Procedure) {
-	t.standar[procedure.Name] = procedure
+	t.procedures[procedure.Name] = procedure
 }
 
-func (t *TAC) GetStandar(name string) *Procedure {
-	return t.standar[name]
+func (t *TAC) GetProcedure(name string) *Procedure {
+	return t.procedures[name]
 }
 
-func (t *TAC) GetProcudres() string {
+func (t *TAC) GetStandard(name string) *Procedure {
+	for _, procedure := range t.standar {
+		if procedure.Name == name {
+			return procedure
+		}
+	}
+
+	return nil
+}
+
+func (t *TAC) SetProcedure(procedure *Procedure) {
+	t.Procedure = procedure
+	t.AddProcedure(procedure)
+}
+
+func (t *TAC) UnsetProcedure() {
+	t.Procedure = nil
+}
+
+func (t *TAC) GetProcedures() string {
+	var code string
+	for _, procedure := range t.procedures {
+		code += fmt.Sprintf("%s\n", procedure)
+	}
+	return code
+}
+
+func (t *TAC) GetStandards() string {
 	var code string
 	for _, procedure := range t.standar {
 		code += fmt.Sprintf("%s\n", procedure)
@@ -119,7 +197,7 @@ func (c *Compiler) GenerateVariables() {
 		c.TAC.AppendInstructions(
 			[]string{
 				"stack[(int)P] = 0;",
-				"P = P + 1;",
+				c.StackPointer.IncreasePointerByOne(),
 			},
 			"",
 		)

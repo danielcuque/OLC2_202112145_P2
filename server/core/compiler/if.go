@@ -53,7 +53,7 @@ func (c *Compiler) VisitIfStatement(ctx *parser.IfStatementContext) interface{} 
 }
 
 func (c *Compiler) ExecuteElse(ctx *parser.ElseStatementContext, endLabel *Label) {
-	c.Env.PushEnv(ElseEnv)
+	c.Env.Next()
 	c.Visit(ctx.Block())
 	c.Env.PopEnv()
 }

@@ -5,10 +5,11 @@ import "fmt"
 type TemporalCast string
 
 const (
+	BooleanTemporal TemporalCast = "b"
+	CharTemporal    TemporalCast = "c"
 	FloatTemporal   TemporalCast = "f"
 	IntTemporal     TemporalCast = "d"
-	CharTemporal    TemporalCast = "c"
-	BooleanTemporal TemporalCast = "b"
+	MatrixTemporal  TemporalCast = "m"
 	StringTemporal  TemporalCast = "s"
 )
 
@@ -38,4 +39,8 @@ func (t *Temporal) Cast() string {
 
 func (t *Temporal) String() string {
 	return fmt.Sprintf("t%d", t.ID)
+}
+
+func (t *Temporal) GetType() TemporalCast {
+	return t.Type
 }

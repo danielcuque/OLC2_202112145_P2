@@ -19,7 +19,7 @@ func (c *Compiler) VisitSwitchStatement(ctx *parser.SwitchStatementContext) inte
 
 		nextLabel := c.TAC.NewLabel("")
 
-		c.Env.PushEnv(SwitchEnv)
+		c.Env.Next()
 
 		c.TAC.AppendInstructions(
 			[]string{
@@ -44,7 +44,7 @@ func (c *Compiler) VisitSwitchStatement(ctx *parser.SwitchStatementContext) inte
 	}
 
 	if ctx.SwitchDefault() != nil {
-		c.Env.PushEnv(SwitchEnv)
+		c.Env.Next()
 		c.Visit(ctx.SwitchDefault().Block())
 		c.Env.PopEnv()
 	}

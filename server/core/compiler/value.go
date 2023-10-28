@@ -6,21 +6,15 @@ import (
 
 type Value struct {
 	Value        interface{}
-	StackAddress int
+	StackAddress *StackIndex
+	IsRelative   bool
 	Type         TemporalCast
 }
 
-func NewValue(value interface{}, stackAddress int, Type TemporalCast) *Value {
+func NewSimpleValue(index interface{}) *Value {
 	return &Value{
-		Value:        value,
-		StackAddress: stackAddress,
-		Type:         Type,
-	}
-}
-
-func NewSimpleValue(stackAddress int) *Value {
-	return &Value{
-		StackAddress: stackAddress,
+		StackAddress: NewStackIndex(index),
+		IsRelative:   false,
 	}
 }
 
@@ -28,12 +22,17 @@ func (v *Value) GetValue() interface{} {
 	return v.Value
 }
 
-func (v *Value) GetAddress() int {
-	return v.StackAddress
+func (v *Value) GetAddress() string {
+	return v.StackAddress.String()
 }
 
 func (v *Value) GetType() TemporalCast {
 	return v.Type
+}
+
+func (v *Value) SetData(Type TemporalCast, value interface{}) {
+	v.Type = Type
+	v.Value = value
 }
 
 type ContextType string
@@ -46,7 +45,7 @@ const (
 )
 
 func DefaultNil() string {
-	return "9999999"
+	return "9999999827968.00"
 }
 
 type ValueResponse struct {

@@ -1,7 +1,6 @@
-package static
+package compiler
 
 import (
-	"OLC2/core/compiler"
 	"OLC2/core/parser"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -9,13 +8,19 @@ import (
 
 type StaticVisitor struct {
 	parser.BaseSwiftVisitor
-	Env     *compiler.EnvTree
-	Counter int
+	Env        *EnvTree
+	Counter    int
+	IsRelative bool
+	Offset     int
+	TAC        *TAC
 }
 
-func NewStaticVisitor() *StaticVisitor {
+func NewStaticVisitor(IsRelative bool, Offset int, TAC *TAC) *StaticVisitor {
 	return &StaticVisitor{
-		Env: compiler.NewEnvTree(),
+		Env:        NewEnvTree(),
+		IsRelative: IsRelative,
+		Offset:     Offset,
+		TAC:        TAC,
 	}
 }
 
@@ -26,7 +31,15 @@ func (c *StaticVisitor) SetEnv(envType string, ctx *parser.BlockContext) {
 }
 
 func (c *StaticVisitor) NewValue(name string) {
-	c.Env.AddValue(name, compiler.NewSimpleValue(c.Counter))
+	var value *Value
+
+	if c.IsRelative {
+		value = c.Env.AddValue(name, NewSimpleValue(c.Counter+c.Offset+1))
+	} else {
+		value = c.Env.AddValue(name, NewSimpleValue(c.Counter))
+	}
+
+	value.IsRelative = c.IsRelative
 	c.Counter++
 }
 

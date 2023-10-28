@@ -3,24 +3,26 @@ package compiler
 import "fmt"
 
 type Procedure struct {
-	Name      string
-	Labels    map[string]*Label
-	Arguments map[string]*Parameter
-	Code      string
+	Name           string
+	Labels         map[string]*Label
+	Parameters     []*Parameter
+	Code           string
+	Env            *EnvTree
+	ReturnTemporal *Temporal
+	ReturnLabel    *Label
 }
 
 func NewProcedure(name string) *Procedure {
 	return &Procedure{
-		Name:      name,
-		Arguments: make(map[string]*Parameter),
-		Labels:    make(map[string]*Label),
+		Name:       name,
+		Parameters: make([]*Parameter, 0),
+		Labels:     make(map[string]*Label),
 	}
 }
 
-func (p *Procedure) AddArguments(args []*Parameter) {
-	for _, arg := range args {
-		p.Arguments[arg.Name] = arg
-	}
+func (p *Procedure) AddParameters(args []*Parameter) {
+	p.Parameters = append(p.Parameters, args...)
+
 }
 
 func (p *Procedure) AddCode(instructions []string, comment string) {
@@ -39,8 +41,18 @@ func (p *Procedure) AddLabels(labels []*Label) {
 	}
 }
 
-func (p *Procedure) GetArgument(name string) *Parameter {
-	return p.Arguments[name]
+func (p *Procedure) GetParameter(name string) *Parameter {
+	for _, param := range p.Parameters {
+		if param.ExternalName == name {
+			return param
+		}
+	}
+
+	return nil
+}
+
+func (p *Procedure) Call() string {
+	return fmt.Sprintf("%s();", p.Name)
 }
 
 func (p *Procedure) GetLabel(name string) *Label {
@@ -51,9 +63,22 @@ func (p *Procedure) String() string {
 	return fmt.Sprintf("void %s(){\n%s \nreturn;\n}\n", p.Name, p.Code)
 }
 
+func (p *Procedure) SetReturnProps(returnTemporal *Temporal, label *Label) {
+	p.ReturnTemporal = returnTemporal
+	p.ReturnLabel = label
+}
+
+func (p *Procedure) ParamSize() int {
+	return len(p.Parameters)
+}
+
 type Parameter struct {
-	Temporal *Temporal
-	Name     string
+	Temporal     *Temporal
+	ExternalName string
+	InternalName string
+	IsReference  bool
+	Type         TemporalCast
+	Value        interface{}
 }
 
 func (p *Parameter) Tmp() string {
@@ -64,4 +89,12 @@ type Argument struct {
 	Name      string
 	Value     *ValueResponse
 	IsPointer bool
+}
+
+func (a *Argument) GetValue() *ValueResponse {
+	return a.Value
+}
+
+func (a *Argument) GetType() TemporalCast {
+	return a.Value.Type
 }
