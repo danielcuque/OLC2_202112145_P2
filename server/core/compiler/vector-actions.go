@@ -177,47 +177,28 @@ func (c *Compiler) VectorAccess(initAddress string, index *ValueResponse, isStac
 	outOfBoundsLabel := c.TAC.NewLabel("outOfBounds")
 	end := c.TAC.NewLabel("end")
 
+	initialInstructions := ""
+
 	if isStackValue {
-		c.TAC.AppendInstructions(
-			[]string{
-				fmt.Sprintf("%v = stack[(int)%s];", vectorAddress, initAddress),     // Obtenemos la posicion inicial del vector
-				fmt.Sprintf("%v = heap[(int)%v];", vectorCountValue, vectorAddress), // Obtenemos la cantidad de elementos del vector
-			},
-			"",
-		)
+		initialInstructions += fmt.Sprintf("%v = stack[(int)%s];\n", vectorAddress, initAddress)
+		initialInstructions += fmt.Sprintf("%v = heap[(int)%v];\n", vectorCountValue, vectorAddress)
 	} else {
-		c.TAC.AppendInstructions(
-			[]string{
-				fmt.Sprintf("%v = heap[(int)%s];", vectorAddress, initAddress), // Obtenemos la posicion inicial del vector
-				fmt.Sprintf("%v = %v;", vectorCountValue, vectorAddress),
-			},
-			"",
-		)
+		initialInstructions += fmt.Sprintf("%v = heap[(int)%s];\n", vectorAddress, initAddress)
+		initialInstructions += fmt.Sprintf("%v = %v;", vectorCountValue, vectorAddress)
+	}
+
+	initialInstructions += fmt.Sprintf("if (%v >= %v) goto %v;\n", index.GetValue(), vectorCountValue, outOfBoundsLabel)
+	initialInstructions += fmt.Sprintf("if (%v < 0) goto %v;\n", index.GetValue(), outOfBoundsLabel)
+
+	if isStackValue {
+		initialInstructions += fmt.Sprintf("%v = %v + 2;\n", vectorAddress, vectorAddress) // Obtenemos la posicion inicial del vector
+	} else {
+		initialInstructions += fmt.Sprintf("%v = %v + 2;\n", vectorAddress, initAddress) // Obtenemos la posicion inicial del vector
 	}
 
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("if (%v >= %v) goto %v;", index.GetValue(), vectorCountValue, outOfBoundsLabel),
-			fmt.Sprintf("if (%v < 0) goto %v;", index.GetValue(), outOfBoundsLabel),
-		},
-		"",
-	)
-
-	if isStackValue {
-		c.TAC.AppendInstruction(
-			// Dirección del inicio de los valores del vector
-			fmt.Sprintf("%v = %v + 2;", vectorAddress, vectorAddress), // Obtenemos la posicion inicial del vector
-			"",
-		)
-	} else {
-		c.TAC.AppendInstruction(
-			fmt.Sprintf("%v = %v + 2;", vectorAddress, initAddress), // Obtenemos la posicion inicial del vector
-			"",
-		)
-	}
-
-	c.TAC.AppendInstructions(
-		[]string{
+			initialInstructions,
 			// Obtenemos la posicion del valor del vector
 			fmt.Sprintf("%v = %v - %v;", vectorAccessPosition, index.GetValue(), 0),
 			fmt.Sprintf("%v = %v + %v;", vectorAccessPosition, vectorAccessPosition, vectorAddress),

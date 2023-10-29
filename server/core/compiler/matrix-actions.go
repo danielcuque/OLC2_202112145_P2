@@ -135,7 +135,7 @@ func (v *Compiler) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface
 		// Convert node to array
 		body = v.Visit(ctx.MatrixDefinition()).(*ValueResponse)
 	} else {
-		body = v.Visit(ctx.MatrixRepeatingDefinition())
+		body = v.Visit(ctx.MatrixRepeatingDefinition()).(*ValueResponse)
 	}
 
 	return body
@@ -172,15 +172,10 @@ func (c *Compiler) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{
 		)
 
 		exprValue := c.GetVectorValue(exprValueAddress)
-
 		matrixValue = exprValue
 	}
 
-	return &ValueResponse{
-		Value:       matrixValue.GetValue(),
-		Type:        matrixValue.GetType(),
-		ContextType: TemporalType,
-	}
+	return matrixValue
 }
 
 func (v *Compiler) CheckMatrixIndexes() interface{} {

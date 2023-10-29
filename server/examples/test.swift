@@ -4,9 +4,7 @@
 //     [94, 74, 58, 84, 100]
 // ]
 
-// print(notas[2][4]);
-
-
+// print(notas[1][0])
 // var stringArray: [String] = ["ab", "cd", "ef", "gh", "ij"]
 // for i in 0...stringArray.count-1 {
 //     print(stringArray[i])
