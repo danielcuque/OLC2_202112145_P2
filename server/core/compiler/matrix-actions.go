@@ -2,7 +2,6 @@ package compiler
 
 import (
 	"OLC2/core/parser"
-	"fmt"
 )
 
 func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) interface{} {
@@ -14,22 +13,22 @@ func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) 
 		return nil
 	}
 
-	matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
+	// matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
 
 	c.GetMatrixBody(ctx)
 
-	newMatrix := c.InitNewMatrix()
+	// newMatrix := c.InitNewMatrix()
 
-	c.DeclareMatrixProps(newMatrix[0], newMatrix[1], newMatrix[2])
+	// c.DeclareMatrixProps(newMatrix[0], newMatrix[1], newMatrix[2])
 
-	c.TAC.AppendInstruction(
-		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), newMatrix[0]), // Inicio del vector
-		"Direccion de vector",
-	)
+	// c.TAC.AppendInstruction(
+	// 	fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), newMatrix[0]), // Inicio del vector
+	// 	"Direccion de vector",
+	// )
 
-	newMatrixObject := NewVector(matrixType)
+	// newMatrixObject := NewVector(matrixType)
 
-	value.SetData(MatrixTemporal, newMatrixObject)
+	// value.SetData(MatrixTemporal, newMatrixObject)
 
 	return nil
 }
@@ -43,63 +42,94 @@ func (c *Compiler) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) in
 }
 
 func (c *Compiler) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) interface{} {
+
+	c.GetMatrixValues(ctx, nil)
+
+	return nil
+}
+
+// This function will be recursive
+func (c *Compiler) GetMatrixValues(ctx *parser.MatrixDefinitionContext, initMatrix []*Temporal) {
 	if ctx.MatrixValues() != nil {
-		return c.Visit(ctx.MatrixValues())
-	}
+		newMatrix := c.InitNewMatrix()
+		for _, matrixDef := range ctx.MatrixValues().AllMatrixDefinition() {
+			c.GetMatrixValues(matrixDef.(*parser.MatrixDefinitionContext), newMatrix)
 
-	return c.Visit(ctx.Expr())
-}
-
-func (v *Compiler) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
-	expr, ok := v.Visit(ctx.MatrixDefinition(0)).(*ValueResponse)
-
-	if !ok {
-		fmt.Println("Error al obtener el valor de la matriz")
-		return expr
-	}
-
-	initMatrix := v.InitNewMatrix()
-
-	if expr.GetType() == MatrixTemporal {
-		value := expr.GetValue().(map[string]interface{})
-		v.AppendVectorValue(value["temporals"].([]*Temporal)[0])
-	} else {
-		v.AppendVectorValue(expr.GetValue())
-	}
-
-	// 0 = matrix pointer
-	// 1 = matrix size
-	// 2 = isEmpty
-
-	baseNode := NewMatrix(expr.GetType())
-
-	for _, matrixDef := range ctx.AllMatrixDefinition()[1:] {
-		matrixDef := v.Visit(matrixDef).(*ValueResponse)
-
-		if matrixDef.GetType() == MatrixTemporal {
-			value := expr.GetValue().(map[string]interface{})
-			v.AppendVectorValue(value["temporals"].([]*Temporal)[0])
-			baseNode.AddValue(value["matrix"])
-		} else {
-			v.AppendVectorValue(matrixDef.GetValue())
-			baseNode.AddValue(matrixDef.GetValue())
 		}
-
 	}
 
-	v.TAC.AppendInstruction(
-		fmt.Sprintf("%v = %v;", initMatrix[1], len(ctx.AllMatrixDefinition())),
-		"Contador de vector",
-	)
-
-	v.DeclareMatrixProps(initMatrix[0], initMatrix[1], initMatrix[2])
-
-	return &ValueResponse{
-		Value:       map[string]interface{}{"matrix": baseNode, "temporals": initMatrix},
-		Type:        MatrixTemporal,
-		ContextType: TemporalType,
+	if ctx.Expr() != nil {
+		expr := c.Visit(ctx.Expr()).(*ValueResponse)
+		c.AppendVectorValue(expr.GetValue())
 	}
 }
+
+// func (c *Compiler) CreateExpressionMatrixValues
+
+// func (v *Compiler) VisitMatrixValues(ctx *parser.MatrixValuesContext) interface{} {
+// 	expr, ok := v.Visit(ctx.MatrixDefinition(0)).(*ValueResponse)
+
+// 	if !ok {
+// 		fmt.Println("Error al obtener el valor de la matriz")
+// 		return expr
+// 	}
+
+// 	baseNode := NewMatrix(expr.GetType())
+
+// if expr.GetType() == MatrixTemporal {
+// 	value := expr.GetValue().(map[string]interface{})
+// 	v.AppendVectorValue(value["temporals"].([]*Temporal)[0])
+// 	baseNode.AddValue(value["matrix"])
+// } else {
+// 	v.AppendVectorValue(expr.GetValue())
+// 	baseNode.AddValue(expr.GetValue())
+// }
+
+// var initMatrix []*Temporal
+
+// if expr.GetType() != MatrixTemporal {
+// 	initMatrix = v.InitNewMatrix()
+// 	v.AppendVectorValue(expr.GetValue())
+// 	baseNode.AddValue(expr.GetValue())
+// }
+
+// for _, matrixDef := range ctx.AllMatrixDefinition()[1:] {
+// 	matrixDef := v.Visit(matrixDef).(*ValueResponse)
+
+// if matrixDef.GetType() == MatrixTemporal {
+// 	value := expr.GetValue().(map[string]interface{})
+// 	v.AppendVectorValue(value["temporals"].([]*Temporal)[0])
+// 	baseNode.AddValue(value["matrix"])
+// } else {
+// 	v.AppendVectorValue(matrixDef.GetValue())
+// 	baseNode.AddValue(matrixDef.GetValue())
+// }
+
+// 	if matrixDef.GetType() != MatrixTemporal {
+// 		v.AppendVectorValue(matrixDef.GetValue())
+// 		baseNode.AddValue(matrixDef.GetValue())
+// 	}
+
+// }
+
+// 	if expr.GetType() == MatrixTemporal {
+// 		v.TAC.AppendInstruction(
+// 			fmt.Sprintf("%v = %v;", initMatrix[1], len(ctx.AllMatrixDefinition())),
+// 			"Contador de vector",
+// 		)
+// 		v.DeclareMatrixProps(initMatrix[0], initMatrix[1], initMatrix[2])
+// 		return &ValueResponse{
+// 			Value:       map[string]interface{}{"matrix": baseNode, "temporals": initMatrix},
+// 			Type:        MatrixTemporal,
+// 			ContextType: TemporalType,
+// 		}
+// 	}
+
+// 	return &ValueResponse{
+// 		Type: IntTemporal,
+// 	}
+
+// }
 
 func (v *Compiler) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
 	return nil

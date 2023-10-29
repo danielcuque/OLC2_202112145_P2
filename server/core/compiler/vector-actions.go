@@ -77,13 +77,6 @@ func (c *Compiler) GetVectorValues(ctx *parser.VectorListValueContext) []*ValueR
 func (c *Compiler) DeclareVectorValues(values []*ValueResponse, counter *Temporal) {
 
 	for _, value := range values {
-		// c.TAC.AppendInstructions(
-		// 	[]string{
-		// 		fmt.Sprintf("heap[(int)H] = %v;", value.GetValue()),
-		// 		c.HeapPointer.IncreasePointer(),
-		// 	},
-		// 	"",
-		// )
 		c.AppendVectorValue(value.GetValue())
 	}
 
