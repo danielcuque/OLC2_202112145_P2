@@ -137,10 +137,7 @@ func (c *Compiler) DeclareMatrixProps(initVector, counter, isEmptyAddress *Tempo
 
 	c.TAC.AppendInstructions(
 		[]string{
-			// fmt.Sprintf("%v = H - %v;", counter, isEmptyAddress), // Obtenemos la cantidad de elementos del vector
-			// fmt.Sprintf("%v = %v - 1;", counter, counter), // Restamos uno porque el contador empieza en 1
 			fmt.Sprintf("heap[(int)%v] = %v;", initVector, counter),
-
 			fmt.Sprintf("if (%v == 0) goto %v;", counter, isEmptyLabel),
 			fmt.Sprintf("heap[(int)%v] = 0;", isEmptyAddress),
 			fmt.Sprintf("goto %v;", end),
@@ -166,32 +163,61 @@ func (c *Compiler) VisitVectorAccess(ctx *parser.VectorAccessContext) interface{
 		return nil
 	}
 
-	return c.VectorAccess(value, index)
-}
-
-func (c *Compiler) VectorAccess(value *Value, index *ValueResponse) *ValueResponse {
 	genericObject := value.GetValue().(*Object)
 	vectorObject := genericObject.GetValue().(*Matrix)
-	vectorAddress := c.TAC.NewTemporal(IntTemporal)
 
+	return c.VectorAccess(c.TAC.GetValueAddress(value), index, true, vectorObject.GetType())
+}
+
+func (c *Compiler) VectorAccess(initAddress string, index *ValueResponse, isStackValue bool, vectorType TemporalCast) *ValueResponse {
+	vectorAddress := c.TAC.NewTemporal(IntTemporal)
 	vectorAccessPosition := c.TAC.NewTemporal(IntTemporal)
 	vectorCountValue := c.TAC.NewTemporal(IntTemporal)
 
 	outOfBoundsLabel := c.TAC.NewLabel("outOfBounds")
 	end := c.TAC.NewLabel("end")
 
+	if isStackValue {
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("%v = stack[(int)%s];", vectorAddress, initAddress),     // Obtenemos la posicion inicial del vector
+				fmt.Sprintf("%v = heap[(int)%v];", vectorCountValue, vectorAddress), // Obtenemos la cantidad de elementos del vector
+			},
+			"",
+		)
+	} else {
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("%v = heap[(int)%s];", vectorAddress, initAddress), // Obtenemos la posicion inicial del vector
+				fmt.Sprintf("%v = %v;", vectorCountValue, vectorAddress),
+			},
+			"",
+		)
+	}
+
 	c.TAC.AppendInstructions(
 		[]string{
-			fmt.Sprintf("%v = stack[(int)%v];", vectorAddress, c.TAC.GetValueAddress(value)), // Obtenemos la posicion inicial del vector
-
-			fmt.Sprintf("%v = heap[(int)%v];", vectorCountValue, vectorAddress), // Obtenemos la cantidad de elementos del vector
-
-			fmt.Sprintf("if (%v > %v) goto %v;", index.GetValue(), vectorCountValue, outOfBoundsLabel),
+			fmt.Sprintf("if (%v >= %v) goto %v;", index.GetValue(), vectorCountValue, outOfBoundsLabel),
 			fmt.Sprintf("if (%v < 0) goto %v;", index.GetValue(), outOfBoundsLabel),
+		},
+		"",
+	)
 
+	if isStackValue {
+		c.TAC.AppendInstruction(
 			// Dirección del inicio de los valores del vector
 			fmt.Sprintf("%v = %v + 2;", vectorAddress, vectorAddress), // Obtenemos la posicion inicial del vector
+			"",
+		)
+	} else {
+		c.TAC.AppendInstruction(
+			fmt.Sprintf("%v = %v + 2;", vectorAddress, initAddress), // Obtenemos la posicion inicial del vector
+			"",
+		)
+	}
 
+	c.TAC.AppendInstructions(
+		[]string{
 			// Obtenemos la posicion del valor del vector
 			fmt.Sprintf("%v = %v - %v;", vectorAccessPosition, index.GetValue(), 0),
 			fmt.Sprintf("%v = %v + %v;", vectorAccessPosition, vectorAccessPosition, vectorAddress),
@@ -222,7 +248,7 @@ func (c *Compiler) VectorAccess(value *Value, index *ValueResponse) *ValueRespon
 
 	return &ValueResponse{
 		Value:       vectorAccessPosition,
-		Type:        vectorObject.GetType(),
+		Type:        vectorType,
 		ContextType: TemporalType,
 	}
 }

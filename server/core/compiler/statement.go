@@ -30,6 +30,10 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.IfStatement())
 	}
 
+	if ctx.MatrixAssignment() != nil {
+		return c.Visit(ctx.MatrixAssignment())
+	}
+
 	if ctx.MatrixDeclaration() != nil {
 		return c.Visit(ctx.MatrixDeclaration())
 	}

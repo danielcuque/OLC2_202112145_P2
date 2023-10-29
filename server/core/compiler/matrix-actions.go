@@ -14,22 +14,18 @@ func (c *Compiler) VisitMatrixDeclaration(ctx *parser.MatrixDeclarationContext) 
 		return nil
 	}
 
-	// matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
+	matrixType := c.Visit(ctx.MatrixType()).(TemporalCast)
 
-	c.GetMatrixBody(ctx)
+	initVector := c.GetMatrixBody(ctx).(*ValueResponse)
 
-	// newMatrix := c.InitNewMatrix()
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), initVector.GetValue()), // Inicio del vector
+		"Direccion de la matriz",
+	)
 
-	// c.DeclareMatrixProps(newMatrix[0], newMatrix[1], newMatrix[2])
+	newMatrixObject := NewVector(matrixType)
 
-	// c.TAC.AppendInstruction(
-	// 	fmt.Sprintf("stack[(int)%v] = %v;", value.GetAddress(), newMatrix[0]), // Inicio del vector
-	// 	"Direccion de vector",
-	// )
-
-	// newMatrixObject := NewVector(matrixType)
-
-	// value.SetData(MatrixTemporal, newMatrixObject)
+	value.SetData(MatrixTemporal, newMatrixObject)
 
 	return nil
 }
@@ -64,11 +60,17 @@ func (c *Compiler) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) in
 		}
 
 		c.TAC.AppendInstruction(
-			fmt.Sprintf("%v = %v;", newMatrix.InitVector, len(allMatrixDefinition)),
+			fmt.Sprintf("%v = %v;", newMatrix.Counter, len(allMatrixDefinition)),
 			"Contador de vector",
 		)
 
 		c.DeclareMatrixProps(newMatrix.InitVector, newMatrix.Counter, newMatrix.IsEmptyAddress)
+
+		return &ValueResponse{
+			Value:       newMatrix.InitVector,
+			ContextType: TemporalType,
+			Type:        MatrixTemporal,
+		}
 
 	}
 
@@ -131,7 +133,7 @@ func (v *Compiler) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface
 
 	if ctx.MatrixDefinition() != nil {
 		// Convert node to array
-		body = v.Visit(ctx.MatrixDefinition())
+		body = v.Visit(ctx.MatrixDefinition()).(*ValueResponse)
 	} else {
 		body = v.Visit(ctx.MatrixRepeatingDefinition())
 	}
@@ -139,8 +141,46 @@ func (v *Compiler) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface
 	return body
 }
 
-func (v *Compiler) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{} {
-	return nil
+func (c *Compiler) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{} {
+	id, _ := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
+
+	value := c.Env.GetValue(id)
+
+	if value == nil {
+		return nil
+	}
+
+	firstIndex := c.Visit(ctx.Expr(0)).(*ValueResponse)
+
+	matrixValueAddress := c.VectorAccess(
+		c.TAC.GetValueAddress(value),
+		firstIndex,
+		true,
+		value.GetType(),
+	)
+
+	matrixValue := c.GetVectorValue(matrixValueAddress)
+
+	for _, expr := range ctx.AllExpr()[1:] {
+		index := c.Visit(expr).(*ValueResponse)
+
+		exprValueAddress := c.VectorAccess(
+			fmt.Sprintf("%v", matrixValue.GetValue()),
+			index,
+			false,
+			value.GetType(),
+		)
+
+		exprValue := c.GetVectorValue(exprValueAddress)
+
+		matrixValue = exprValue
+	}
+
+	return &ValueResponse{
+		Value:       matrixValue.GetValue(),
+		Type:        matrixValue.GetType(),
+		ContextType: TemporalType,
+	}
 }
 
 func (v *Compiler) CheckMatrixIndexes() interface{} {
