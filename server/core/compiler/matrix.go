@@ -5,6 +5,20 @@ type Matrix struct {
 	Body []interface{}
 }
 
+type InitMatrix struct {
+	InitVector     *Temporal
+	Counter        *Temporal
+	IsEmptyAddress *Temporal
+}
+
+func (c *Compiler) NewInitMatrix() *InitMatrix {
+	return &InitMatrix{
+		InitVector:     c.TAC.NewTemporal(IntTemporal),
+		Counter:        c.TAC.NewTemporal(IntTemporal),
+		IsEmptyAddress: c.TAC.NewTemporal(BooleanTemporal),
+	}
+}
+
 func NewMatrix(Type TemporalCast) *Matrix {
 	return &Matrix{
 		Type: Type,

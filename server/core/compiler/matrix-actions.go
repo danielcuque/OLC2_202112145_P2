@@ -45,20 +45,30 @@ func (c *Compiler) VisitMatrixTypeSingle(ctx *parser.MatrixTypeSingleContext) in
 func (c *Compiler) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) interface{} {
 
 	if ctx.MatrixValues() != nil {
-		newMatrix := c.InitNewMatrix()
+		newMatrix := c.NewInitMatrix()
+
+		responses := make([]*ValueResponse, 0)
 
 		allMatrixDefinition := ctx.MatrixValues().AllMatrixDefinition()
 
+		for _, matrixDef := range allMatrixDefinition {
+			response := c.GetMatrixValues(matrixDef.(*parser.MatrixDefinitionContext))
+
+			responses = append(responses, response)
+		}
+
+		c.DeclareNewMatrix(newMatrix)
+
+		for _, response := range responses {
+			c.AppendVectorValue(response.GetValue())
+		}
+
 		c.TAC.AppendInstruction(
-			fmt.Sprintf("%v = %v;", newMatrix[1], len(allMatrixDefinition)),
+			fmt.Sprintf("%v = %v;", newMatrix.InitVector, len(allMatrixDefinition)),
 			"Contador de vector",
 		)
 
-		c.DeclareMatrixProps(newMatrix[0], newMatrix[1], newMatrix[2])
-
-		for _, matrixDef := range allMatrixDefinition {
-			c.GetMatrixValues(matrixDef.(*parser.MatrixDefinitionContext), newMatrix)
-		}
+		c.DeclareMatrixProps(newMatrix.InitVector, newMatrix.Counter, newMatrix.IsEmptyAddress)
 
 	}
 
@@ -66,32 +76,43 @@ func (c *Compiler) VisitMatrixDefinition(ctx *parser.MatrixDefinitionContext) in
 }
 
 // This function will be recursive
-func (c *Compiler) GetMatrixValues(ctx *parser.MatrixDefinitionContext, initMatrix []*Temporal) {
+func (c *Compiler) GetMatrixValues(ctx *parser.MatrixDefinitionContext) *ValueResponse {
 	if ctx.MatrixValues() != nil {
-		newMatrix := c.InitNewMatrix()
+		newMatrix := c.NewInitMatrix()
+		responses := make([]*ValueResponse, 0)
 
 		allMatrixDefinition := ctx.MatrixValues().AllMatrixDefinition()
 
+		for _, matrixDef := range allMatrixDefinition {
+
+			response := c.GetMatrixValues(matrixDef.(*parser.MatrixDefinitionContext))
+			responses = append(responses, response)
+		}
+
+		c.DeclareNewMatrix(newMatrix)
+
+		for _, response := range responses {
+			c.AppendVectorValue(response.GetValue())
+		}
+
 		c.TAC.AppendInstruction(
-			fmt.Sprintf("%v = %v;", initMatrix[1], len(allMatrixDefinition)),
+			fmt.Sprintf("%v = %v;", newMatrix.Counter, len(allMatrixDefinition)),
 			"Contador de vector",
 		)
 
-		c.DeclareMatrixProps(initMatrix[0], initMatrix[1], initMatrix[2])
+		c.DeclareMatrixProps(newMatrix.InitVector, newMatrix.Counter, newMatrix.IsEmptyAddress)
 
-		for _, matrixDef := range allMatrixDefinition {
-
-			c.AppendVectorValue(newMatrix[0])
-
-			c.GetMatrixValues(matrixDef.(*parser.MatrixDefinitionContext), newMatrix)
+		return &ValueResponse{
+			Value: newMatrix.InitVector,
 		}
 
 	}
 
 	if ctx.Expr() != nil {
-		expr := c.Visit(ctx.Expr()).(*ValueResponse)
-		c.AppendVectorValue(expr.GetValue())
+		return c.Visit(ctx.Expr()).(*ValueResponse)
 	}
+
+	return nil
 }
 
 func (v *Compiler) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {

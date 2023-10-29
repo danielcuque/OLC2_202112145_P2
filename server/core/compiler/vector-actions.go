@@ -119,6 +119,18 @@ func (c *Compiler) InitNewMatrix() []*Temporal {
 	}
 }
 
+func (c *Compiler) DeclareNewMatrix(matrix *InitMatrix) {
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = H;", matrix.InitVector),     // Inicio del vector
+			c.HeapPointer.IncreasePointer(),               // Aumentamos un espacio para dejar la posicion vacia donde va la propiedad .count
+			fmt.Sprintf("%v = H;", matrix.IsEmptyAddress), // Inicio del contador
+			c.HeapPointer.IncreasePointer(),               // Aumentamos un espacio para dejar la posicion vacia donde va la propiedad .isEmpty
+		},
+		"Inicio del vector",
+	)
+}
+
 func (c *Compiler) DeclareMatrixProps(initVector, counter, isEmptyAddress *Temporal) {
 	isEmptyLabel := c.TAC.NewLabel("isEmpty")
 	end := c.TAC.NewLabel("end")
