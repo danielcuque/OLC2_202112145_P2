@@ -16,8 +16,12 @@ func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{
 		return fnc(c, ctx)
 	}
 
-	if c.Env.GetValue(functionName) != nil {
-		return c.HandleStructInstance(ctx)
+	structValue := c.Env.GetValue(functionName)
+
+	if structValue != nil {
+		if structValue.Type == StructTemporal {
+			return c.HandleStructInstance(ctx, structValue.GetValue().(*Object))
+		}
 	}
 
 	procedure := c.TAC.GetProcedure(functionName)

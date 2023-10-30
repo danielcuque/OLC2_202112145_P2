@@ -52,10 +52,18 @@ func (c *Compiler) DeclareValue(id string, response *ValueResponse) *Value {
 		return nil
 	}
 
-	value.SetData(response.GetType(), response.GetValue())
+	valueContent, valueToAssign := response.GetValue(), response.GetValue()
+
+	if response.Type == StructTemporal {
+		structValue := response.GetValue().([]interface{})
+		valueContent = structValue[0]
+		valueToAssign = structValue[1]
+	}
+
+	value.SetData(response.GetType(), valueContent)
 
 	c.TAC.AppendInstruction(
-		fmt.Sprintf("stack[(int)%v] = %v;", c.TAC.GetValueAddress(value), value.GetValue()),
+		fmt.Sprintf("stack[(int)%v] = %v;", c.TAC.GetValueAddress(value), valueToAssign),
 		fmt.Sprintf("Declaración de la variable '%s'", id),
 	)
 

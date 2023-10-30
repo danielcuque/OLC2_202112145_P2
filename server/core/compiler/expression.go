@@ -391,7 +391,7 @@ func (c *Compiler) VisitVariableType(ctx *parser.VariableTypeContext) interface{
 	case "String":
 		return StringTemporal
 	default:
-		return ctx.GetText()
+		return TemporalCast(ctx.GetText())
 	}
 }
 
