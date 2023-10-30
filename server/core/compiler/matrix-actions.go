@@ -117,12 +117,85 @@ func (c *Compiler) GetMatrixValues(ctx *parser.MatrixDefinitionContext) *ValueRe
 	return nil
 }
 
-func (v *Compiler) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
-	return nil
+func (c *Compiler) VisitMatrixRepeatingDefinitionNested(ctx *parser.MatrixRepeatingDefinitionNestedContext) interface{} {
+	matrixValue := c.Visit(ctx.MatrixRepeatingDefinition()).(*ValueResponse)
+	counter := c.TAC.NewTemporal(IntTemporal)
+	repeatingTimes := c.Visit(ctx.Expr()).(*ValueResponse)
+	newMatrix := c.NewInitMatrix()
+
+	c.DeclareNewMatrix(newMatrix)
+	startLabel := c.TAC.NewLabel("")
+	endLabel := c.TAC.NewLabel("")
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = 0;", counter),
+			startLabel.Declare(),
+			fmt.Sprintf("if(%v >= %v) goto %v;", counter, repeatingTimes.GetValue(), endLabel),
+
+			fmt.Sprintf("%v = %v + 1;", counter, counter),
+			fmt.Sprintf("heap[(int)H] = %v;", matrixValue.GetValue()),
+			c.HeapPointer.IncreasePointer(),
+			fmt.Sprintf("goto %v;", startLabel),
+			endLabel.Declare(),
+		},
+		"Cuerpo del for",
+	)
+
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("%v = %v;", newMatrix.Counter, repeatingTimes.GetValue()),
+		"Contador de vector",
+	)
+
+	c.DeclareMatrixProps(newMatrix.InitVector, newMatrix.Counter, newMatrix.IsEmptyAddress)
+
+	return &ValueResponse{
+		Value:       newMatrix.InitVector,
+		ContextType: TemporalType,
+		Type:        MatrixTemporal,
+	}
 }
 
-func (v *Compiler) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeatingDefinitionSingleContext) interface{} {
-	return nil
+func (c *Compiler) VisitMatrixRepeatingDefinitionSingle(ctx *parser.MatrixRepeatingDefinitionSingleContext) interface{} {
+
+	repeatingValue := c.Visit(ctx.Expr(0)).(*ValueResponse)
+	repeatingTimes := c.Visit(ctx.Expr(1)).(*ValueResponse)
+	counter := c.TAC.NewTemporal(IntTemporal)
+
+	newMatrix := c.NewInitMatrix()
+
+	c.DeclareNewMatrix(newMatrix)
+
+	startLabel := c.TAC.NewLabel("")
+	endLabel := c.TAC.NewLabel("")
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = 0;", counter),
+			startLabel.Declare(),
+			fmt.Sprintf("if(%v >= %v) goto %v;", counter, repeatingTimes.GetValue(), endLabel),
+
+			fmt.Sprintf("%v = %v + 1;", counter, counter),
+			fmt.Sprintf("heap[(int)H] = %v;", repeatingValue.GetValue()),
+			c.HeapPointer.IncreasePointer(),
+			fmt.Sprintf("goto %v;", startLabel),
+			endLabel.Declare(),
+		},
+		"Cuerpo del for",
+	)
+
+	c.TAC.AppendInstruction(
+		fmt.Sprintf("%v = %v;", newMatrix.Counter, repeatingTimes.GetValue()),
+		"Contador de vector",
+	)
+
+	c.DeclareMatrixProps(newMatrix.InitVector, newMatrix.Counter, newMatrix.IsEmptyAddress)
+
+	return &ValueResponse{
+		Value:       newMatrix.InitVector,
+		ContextType: TemporalType,
+		Type:        MatrixTemporal,
+	}
 }
 
 func (v *Compiler) GetMatrixBody(ctx *parser.MatrixDeclarationContext) interface{} {
@@ -178,14 +251,6 @@ func (c *Compiler) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{
 	return matrixValue
 }
 
-func (v *Compiler) CheckMatrixIndexes() interface{} {
-	return nil
-}
-
 func (v *Compiler) VisitMatrixAssignment(ctx *parser.MatrixAssignmentContext) interface{} {
-
 	return nil
-}
-
-func (v *Compiler) ReplaceMatrixValue() {
 }

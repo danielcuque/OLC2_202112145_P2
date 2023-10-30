@@ -184,16 +184,16 @@ func (c *Compiler) VectorAccess(initAddress string, index *ValueResponse, isStac
 		initialInstructions += fmt.Sprintf("%v = heap[(int)%v];\n", vectorCountValue, vectorAddress)
 	} else {
 		initialInstructions += fmt.Sprintf("%v = heap[(int)%s];\n", vectorAddress, initAddress)
-		initialInstructions += fmt.Sprintf("%v = %v;", vectorCountValue, vectorAddress)
+		initialInstructions += fmt.Sprintf("%v = %v\n;", vectorCountValue, vectorAddress)
 	}
 
-	initialInstructions += fmt.Sprintf("if (%v >= %v) goto %v;\n", index.GetValue(), vectorCountValue, outOfBoundsLabel)
+	initialInstructions += fmt.Sprintf("if (%v > %v) goto %v;\n", index.GetValue(), vectorCountValue, outOfBoundsLabel)
 	initialInstructions += fmt.Sprintf("if (%v < 0) goto %v;\n", index.GetValue(), outOfBoundsLabel)
 
 	if isStackValue {
 		initialInstructions += fmt.Sprintf("%v = %v + 2;\n", vectorAddress, vectorAddress) // Obtenemos la posicion inicial del vector
 	} else {
-		initialInstructions += fmt.Sprintf("%v = %v + 2;\n", vectorAddress, initAddress) // Obtenemos la posicion inicial del vector
+		initialInstructions += fmt.Sprintf("%v = %v + 2;", vectorAddress, initAddress) // Obtenemos la posicion inicial del vector
 	}
 
 	c.TAC.AppendInstructions(
@@ -224,7 +224,7 @@ func (c *Compiler) VectorAccess(initAddress string, index *ValueResponse, isStac
 
 			end.Declare(),
 		},
-		"Acceso a vector",
+		"Posicion de vector",
 	)
 
 	return &ValueResponse{

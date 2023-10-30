@@ -1,3 +1,10 @@
+var mtrzRptng : [[Int]] = [[Int]] (repeating: [Int](repeating: 10, count:2), count:3)
+print(mtrzRptng[0][0]);
+// print("Debería ser 0: ", mtrzRptng[0][2][1]);
+// print("Debería ser 0: ", mtrzRptng[2][1][1]);
+// print("Debería ser 0: ", mtrzRptng[3][0][1]);
+// print("Esta suma debería ser 100: ", mtrzRptng[1][0][0]+100);
+
 // let notas: [[Int]] = [
 //     [53, 88, 95, 89, 75],
 //     [81, 51, 57, 67, 93],
