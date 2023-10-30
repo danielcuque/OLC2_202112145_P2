@@ -7,7 +7,6 @@ type TAC struct {
 	labels        []*Label
 	standar       []*Procedure
 	procedures    map[string]*Procedure
-	structs       map[string]*Object
 	code          string
 	Procedure     *Procedure
 	OffsetPointer *Temporal
@@ -20,7 +19,6 @@ func NewTAC() *TAC {
 		labels:        make([]*Label, 0),
 		procedures:    make(map[string]*Procedure),
 		standar:       make([]*Procedure, 0),
-		structs:       make(map[string]*Object),
 		Procedure:     nil,
 		OffsetPointer: nil,
 	}
@@ -137,10 +135,6 @@ func (t *TAC) NewTemporal(castType interface{}) *Temporal {
 
 	t.temporals = append(t.temporals, temporal)
 	return temporal
-}
-
-func (t *TAC) AddStruct(id string, structure *Object) {
-	t.structs[id] = structure
 }
 
 func (t *TAC) AddStandard(procedure *Procedure) {
