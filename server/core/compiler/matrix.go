@@ -2,6 +2,21 @@ package compiler
 
 type Matrix struct {
 	Type TemporalCast
+	Body []interface{}
+}
+
+type InitMatrix struct {
+	InitVector     *Temporal
+	Counter        *Temporal
+	IsEmptyAddress *Temporal
+}
+
+func (c *Compiler) NewInitMatrix() *InitMatrix {
+	return &InitMatrix{
+		InitVector:     c.TAC.NewTemporal(IntTemporal),
+		Counter:        c.TAC.NewTemporal(IntTemporal),
+		IsEmptyAddress: c.TAC.NewTemporal(BooleanTemporal),
+	}
 }
 
 func NewMatrix(Type TemporalCast) *Matrix {
@@ -22,6 +37,18 @@ func NewVector(Type TemporalCast) *Object {
 	newVector.AddProp("isEmpty", isEmpty)
 
 	return newVector
+}
+
+func (m *Matrix) AddValue(value interface{}) {
+	m.Body = append(m.Body, value)
+}
+
+func (m *Matrix) GetAddress() string {
+	return ""
+}
+
+func (m *Matrix) GetValue() interface{} {
+	return m.Body
 }
 
 func (m *Matrix) GetType() TemporalCast {

@@ -16,6 +16,10 @@ func (c *Compiler) VisitFunctionCall(ctx *parser.FunctionCallContext) interface{
 		return fnc(c, ctx)
 	}
 
+	if c.Env.GetValue(functionName) != nil {
+		return c.HandleStructInstance(ctx)
+	}
+
 	procedure := c.TAC.GetProcedure(functionName)
 
 	if procedure == nil {

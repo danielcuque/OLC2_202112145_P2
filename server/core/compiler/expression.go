@@ -182,7 +182,6 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		Value:       temporalPointer,
 		ContextType: TemporalType,
 	}
-
 }
 
 func (c *Compiler) VisitIntExpr(ctx *parser.IntExprContext) interface{} {
@@ -204,6 +203,10 @@ func (c *Compiler) VisitLogicalExpr(ctx *parser.LogicalExprContext) interface{} 
 	}
 
 	return c.Or(left, right)
+}
+
+func (c *Compiler) VisitMatrixAccessExpr(ctx *parser.MatrixAccessExprContext) interface{} {
+	return c.Visit(ctx.MatrixAccess())
 }
 
 func (c *Compiler) VisitNilExpr(ctx *parser.NilExprContext) interface{} {
@@ -312,22 +315,6 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 		stringType = StringTemporal
 	}
 
-	// if len(s) == 0 {
-	// 	return &ValueResponse{
-	// 		Type:        CharTemporal,
-	// 		Value:       fmt.Sprintf("%d", 0),
-	// 		ContextType: LiteralType,
-	// 	}
-	// }
-
-	// if len(s) == 1 {
-	// 	return &ValueResponse{
-	// 		Type:        CharTemporal,
-	// 		Value:       fmt.Sprintf("%d", s[0]),
-	// 		ContextType: LiteralType,
-	// 	}
-	// }
-
 	// Replace scape characters: double quote, backslash, new line, carriage return, tab
 	s = strings.ReplaceAll(s, "\\\"", "\"")
 	s = strings.ReplaceAll(s, "\\\\", "\\")
@@ -415,7 +402,10 @@ func (c *Compiler) VisitVectorAccessExpr(ctx *parser.VectorAccessExprContext) in
 		return nil
 	}
 
-	response := evalValue.(*ValueResponse)
+	return c.GetVectorValue(evalValue.(*ValueResponse))
+}
+
+func (c *Compiler) GetVectorValue(response *ValueResponse) *ValueResponse {
 	vectorPosition := response.GetValue()
 	returnTemporal := c.TAC.NewTemporal(IntTemporal)
 

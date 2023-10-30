@@ -11,6 +11,7 @@ const (
 	IntTemporal     TemporalCast = "d"
 	MatrixTemporal  TemporalCast = "m"
 	StringTemporal  TemporalCast = "s"
+	StructTemporal  TemporalCast = "struct"
 )
 
 type Temporal struct {

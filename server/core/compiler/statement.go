@@ -30,20 +30,28 @@ func (c *Compiler) VisitStatement(ctx *parser.StatementContext) interface{} {
 		return c.Visit(ctx.IfStatement())
 	}
 
+	if ctx.MatrixAssignment() != nil {
+		return c.Visit(ctx.MatrixAssignment())
+	}
+
 	if ctx.MatrixDeclaration() != nil {
 		return c.Visit(ctx.MatrixDeclaration())
+	}
+
+	if ctx.StructDeclaration() != nil {
+		return c.Visit(ctx.StructDeclaration())
 	}
 
 	if ctx.SwitchStatement() != nil {
 		return c.Visit(ctx.SwitchStatement())
 	}
 
-	if ctx.VariableDeclaration() != nil {
-		return c.Visit(ctx.VariableDeclaration())
-	}
-
 	if ctx.VariableAssignment() != nil {
 		return c.Visit(ctx.VariableAssignment())
+	}
+
+	if ctx.VariableDeclaration() != nil {
+		return c.Visit(ctx.VariableDeclaration())
 	}
 
 	if ctx.VectorAssignment() != nil {

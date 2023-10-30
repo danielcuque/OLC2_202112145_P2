@@ -8,12 +8,14 @@ import (
 func (c *Compiler) VisitValueDeclaration(ctx *parser.ValueDeclarationContext) interface{} {
 
 	id := ctx.ID().GetText()
-	response := c.Visit(ctx.Expr()).(*ValueResponse)
+	evalResponse := c.Visit(ctx.Expr())
 
-	if response == nil {
+	if evalResponse == nil {
 		fmt.Println("Error al declarar la variable", id)
 		return nil
 	}
+
+	response := evalResponse.(*ValueResponse)
 
 	return c.DeclareValue(id, response)
 }
