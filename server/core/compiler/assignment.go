@@ -6,9 +6,9 @@ import (
 )
 
 func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext) interface{} {
-	id, _ := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
+	id, props := c.GetPropsAsString(ctx.IdChain().(*parser.IDChainContext))
 
-	response := c.Visit(ctx.Expr()).(*ValueResponse)
+	expr := c.Visit(ctx.Expr()).(*ValueResponse)
 
 	// 1. Get the value of the expression
 	value := c.Env.GetValue(id)
@@ -18,7 +18,7 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 	}
 
 	// Value have stack address
-	newTemporal := c.TAC.NewTemporal(response.GetType())
+	newTemporal := c.TAC.NewTemporal(expr.GetType())
 	// Can be three types of assignment, =, +=, -=
 
 	op := ctx.GetOp().GetText()
@@ -27,19 +27,41 @@ func (c *Compiler) VisitVariableAssignment(ctx *parser.VariableAssignmentContext
 
 	switch op {
 	case "=":
-		responseValue = fmt.Sprintf("%s = %s;", newTemporal, response.GetValue())
+		responseValue = fmt.Sprintf("%s = %s;", newTemporal, expr.GetValue())
 	case "+=":
-		responseValue = fmt.Sprintf("%s = %v + %s;", newTemporal, newTemporal, response.GetValue())
+		responseValue = fmt.Sprintf("%s = %v + %s;", newTemporal, newTemporal, expr.GetValue())
 	case "-=":
-		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, newTemporal, response.GetValue())
+		responseValue = fmt.Sprintf("%s = %v - %v;", newTemporal, newTemporal, expr.GetValue())
 	}
 
-	c.TAC.AppendInstructions(
-		[]string{
-			responseValue,
-			fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), newTemporal),
-		},
-		fmt.Sprintf("Asignación de la variable '%s'", id),
-	)
+	if len(props) > 1 {
+		baseTemporal := c.TAC.NewTemporal(value.GetType())
+
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("%s = stack[(int)%s];", baseTemporal, c.TAC.GetValueAddress(value)),
+			},
+			fmt.Sprintf("Acceso a la variable '%s'", id),
+		)
+
+		temporalPointer := c.GetProps(value, props[1:], baseTemporal, true)
+
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("heap[(int)%s] = %s;", temporalPointer, expr.GetValue()),
+			},
+			"",
+		)
+
+	} else {
+		c.TAC.AppendInstructions(
+			[]string{
+				responseValue,
+				fmt.Sprintf("stack[(int)%s] = %s;", c.TAC.GetValueAddress(value), newTemporal),
+			},
+			fmt.Sprintf("Asignación de la variable '%s'", id),
+		)
+	}
+
 	return nil
 }

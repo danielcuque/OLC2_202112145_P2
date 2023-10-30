@@ -2131,5 +2131,5 @@ func (c *Compiler) GetTemporalResponse(ctx *parser.FunctionCallContext) (*Tempor
 
 	props = props[1 : len(props)-1]
 
-	return c.GetProps(value, props, baseTemporal), value
+	return c.GetProps(value, props, baseTemporal, false), value
 }
