@@ -298,30 +298,6 @@ func (c *Compiler) VisitRangeExpr(ctx *parser.RangeExprContext) interface{} {
 	left := c.Visit(ctx.GetLeft()).(*ValueResponse)
 	right := c.Visit(ctx.GetRight()).(*ValueResponse)
 
-	validRange := c.TAC.NewLabel("")
-
-	c.TAC.AppendInstructions(
-		[]string{
-			fmt.Sprintf("if (%s > %s) goto %s;", right.GetValue(), left.GetValue(), validRange.String()),
-			"printf(\"%c\", 79);",  //O
-			"printf(\"%c\", 117);", //u
-			"printf(\"%c\", 116);", //t
-			"printf(\"%c\", 32);",  //
-			"printf(\"%c\", 111);", //o
-			"printf(\"%c\", 102);", //f
-			"printf(\"%c\", 32);",  //
-			"printf(\"%c\", 66);",  //B
-			"printf(\"%c\", 111);", //o
-			"printf(\"%c\", 117);", //u
-			"printf(\"%c\", 110);", //n
-			"printf(\"%c\", 100);", //d
-			"printf(\"%c\", 115);", //s
-			"printf(\"%c\", 10);",  //
-			validRange.Declare(),
-		},
-		"Validación de rango",
-	)
-
 	return map[string]interface{}{
 		"left":  left.GetValue(),
 		"right": right.GetValue(),
@@ -338,22 +314,6 @@ func (c *Compiler) VisitStrExpr(ctx *parser.StrExprContext) interface{} {
 	} else {
 		stringType = StringTemporal
 	}
-
-	// if len(s) == 0 {
-	// 	return &ValueResponse{
-	// 		Type:        CharTemporal,
-	// 		Value:       fmt.Sprintf("%d", 0),
-	// 		ContextType: LiteralType,
-	// 	}
-	// }
-
-	// if len(s) == 1 {
-	// 	return &ValueResponse{
-	// 		Type:        CharTemporal,
-	// 		Value:       fmt.Sprintf("%d", s[0]),
-	// 		ContextType: LiteralType,
-	// 	}
-	// }
 
 	// Replace scape characters: double quote, backslash, new line, carriage return, tab
 	s = strings.ReplaceAll(s, "\\\"", "\"")

@@ -223,13 +223,16 @@ func (c *Compiler) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{
 		return nil
 	}
 
+	genericObject := value.GetValue().(*Object)
+	matrixObject := genericObject.GetValue().(*Matrix)
+
 	firstIndex := c.Visit(ctx.Expr(0)).(*ValueResponse)
 
 	matrixValueAddress := c.VectorAccess(
 		c.TAC.GetValueAddress(value),
 		firstIndex,
 		true,
-		value.GetType(),
+		matrixObject.GetType(),
 	)
 
 	matrixValue := c.GetVectorValue(matrixValueAddress)
@@ -241,14 +244,18 @@ func (c *Compiler) VisitMatrixAccess(ctx *parser.MatrixAccessContext) interface{
 			fmt.Sprintf("%v", matrixValue.GetValue()),
 			index,
 			false,
-			value.GetType(),
+			matrixObject.GetType(),
 		)
 
 		exprValue := c.GetVectorValue(exprValueAddress)
 		matrixValue = exprValue
 	}
 
-	return matrixValue
+	return &ValueResponse{
+		Value:       matrixValue.GetValue(),
+		ContextType: TemporalType,
+		Type:        matrixObject.GetType(),
+	}
 }
 
 func (v *Compiler) VisitMatrixAssignment(ctx *parser.MatrixAssignmentContext) interface{} {
