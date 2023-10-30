@@ -456,6 +456,8 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 			return auxiliarTemporal
 		}
 
+		envStruct := c.Env.GetValue(string(val.GetType()))
+
 		relativePosition := c.TAC.NewTemporal(IntTemporal)
 		heapTemporal := c.TAC.NewTemporal(val.GetType())
 
@@ -467,7 +469,12 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 			fmt.Sprintf("Propiedad '%s'", props[0]),
 		)
 
-		return c.GetProps(val, props[1:], heapTemporal)
+		if envStruct == nil {
+			return c.GetProps(val, props[1:], heapTemporal)
+		}
+
+		return c.GetProps(envStruct, props[1:], heapTemporal)
+
 	}
 
 	value = objectValue.GetProp(props[0])
