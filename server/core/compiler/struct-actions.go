@@ -38,6 +38,32 @@ func (c *Compiler) VisitStructBody(ctx *parser.StructBodyContext) interface{} {
 }
 
 func (c *Compiler) HandleStructInstance(ctx *parser.FunctionCallContext) interface{} {
-	fmt.Println("Struct instance")
-	return nil
+	args := c.GetArgs(ctx)
+
+	baseTemporal := c.TAC.NewTemporal(IntTemporal)
+
+	c.TAC.AppendInstructions(
+		[]string{
+			fmt.Sprintf("%v = H;", baseTemporal),
+			fmt.Sprintf("heap[(int)H] = %v", len(args)),
+			c.HeapPointer.IncreasePointer(),
+		},
+		"Instancia de struct",
+	)
+
+	for _, arg := range args {
+		c.TAC.AppendInstructions(
+			[]string{
+				fmt.Sprintf("heap[(int)H] = %v", arg.Value.GetValue()),
+				c.HeapPointer.IncreasePointer(),
+			},
+			"",
+		)
+	}
+
+	return &ValueResponse{
+		Value:       baseTemporal,
+		Type:        StructTemporal,
+		ContextType: PointerType,
+	}
 }
