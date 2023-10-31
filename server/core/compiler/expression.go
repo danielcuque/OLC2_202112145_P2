@@ -175,7 +175,7 @@ func (c *Compiler) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 		fmt.Sprintf("Acceso a la variable '%s'", id),
 	)
 
-	temporalPointer := c.GetProps(value, props[1:], newTemporal)
+	temporalPointer := c.GetProps(value, props[1:], newTemporal, false)
 
 	return &ValueResponse{
 		Type:        temporalPointer.GetType(),
@@ -391,7 +391,7 @@ func (c *Compiler) VisitVariableType(ctx *parser.VariableTypeContext) interface{
 	case "String":
 		return StringTemporal
 	default:
-		return ctx.GetText()
+		return TemporalCast(ctx.GetText())
 	}
 }
 
@@ -432,7 +432,7 @@ func (c *Compiler) GetPropsAsString(ctx *parser.IDChainContext) (string, []strin
 	return id, props
 }
 
-func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temporal) *Temporal {
+func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temporal, getAddress bool) *Temporal {
 	if len(props) == 0 {
 		return auxiliarTemporal
 	}
@@ -456,18 +456,34 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 			return auxiliarTemporal
 		}
 
+		envStruct := c.Env.GetValue(string(val.GetType()))
+
 		relativePosition := c.TAC.NewTemporal(IntTemporal)
 		heapTemporal := c.TAC.NewTemporal(val.GetType())
 
-		c.TAC.AppendInstructions(
-			[]string{
-				fmt.Sprintf("%s = %s + %s;", relativePosition, auxiliarTemporal, val.GetAddress()),
-				fmt.Sprintf("%s = heap[%s];", heapTemporal, relativePosition.Cast()),
-			},
-			fmt.Sprintf("Propiedad '%s'", props[0]),
-		)
+		c.TAC.AppendInstruction(fmt.Sprintf("%s = %s + %s;", relativePosition, auxiliarTemporal, val.GetAddress()), "")
 
-		return c.GetProps(val, props[1:], heapTemporal)
+		temporalToReturn := relativePosition
+
+		if !getAddress || len(props[:1]) > 1 {
+			temporalToReturn = heapTemporal
+			c.TAC.AppendInstruction(fmt.Sprintf("%s = heap[%s];", heapTemporal, relativePosition.Cast()), fmt.Sprintf("Propiedad '%s'", props[0]))
+		}
+
+		// c.TAC.AppendInstructions(
+		// 	[]string{
+		// 		fmt.Sprintf("%s = %s + %s;", relativePosition, auxiliarTemporal, val.GetAddress()),
+		// 		fmt.Sprintf("%s = heap[%s];", heapTemporal, relativePosition.Cast()),
+		// 	},
+		// 	fmt.Sprintf("Propiedad '%s'", props[0]),
+		// )
+
+		if envStruct == nil {
+			return c.GetProps(val, props[1:], temporalToReturn, getAddress)
+		}
+
+		return c.GetProps(envStruct, props[1:], temporalToReturn, getAddress)
+
 	}
 
 	value = objectValue.GetProp(props[0])
@@ -485,5 +501,5 @@ func (c *Compiler) GetProps(value *Value, props []string, auxiliarTemporal *Temp
 		fmt.Sprintf("Propiedad '%s'", props[0]),
 	)
 
-	return c.GetProps(value, props[1:], stackTemporal)
+	return c.GetProps(value, props[1:], stackTemporal, getAddress)
 }

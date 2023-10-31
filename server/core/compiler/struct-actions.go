@@ -29,15 +29,16 @@ func (c *Compiler) VisitStructBody(ctx *parser.StructBodyContext) interface{} {
 	for i, prop := range ctx.AllStructProperty() {
 		varTypeDeclaration := prop.VariableDeclaration().(*parser.TypeDeclarationContext)
 		id := varTypeDeclaration.ID().GetText()
-		newValue := NewSimpleValue(i)
-		newValue.SetData(IntTemporal, "")
+		variableType := c.Visit(varTypeDeclaration.VariableType()).(TemporalCast)
+		newValue := NewSimpleValue(i + 1)
+		newValue.SetData(variableType, "")
 		object.AddProp(id, newValue)
 	}
 
 	return object
 }
 
-func (c *Compiler) HandleStructInstance(ctx *parser.FunctionCallContext) interface{} {
+func (c *Compiler) HandleStructInstance(ctx *parser.FunctionCallContext, object *Object) interface{} {
 	args := c.GetArgs(ctx)
 
 	baseTemporal := c.TAC.NewTemporal(IntTemporal)
@@ -45,7 +46,7 @@ func (c *Compiler) HandleStructInstance(ctx *parser.FunctionCallContext) interfa
 	c.TAC.AppendInstructions(
 		[]string{
 			fmt.Sprintf("%v = H;", baseTemporal),
-			fmt.Sprintf("heap[(int)H] = %v", len(args)),
+			fmt.Sprintf("heap[(int)H] = %v;", len(args)),
 			c.HeapPointer.IncreasePointer(),
 		},
 		"Instancia de struct",
@@ -54,15 +55,19 @@ func (c *Compiler) HandleStructInstance(ctx *parser.FunctionCallContext) interfa
 	for _, arg := range args {
 		c.TAC.AppendInstructions(
 			[]string{
-				fmt.Sprintf("heap[(int)H] = %v", arg.Value.GetValue()),
+				fmt.Sprintf("heap[(int)H] = %v;", arg.Value.GetValue()),
 				c.HeapPointer.IncreasePointer(),
 			},
 			"",
 		)
 	}
 
+	newInstance := NewObject(object.Type, nil)
+
+	newInstance.Props = object.Props
+
 	return &ValueResponse{
-		Value:       baseTemporal,
+		Value:       []interface{}{newInstance, baseTemporal},
 		Type:        StructTemporal,
 		ContextType: PointerType,
 	}
